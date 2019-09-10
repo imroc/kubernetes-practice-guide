@@ -1,0 +1,11 @@
+# Node rules:
+## Grunt intermediate storage (http://gruntjs.com/creating-plugins#storing-task-files)
+.grunt
+
+# Book build output
+_book
+
+# eBook build output
+*.epub
+*.mobi
+*.pdf
