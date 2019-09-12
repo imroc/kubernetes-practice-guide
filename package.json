@@ -1,11 +1,8 @@
 {
   "name": "kubernetes-practice-guide",
   "version": "1.0.0",
-  "description": "Kubernetes实践指南",
+  "description": "Kubernetes Practice Guide",
   "main": "index.js",
-  "directories": {
-    "example": "examples"
-  },
   "dependencies": {
     "gitbook-cli": "^2.3.2",
     "gitbook-plugin-alerts": "^0.1.1",

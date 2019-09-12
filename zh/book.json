@@ -1,5 +1,10 @@
 {
     "title": "Kubernetes 实践指南",
     "description": "Kubernetes 实践指南",
-    "language": "zh-hans"
+    "language": "zh-hans",
+    "pluginsConfig": {
+        "editlink": {
+            "label": "编辑本页"
+        }
+    }
 }

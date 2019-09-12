@@ -1,7 +1,7 @@
-# 如何贡献
+# How to contribute
 
-1. 在 Github 上 [Fork](https://github.com/imroc/kubernetes-practice-guide/fork) 项目到自己的仓库。
-2. 将 fork 后的项目拉到本地: `git clone https://github.com/<user-name>/kubernetes-practice-guide.git`。
-3. 新建一个分支，并添加或编辑内容：`git checkout -b new-branch`。
-4. 提交并推送到 github：`git commit -am "comments"; git push`。
-5. 在 Github 上提交 Pull Request。
+1. [Fork](https://github.com/imroc/kubernetes-practice-guide/fork) on Github to your own repo.
+2. Clone to your local machine: `git clone https://github.com/<user-name>/kubernetes-practice-guide.git`.
+3. Create a new branch, add or modify something:`git checkout -b new-branch`.
+4. Commit and push to Github:`git commit -am "comments"; git push`.
+5. Submit a Pull Request.

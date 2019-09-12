@@ -1,4 +1,4 @@
-BOOK_NAME := tke-handbook
+BOOK_NAME := kubernetes-practice-guide
 BOOK_OUTPUT := _book
 
 .PHONY: build

@@ -1,5 +1,10 @@
 {
     "title": "Kubernetes Practice Guide",
     "description": "Kubernetes Practice Guide",
-    "language": "en"
+    "language": "en",
+    "pluginsConfig": {
+        "editlink": {
+            "label": "Edit This Page"
+        }
+    }
 }

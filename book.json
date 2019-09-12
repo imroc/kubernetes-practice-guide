@@ -37,8 +37,7 @@
             "url": "https://github.com/imroc/kubernetes-practice-guide"
         },
         "editlink": {
-            "base": "https://github.com/imroc/kubernetes-practice-guide/blob/master",
-            "label": "编辑本页"
+            "base": "https://github.com/imroc/kubernetes-practice-guide/blob/master"
         },
         "tbfed-pagefooter": {
           "copyright":"&copy roc",

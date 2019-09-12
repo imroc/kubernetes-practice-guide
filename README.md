@@ -1,6 +1,6 @@
 # Kubernetes Practice Guide
 
-This book provides a lot of Kubernetes practice. Welcome everyone to improve this book.
+This book contains a lot of kubernetes practices that cover many troubleshooting and best practices. Welcome everyone to improve this book.
 
 ## Disclaimer
 
