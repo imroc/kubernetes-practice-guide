@@ -18,7 +18,7 @@
 - [节点问题]()
   - [节点 NotReady](troubleshooting/node/node-notready.md)
   - [no space left on device](troubleshooting/node/no-space-left-on-device.md)
-  - [Rancher 清除 Node 导致集群异常](troubleshooting/node/rancher-remove-node-cause-node-abnormal.md)
+  - [Rancher 清除 Node 导致集群异常](troubleshooting/node/rancher-remove-node-cause-cluster-abnormal.md)
 - [master 问题]()
   - [apiserver 响应慢]()
 - [网络问题]()

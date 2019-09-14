@@ -76,9 +76,17 @@ cd $GO_PATH/src/github.com/opencontainers/runc/
 make BUILDTAGS="seccomp nokmem"
 ```
 
+docker-ce v18.09.1 之后的 runc 默认关闭了 kmem accounting，所以也可以直接升级 docker 到这个版本之后。
+
 #### kubelet
 
-kubelet 在创建 pod 对应的 cgroup 目录时，也会调用 libcontianer 中的代码对 cgroup 做设置。在  `pkg/kubelet/cm/cgroup_manager_linux.go` 的 `Create` 方法中，会调用 `Manager.Apply` 方法，最终调用 `vendor/github.com/opencontainers/runc/libcontainer/cgroups/fs/memory.go` 中的 `MemoryGroup.Apply` 方法，开启 kmem accounting。这里也需要进行处理，可以将这部分代码注释掉然后重新编译 kubelet。
+如果是 1.14 版本及其以上，可以在编译的时候通过 build tag 来关闭 kmem accounting:
+
+``` bash
+KUBE_GIT_VERSION=v1.14.1 ./build/run.sh make kubelet GOFLAGS="-tags=nokmem"
+```
+
+如果是低版本需要修改代码重新编译。kubelet 在创建 pod 对应的 cgroup 目录时，也会调用 libcontianer 中的代码对 cgroup 做设置，在  `pkg/kubelet/cm/cgroup_manager_linux.go` 的 `Create` 方法中，会调用 `Manager.Apply` 方法，最终调用 `vendor/github.com/opencontainers/runc/libcontainer/cgroups/fs/memory.go` 中的 `MemoryGroup.Apply` 方法，开启 kmem accounting。这里也需要进行处理，可以将这部分代码注释掉然后重新编译 kubelet。
 
 ## 参考资料
 
