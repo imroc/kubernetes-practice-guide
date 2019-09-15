@@ -36,6 +36,8 @@
 
 ## 生产实践
 
-- [优雅热更新]()
-- [TODO:Pod 原地升级]()
-- [TODO:Pod 固定 IP]()
+- [解决方案]()
+  - [泛域名动态 Service 转发解决方案](solution/wildcard-domain-forward.md)
+  - [优雅热更新](solution/kubernetes-best-practice-grace-update.md)
+  - [TODO:Pod 原地升级]()
+  - [TODO:Pod 固定 IP]()
