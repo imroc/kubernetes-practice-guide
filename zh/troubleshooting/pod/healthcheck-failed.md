@@ -14,7 +14,7 @@ TODO
 
 ## 节点负载过高
 
-cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常会 timeout，导致 kubelet 认为 pod 不健康
+cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常会 timeout，导致 kubelet 认为 pod 不健康。参考本书 [节点高负载](../node/high-load-on-node.html) 一节。
 
 TODO
 

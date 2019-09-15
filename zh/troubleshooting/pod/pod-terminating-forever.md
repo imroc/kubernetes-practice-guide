@@ -6,7 +6,7 @@
 $ kubectl describe pod/apigateway-6dc48bf8b6-clcwk -n cn-staging
 ```
 
-### Need to kill Pod
+## Need to kill Pod
 
 ``` bash
   Normal  Killing  39s (x735 over 15h)  kubelet, 10.179.80.31  Killing container with id docker://apigateway:Need to kill Pod
@@ -16,7 +16,7 @@ $ kubectl describe pod/apigateway-6dc48bf8b6-clcwk -n cn-staging
 
 处理建议是参考Kubernetes 最佳实践：[处理容器数据磁盘被写满](../best-practice/kubernetes-best-practice-handle-disk-full.md)
 
-### DeadlineExceeded
+## DeadlineExceeded
 
 ``` bash
 Warning FailedSync 3m (x408 over 1h) kubelet, 10.179.80.31 error determining status: rpc error: code = DeadlineExceeded desc = context deadline exceeded
@@ -29,7 +29,7 @@ Warning FailedSync 3m (x408 over 1h) kubelet, 10.179.80.31 error determining sta
 - 升级到docker 18. 该版本使用了新的 containerd，针对很多bug进行了修复。
 - 如果出现terminating状态的话，可以提供让容器专家进行排查，不建议直接强行删除，会可能导致一些业务上问题。
 
-### 存在 Finalizers
+## 存在 Finalizers
 
 k8s 资源的 metadata 里如果存在 `finalizers`，那么该资源一般是由某程序创建的，并且在其创建的资源的 metadata 里的 `finalizers` 加了一个它的标识，这意味着这个资源被删除时需要由创建资源的程序来做删除前的清理，清理完了它需要将标识从该资源的 `finalizers` 中移除，然后才会最终彻底删除资源。比如 Rancher 创建的一些资源就会写入 `finalizers` 标识。
 
