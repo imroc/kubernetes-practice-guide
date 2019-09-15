@@ -39,5 +39,7 @@
 - [解决方案]()
   - [泛域名动态 Service 转发解决方案](solution/wildcard-domain-forward.md)
   - [优雅热更新](solution/kubernetes-best-practice-grace-update.md)
+  - [解决长连接服务扩容失效](solution/scale-keepalive-service.md)
   - [TODO:Pod 原地升级]()
   - [TODO:Pod 固定 IP]()
+  
