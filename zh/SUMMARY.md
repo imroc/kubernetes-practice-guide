@@ -22,6 +22,7 @@
   - [Rancher 清除 Node 导致集群异常](troubleshooting/node/rancher-remove-node-cause-cluster-abnormal.md)
   - [内存碎片化](troubleshooting/node/memory-fragmentation.md)
   - [节点高负载](troubleshooting/node/high-load-on-node.md)
+  - [驱逐导致服务中断](troubleshooting/node/eviction-lead-to-service-disruption.md)
 - [Master 问题]()
   - [TODO:apiserver 响应慢]()
 - [网络问题]()

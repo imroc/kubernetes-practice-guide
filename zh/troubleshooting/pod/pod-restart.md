@@ -1,5 +1,13 @@
 # Pod 异常重启
 
+TODO 优化
+
+可能原因:
+
+- 系统 OOM
+- cgroup OOM
+- 节点高负载
+
 看下 pod 状态:
 
 ``` bash
@@ -31,5 +39,3 @@ Events:
 ```
 
 - 先看下 `Reason`，如果是 `OOMKilled`，那说明是由于 OOM 被 kill 的 (通常这种情况 Last State 里也没有 Finished 
-
-TODO
