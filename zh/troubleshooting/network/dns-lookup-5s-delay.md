@@ -1,41 +1,47 @@
 # DNS 5 秒延时
 
-## 超时问题
+## 超时现象
 
 客户反馈从 pod 中访问服务时，总是有些请求的响应时延会达到5秒。正常的响应只需要毫秒级别的时延。
 
-## DNS 5秒延时
+## 抓包
 
-在pod中(通过nsenter -n tcpdump)抓包，发现是有的DNS请求没有收到响应，超时5秒后，再次发送DNS请求才成功收到响应。
+- 通过 `nsenter` 进入 pod netns，使用节点上的 tcpdump 抓 pod 中的包 (抓包方法参考[这里](https://imroc.io/kubernetes-practice-guide/zh/troubleshooting/debug-skill/capture-packets-in-container))，发现是有的 DNS 请求没有收到响应，超时 5 秒后，再次发送 DNS 请求才成功收到响应。
+- 在 kube-dns pod 抓包，发现是有 DNS 请求没有到达 kube-dns pod，在中途被丢弃了。
 
-在kube-dns pod抓包，发现是有DNS请求没有到达kube-dns pod， 在中途被丢弃了。
+为什么是 5 秒？ `man resolv.conf` 可以看到 glibc 的 resolver 的缺省超时时间是 5s:
 
-为什么是5秒？ `man resolv.conf`可以看到glibc的resolver的缺省超时时间是5s。
+``` txt
+timeout:n
+       Sets the amount of time the resolver will wait for a response from a remote name server before retrying the query via a different name server.  Measured in seconds, the default is RES_TIMEOUT (currently  5,  see
+       <resolv.h>).  The value for this option is silently capped to 30.
+```
 
 ## 丢包原因
 
 经过搜索发现这是一个普遍问题。
-根本原因是内核conntrack模块的bug，netfilter做NAT时可能发生资源竞争导致部分报文丢弃。
 
-Weave works的工程师[Martynas Pumputis](martynas@weave.works)对这个问题做了很详细的分析：
-https://www.weave.works/blog/racy-conntrack-and-dns-lookup-timeouts
+根本原因是内核 conntrack 模块的 bug，netfilter 做 NAT 时可能发生资源竞争导致部分报文丢弃。
+
+Weave works的工程师 [Martynas Pumputis](martynas@weave.works) 对这个问题做了很详细的分析：[Racy conntrack and DNS lookup timeouts](https://www.weave.works/blog/racy-conntrack-and-dns-lookup-timeouts)
 
 相关结论：
-- 只有多个线程或进程，并发从同一个socket发送相同五元组的UDP报文时，才有一定概率会发生
-- glibc, musl(alpine linux的libc库)都使用"parallel query", 就是并发发出多个查询请求，因此很容易碰到这样的冲突，造成查询请求被丢弃
-- 由于ipvs也使用了conntrack, 使用kube-proxy的ipvs模式，并不能避免这个问题
+
+- 只有多个线程或进程，并发从同一个 socket 发送相同五元组的 UDP 报文时，才有一定概率会发生
+- glibc, musl(alpine linux的libc库)都使用 "parallel query", 就是并发发出多个查询请求，因此很容易碰到这样的冲突，造成查询请求被丢弃
+- 由于 ipvs 也使用了 conntrack, 使用 kube-proxy 的 ipvs 模式，并不能避免这个问题
 
 ## 问题的根本解决
 
-Martynas向内核提交了两个patch来fix这个问题，不过他说如果集群中有多个DNS server的情况下，问题并没有完全解决。
+Martynas 向内核提交了两个 patch 来 fix 这个问题，不过他说如果集群中有多个DNS server的情况下，问题并没有完全解决。
 
-其中一个patch已经在2018-7-18被合并到linux内核主线中: [netfilter: nf_conntrack: resolve clash for matching conntracks](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ed07d9a021df6da53456663a76999189badc432a)
+其中一个 patch 已经在 2018-7-18 被合并到 linux 内核主线中: [netfilter: nf_conntrack: resolve clash for matching conntracks](https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=ed07d9a021df6da53456663a76999189badc432a)
 
 目前只有4.19.rc 版本包含这个patch。
 
 ## 规避办法
 
-#### 规避方案一：使用TCP发送DNS请求
+### 规避方案一：使用TCP发送DNS请求
 
 由于TCP没有这个问题，有人提出可以在容器的resolv.conf中增加`options use-vc`, 强制glibc使用TCP协议发送DNS query。下面是这个man resolv.conf中关于这个选项的说明：
 
@@ -47,9 +53,9 @@ use-vc (since glibc 2.14)
 
 笔者使用镜像"busybox:1.29.3-glibc" (libc 2.24)  做了试验，并没有见到这样的效果，容器仍然是通过UDP发送DNS请求。
 
-#### 规避方案二：避免相同五元组DNS请求的并发
+### 规避方案二：避免相同五元组DNS请求的并发
 
-resolv.conf还有另外两个相关的参数： 
+resolv.conf还有另外两个相关的参数：
 
 - single-request-reopen (since glibc 2.9)
 - single-request (since glibc 2.10)
@@ -77,21 +83,16 @@ single-request (since glibc 2.10)
                      cost of some slowdown of the resolving process).
 ```
 
-笔者做了试验，发现效果是这样的：
+用自己的话解释下：
 
-- single-request-reopen
+- `single-request-reopen`: 发送 A 类型请求和 AAAA 类型请求使用不同的源端口，这样两个请求在 conntrack 表中不占用同一个表项，从而避免冲突
+- `single-request`: 避免并发，改为串行发送 A 类型和 AAAA 类型请求，没有了并发，从而也避免了冲突
 
-发送A类型请求和AAAA类型请求使用不同的源端口。这样两个请求在conntrack表中不占用同一个表项，从而避免冲突。
+要给容器的 `resolv.conf` 加上 options 参数，有几个办法：
 
-- single-request
+##### 1) 在容器的 "ENTRYPOINT" 或者 "CMD" 脚本中，执行 `/bin/echo 'options single-request-reopen' >> /etc/resolv.conf`
 
-避免并发，改为串行发送A类型和AAAA类型请求。没有了并发，从而也避免了冲突。
-
-要给容器的resolv.conf加上options参数，有几个办法：
-
-##### 1) 在容器的"ENTRYPOINT"或者"CMD"脚本中，执行`/bin/echo 'options single-request-reopen' >> /etc/resolv.conf`
-
-##### 2) 在pod的postStart hook中：
+##### 2) 在 pod 的 postStart hook 中:
 
 ``` yaml
         lifecycle:
@@ -103,7 +104,7 @@ single-request (since glibc 2.10)
               - "/bin/echo 'options single-request-reopen' >> /etc/resolv.conf"
 ```
 
-##### 3) 使用template.spec.dnsConfig (k8s v1.9 及以上才支持):
+##### 3) 使用 `template.spec.dnsConfig` (k8s v1.9 及以上才支持):
 
 ``` yaml
   template:
@@ -113,7 +114,7 @@ single-request (since glibc 2.10)
           - name: single-request-reopen
 ```
 
-##### 4) 使用ConfigMap覆盖POD里面的/etc/resolv.conf
+##### 4) 使用 ConfigMap 覆盖 pod 里面的 `/etc/resolv.conf`:
 
 configmap:
 
@@ -129,7 +130,7 @@ metadata:
   name: resolvconf
 ```
 
-POD spec:
+pod spec:
 
 ``` yaml
         volumeMounts:
@@ -147,10 +148,10 @@ POD spec:
             path: resolv.conf
 ```
 
-##### 5) 使用MutatingAdmissionWebhook
+##### 5) 使用 MutatingAdmissionWebhook
 
-[MutatingAdmissionWebhook](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#mutatingadmissionwebhook-beta-in-1-9) 是1.9引入的Controller，用于对一个指定的Resource的操作之前，对这个resource进行变更。
-istio的自动sidecar注入就是用这个功能来实现的。 我们也可以通过MutatingAdmissionWebhook，来自动给所有POD，注入以上3)或者4)所需要的相关内容。
+[MutatingAdmissionWebhook](https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/#mutatingadmissionwebhook-beta-in-1-9) 是 1.9 引入的 Controller，用于对一个指定的 Resource 的操作之前，对这个 resource 进行变更。
+istio 的自动 sidecar注入就是用这个功能来实现的。 我们也可以通过 MutatingAdmissionWebhook，来自动给所有POD，注入以上3)或者4)所需要的相关内容。
 
 ---
 
@@ -168,11 +169,11 @@ istio的自动sidecar注入就是用这个功能来实现的。 我们也可以�
 使用本地DNS缓存有两种方式：
 
 - 每个容器自带一个DNS缓存服务
-- 每个节点运行一个DNS缓存服务，所有容器都把本节点的DNS缓存作为自己的nameserver
+- 每个节点运行一个DNS缓存服务，所有容器都把本节点的DNS缓存作为自己的 nameserver
 
-从资源效率的角度来考虑的话，推荐后一种方式。
+从资源效率的角度来考虑的话，推荐后一种方式。官方也意识到了这个问题比较常见，给出了 coredns 以 cache 模式作为 daemonset 部署的解决方案: https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/
 
-##### 实施办法
+#### 实施办法
 
 条条大路通罗马，不管怎么做，最终到达上面描述的效果即可。
 
