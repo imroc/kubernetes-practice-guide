@@ -15,6 +15,7 @@
   - [Pod 一直 ContainerCreating](troubleshooting/pod/pod-containercreating-forever.md)
   - [Pod 一直 Terminating](troubleshooting/pod/pod-terminating-forever.md)
   - [Pod 无法被 exec 和 logs](troubleshooting/pod/pod-cannot-exec-or-logs.md)
+- [Job 无法被删除](troubleshooting/cannot-delete-job.md)
 - [节点问题]()
   - [节点 NotReady](troubleshooting/node/node-notready.md)
   - [no space left on device](troubleshooting/node/no-space-left-on-device.md)
@@ -38,8 +39,10 @@
 
 - [解决方案]()
   - [泛域名动态 Service 转发解决方案](solution/wildcard-domain-forward.md)
-  - [优雅热更新](solution/kubernetes-best-practice-grace-update.md)
+  - [优雅热更新](solution/kubernetes-grace-update.md)
   - [解决长连接服务扩容失效](solution/scale-keepalive-service.md)
+  - [TODO:处理容器磁盘被写满](solution/handle-disk-full.md)
   - [TODO:Pod 原地升级]()
   - [TODO:Pod 固定 IP]()
-  
+- [奇淫技巧]()
+  - [kubectl 高效技巧](trick/efficient-kubectl.md)
