@@ -25,6 +25,7 @@
   - [驱逐导致服务中断](troubleshooting/node/eviction-leads-to-service-disruption.md)
 - [Master 问题]()
   - [TODO:apiserver 响应慢]()
+  - [TODO:ETCD频繁选主]()
 - [网络问题]()
   - [Service 访问不通](troubleshooting/network/service-unreachable.md)
   - [Service 无法解析](troubleshooting/network/service-cannot-resolve.md)
@@ -51,6 +52,12 @@
 - [TODO:使用 MetalLB 创建负载均衡器]()
 - [TODO:Pod 原地升级]()
 - [TODO:Pod 固定 IP]()
+
+## K8S 配置管理
+
+- [Helm]()
+  - [安装 Helm](configuration-management/helm/install-helm.md)
+- [TODO:Kustomize]()
 
 ## 奇淫技巧
 
@@ -129,11 +136,6 @@
 - [TODO:Knative]()
 - [TODO:Kubeless]()
 - [TODO:Fission]()
-
-## K8S 配置管理
-
-- [TODO:Helm]()
-- [TODO:Kustomize]()
 
 ## CI/CD
 
