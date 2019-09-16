@@ -47,12 +47,64 @@
 - [优雅热更新](solution/kubernetes-grace-update.md)
 - [解决长连接服务扩容失效](solution/scale-keepalive-service.md)
 - [TODO:处理容器磁盘被写满](solution/handle-disk-full.md)
+- [TODO:集群权限控制]()
+- [TODO:使用 MetalLB 创建负载均衡器]()
 - [TODO:Pod 原地升级]()
 - [TODO:Pod 固定 IP]()
 
 ## 奇淫技巧
 
 - [kubectl 高效技巧](trick/efficient-kubectl.md)
+
+## Kubernetes 部署
+
+- [TODO:二进制部署]()
+- [TODO:使用 Kubeadm 部署]()
+- [TODO:使用 Minikube 部署]()
+- [TODO:使用 Bootkube 部署]()
+- [TODO:使用 Ansible 部署]()
+
+## K8S 管理工具
+
+- [TODO:Rancher]()
+- [TODO:Weave Scope]()
+- [TODO:Kui]()
+- [TODO:Kubernetes Dashboard]()
+- [TODO:Kubetail]()
+- [TODO:Kubebox]()
+
+## 运行时
+
+- [TODO:Docker]()
+- [TODO:Containerd]()
+- [TODO:CRI-O]()
+
+## 服务发现
+
+- [TODO:ETCD]()
+- [TODO:Zookeeper]()
+- [TODO:Consul]()
+
+## 存储
+
+- [TODO:Rook]()
+- [TODO:TiKV]()
+- [TODO:ETCD]()
+- [TODO:Zookeeper]()
+- [TODO:Cassandra]()
+- [TODO:MySQL]()
+- [TODO:TiDB]()
+- [TODO:PostgreSQL]()
+- [TODO:Elasticsearch]()
+- [TODO:MongoDB]()
+- [TODO:InfluxDB]()
+- [TODO:OpenTSDB]()
+
+## 监控
+
+- [TODO:Prometheus]()
+- [TODO:Grafana]()
+- [TODO:Jaeger]()
 
 ## Ingress
 
@@ -75,11 +127,27 @@
 ## Serverless
 
 - [TODO:Knative]()
+- [TODO:Kubeless]()
+- [TODO:Fission]()
 
 ## K8S 配置管理
 
 - [TODO:Helm]()
 - [TODO:Kustomize]()
+
+## CI/CD
+
+- [TODO:Jenkins X]()
+- [TODO:Tekton]()
+- [TODO:Argo]()
+- [TODO:GoCD]()
+
+## 镜像相关
+
+- [TODO:Harbor]()
+- [TODO:Dragonfly]()
+- [TODO:Kaniko]()
+- [TODO:kpack]()
 
 ## 网络方案
 
