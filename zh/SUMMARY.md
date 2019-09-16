@@ -41,7 +41,7 @@
   - [arp_cache: neighbor table overflow!](troubleshooting/kernel/arp_cache-neighbor-table-overflow.md)
   - [TODO: cgroup oom 导致内核 crash]()
 
-## 解决方案
+## 最佳实践
 
 - [泛域名动态 Service 转发解决方案](solution/wildcard-domain-forward.md)
 - [优雅热更新](solution/kubernetes-grace-update.md)
@@ -67,13 +67,16 @@
 - [TODO:Skipper]()
 
 ## Service Mesh
+
 - [TODO:Istio]()
 - [TODO:Maesh]()
 - [TODO:Kuma]()
 
 ## Serverless
+
 - [TODO:Knative]()
 
 ## K8S 配置管理
+
 - [TODO:Helm]()
 - [TODO:Kustomize]()
