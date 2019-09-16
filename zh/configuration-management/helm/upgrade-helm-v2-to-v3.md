@@ -1,6 +1,6 @@
 # Helm V2 迁移到 V3
 
-Helm V3 与 V2 版本架构变化较大，数据迁移比较麻烦，官方提供了一个名为 `helm-2to3` 的插件来简化迁移工作，本文将介绍如何利用此插件迁移 Helm V2 到 V3 版本。这里前提是 Helm V3 已安装，安装方法请参考 [这里](http://localhost:4000/zh/configuration-management/helm/install-helm.html#%E5%AE%89%E8%A3%85-helm-v3)。
+Helm V3 与 V2 版本架构变化较大，数据迁移比较麻烦，官方提供了一个名为 `helm-2to3` 的插件来简化迁移工作，本文将介绍如何利用此插件迁移 Helm V2 到 V3 版本。这里前提是 Helm V3 已安装，安装方法请参考 [这里](install-helm.html#%E5%AE%89%E8%A3%85-helm-v3)。
 
 ## 安装 2to3 插件
 
