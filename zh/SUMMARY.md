@@ -49,6 +49,7 @@
 - [优雅热更新](best-practice/kubernetes-grace-update.md)
 - [解决长连接服务扩容失效](best-practice/scale-keepalive-service.md)
 - [kubectl 高效技巧](best-practice/efficient-kubectl.md)
+- [使用 oom-guard 在用户态处理 cgroup OOM](best-practice/handle-cgroup-oom-with-oom-guard-in-userspace.md)
 - [TODO:处理容器磁盘被写满](best-practice/handle-disk-full.md)
 - [TODO:集群权限控制]()
 - [TODO:使用 MetalLB 创建负载均衡器]()
