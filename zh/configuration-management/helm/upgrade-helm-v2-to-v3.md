@@ -130,7 +130,7 @@ NAME 	NAMESPACE	REVISION	UPDATED                                	STATUS  	CHART
 redis	default  	1       	2019-09-16 06:46:58.541391356 +0000 UTC	deployed	redis-9.1.3
 ```
 
-- helm3 的 release 区分了命名空间，带上 `-a` 参数展示所有命名空间的 release
+- helm 3 的 release 区分了命名空间，带上 `-a` 参数展示所有命名空间的 release
 
 ## 参考资料
 

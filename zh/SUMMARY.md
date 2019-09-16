@@ -15,6 +15,7 @@
   - [Pod 一直 ContainerCreating](troubleshooting/pod/pod-containercreating-forever.md)
   - [Pod 一直 Terminating](troubleshooting/pod/pod-terminating-forever.md)
   - [Pod 无法被 exec 和 logs](troubleshooting/pod/pod-cannot-exec-or-logs.md)
+  - [TODO:Pod Terminating 慢](troubleshooting/pod/slow-pod-terminating.md)
 - [Job 无法被删除](troubleshooting/cannot-delete-job.md)
 - [节点问题]()
   - [节点 NotReady](troubleshooting/node/node-notready.md)
@@ -44,11 +45,11 @@
 
 ## 最佳实践
 
-- [泛域名动态 Service 转发解决方案](solution/wildcard-domain-forward.md)
-- [优雅热更新](solution/kubernetes-grace-update.md)
-- [解决长连接服务扩容失效](solution/scale-keepalive-service.md)
-- [kubectl 高效技巧](trick/efficient-kubectl.md)
-- [TODO:处理容器磁盘被写满](solution/handle-disk-full.md)
+- [泛域名动态 Service 转发解决方案](best-practice/wildcard-domain-forward.md)
+- [优雅热更新](best-practice/kubernetes-grace-update.md)
+- [解决长连接服务扩容失效](best-practice/scale-keepalive-service.md)
+- [kubectl 高效技巧](best-practice/efficient-kubectl.md)
+- [TODO:处理容器磁盘被写满](best-practice/handle-disk-full.md)
 - [TODO:集群权限控制]()
 - [TODO:使用 MetalLB 创建负载均衡器]()
 - [TODO:Pod 原地升级]()
@@ -59,7 +60,6 @@
 - [Helm]()
   - [安装 Helm](configuration-management/helm/install-helm.md)
   - [Helm V2 迁移到 V3](configuration-management/helm/upgrade-helm-v2-to-v3.md)
-  
 - [TODO:Kustomize]()
 
 ## Kubernetes 部署
