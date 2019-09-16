@@ -47,6 +47,7 @@
 - [泛域名动态 Service 转发解决方案](solution/wildcard-domain-forward.md)
 - [优雅热更新](solution/kubernetes-grace-update.md)
 - [解决长连接服务扩容失效](solution/scale-keepalive-service.md)
+- [kubectl 高效技巧](trick/efficient-kubectl.md)
 - [TODO:处理容器磁盘被写满](solution/handle-disk-full.md)
 - [TODO:集群权限控制]()
 - [TODO:使用 MetalLB 创建负载均衡器]()
@@ -57,11 +58,9 @@
 
 - [Helm]()
   - [安装 Helm](configuration-management/helm/install-helm.md)
+  - [Helm V2 迁移到 V3](configuration-management/helm/upgrade-helm-v2-to-v3.md)
+  
 - [TODO:Kustomize]()
-
-## 奇淫技巧
-
-- [kubectl 高效技巧](trick/efficient-kubectl.md)
 
 ## Kubernetes 部署
 
