@@ -95,7 +95,6 @@ roleRef:
   kind: Role
   name: istio-system
   apiGroup: rbac.authorization.k8s.io
-
 ```
 
 给 roc 授权整个集群的只读权限:

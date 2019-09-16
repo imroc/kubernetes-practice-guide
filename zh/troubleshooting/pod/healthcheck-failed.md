@@ -21,3 +21,15 @@ TODO
 ## 容器进程被木马进程杀死
 
 TODO
+
+## 容器内进程端口监听挂掉
+
+使用 `netstat -tunlp` 检查端口监听是否还在，如果不在了会直接 reset 掉健康检查探测的连接:
+``` bash
+20:15:17.890996 IP 172.16.2.1.38074 > 172.16.2.23.8888: Flags [S], seq 96880261, win 14600, options [mss 1424,nop,nop,sackOK,nop,wscale 7], length 0
+20:15:17.891021 IP 172.16.2.23.8888 > 172.16.2.1.38074: Flags [R.], seq 0, ack 96880262, win 0, length 0
+20:15:17.906744 IP 10.0.0.16.54132 > 172.16.2.23.8888: Flags [S], seq 1207014342, win 14600, options [mss 1424,nop,nop,sackOK,nop,wscale 7], length 0
+20:15:17.906766 IP 172.16.2.23.8888 > 10.0.0.16.54132: Flags [R.], seq 0, ack 1207014343, win 0, length 0
+```
+
+连接异常，从而健康检查失败
