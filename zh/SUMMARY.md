@@ -41,25 +41,37 @@
   - [arp_cache: neighbor table overflow!](troubleshooting/kernel/arp_cache-neighbor-table-overflow.md)
   - [TODO: cgroup oom 导致内核 crash]()
 
-## 生产实践
+## 解决方案
 
-- [解决方案]()
-  - [泛域名动态 Service 转发解决方案](solution/wildcard-domain-forward.md)
-  - [优雅热更新](solution/kubernetes-grace-update.md)
-  - [解决长连接服务扩容失效](solution/scale-keepalive-service.md)
-  - [TODO:处理容器磁盘被写满](solution/handle-disk-full.md)
-  - [TODO:Pod 原地升级]()
-  - [TODO:Pod 固定 IP]()
-- [奇淫技巧]()
-  - [kubectl 高效技巧](trick/efficient-kubectl.md)
-- [Ingress Controller]()
-  - [TODO:Nginx Ingress Controller]()
+- [泛域名动态 Service 转发解决方案](solution/wildcard-domain-forward.md)
+- [优雅热更新](solution/kubernetes-grace-update.md)
+- [解决长连接服务扩容失效](solution/scale-keepalive-service.md)
+- [TODO:处理容器磁盘被写满](solution/handle-disk-full.md)
+- [TODO:Pod 原地升级]()
+- [TODO:Pod 固定 IP]()
+
+## 奇淫技巧
+
+- [kubectl 高效技巧](trick/efficient-kubectl.md)
+
+## 使用实践
+
+- [Ingress]()
+  - [TODO:Nginx]()
   - [TODO:Traefik]()
   - [TODO:Envoy]()
   - [TODO:Kong]()
+  - [TODO:Gloo]()
+  - [TODO:Contour]()
+  - [TODO:Ambassador]()
+  - [TODO:HAProxy]()
+  - [TODO:Skipper]()
 - [Service Mesh]()
   - [TODO:Istio]()
   - [TODO:Maesh]()
   - [TODO:Kuma]()
 - [Serverless]()
   - [TODO:Knative]()
+- [K8S 配置管理]
+  - [TODO:Helm]()
+  - [TODO:Kustomize]()
