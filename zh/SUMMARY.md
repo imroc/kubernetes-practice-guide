@@ -55,6 +55,8 @@
 - [TODO:使用 MetalLB 创建负载均衡器]()
 - [TODO:Pod 原地升级]()
 - [TODO:Pod 固定 IP]()
+- [TODO:使用 lxcfs 隔离 /proc]()
+- [TODO:容器磁盘隔离]()
 
 ## K8S 配置管理
 
