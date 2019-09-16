@@ -145,6 +145,7 @@
 - [TODO:Tekton]()
 - [TODO:Argo]()
 - [TODO:GoCD]()
+- [TODO:GitLab CI]()
 
 ## 镜像相关
 
