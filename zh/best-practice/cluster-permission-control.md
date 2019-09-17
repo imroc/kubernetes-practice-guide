@@ -110,24 +110,24 @@ metadata:
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: admin
+  name: readonly
 rules:
   - apiGroups: ["*"]
     resources: ["*"]
-    verbs: ["*"]
+    verbs: ["get", "list"]
 
 ---
 kind: ClusterRoleBinding
 apiVersion: rbac.authorization.k8s.io/v1beta1
 metadata:
-  name: admin-to-roc
+  name: readonly-to-roc
 subjects:
   - kind: ServiceAccount
     name: roc
     namespace: kube-system
 roleRef:
   kind: ClusterRole
-  name: admin
+  name: readonly
   apiGroup: rbac.authorization.k8s.io
 ```
 
