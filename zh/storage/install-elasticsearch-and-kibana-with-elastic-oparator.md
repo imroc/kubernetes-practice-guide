@@ -1,6 +1,9 @@
 # 使用 elastic-oparator 部署 Elasticsearch 和 Kibana
 
-参考官方文档: https://www.elastic.co/cn/elasticsearch-kubernetes
+参考官方文档:
+
+- https://www.elastic.co/cn/elasticsearch-kubernetes
+- https://www.elastic.co/cn/blog/introducing-elastic-cloud-on-kubernetes-the-elasticsearch-operator-and-beyond
 
 ## 安装 elastic-operator
 
