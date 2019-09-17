@@ -96,6 +96,8 @@
 
 ## 存储
 
+- [ElasticSearch]()
+  - [使用 elastic-oparator 部署 Elasticsearch 和 Kibana](storage/install-elasticsearch-and-kibana-with-elastic-oparator.md)
 - [TODO:Rook]()
 - [TODO:TiKV]()
 - [TODO:ETCD]()
@@ -104,7 +106,6 @@
 - [TODO:MySQL]()
 - [TODO:TiDB]()
 - [TODO:PostgreSQL]()
-- [TODO:Elasticsearch]()
 - [TODO:MongoDB]()
 - [TODO:InfluxDB]()
 - [TODO:OpenTSDB]()
