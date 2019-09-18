@@ -24,6 +24,12 @@
   - [内存碎片化](troubleshooting/node/memory-fragmentation.md)
   - [节点高负载](troubleshooting/node/high-load-on-node.md)
   - [驱逐导致服务中断](troubleshooting/node/eviction-leads-to-service-disruption.md)
+  - [cgroup 泄露](troubleshooting/node/cgroup-leaking.md)
+  - [inotify watch 耗尽](troubleshooting/node/runnig-out-of-inotify-watches.md)
+  - [tcp_tw_recycle 导致在 NAT 环境会丢包](troubleshooting/node/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.md)
+  - [arp_cache: neighbor table overflow!](troubleshooting/node/arp_cache-neighbor-table-overflow.md)
+  - [Cannot allocate memory](troubleshooting/node/cannot-allocate-memory.md)
+  - [TODO: cgroup oom 导致内核 crash]()
 - [Master 问题]()
   - [TODO:apiserver 响应慢]()
   - [TODO:ETCD频繁选主]()
@@ -36,13 +42,6 @@
   - [TODO:Pod 无法访问集群外的内网服务]()
 - [Docker 问题]()
   - [TODO:容器内无法 mount]()
-- [内核问题]()
-  - [cgroup 泄露](troubleshooting/kernel/cgroup-leaking.md)
-  - [inotify watch 耗尽](troubleshooting/kernel/runnig-out-of-inotify-watches.md)
-  - [tcp_tw_recycle 导致在 NAT 环境会丢包](troubleshooting/kernel/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.md)
-  - [arp_cache: neighbor table overflow!](troubleshooting/kernel/arp_cache-neighbor-table-overflow.md)
-  - [Cannot allocate memory](troubleshooting/kernel/cannot-allocate-memory.md)
-  - [TODO: cgroup oom 导致内核 crash]()
 
 ## 最佳实践
 
