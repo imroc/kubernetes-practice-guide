@@ -41,6 +41,7 @@
   - [inotify watch 耗尽](troubleshooting/kernel/runnig-out-of-inotify-watches.md)
   - [tcp_tw_recycle 导致在 NAT 环境会丢包](troubleshooting/kernel/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.md)
   - [arp_cache: neighbor table overflow!](troubleshooting/kernel/arp_cache-neighbor-table-overflow.md)
+  - [Cannot allocate memory](troubleshooting/kernel/cannot-allocate-memory.md)
   - [TODO: cgroup oom 导致内核 crash]()
 
 ## 最佳实践
@@ -64,6 +65,10 @@
   - [安装 Helm](configuration-management/helm/install-helm.md)
   - [Helm V2 迁移到 V3](configuration-management/helm/upgrade-helm-v2-to-v3.md)
 - [TODO:Kustomize]()
+
+## 安全
+- [cert-manager]
+  - [安装 cert-manager](security/cert-manager/install-cert-manger.md)
 
 ## Kubernetes 部署
 
