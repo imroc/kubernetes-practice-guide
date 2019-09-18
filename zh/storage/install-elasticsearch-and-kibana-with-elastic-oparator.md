@@ -15,10 +15,10 @@ kubectl apply -f https://download.elastic.co/downloads/eck/0.9.0/all-in-one.yaml
 
 ## 部署 Elasticsearch
 
-准备一个命名空间用来部署 elasticsearch，这里我们使用 `es` 命名空间:
+准备一个命名空间用来部署 elasticsearch，这里我们使用 `monitoring` 命名空间:
 
 ``` bash
-kubectl create ns es
+kubectl create ns monitoring
 ```
 
 创建 CRD 资源部署 Elasticsearch，最简单的部署:
@@ -29,7 +29,7 @@ apiVersion: elasticsearch.k8s.elastic.co/v1alpha1
 kind: Elasticsearch
 metadata:
   name: es
-  namespace: es
+  namespace: monitoring
 spec:
   version: 7.2.0
   nodes:
@@ -49,7 +49,7 @@ apiVersion: elasticsearch.k8s.elastic.co/v1alpha1
 kind: Elasticsearch
 metadata:
   name: es
-  namespace: es
+  namespace: monitoring
 spec:
   version: 7.2.0
   nodes:
@@ -113,21 +113,22 @@ EOF
 - `node.master` 为 true 表示是 master 节点
 - 可根据需求调整 `nodeCount` (副本数量) 和 `storage` (数据磁盘容量)
 - 反亲和性的 `labelSelector.matchExpressions.values` 中写 elasticsearch 集群名称，更改集群名称时记得这里要也改下
+- 强制开启 ssl 不允许关闭: https://github.com/elastic/cloud-on-k8s/blob/576f07faaff4393f9fb247e58b87517f99b08ebd///pkg/controller/elasticsearch/settings/fields.go#L51
 
 查看部署状态:
 
 ``` bash
-$ kubectl -n es get es
+$ kubectl -n monitoring get es
 NAME   HEALTH   NODES   VERSION   PHASE         AGE
 es     green    3       7.2.0     Operational   3m
 $
-$ kubectl -n es get pod -o wide
+$ kubectl -n monitoring get pod -o wide
 NAME                         READY   STATUS    RESTARTS   AGE    IP            NODE        NOMINATED NODE
 es-es-c7pwnt5kz8             1/1     Running   0          4m3s   172.16.4.6    10.0.0.24   <none>
 es-es-qpk7kkpdxh             1/1     Running   0          4m3s   172.16.5.6    10.0.0.48   <none>
 es-es-vl56nv78hd             1/1     Running   0          4m3s   172.16.3.9    10.0.0.32   <none>
 $
-$ kubectl -n es get svc
+$ kubectl -n monitoring get svc
 NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
 es-es-http       ClusterIP   172.16.15.74   <none>        9200/TCP   7m3s
 ```
@@ -135,7 +136,7 @@ es-es-http       ClusterIP   172.16.15.74   <none>        9200/TCP   7m3s
 elasticsearch 的默认用户名是 elastic，获取密码:
 
 ``` bash
-$ kubectl -n es get secret es-es-elastic-user -o jsonpath='{.data.elastic}' | base64 -d
+$ kubectl -n monitoring get secret es-es-elastic-user -o jsonpath='{.data.elastic}' | base64 -d
 rhd6jdw9brbj69d49k46px9j
 ```
 
@@ -148,13 +149,16 @@ rhd6jdw9brbj69d49k46px9j
 
 还可以再部署一个 Kibana 集群作为 UI:
 
+  config:
+    server.ssl.enabled: false
+  http.tls.selfSignedCertificate.disabled: true
 ``` bash
 cat <<EOF | kubectl apply -f -
 apiVersion: kibana.k8s.elastic.co/v1alpha1
 kind: Kibana
 metadata:
   name: kibana
-  namespace: es
+  namespace: monitoring
 spec:
   version: 7.2.0
   nodeCount: 2
@@ -172,7 +176,7 @@ spec:
             topologyKey: kubernetes.io/hostname
   elasticsearchRef:
     name: es
-    namespace: es
+    namespace: monitoring
 EOF
 ```
 
@@ -183,16 +187,16 @@ EOF
 查看部署状态:
 
 ``` bash
-$ kubectl -n es get kb
+$ kubectl -n monitoring get kb
 NAME     HEALTH   NODES   VERSION   AGE
 kibana   green    2       7.2.0     3m
 $
-$ kubectl -n es get pod -o wide
+$ kubectl -n monitoring get pod -o wide
 NAME                         READY   STATUS    RESTARTS   AGE    IP            NODE        NOMINATED NODE
 kibana-kb-58dc8994bf-224bl   1/1     Running   0          93s    172.16.0.92   10.0.0.3    <none>
 kibana-kb-58dc8994bf-nchqt   1/1     Running   0          93s    172.16.3.10   10.0.0.32   <none>
 $
-$ kubectl -n es get svc
+$ kubectl -n monitoring get svc
 NAME             TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
 kibana-kb-http   ClusterIP   172.16.8.71    <none>        5601/TCP   4m35s
 ```
@@ -205,7 +209,7 @@ kibana-kb-http   ClusterIP   172.16.8.71    <none>        5601/TCP   4m35s
 先看下当前 kibana 的 service:
 
 ``` bash
-$ kubectl -n es get svc -o yaml kibana-kb-http
+$ kubectl -n monitoring get svc -o yaml kibana-kb-http
 apiVersion: v1
 kind: Service
 metadata:
@@ -214,7 +218,7 @@ metadata:
     common.k8s.elastic.co/type: kibana
     kibana.k8s.elastic.co/name: kibana
   name: kibana-kb-http
-  namespace: es
+  namespace: monitoring
   ownerReferences:
   - apiVersion: kibana.k8s.elastic.co/v1alpha1
     blockOwnerDeletion: true
@@ -223,7 +227,7 @@ metadata:
     name: kibana
     uid: 54fd304b-d92c-11e9-89f7-be8690a7fdcf
   resourceVersion: "5668802758"
-  selfLink: /api/v1/namespaces/es/services/kibana-kb-http
+  selfLink: /api/v1/namespaces/monitoring/services/kibana-kb-http
   uid: 55a1198f-d92c-11e9-89f7-be8690a7fdcf
 spec:
   clusterIP: 172.16.8.71
@@ -248,7 +252,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: kibana
-  namespace: es
+  namespace: monitoring
 spec:
   ports:
   - port: 443
@@ -264,10 +268,12 @@ EOF
 拿到负载均衡器的 IP 地址:
 
 ``` bash
-$ kubectl -n es get svc
+$ kubectl -n monitoring get svc
 NAME             TYPE           CLUSTER-IP     EXTERNAL-IP     PORT(S)         AGE
 kibana           LoadBalancer   172.16.10.71   150.109.27.60   443:32749/TCP   47s
 kibana-kb-http   ClusterIP      172.16.15.39   <none>          5601/TCP        118s
 ```
 
-在浏览器访问: https://150.109.27.60:443，输入之前部署 elasticsearch 的用户名密码登录
+在浏览器访问: https://150.109.27.60:443
+
+输入之前部署 elasticsearch 的用户名密码进行登录
