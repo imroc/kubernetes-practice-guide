@@ -28,6 +28,8 @@ kubectl -n cert-manager create secret generic cloudflare-apikey --from-literal=a
 
 下面来创建 `ClusterIssuer`:
 
+    - http01: # Enable the HTTP-01 challenge provider
+        ingress: {}
 ``` bash
 cat <<EOF | kubectl apply -f -
 apiVersion: certmanager.k8s.io/v1alpha1
@@ -36,19 +38,24 @@ metadata:
   name: letsencrypt-prod
 spec:
   acme:
+    # The ACME server URL
     server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
     email: roc@imroc.io
+    # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
       name: letsencrypt-prod
-    solvers:
-    - http01:
-        ingress: {}
-      dns01:
-        cloudflare:
-          apiKeySecretRef:
-            name: cloudflare-apikey
-            key: apikey
-          email: roc@imroc.io
+    # ACME DNS-01 provider configurations
+    dns01:
+      # Here we define a list of DNS-01 providers that can solve DNS challenges
+      providers:
+        - name: cf-dns
+          cloudflare:
+            email: roc@imroc.io
+            # A secretKeyRef to a cloudflare api key
+            apiKeySecretRef:
+              name: cloudflare-apikey
+              key: apikey
 EOF
 ```
 
@@ -74,7 +81,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: dashboard
-  namespace: kube-system
+  namespace: kubernetes-dashboard
 spec:
   rules:
   - host: dashboard.imroc.io
@@ -103,7 +110,7 @@ apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
   name: dashboard-imroc-io
-  namespace: kube-system
+  namespace: kubernetes-dashboard
 spec:
   secretName: dashboard-imroc-io-tls
   issuerRef:
@@ -136,9 +143,9 @@ apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
   name: dashboard-imroc-io
-  namespace: kube-system
+  namespace: kubernetes-dashboard
 spec:
-  secretName: dashboard-imroc-io-tls
+  secretName: kubernetes-dashboard-certs
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer
@@ -147,10 +154,57 @@ spec:
   acme:
     config:
     - dns01:
-        provider: cloudflare
+        provider: cf-dns
       domains:
       - dashboard.imroc.io
 EOF
 ```
 
+#### 检查结果
+
 创建完成等待一段时间，校验成功颁发证书后会将证书信息写入 Certificate 所在命名空间的 `secretName` 指定的 Secret 中，其它应用需要证书就可以直接挂载该 Secret 了。
+
+``` txt
+Events:
+  Type    Reason              Age   From          Message
+  ----    ------              ----  ----          -------
+  Normal  Generated           15s   cert-manager  Generated new private key
+  Normal  GenerateSelfSigned  15s   cert-manager  Generated temporary self signed certificate
+  Normal  OrderCreated        15s   cert-manager  Created Order resource "dashboard-imroc-io-780134401"
+  Normal  OrderComplete       9s    cert-manager  Order "dashboard-imroc-io-780134401" completed successfully
+  Normal  CertIssued          9s    cert-manager  Certificate issued successfully
+```
+
+看下我们的证书是否成功生成:
+
+``` bash
+kubectl -n dashboard get secret kubernetes-dashboard-certs -o yaml
+apiVersion: v1
+data:
+  ca.crt: null
+  tls.crt: LS0***0tLQo=
+  tls.key: LS0***0tCg==
+kind: Secret
+metadata:
+  annotations:
+    certmanager.k8s.io/alt-names: dashboard.imroc.io
+    certmanager.k8s.io/certificate-name: dashboard-imroc-io
+    certmanager.k8s.io/common-name: dashboard.imroc.io
+    certmanager.k8s.io/ip-sans: ""
+    certmanager.k8s.io/issuer-kind: ClusterIssuer
+    certmanager.k8s.io/issuer-name: letsencrypt-prod
+  creationTimestamp: 2019-09-19T13:53:55Z
+  labels:
+    certmanager.k8s.io/certificate-name: dashboard-imroc-io
+  name: kubernetes-dashboard-certs
+  namespace: dashboard
+  resourceVersion: "5689447213"
+  selfLink: /api/v1/namespaces/dashboard/secrets/kubernetes-dashboard-certs
+  uid: ebfc4aec-dae4-11e9-89f7-be8690a7fdcf
+type: kubernetes.io/tls
+```
+
+- `tls.crt` 就是颁发的证书
+- `tls.key` 是证书密钥
+
+将 secret 挂载到需要证书的应用，通常应用也要配置下证书路径。
