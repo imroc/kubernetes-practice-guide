@@ -9,3 +9,5 @@ _book
 *.epub
 *.mobi
 *.pdf
+
+node_modules
