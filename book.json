@@ -1,4 +1,7 @@
 {
+    "title": "Kubernetes 实践指南",
+    "description": "Kubernetes 实践指南",
+    "language": "zh-hans",
     "author": "roc",
     "gitbook": ">= 3.2.2",
     "links": {
@@ -10,22 +13,11 @@
         "mermaid",
         "github",
         "editlink",
+        "page-toc",
         "-lunr",
         "-search",
         "search-plus",
-        "tbfed-pagefooter",
-        "codesnippet",
-        "splitter",
-        "page-toc-button",
-        "image-captions",
-        "back-to-top-button",
-        "-lunr", "-search", "search-plus",
-        "github-buttons@2.1.0",
-        "favicon@^0.0.2",
-        "3-ba",
-        "disqus",
-        "theme-default",
-        "language-picker"
+        "tbfed-pagefooter"
     ],
     "pdf": {
         "toc": true,
@@ -37,30 +29,13 @@
             "url": "https://github.com/imroc/kubernetes-practice-guide"
         },
         "editlink": {
-            "base": "https://github.com/imroc/kubernetes-practice-guide/blob/master"
+            "base": "https://github.com/imroc/kubernetes-practice-guide/blob/master",
+            "label": "编辑本页"
         },
         "tbfed-pagefooter": {
           "copyright":"&copy roc",
           "modify_label": "Updated at",
           "modify_format": "YYYY-MM-DD HH:mm:ss"
-        },
-        "image-captions": {
-            "caption": "图片 - _CAPTION_"
-        },
-        "github-buttons": {
-            "repo": "imroc/kubernetes-practice-guide",
-            "types": ["star"],
-            "size": "small"
-        },
-        "favicon": {
-            "shortcut": "favicon.ico",
-            "bookmark": "favicon.ico"
-        },
-        "disqus": {
-            "shortName": "kubernetes-practice-guide"
-        },
-        "3-ba": {
-            "token": "f20c61878dd8f7a4eff595bdc636eb7c"
         }
     },
     "generator": "site"
