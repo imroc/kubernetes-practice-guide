@@ -1,0 +1,2249 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>节点高负载 · Kubernetes 实践指南</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="roc">
+        
+        
+    
+    <link rel="stylesheet" href="../../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-search-plus/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-tbfed-pagefooter/footer.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-page-toc-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-image-captions/image-captions.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-back-to-top-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-disqus/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-language-picker/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="eviction-leads-to-service-disruption.html" />
+    
+    
+    <link rel="prev" href="memory-fragmentation.html" />
+    
+
+    
+        <link rel="shortcut icon" href='../../favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="bookmark" href='../../favicon.ico' type="image/x-icon">
+    
+    
+    
+
+    <style>
+    @media only screen and (max-width: 640px) {
+        .book-header .hidden-mobile {
+            display: none;
+        }
+    }
+    </style>
+    <script>
+        window["gitbook-plugin-github-buttons"] = {"repo":"imroc/kubernetes-practice-guide","types":["star"],"size":"small"};
+    </script>
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+    
+        
+        <li>
+            <a href="https://imroc.io" target="_blank" class="custom-link">roc</a>
+        </li>
+    
+    
+
+    
+    <li class="divider"></li>
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">问题排查</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../debug-skill/">
+            
+                <a href="../debug-skill/">
+            
+                    
+                    问题定位技巧
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.1.1" data-path="../debug-skill/analysis-exitcode.html">
+            
+                <a href="../debug-skill/analysis-exitcode.html">
+            
+                    
+                    分析 ExitCode 定位 Pod 异常退出原因
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.2" data-path="../debug-skill/capture-packets-in-container.html">
+            
+                <a href="../debug-skill/capture-packets-in-container.html">
+            
+                    
+                    容器内抓包定位网络问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.3" data-path="../debug-skill/use-systemtap-to-locate-problems.html">
+            
+                <a href="../debug-skill/use-systemtap-to-locate-problems.html">
+            
+                    
+                    使用 systemtap 定位疑难杂症
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" >
+            
+                <span>
+            
+                    
+                    Pod 问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.2.1" data-path="../pod/healthcheck-failed.html">
+            
+                <a href="../pod/healthcheck-failed.html">
+            
+                    
+                    健康检查失败
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.2" data-path="../pod/pod-restart.html">
+            
+                <a href="../pod/pod-restart.html">
+            
+                    
+                    Pod 异常重启
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.3" data-path="../pod/pod-pending-forever.html">
+            
+                <a href="../pod/pod-pending-forever.html">
+            
+                    
+                    Pod 一直 Pending
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.4" data-path="../pod/pod-containercreating-forever.html">
+            
+                <a href="../pod/pod-containercreating-forever.html">
+            
+                    
+                    Pod 一直 ContainerCreating
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.5" data-path="../pod/pod-terminating-forever.html">
+            
+                <a href="../pod/pod-terminating-forever.html">
+            
+                    
+                    Pod 一直 Terminating
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.6" data-path="../pod/pod-cannot-exec-or-logs.html">
+            
+                <a href="../pod/pod-cannot-exec-or-logs.html">
+            
+                    
+                    Pod 无法被 exec 和 logs
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.7" data-path="../pod/slow-pod-terminating.html">
+            
+                <a href="../pod/slow-pod-terminating.html">
+            
+                    
+                    TODO:Pod Terminating 慢
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.3" data-path="../cannot-delete-job.html">
+            
+                <a href="../cannot-delete-job.html">
+            
+                    
+                    Job 无法被删除
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4" >
+            
+                <span>
+            
+                    
+                    节点问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.4.1" data-path="node-notready.html">
+            
+                <a href="node-notready.html">
+            
+                    
+                    节点 NotReady
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.2" data-path="no-space-left-on-device.html">
+            
+                <a href="no-space-left-on-device.html">
+            
+                    
+                    no space left on device
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.3" data-path="rancher-remove-node-cause-cluster-abnormal.html">
+            
+                <a href="rancher-remove-node-cause-cluster-abnormal.html">
+            
+                    
+                    Rancher 清除 Node 导致集群异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.4" data-path="memory-fragmentation.html">
+            
+                <a href="memory-fragmentation.html">
+            
+                    
+                    内存碎片化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="2.4.5" data-path="high-load-on-node.html">
+            
+                <a href="high-load-on-node.html">
+            
+                    
+                    节点高负载
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.6" data-path="eviction-leads-to-service-disruption.html">
+            
+                <a href="eviction-leads-to-service-disruption.html">
+            
+                    
+                    驱逐导致服务中断
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.7" data-path="cgroup-leaking.html">
+            
+                <a href="cgroup-leaking.html">
+            
+                    
+                    cgroup 泄露
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.8" data-path="runnig-out-of-inotify-watches.html">
+            
+                <a href="runnig-out-of-inotify-watches.html">
+            
+                    
+                    inotify watch 耗尽
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.9" data-path="lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.html">
+            
+                <a href="lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.html">
+            
+                    
+                    tcp_tw_recycle 导致在 NAT 环境会丢包
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.10" data-path="arp_cache-neighbor-table-overflow.html">
+            
+                <a href="arp_cache-neighbor-table-overflow.html">
+            
+                    
+                    arp_cache: neighbor table overflow!
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.11" data-path="cannot-allocate-memory.html">
+            
+                <a href="cannot-allocate-memory.html">
+            
+                    
+                    Cannot allocate memory
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.12" >
+            
+                <span>
+            
+                    
+                    TODO: cgroup oom 导致内核 crash
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5" >
+            
+                <span>
+            
+                    
+                    Master 问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.5.1" >
+            
+                <span>
+            
+                    
+                    TODO:apiserver 响应慢
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.2" >
+            
+                <span>
+            
+                    
+                    TODO:ETCD频繁选主
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6" >
+            
+                <span>
+            
+                    
+                    网络问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.6.1" data-path="../network/service-unreachable.html">
+            
+                <a href="../network/service-unreachable.html">
+            
+                    
+                    Service 访问不通
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.2" data-path="../network/service-cannot-resolve.html">
+            
+                <a href="../network/service-cannot-resolve.html">
+            
+                    
+                    Service 无法解析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.3" data-path="../network/lb-healthcheck-failed.html">
+            
+                <a href="../network/lb-healthcheck-failed.html">
+            
+                    
+                    LB 健康检查失败
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.4" data-path="../network/dns-lookup-5s-delay.html">
+            
+                <a href="../network/dns-lookup-5s-delay.html">
+            
+                    
+                    DNS 5秒延时
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.5" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 无法访问外网
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.6" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 无法访问集群外的内网服务
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7" >
+            
+                <span>
+            
+                    
+                    Docker 问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.7.1" >
+            
+                <span>
+            
+                    
+                    TODO:容器内无法 mount
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">最佳实践</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="../../best-practice/cluster-permission-control.html">
+            
+                <a href="../../best-practice/cluster-permission-control.html">
+            
+                    
+                    集群权限控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../../best-practice/kubernetes-grace-update.html">
+            
+                <a href="../../best-practice/kubernetes-grace-update.html">
+            
+                    
+                    优雅热更新
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="../../best-practice/scale-keepalive-service.html">
+            
+                <a href="../../best-practice/scale-keepalive-service.html">
+            
+                    
+                    解决长连接服务扩容失效
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4" data-path="../../best-practice/handle-cgroup-oom-with-oom-guard-in-userspace.html">
+            
+                <a href="../../best-practice/handle-cgroup-oom-with-oom-guard-in-userspace.html">
+            
+                    
+                    使用 oom-guard 在用户态处理 cgroup OOM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.5" data-path="../../best-practice/wildcard-domain-forward.html">
+            
+                <a href="../../best-practice/wildcard-domain-forward.html">
+            
+                    
+                    泛域名动态 Service 转发解决方案
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6" data-path="../../best-practice/efficient-kubectl.html">
+            
+                <a href="../../best-practice/efficient-kubectl.html">
+            
+                    
+                    kubectl 高效技巧
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7" data-path="../../best-practice/handle-disk-full.html">
+            
+                <a href="../../best-practice/handle-disk-full.html">
+            
+                    
+                    TODO:处理容器磁盘被写满
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" >
+            
+                <span>
+            
+                    
+                    TODO:使用 MetalLB 创建负载均衡器
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.9" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 原地升级
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.10" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 固定 IP
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.11" >
+            
+                <span>
+            
+                    
+                    TODO:使用 lxcfs 隔离 /proc
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.12" >
+            
+                <span>
+            
+                    
+                    TODO:容器磁盘隔离
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">K8S 配置管理</li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" >
+            
+                <span>
+            
+                    
+                    Helm
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.1.1" data-path="../../configuration-management/helm/install-helm.html">
+            
+                <a href="../../configuration-management/helm/install-helm.html">
+            
+                    
+                    安装 Helm
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.2" data-path="../../configuration-management/helm/upgrade-helm-v2-to-v3.html">
+            
+                <a href="../../configuration-management/helm/upgrade-helm-v2-to-v3.html">
+            
+                    
+                    Helm V2 迁移到 V3
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" >
+            
+                <span>
+            
+                    
+                    TODO:Kustomize
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">安全</li>
+        
+        
+    
+        <li class="chapter " data-level="5.1" >
+            
+                <span>
+            
+                    
+                    cert-manager
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1.1" data-path="../../security/cert-manager/install-cert-manger.html">
+            
+                <a href="../../security/cert-manager/install-cert-manger.html">
+            
+                    
+                    安装 cert-manager
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.2" data-path="../../security/cert-manager/autogenerate-certificate-with-cert-manager.html">
+            
+                <a href="../../security/cert-manager/autogenerate-certificate-with-cert-manager.html">
+            
+                    
+                    使用 cert-manager 自动生成证书
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Kubernetes 部署</li>
+        
+        
+    
+        <li class="chapter " data-level="6.1" >
+            
+                <span>
+            
+                    
+                    TODO:二进制部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Kubeadm 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.3" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Minikube 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.4" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Bootkube 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.5" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Ansible 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">K8S 管理工具</li>
+        
+        
+    
+        <li class="chapter " data-level="7.1" >
+            
+                <span>
+            
+                    
+                    TODO:Rancher
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2" >
+            
+                <span>
+            
+                    
+                    TODO:Weave Scope
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.3" >
+            
+                <span>
+            
+                    
+                    TODO:Kui
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.4" >
+            
+                <span>
+            
+                    
+                    TODO:Kubernetes Dashboard
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" >
+            
+                <span>
+            
+                    
+                    TODO:Kubetail
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.6" >
+            
+                <span>
+            
+                    
+                    TODO:Kubebox
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">运行时</li>
+        
+        
+    
+        <li class="chapter " data-level="8.1" >
+            
+                <span>
+            
+                    
+                    TODO:Docker
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2" >
+            
+                <span>
+            
+                    
+                    TODO:Containerd
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3" >
+            
+                <span>
+            
+                    
+                    TODO:CRI-O
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">服务发现</li>
+        
+        
+    
+        <li class="chapter " data-level="9.1" >
+            
+                <span>
+            
+                    
+                    TODO:ETCD
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.2" >
+            
+                <span>
+            
+                    
+                    TODO:Zookeeper
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.3" >
+            
+                <span>
+            
+                    
+                    TODO:Consul
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">存储</li>
+        
+        
+    
+        <li class="chapter " data-level="10.1" >
+            
+                <span>
+            
+                    
+                    ElasticSearch
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="10.1.1" data-path="../../storage/install-elasticsearch-and-kibana-with-elastic-oparator.html">
+            
+                <a href="../../storage/install-elasticsearch-and-kibana-with-elastic-oparator.html">
+            
+                    
+                    使用 elastic-oparator 部署 Elasticsearch 和 Kibana
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="10.2" >
+            
+                <span>
+            
+                    
+                    TODO:Rook
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.3" >
+            
+                <span>
+            
+                    
+                    TODO:TiKV
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.4" >
+            
+                <span>
+            
+                    
+                    TODO:ETCD
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.5" >
+            
+                <span>
+            
+                    
+                    TODO:Zookeeper
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.6" >
+            
+                <span>
+            
+                    
+                    TODO:Cassandra
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.7" >
+            
+                <span>
+            
+                    
+                    TODO:MySQL
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.8" >
+            
+                <span>
+            
+                    
+                    TODO:TiDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.9" >
+            
+                <span>
+            
+                    
+                    TODO:PostgreSQL
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.10" >
+            
+                <span>
+            
+                    
+                    TODO:MongoDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.11" >
+            
+                <span>
+            
+                    
+                    TODO:InfluxDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.12" >
+            
+                <span>
+            
+                    
+                    TODO:OpenTSDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">监控</li>
+        
+        
+    
+        <li class="chapter " data-level="11.1" >
+            
+                <span>
+            
+                    
+                    TODO:Prometheus
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="11.2" >
+            
+                <span>
+            
+                    
+                    TODO:Grafana
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="11.3" >
+            
+                <span>
+            
+                    
+                    TODO:Jaeger
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Ingress</li>
+        
+        
+    
+        <li class="chapter " data-level="12.1" >
+            
+                <span>
+            
+                    
+                    TODO:Nginx
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.2" >
+            
+                <span>
+            
+                    
+                    TODO:Traefik
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.3" >
+            
+                <span>
+            
+                    
+                    TODO:Envoy
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.4" >
+            
+                <span>
+            
+                    
+                    TODO:Kong
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.5" >
+            
+                <span>
+            
+                    
+                    TODO:Gloo
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.6" >
+            
+                <span>
+            
+                    
+                    TODO:Contour
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.7" >
+            
+                <span>
+            
+                    
+                    TODO:Ambassador
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.8" >
+            
+                <span>
+            
+                    
+                    TODO:HAProxy
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.9" >
+            
+                <span>
+            
+                    
+                    TODO:Skipper
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Service Mesh</li>
+        
+        
+    
+        <li class="chapter " data-level="13.1" >
+            
+                <span>
+            
+                    
+                    TODO:Istio
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="13.2" >
+            
+                <span>
+            
+                    
+                    TODO:Maesh
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="13.3" >
+            
+                <span>
+            
+                    
+                    TODO:Kuma
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Serverless</li>
+        
+        
+    
+        <li class="chapter " data-level="14.1" >
+            
+                <span>
+            
+                    
+                    TODO:Knative
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="14.2" >
+            
+                <span>
+            
+                    
+                    TODO:Kubeless
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="14.3" >
+            
+                <span>
+            
+                    
+                    TODO:Fission
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">CI/CD</li>
+        
+        
+    
+        <li class="chapter " data-level="15.1" >
+            
+                <span>
+            
+                    
+                    TODO:Jenkins X
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.2" >
+            
+                <span>
+            
+                    
+                    TODO:Tekton
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.3" >
+            
+                <span>
+            
+                    
+                    TODO:Argo
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.4" >
+            
+                <span>
+            
+                    
+                    TODO:GoCD
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.5" >
+            
+                <span>
+            
+                    
+                    TODO:GitLab CI
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">镜像相关</li>
+        
+        
+    
+        <li class="chapter " data-level="16.1" >
+            
+                <span>
+            
+                    
+                    TODO:Harbor
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="16.2" >
+            
+                <span>
+            
+                    
+                    TODO:Dragonfly
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="16.3" >
+            
+                <span>
+            
+                    
+                    TODO:Kaniko
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="16.4" >
+            
+                <span>
+            
+                    
+                    TODO:kpack
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">网络方案</li>
+        
+        
+    
+        <li class="chapter " data-level="17.1" >
+            
+                <span>
+            
+                    
+                    TODO:Flannel
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.2" >
+            
+                <span>
+            
+                    
+                    TODO:Macvlan
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.3" >
+            
+                <span>
+            
+                    
+                    TODO:Calico
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.4" >
+            
+                <span>
+            
+                    
+                    TODO:Cilium
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.5" >
+            
+                <span>
+            
+                    
+                    TODO:Kube-router
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.6" >
+            
+                <span>
+            
+                    
+                    TODO:Kube-OVN
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.7" >
+            
+                <span>
+            
+                    
+                    TODO:OpenVSwitch
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >节点高负载</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div class="search-plus" id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x8282;&#x70B9;&#x9AD8;&#x8D1F;&#x8F7D;">&#x8282;&#x70B9;&#x9AD8;&#x8D1F;&#x8F7D;</h1>
+<p>TODO &#x4F18;&#x5316;</p>
+<p>&#x8282;&#x70B9;&#x9AD8;&#x8D1F;&#x8F7D;&#x4F1A;&#x5BFC;&#x81F4;&#x8FDB;&#x7A0B;&#x65E0;&#x6CD5;&#x83B7;&#x5F97;&#x8DB3;&#x591F;&#x7684; cpu &#x65F6;&#x95F4;&#x7247;&#x6765;&#x8FD0;&#x884C;&#xFF0C;&#x901A;&#x5E38;&#x8868;&#x73B0;&#x4E3A;&#x7F51;&#x7EDC; timeout&#xFF0C;&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x5931;&#x8D25;&#xFF0C;&#x670D;&#x52A1;&#x4E0D;&#x53EF;&#x7528;&#x3002;</p>
+<h2 id="&#x8FC7;&#x591A;-io-&#x7B49;&#x5F85;">&#x8FC7;&#x591A; IO &#x7B49;&#x5F85;</h2>
+<p>&#x6709;&#x65F6;&#x5019;&#x5373;&#x4FBF; cpu &#x2018;us&#x2019; (user) &#x4E0D;&#x9AD8;&#x4F46; cpu &#x2018;id&#x2019; (idle) &#x5F88;&#x9AD8;&#x7684;&#x60C5;&#x51B5;&#x8282;&#x70B9;&#x8D1F;&#x8F7D;&#x4E5F;&#x5F88;&#x9AD8;&#xFF0C;&#x8FD9;&#x662F;&#x4E3A;&#x4EC0;&#x4E48;&#x5462;&#xFF1F;&#x901A;&#x5E38;&#x662F;&#x6587;&#x4EF6; IO &#x6027;&#x80FD;&#x8FBE;&#x5230;&#x74F6;&#x9888;&#x5BFC;&#x81F4; IO WAIT &#x8FC7;&#x591A;&#xFF0C;&#x4ECE;&#x800C;&#x4F7F;&#x5F97;&#x8282;&#x70B9;&#x6574;&#x4F53;&#x8D1F;&#x8F7D;&#x5347;&#x9AD8;&#xFF0C;&#x5F71;&#x54CD;&#x5176;&#x5B83;&#x8FDB;&#x7A0B;&#x7684;&#x6027;&#x80FD;&#x3002;</p>
+<p>&#x4F7F;&#x7528; <code>top</code> &#x547D;&#x4EE4;&#x770B;&#x4E0B;&#x5F53;&#x524D;&#x8D1F;&#x8F7D;&#xFF1A;</p>
+<pre><code class="lang-txt">top - 19:42:06 up 23:59,  2 users,  load average: 34.64, 35.80, 35.76
+Tasks: 679 total,   1 running, 678 sleeping,   0 stopped,   0 zombie
+Cpu(s): 15.6%us,  1.7%sy,  0.0%ni, 74.7%id,  7.9%wa,  0.0%hi,  0.1%si,  0.0%st
+Mem:  32865032k total, 30989168k used,  1875864k free,   370748k buffers
+Swap:  8388604k total,     5440k used,  8383164k free,  7982424k cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
+ 9783 mysql     20   0 17.3g  16g 8104 S 186.9 52.3   3752:33 mysqld
+ 5700 nginx     20   0 1330m  66m 9496 S  8.9  0.2   0:20.82 php-fpm
+ 6424 nginx     20   0 1330m  65m 8372 S  8.3  0.2   0:04.97 php-fpm
+ 6573 nginx     20   0 1330m  64m 7368 S  8.3  0.2   0:01.49 php-fpm
+ 5927 nginx     20   0 1320m  56m 9272 S  7.6  0.2   0:12.54 php-fpm
+ 5956 nginx     20   0 1330m  65m 8500 S  7.6  0.2   0:12.70 php-fpm
+ 6126 nginx     20   0 1321m  57m 8964 S  7.3  0.2   0:09.72 php-fpm
+ 6127 nginx     20   0 1319m  54m 9520 S  6.6  0.2   0:08.73 php-fpm
+ 6131 nginx     20   0 1320m  56m 9404 S  6.6  0.2   0:09.43 php-fpm
+ 6174 nginx     20   0 1321m  56m 8444 S  6.3  0.2   0:08.92 php-fpm
+ 5790 nginx     20   0 1319m  54m 9468 S  5.6  0.2   0:17.33 php-fpm
+ 6575 nginx     20   0 1320m  55m 8212 S  5.6  0.2   0:02.11 php-fpm
+ 6160 nginx     20   0 1310m  44m 8296 S  4.0  0.1   0:10.05 php-fpm
+ 5597 nginx     20   0 1310m  46m 9556 S  3.6  0.1   0:21.03 php-fpm
+ 5786 nginx     20   0 1310m  45m 8528 S  3.6  0.1   0:15.53 php-fpm
+ 5797 nginx     20   0 1310m  46m 9444 S  3.6  0.1   0:14.02 php-fpm
+ 6158 nginx     20   0 1310m  45m 8324 S  3.6  0.1   0:10.20 php-fpm
+ 5698 nginx     20   0 1310m  46m 9184 S  3.3  0.1   0:20.62 php-fpm
+ 5779 nginx     20   0 1309m  44m 8336 S  3.3  0.1   0:15.34 php-fpm
+ 6540 nginx     20   0 1306m  40m 7884 S  3.3  0.1   0:02.46 php-fpm
+ 5553 nginx     20   0 1300m  36m 9568 S  3.0  0.1   0:21.58 php-fpm
+ 5722 nginx     20   0 1310m  45m 8552 S  3.0  0.1   0:17.25 php-fpm
+ 5920 nginx     20   0 1302m  36m 8208 S  3.0  0.1   0:14.23 php-fpm
+ 6432 nginx     20   0 1310m  45m 8420 S  3.0  0.1   0:05.86 php-fpm
+ 5285 nginx     20   0 1302m  38m 9696 S  2.7  0.1   0:23.41 php-fpm
+</code></pre>
+<p><code>wa</code> (wait) &#x8868;&#x793A; IO WAIT &#x7684; cpu &#x5360;&#x7528;&#xFF0C;&#x9ED8;&#x8BA4;&#x770B;&#x5230;&#x7684;&#x662F;&#x6240;&#x6709;&#x6838;&#x7684;&#x5E73;&#x5747;&#x503C;&#xFF0C;&#x8981;&#x770B;&#x6BCF;&#x4E2A;&#x6838;&#x7684; <code>wa</code> &#x503C;&#x9700;&#x8981;&#x6309;&#x4E0B; &quot;1&quot;:</p>
+<pre><code class="lang-txt">top - 19:42:08 up 23:59,  2 users,  load average: 34.64, 35.80, 35.76
+Tasks: 679 total,   1 running, 678 sleeping,   0 stopped,   0 zombie
+Cpu0  : 29.5%us,  3.7%sy,  0.0%ni, 48.7%id, 17.9%wa,  0.0%hi,  0.1%si,  0.0%st
+Cpu1  : 29.3%us,  3.7%sy,  0.0%ni, 48.9%id, 17.9%wa,  0.0%hi,  0.1%si,  0.0%st
+Cpu2  : 26.1%us,  3.1%sy,  0.0%ni, 64.4%id,  6.0%wa,  0.0%hi,  0.3%si,  0.0%st
+Cpu3  : 25.9%us,  3.1%sy,  0.0%ni, 65.5%id,  5.4%wa,  0.0%hi,  0.1%si,  0.0%st
+Cpu4  : 24.9%us,  3.0%sy,  0.0%ni, 66.8%id,  5.0%wa,  0.0%hi,  0.3%si,  0.0%st
+Cpu5  : 24.9%us,  2.9%sy,  0.0%ni, 67.0%id,  4.8%wa,  0.0%hi,  0.3%si,  0.0%st
+Cpu6  : 24.2%us,  2.7%sy,  0.0%ni, 68.3%id,  4.5%wa,  0.0%hi,  0.3%si,  0.0%st
+Cpu7  : 24.3%us,  2.6%sy,  0.0%ni, 68.5%id,  4.2%wa,  0.0%hi,  0.3%si,  0.0%st
+Cpu8  : 23.8%us,  2.6%sy,  0.0%ni, 69.2%id,  4.1%wa,  0.0%hi,  0.3%si,  0.0%st
+Cpu9  : 23.9%us,  2.5%sy,  0.0%ni, 69.3%id,  4.0%wa,  0.0%hi,  0.3%si,  0.0%st
+Cpu10 : 23.3%us,  2.4%sy,  0.0%ni, 68.7%id,  5.6%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu11 : 23.3%us,  2.4%sy,  0.0%ni, 69.2%id,  5.1%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu12 : 21.8%us,  2.4%sy,  0.0%ni, 60.2%id, 15.5%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu13 : 21.9%us,  2.4%sy,  0.0%ni, 60.6%id, 15.2%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu14 : 21.4%us,  2.3%sy,  0.0%ni, 72.6%id,  3.7%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu15 : 21.5%us,  2.2%sy,  0.0%ni, 73.2%id,  3.1%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu16 : 21.2%us,  2.2%sy,  0.0%ni, 73.6%id,  3.0%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu17 : 21.2%us,  2.1%sy,  0.0%ni, 73.8%id,  2.8%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu18 : 20.9%us,  2.1%sy,  0.0%ni, 74.1%id,  2.9%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu19 : 21.0%us,  2.1%sy,  0.0%ni, 74.4%id,  2.5%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu20 : 20.7%us,  2.0%sy,  0.0%ni, 73.8%id,  3.4%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu21 : 20.8%us,  2.0%sy,  0.0%ni, 73.9%id,  3.2%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu22 : 20.8%us,  2.0%sy,  0.0%ni, 74.4%id,  2.8%wa,  0.0%hi,  0.0%si,  0.0%st
+Cpu23 : 20.8%us,  1.9%sy,  0.0%ni, 74.4%id,  2.8%wa,  0.0%hi,  0.0%si,  0.0%st
+Mem:  32865032k total, 30209248k used,  2655784k free,   370748k buffers
+Swap:  8388604k total,     5440k used,  8383164k free,  7986552k cached
+</code></pre>
+<p><code>wa</code> &#x901A;&#x5E38;&#x662F; 0%&#xFF0C;&#x5982;&#x679C;&#x7ECF;&#x5E38;&#x5728; 1 &#x4E4B;&#x4E0A;&#xFF0C;&#x8BF4;&#x660E;&#x5B58;&#x50A8;&#x8BBE;&#x5907;&#x7684;&#x901F;&#x5EA6;&#x5DF2;&#x7ECF;&#x592A;&#x6162;&#xFF0C;&#x65E0;&#x6CD5;&#x8DDF;&#x4E0A; cpu &#x7684;&#x5904;&#x7406;&#x901F;&#x5EA6;&#x3002;</p>
+<p>&#x4F7F;&#x7528; <code>atop</code> &#x770B;&#x4E0B;&#x5F53;&#x524D;&#x78C1;&#x76D8; IO &#x72B6;&#x6001;:</p>
+<pre><code class="lang-txt">ATOP - lemp              2017/01/23  19:42:32              ---------                10s elapsed
+PRC | sys    3.18s | user  33.24s | #proc    679 | #tslpu    28 | #zombie    0 | #exit      0 |
+CPU | sys      29% | user    330% | irq       1% | idle   1857% | wait    182% | curscal  69% |
+CPL | avg1   33.00 | avg5   35.29 | avg15  35.59 | csw    62610 | intr   76926 | numcpu    24 |
+MEM | tot    31.3G | free    2.1G | cache   7.6G | dirty  41.0M | buff  362.1M | slab    1.2G |
+SWP | tot     8.0G | free    8.0G |              |              | vmcom  23.9G | vmlim  23.7G |
+DSK |          sda | busy    100% | read       4 | write   1789 | MBw/s   2.84 | avio 5.58 ms |
+NET | transport    | tcpi   10357 | tcpo    9065 | udpi       0 | udpo       0 | tcpao    174 |
+NET | network      | ipi    10360 | ipo     9065 | ipfrw      0 | deliv  10359 | icmpo      0 |
+NET | eth0      4% | pcki    6649 | pcko    6136 | si 1478 Kbps | so 4115 Kbps | erro       0 |
+NET | lo      ---- | pcki    4082 | pcko    4082 | si 8967 Kbps | so 8967 Kbps | erro       0 |
+
+  PID   TID  THR  SYSCPU  USRCPU  VGROW  RGROW  RDDSK  WRDSK ST EXC S CPUNR  CPU CMD       1/12
+ 9783     -  156   0.21s  19.44s     0K  -788K     4K  1344K --   - S     4 197% mysqld
+ 5596     -    1   0.10s   0.62s 47204K 47004K     0K   220K --   - S    18   7% php-fpm
+ 6429     -    1   0.06s   0.34s 19840K 19968K     0K     0K --   - S    21   4% php-fpm
+ 6210     -    1   0.03s   0.30s -5216K -5204K     0K     0K --   - S    19   3% php-fpm
+ 5757     -    1   0.05s   0.27s 26072K 26012K     0K     4K --   - S    13   3% php-fpm
+ 6433     -    1   0.04s   0.28s -2816K -2816K     0K     0K --   - S    11   3% php-fpm
+ 5846     -    1   0.06s   0.22s -2560K -2660K     0K     0K --   - S     7   3% php-fpm
+ 5791     -    1   0.05s   0.21s  5764K  5692K     0K     0K --   - S    22   3% php-fpm
+ 5860     -    1   0.04s   0.21s 48088K 47724K     0K     0K --   - S     1   3% php-fpm
+ 6231     -    1   0.04s   0.20s  -256K    -4K     0K     0K --   - S     1   2% php-fpm
+ 6154     -    1   0.03s   0.21s -3004K -3184K     0K     0K --   - S    21   2% php-fpm
+ 6573     -    1   0.04s   0.20s  -512K  -168K     0K     0K --   - S     4   2% php-fpm
+ 6435     -    1   0.04s   0.19s -3216K -2980K     0K     0K --   - S    15   2% php-fpm
+ 5954     -    1   0.03s   0.20s     0K   164K     0K     4K --   - S     0   2% php-fpm
+ 6133     -    1   0.03s   0.19s 41056K 40432K     0K     0K --   - S    18   2% php-fpm
+ 6132     -    1   0.02s   0.20s 37836K 37440K     0K     0K --   - S    11   2% php-fpm
+ 6242     -    1   0.03s   0.19s -12.2M -12.3M     0K     4K --   - S    12   2% php-fpm
+ 6285     -    1   0.02s   0.19s 39516K 39420K     0K     0K --   - S     3   2% php-fpm
+ 6455     -    1   0.05s   0.16s 29008K 28560K     0K     0K --   - S    14   2% php-fpm
+</code></pre>
+<p>&#x5728;&#x672C;&#x4F8B;&#x4E2D;&#x78C1;&#x76D8; <code>sda</code> &#x5DF2;&#x7ECF; 100% busy&#xFF0C;&#x5DF2;&#x7ECF;&#x4E25;&#x91CD;&#x8FBE;&#x5230;&#x6027;&#x80FD;&#x74F6;&#x9888;&#x3002;&#x6309; &apos;d&apos; &#x770B;&#x4E0B;&#x662F;&#x54EA;&#x4E9B;&#x8FDB;&#x7A0B;&#x5728;&#x4F7F;&#x7528;&#x78C1;&#x76D8;IO:</p>
+<pre><code class="lang-txt">ATOP - lemp               2017/01/23  19:42:46               ---------               2s elapsed
+PRC | sys    0.24s | user   1.99s | #proc    679 | #tslpu    54 | #zombie    0 | #exit      0 |
+CPU | sys      11% | user    101% | irq       1% | idle   2089% | wait    208% | curscal  63% |
+CPL | avg1   38.49 | avg5   36.48 | avg15  35.98 | csw     4654 | intr    6876 | numcpu    24 |
+MEM | tot    31.3G | free    2.2G | cache   7.6G | dirty  48.7M | buff  362.1M | slab    1.2G |
+SWP | tot     8.0G | free    8.0G |              |              | vmcom  23.9G | vmlim  23.7G |
+DSK |          sda | busy    100% | read       2 | write    362 | MBw/s   2.28 | avio 5.49 ms |
+NET | transport    | tcpi    1031 | tcpo     968 | udpi       0 | udpo       0 | tcpao     45 |
+NET | network      | ipi     1031 | ipo      968 | ipfrw      0 | deliv   1031 | icmpo      0 |
+NET | eth0      1% | pcki     558 | pcko     508 | si  762 Kbps | so 1077 Kbps | erro       0 |
+NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps | erro       0 |
+
+  PID          TID         RDDSK         WRDSK        WCANCL         DSK        CMD         1/5
+ 9783            -            0K          468K           16K         40%        mysqld
+ 1930            -            0K          212K            0K         18%        flush-8:0
+ 5896            -            0K          152K            0K         13%        nginx
+  880            -            0K          148K            0K         13%        jbd2/sda5-8
+ 5909            -            0K           60K            0K          5%        nginx
+ 5906            -            0K           36K            0K          3%        nginx
+ 5907            -           16K            8K            0K          2%        nginx
+ 5903            -           20K            0K            0K          2%        nginx
+ 5901            -            0K           12K            0K          1%        nginx
+ 5908            -            0K            8K            0K          1%        nginx
+ 5894            -            0K            8K            0K          1%        nginx
+ 5911            -            0K            8K            0K          1%        nginx
+ 5900            -            0K            4K            4K          0%        nginx
+ 5551            -            0K            4K            0K          0%        php-fpm
+ 5913            -            0K            4K            0K          0%        nginx
+ 5895            -            0K            4K            0K          0%        nginx
+ 6133            -            0K            0K            0K          0%        php-fpm
+ 5780            -            0K            0K            0K          0%        php-fpm
+ 6675            -            0K            0K            0K          0%        atop
+</code></pre>
+<p>&#x4E5F;&#x53EF;&#x4EE5;&#x4F7F;&#x7528; <code>iotop -oPa</code> &#x67E5;&#x770B;&#x54EA;&#x4E9B;&#x8FDB;&#x7A0B;&#x5360;&#x7528;&#x78C1;&#x76D8; IO:</p>
+<pre><code class="lang-txt">Total DISK READ: 15.02 K/s | Total DISK WRITE: 3.82 M/s
+  PID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO&gt;    COMMAND
+ 1930 be/4 root          0.00 B   1956.00 K  0.00 % 83.34 % [flush-8:0]
+ 5914 be/4 nginx         0.00 B      0.00 B  0.00 % 36.56 % nginx: cache manager process
+  880 be/3 root          0.00 B     21.27 M  0.00 % 35.03 % [jbd2/sda5-8]
+ 5913 be/2 nginx        36.00 K   1000.00 K  0.00 %  8.94 % nginx: worker process
+ 5910 be/2 nginx         0.00 B   1048.00 K  0.00 %  8.43 % nginx: worker process
+ 5896 be/2 nginx        56.00 K    452.00 K  0.00 %  6.91 % nginx: worker process
+ 5909 be/2 nginx        20.00 K   1144.00 K  0.00 %  6.24 % nginx: worker process
+ 5890 be/2 nginx        48.00 K    692.00 K  0.00 %  6.07 % nginx: worker process
+ 5892 be/2 nginx        84.00 K    736.00 K  0.00 %  5.71 % nginx: worker process
+ 5901 be/2 nginx        20.00 K    504.00 K  0.00 %  5.46 % nginx: worker process
+ 5899 be/2 nginx         0.00 B    596.00 K  0.00 %  5.14 % nginx: worker process
+ 5897 be/2 nginx        28.00 K   1388.00 K  0.00 %  4.90 % nginx: worker process
+ 5908 be/2 nginx        48.00 K    700.00 K  0.00 %  4.43 % nginx: worker process
+ 5905 be/2 nginx        32.00 K   1140.00 K  0.00 %  4.36 % nginx: worker process
+ 5900 be/2 nginx         0.00 B   1208.00 K  0.00 %  4.31 % nginx: worker process
+ 5904 be/2 nginx        36.00 K   1244.00 K  0.00 %  2.80 % nginx: worker process
+ 5895 be/2 nginx        16.00 K    780.00 K  0.00 %  2.50 % nginx: worker process
+ 5907 be/2 nginx         0.00 B   1548.00 K  0.00 %  2.43 % nginx: worker process
+ 5903 be/2 nginx        36.00 K   1032.00 K  0.00 %  2.34 % nginx: worker process
+ 6130 be/4 nginx         0.00 B     72.00 K  0.00 %  2.18 % php-fpm: pool www
+ 5906 be/2 nginx        12.00 K    844.00 K  0.00 %  2.10 % nginx: worker process
+ 5889 be/2 nginx        40.00 K   1164.00 K  0.00 %  2.00 % nginx: worker process
+ 5894 be/2 nginx        44.00 K    760.00 K  0.00 %  1.61 % nginx: worker process
+ 5902 be/2 nginx        52.00 K    992.00 K  0.00 %  1.55 % nginx: worker process
+ 5893 be/2 nginx        64.00 K    972.00 K  0.00 %  1.22 % nginx: worker process
+ 5814 be/4 nginx        36.00 K     44.00 K  0.00 %  1.06 % php-fpm: pool www
+ 6159 be/4 nginx         4.00 K      4.00 K  0.00 %  1.00 % php-fpm: pool www
+ 5693 be/4 nginx         0.00 B      4.00 K  0.00 %  0.86 % php-fpm: pool www
+ 5912 be/2 nginx        68.00 K    300.00 K  0.00 %  0.72 % nginx: worker process
+ 5911 be/2 nginx        20.00 K    788.00 K  0.00 %  0.72 % nginx: worker process
+</code></pre>
+<p>&#x901A;&#x8FC7; <code>man iotop</code> &#x53EF;&#x4EE5;&#x770B;&#x4E0B;&#x8FD9;&#x51E0;&#x4E2A;&#x53C2;&#x6570;&#x7684;&#x542B;&#x4E49;&#xFF1A;</p>
+<pre><code class="lang-bash">-o, --only
+       Only show processes or threads actually doing I/O, instead of showing all processes or threads. This can be dynamically toggled by pressing o.
+-P, --processes
+       Only show processes. Normally iotop shows all threads.
+
+<span class="hljs-_">-a</span>, --accumulated
+       Show accumulated I/O instead of bandwidth. In this mode, iotop shows the amount of I/O processes have <span class="hljs-keyword">done</span> since iotop started.
+</code></pre>
+<h2 id="&#x8282;&#x70B9;&#x4E0A;&#x90E8;&#x7F72;&#x4E86;&#x5176;&#x5B83;&#x975E;-k8s-&#x7BA1;&#x7406;&#x7684;&#x670D;&#x52A1;">&#x8282;&#x70B9;&#x4E0A;&#x90E8;&#x7F72;&#x4E86;&#x5176;&#x5B83;&#x975E; K8S &#x7BA1;&#x7406;&#x7684;&#x670D;&#x52A1;</h2>
+<p>TODO &#x4F18;&#x5316;</p>
+<p>&#x6BD4;&#x5982;&#x5728;&#x8282;&#x70B9;&#x4E0A;&#x88C5;&#x4E86;&#x6570;&#x636E;&#x5E93;&#xFF0C;&#x4F46;&#x4E0D;&#x88AB; K8S &#x6240;&#x7BA1;&#x7406;&#xFF0C;&#x8FD9;&#x662F;&#x7528;&#x6CD5;&#x4E0D;&#x6B63;&#x786E;&#xFF0C;&#x4E0D;&#x5EFA;&#x8BAE;&#x5728; K8S &#x8282;&#x70B9;&#x4E0A;&#x90E8;&#x7F72;&#x5176;&#x5B83;&#x8FDB;&#x7A0B;&#x3002;</p>
+<h2 id="&#x53C2;&#x8003;&#x8D44;&#x6599;">&#x53C2;&#x8003;&#x8D44;&#x6599;</h2>
+<ul>
+<li>Linux server performance: Is disk I/O slowing your application: <a href="https://haydenjames.io/linux-server-performance-disk-io-slowing-application/" target="_blank">https://haydenjames.io/linux-server-performance-disk-io-slowing-application/</a></li>
+</ul>
+<footer class="page-footer"><span class="copyright">&#xA9; roc all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
+2019-09-20 13:47:22
+</span></footer>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="memory-fragmentation.html" class="navigation navigation-prev " aria-label="Previous page: 内存碎片化">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+                <a href="eviction-leads-to-service-disruption.html" class="navigation navigation-next " aria-label="Next page: 驱逐导致服务中断">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"节点高负载","level":"2.4.5","depth":2,"next":{"title":"驱逐导致服务中断","level":"2.4.6","depth":2,"path":"troubleshooting/node/eviction-leads-to-service-disruption.md","ref":"troubleshooting/node/eviction-leads-to-service-disruption.md","articles":[]},"previous":{"title":"内存碎片化","level":"2.4.4","depth":2,"path":"troubleshooting/node/memory-fragmentation.md","ref":"troubleshooting/node/memory-fragmentation.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","-lunr","-search","search-plus","tbfed-pagefooter","codesnippet","splitter","page-toc-button","image-captions","back-to-top-button","-lunr","-search","search-plus","github-buttons@2.1.0","favicon@^0.0.2","3-ba","disqus","theme-default","language-picker"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy roc","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"disqus":{"useIdentifier":false,"shortName":"kubernetes-practice-guide"},"language-picker":{"grid-columns":3},"github":{"url":"https://github.com/imroc/kubernetes-practice-guide"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/imroc/kubernetes-practice-guide/blob/master"},"splitter":{},"mermaid":{},"codesnippet":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"favicon":{"shortcut":"favicon.ico","bookmark":"favicon.ico"},"page-toc-button":{},"back-to-top-button":{},"github-buttons":{"repo":"imroc/kubernetes-practice-guide","types":["star"],"size":"small"},"3-ba":{"configuration":"auto","token":"f20c61878dd8f7a4eff595bdc636eb7c"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"search-plus":{},"image-captions":{"caption":"图片 - _CAPTION_","variable_name":"_pictures"}},"theme":"default","author":"roc","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"_pictures":[{"backlink":"best-practice/wildcard-domain-forward.html#fig3.5.1","level":"3.5","list_caption":"Figure: nginx.conf","alt":"nginx.conf","nro":1,"url":"https://imroc.io/assets/blog/nginx-wilcard-conf.png","index":1,"caption_template":"图片 - _CAPTION_","label":"nginx.conf","attributes":{},"skip":false,"key":"3.5.1"},{"backlink":"best-practice/efficient-kubectl.html#fig3.6.1","level":"3.6","list_caption":"Figure: kk","alt":"kk","nro":2,"url":"https://imroc.io/assets/blog/dash_kk.png","index":1,"caption_template":"图片 - _CAPTION_","label":"kk","attributes":{},"skip":false,"key":"3.6.1"},{"backlink":"best-practice/efficient-kubectl.html#fig3.6.2","level":"3.6","list_caption":"Figure: demo","alt":"demo","nro":3,"url":"https://imroc.io/assets/blog/k.gif","index":2,"caption_template":"图片 - _CAPTION_","label":"demo","attributes":{},"skip":false,"key":"3.6.2"}]},"title":"Kubernetes 实践指南","language":"zh-hans","links":{"sidebar":{"roc":"https://imroc.io"}},"gitbook":"*","description":"Kubernetes 实践指南"},"file":{"path":"troubleshooting/node/high-load-on-node.md","mtime":"2019-09-20T05:47:22.675Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-20T05:48:08.258Z"},"basePath":"../..","book":{"language":"zh"}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../../gitbook/gitbook.js"></script>
+    <script src="../../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-editlink/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search-plus/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search-plus/search.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-page-toc-button/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-back-to-top-button/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-github-buttons/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-3-ba/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.16.1/URI.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-disqus/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-language-picker/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

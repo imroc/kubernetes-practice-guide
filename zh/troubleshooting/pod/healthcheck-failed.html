@@ -1,0 +1,2078 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>健康检查失败 · Kubernetes 实践指南</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="roc">
+        
+        
+    
+    <link rel="stylesheet" href="../../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-search-plus/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-tbfed-pagefooter/footer.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-page-toc-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-image-captions/image-captions.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-back-to-top-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-disqus/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-language-picker/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    <link rel="next" href="pod-restart.html" />
+    
+    
+
+    
+        <link rel="shortcut icon" href='../../favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="bookmark" href='../../favicon.ico' type="image/x-icon">
+    
+    
+    
+
+    <style>
+    @media only screen and (max-width: 640px) {
+        .book-header .hidden-mobile {
+            display: none;
+        }
+    }
+    </style>
+    <script>
+        window["gitbook-plugin-github-buttons"] = {"repo":"imroc/kubernetes-practice-guide","types":["star"],"size":"small"};
+    </script>
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+    
+        
+        <li>
+            <a href="https://imroc.io" target="_blank" class="custom-link">roc</a>
+        </li>
+    
+    
+
+    
+    <li class="divider"></li>
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">问题排查</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../debug-skill/">
+            
+                <a href="../debug-skill/">
+            
+                    
+                    问题定位技巧
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.1.1" data-path="../debug-skill/analysis-exitcode.html">
+            
+                <a href="../debug-skill/analysis-exitcode.html">
+            
+                    
+                    分析 ExitCode 定位 Pod 异常退出原因
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.2" data-path="../debug-skill/capture-packets-in-container.html">
+            
+                <a href="../debug-skill/capture-packets-in-container.html">
+            
+                    
+                    容器内抓包定位网络问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.3" data-path="../debug-skill/use-systemtap-to-locate-problems.html">
+            
+                <a href="../debug-skill/use-systemtap-to-locate-problems.html">
+            
+                    
+                    使用 systemtap 定位疑难杂症
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" >
+            
+                <span>
+            
+                    
+                    Pod 问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter active" data-level="2.2.1" data-path="healthcheck-failed.html">
+            
+                <a href="healthcheck-failed.html">
+            
+                    
+                    健康检查失败
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.2" data-path="pod-restart.html">
+            
+                <a href="pod-restart.html">
+            
+                    
+                    Pod 异常重启
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.3" data-path="pod-pending-forever.html">
+            
+                <a href="pod-pending-forever.html">
+            
+                    
+                    Pod 一直 Pending
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.4" data-path="pod-containercreating-forever.html">
+            
+                <a href="pod-containercreating-forever.html">
+            
+                    
+                    Pod 一直 ContainerCreating
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.5" data-path="pod-terminating-forever.html">
+            
+                <a href="pod-terminating-forever.html">
+            
+                    
+                    Pod 一直 Terminating
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.6" data-path="pod-cannot-exec-or-logs.html">
+            
+                <a href="pod-cannot-exec-or-logs.html">
+            
+                    
+                    Pod 无法被 exec 和 logs
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.7" data-path="slow-pod-terminating.html">
+            
+                <a href="slow-pod-terminating.html">
+            
+                    
+                    TODO:Pod Terminating 慢
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.3" data-path="../cannot-delete-job.html">
+            
+                <a href="../cannot-delete-job.html">
+            
+                    
+                    Job 无法被删除
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4" >
+            
+                <span>
+            
+                    
+                    节点问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.4.1" data-path="../node/node-notready.html">
+            
+                <a href="../node/node-notready.html">
+            
+                    
+                    节点 NotReady
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.2" data-path="../node/no-space-left-on-device.html">
+            
+                <a href="../node/no-space-left-on-device.html">
+            
+                    
+                    no space left on device
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.3" data-path="../node/rancher-remove-node-cause-cluster-abnormal.html">
+            
+                <a href="../node/rancher-remove-node-cause-cluster-abnormal.html">
+            
+                    
+                    Rancher 清除 Node 导致集群异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.4" data-path="../node/memory-fragmentation.html">
+            
+                <a href="../node/memory-fragmentation.html">
+            
+                    
+                    内存碎片化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.5" data-path="../node/high-load-on-node.html">
+            
+                <a href="../node/high-load-on-node.html">
+            
+                    
+                    节点高负载
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.6" data-path="../node/eviction-leads-to-service-disruption.html">
+            
+                <a href="../node/eviction-leads-to-service-disruption.html">
+            
+                    
+                    驱逐导致服务中断
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.7" data-path="../node/cgroup-leaking.html">
+            
+                <a href="../node/cgroup-leaking.html">
+            
+                    
+                    cgroup 泄露
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.8" data-path="../node/runnig-out-of-inotify-watches.html">
+            
+                <a href="../node/runnig-out-of-inotify-watches.html">
+            
+                    
+                    inotify watch 耗尽
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.9" data-path="../node/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.html">
+            
+                <a href="../node/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.html">
+            
+                    
+                    tcp_tw_recycle 导致在 NAT 环境会丢包
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.10" data-path="../node/arp_cache-neighbor-table-overflow.html">
+            
+                <a href="../node/arp_cache-neighbor-table-overflow.html">
+            
+                    
+                    arp_cache: neighbor table overflow!
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.11" data-path="../node/cannot-allocate-memory.html">
+            
+                <a href="../node/cannot-allocate-memory.html">
+            
+                    
+                    Cannot allocate memory
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.12" >
+            
+                <span>
+            
+                    
+                    TODO: cgroup oom 导致内核 crash
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5" >
+            
+                <span>
+            
+                    
+                    Master 问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.5.1" >
+            
+                <span>
+            
+                    
+                    TODO:apiserver 响应慢
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.2" >
+            
+                <span>
+            
+                    
+                    TODO:ETCD频繁选主
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6" >
+            
+                <span>
+            
+                    
+                    网络问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.6.1" data-path="../network/service-unreachable.html">
+            
+                <a href="../network/service-unreachable.html">
+            
+                    
+                    Service 访问不通
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.2" data-path="../network/service-cannot-resolve.html">
+            
+                <a href="../network/service-cannot-resolve.html">
+            
+                    
+                    Service 无法解析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.3" data-path="../network/lb-healthcheck-failed.html">
+            
+                <a href="../network/lb-healthcheck-failed.html">
+            
+                    
+                    LB 健康检查失败
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.4" data-path="../network/dns-lookup-5s-delay.html">
+            
+                <a href="../network/dns-lookup-5s-delay.html">
+            
+                    
+                    DNS 5秒延时
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.5" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 无法访问外网
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.6" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 无法访问集群外的内网服务
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7" >
+            
+                <span>
+            
+                    
+                    Docker 问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.7.1" >
+            
+                <span>
+            
+                    
+                    TODO:容器内无法 mount
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">最佳实践</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="../../best-practice/cluster-permission-control.html">
+            
+                <a href="../../best-practice/cluster-permission-control.html">
+            
+                    
+                    集群权限控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../../best-practice/kubernetes-grace-update.html">
+            
+                <a href="../../best-practice/kubernetes-grace-update.html">
+            
+                    
+                    优雅热更新
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="../../best-practice/scale-keepalive-service.html">
+            
+                <a href="../../best-practice/scale-keepalive-service.html">
+            
+                    
+                    解决长连接服务扩容失效
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4" data-path="../../best-practice/handle-cgroup-oom-with-oom-guard-in-userspace.html">
+            
+                <a href="../../best-practice/handle-cgroup-oom-with-oom-guard-in-userspace.html">
+            
+                    
+                    使用 oom-guard 在用户态处理 cgroup OOM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.5" data-path="../../best-practice/wildcard-domain-forward.html">
+            
+                <a href="../../best-practice/wildcard-domain-forward.html">
+            
+                    
+                    泛域名动态 Service 转发解决方案
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6" data-path="../../best-practice/efficient-kubectl.html">
+            
+                <a href="../../best-practice/efficient-kubectl.html">
+            
+                    
+                    kubectl 高效技巧
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7" data-path="../../best-practice/handle-disk-full.html">
+            
+                <a href="../../best-practice/handle-disk-full.html">
+            
+                    
+                    TODO:处理容器磁盘被写满
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" >
+            
+                <span>
+            
+                    
+                    TODO:使用 MetalLB 创建负载均衡器
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.9" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 原地升级
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.10" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 固定 IP
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.11" >
+            
+                <span>
+            
+                    
+                    TODO:使用 lxcfs 隔离 /proc
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.12" >
+            
+                <span>
+            
+                    
+                    TODO:容器磁盘隔离
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">K8S 配置管理</li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" >
+            
+                <span>
+            
+                    
+                    Helm
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.1.1" data-path="../../configuration-management/helm/install-helm.html">
+            
+                <a href="../../configuration-management/helm/install-helm.html">
+            
+                    
+                    安装 Helm
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.2" data-path="../../configuration-management/helm/upgrade-helm-v2-to-v3.html">
+            
+                <a href="../../configuration-management/helm/upgrade-helm-v2-to-v3.html">
+            
+                    
+                    Helm V2 迁移到 V3
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" >
+            
+                <span>
+            
+                    
+                    TODO:Kustomize
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">安全</li>
+        
+        
+    
+        <li class="chapter " data-level="5.1" >
+            
+                <span>
+            
+                    
+                    cert-manager
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1.1" data-path="../../security/cert-manager/install-cert-manger.html">
+            
+                <a href="../../security/cert-manager/install-cert-manger.html">
+            
+                    
+                    安装 cert-manager
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="5.1.2" data-path="../../security/cert-manager/autogenerate-certificate-with-cert-manager.html">
+            
+                <a href="../../security/cert-manager/autogenerate-certificate-with-cert-manager.html">
+            
+                    
+                    使用 cert-manager 自动生成证书
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Kubernetes 部署</li>
+        
+        
+    
+        <li class="chapter " data-level="6.1" >
+            
+                <span>
+            
+                    
+                    TODO:二进制部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Kubeadm 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.3" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Minikube 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.4" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Bootkube 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.5" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Ansible 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">K8S 管理工具</li>
+        
+        
+    
+        <li class="chapter " data-level="7.1" >
+            
+                <span>
+            
+                    
+                    TODO:Rancher
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2" >
+            
+                <span>
+            
+                    
+                    TODO:Weave Scope
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.3" >
+            
+                <span>
+            
+                    
+                    TODO:Kui
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.4" >
+            
+                <span>
+            
+                    
+                    TODO:Kubernetes Dashboard
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" >
+            
+                <span>
+            
+                    
+                    TODO:Kubetail
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.6" >
+            
+                <span>
+            
+                    
+                    TODO:Kubebox
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">运行时</li>
+        
+        
+    
+        <li class="chapter " data-level="8.1" >
+            
+                <span>
+            
+                    
+                    TODO:Docker
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2" >
+            
+                <span>
+            
+                    
+                    TODO:Containerd
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3" >
+            
+                <span>
+            
+                    
+                    TODO:CRI-O
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">服务发现</li>
+        
+        
+    
+        <li class="chapter " data-level="9.1" >
+            
+                <span>
+            
+                    
+                    TODO:ETCD
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.2" >
+            
+                <span>
+            
+                    
+                    TODO:Zookeeper
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.3" >
+            
+                <span>
+            
+                    
+                    TODO:Consul
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">存储</li>
+        
+        
+    
+        <li class="chapter " data-level="10.1" >
+            
+                <span>
+            
+                    
+                    ElasticSearch
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="10.1.1" data-path="../../storage/install-elasticsearch-and-kibana-with-elastic-oparator.html">
+            
+                <a href="../../storage/install-elasticsearch-and-kibana-with-elastic-oparator.html">
+            
+                    
+                    使用 elastic-oparator 部署 Elasticsearch 和 Kibana
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="10.2" >
+            
+                <span>
+            
+                    
+                    TODO:Rook
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.3" >
+            
+                <span>
+            
+                    
+                    TODO:TiKV
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.4" >
+            
+                <span>
+            
+                    
+                    TODO:ETCD
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.5" >
+            
+                <span>
+            
+                    
+                    TODO:Zookeeper
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.6" >
+            
+                <span>
+            
+                    
+                    TODO:Cassandra
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.7" >
+            
+                <span>
+            
+                    
+                    TODO:MySQL
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.8" >
+            
+                <span>
+            
+                    
+                    TODO:TiDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.9" >
+            
+                <span>
+            
+                    
+                    TODO:PostgreSQL
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.10" >
+            
+                <span>
+            
+                    
+                    TODO:MongoDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.11" >
+            
+                <span>
+            
+                    
+                    TODO:InfluxDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.12" >
+            
+                <span>
+            
+                    
+                    TODO:OpenTSDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">监控</li>
+        
+        
+    
+        <li class="chapter " data-level="11.1" >
+            
+                <span>
+            
+                    
+                    TODO:Prometheus
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="11.2" >
+            
+                <span>
+            
+                    
+                    TODO:Grafana
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="11.3" >
+            
+                <span>
+            
+                    
+                    TODO:Jaeger
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Ingress</li>
+        
+        
+    
+        <li class="chapter " data-level="12.1" >
+            
+                <span>
+            
+                    
+                    TODO:Nginx
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.2" >
+            
+                <span>
+            
+                    
+                    TODO:Traefik
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.3" >
+            
+                <span>
+            
+                    
+                    TODO:Envoy
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.4" >
+            
+                <span>
+            
+                    
+                    TODO:Kong
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.5" >
+            
+                <span>
+            
+                    
+                    TODO:Gloo
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.6" >
+            
+                <span>
+            
+                    
+                    TODO:Contour
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.7" >
+            
+                <span>
+            
+                    
+                    TODO:Ambassador
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.8" >
+            
+                <span>
+            
+                    
+                    TODO:HAProxy
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.9" >
+            
+                <span>
+            
+                    
+                    TODO:Skipper
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Service Mesh</li>
+        
+        
+    
+        <li class="chapter " data-level="13.1" >
+            
+                <span>
+            
+                    
+                    TODO:Istio
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="13.2" >
+            
+                <span>
+            
+                    
+                    TODO:Maesh
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="13.3" >
+            
+                <span>
+            
+                    
+                    TODO:Kuma
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Serverless</li>
+        
+        
+    
+        <li class="chapter " data-level="14.1" >
+            
+                <span>
+            
+                    
+                    TODO:Knative
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="14.2" >
+            
+                <span>
+            
+                    
+                    TODO:Kubeless
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="14.3" >
+            
+                <span>
+            
+                    
+                    TODO:Fission
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">CI/CD</li>
+        
+        
+    
+        <li class="chapter " data-level="15.1" >
+            
+                <span>
+            
+                    
+                    TODO:Jenkins X
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.2" >
+            
+                <span>
+            
+                    
+                    TODO:Tekton
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.3" >
+            
+                <span>
+            
+                    
+                    TODO:Argo
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.4" >
+            
+                <span>
+            
+                    
+                    TODO:GoCD
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.5" >
+            
+                <span>
+            
+                    
+                    TODO:GitLab CI
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">镜像相关</li>
+        
+        
+    
+        <li class="chapter " data-level="16.1" >
+            
+                <span>
+            
+                    
+                    TODO:Harbor
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="16.2" >
+            
+                <span>
+            
+                    
+                    TODO:Dragonfly
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="16.3" >
+            
+                <span>
+            
+                    
+                    TODO:Kaniko
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="16.4" >
+            
+                <span>
+            
+                    
+                    TODO:kpack
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">网络方案</li>
+        
+        
+    
+        <li class="chapter " data-level="17.1" >
+            
+                <span>
+            
+                    
+                    TODO:Flannel
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.2" >
+            
+                <span>
+            
+                    
+                    TODO:Macvlan
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.3" >
+            
+                <span>
+            
+                    
+                    TODO:Calico
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.4" >
+            
+                <span>
+            
+                    
+                    TODO:Cilium
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.5" >
+            
+                <span>
+            
+                    
+                    TODO:Kube-router
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.6" >
+            
+                <span>
+            
+                    
+                    TODO:Kube-OVN
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.7" >
+            
+                <span>
+            
+                    
+                    TODO:OpenVSwitch
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >健康检查失败</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div class="search-plus" id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x5931;&#x8D25;">&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x5931;&#x8D25;</h1>
+<ul>
+<li>Kubernetes &#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x5305;&#x542B;&#x5C31;&#x7EEA;&#x68C0;&#x67E5;(readinessProbe)&#x548C;&#x5B58;&#x6D3B;&#x68C0;&#x67E5;(livenessProbe)</li>
+<li>pod &#x5982;&#x679C;&#x5C31;&#x7EEA;&#x68C0;&#x67E5;&#x5931;&#x8D25;&#x4F1A;&#x5C06;&#x6B64; pod ip &#x4ECE; service &#x4E2D;&#x6458;&#x9664;&#xFF0C;&#x901A;&#x8FC7; service &#x8BBF;&#x95EE;&#xFF0C;&#x6D41;&#x91CF;&#x5C06;&#x4E0D;&#x4F1A;&#x88AB;&#x8F6C;&#x53D1;&#x7ED9;&#x5C31;&#x7EEA;&#x68C0;&#x67E5;&#x5931;&#x8D25;&#x7684; pod</li>
+<li>pod &#x5982;&#x679C;&#x5B58;&#x6D3B;&#x68C0;&#x67E5;&#x5931;&#x8D25;&#xFF0C;kubelet &#x5C06;&#x4F1A;&#x6740;&#x6B7B;&#x5BB9;&#x5668;&#x5E76;&#x5C1D;&#x8BD5;&#x91CD;&#x542F;</li>
+</ul>
+<p>&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x5931;&#x8D25;&#x7684;&#x53EF;&#x80FD;&#x539F;&#x56E0;&#x6709;&#x591A;&#x79CD;&#xFF0C;&#x4E0B;&#x9762;&#x6211;&#x4EEC;&#x6765;&#x9010;&#x4E2A;&#x6392;&#x67E5;&#x3002;</p>
+<h2 id="&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x914D;&#x7F6E;&#x4E0D;&#x5408;&#x7406;">&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x914D;&#x7F6E;&#x4E0D;&#x5408;&#x7406;</h2>
+<p><code>initialDelaySeconds</code> &#x592A;&#x77ED;&#xFF0C;&#x5BB9;&#x5668;&#x542F;&#x52A8;&#x6162;&#xFF0C;&#x5BFC;&#x81F4;&#x5BB9;&#x5668;&#x8FD8;&#x6CA1;&#x5B8C;&#x5168;&#x542F;&#x52A8;&#x5C31;&#x5F00;&#x59CB;&#x63A2;&#x6D4B;&#xFF0C;&#x5982;&#x679C; successThreshold &#x662F;&#x9ED8;&#x8BA4;&#x503C; 1&#xFF0C;&#x68C0;&#x67E5;&#x5931;&#x8D25;&#x4E00;&#x6B21;&#x5C31;&#x4F1A;&#x88AB; kill&#xFF0C;&#x7136;&#x540E; pod &#x4E00;&#x76F4;&#x8FD9;&#x6837;&#x88AB; kill &#x91CD;&#x542F;&#x3002;</p>
+<p>TODO</p>
+<h2 id="&#x8282;&#x70B9;&#x8D1F;&#x8F7D;&#x8FC7;&#x9AD8;">&#x8282;&#x70B9;&#x8D1F;&#x8F7D;&#x8FC7;&#x9AD8;</h2>
+<p>cpu &#x5360;&#x7528;&#x9AD8;&#xFF08;&#x6BD4;&#x5982;&#x8DD1;&#x6EE1;&#xFF09;&#x4F1A;&#x5BFC;&#x81F4;&#x8FDB;&#x7A0B;&#x65E0;&#x6CD5;&#x6B63;&#x5E38;&#x53D1;&#x5305;&#x6536;&#x5305;&#xFF0C;&#x901A;&#x5E38;&#x4F1A; timeout&#xFF0C;&#x5BFC;&#x81F4; kubelet &#x8BA4;&#x4E3A; pod &#x4E0D;&#x5065;&#x5EB7;&#x3002;&#x53C2;&#x8003;&#x672C;&#x4E66; <a href="../node/high-load-on-node.html">&#x8282;&#x70B9;&#x9AD8;&#x8D1F;&#x8F7D;</a> &#x4E00;&#x8282;&#x3002;</p>
+<p>TODO</p>
+<h2 id="&#x5BB9;&#x5668;&#x8FDB;&#x7A0B;&#x88AB;&#x6728;&#x9A6C;&#x8FDB;&#x7A0B;&#x6740;&#x6B7B;">&#x5BB9;&#x5668;&#x8FDB;&#x7A0B;&#x88AB;&#x6728;&#x9A6C;&#x8FDB;&#x7A0B;&#x6740;&#x6B7B;</h2>
+<p>TODO</p>
+<h2 id="&#x5BB9;&#x5668;&#x5185;&#x8FDB;&#x7A0B;&#x7AEF;&#x53E3;&#x76D1;&#x542C;&#x6302;&#x6389;">&#x5BB9;&#x5668;&#x5185;&#x8FDB;&#x7A0B;&#x7AEF;&#x53E3;&#x76D1;&#x542C;&#x6302;&#x6389;</h2>
+<p>&#x4F7F;&#x7528; <code>netstat -tunlp</code> &#x68C0;&#x67E5;&#x7AEF;&#x53E3;&#x76D1;&#x542C;&#x662F;&#x5426;&#x8FD8;&#x5728;&#xFF0C;&#x5982;&#x679C;&#x4E0D;&#x5728;&#x4E86;&#x4F1A;&#x76F4;&#x63A5; reset &#x6389;&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x63A2;&#x6D4B;&#x7684;&#x8FDE;&#x63A5;:</p>
+<pre><code class="lang-bash">20:15:17.890996 IP 172.16.2.1.38074 &gt; 172.16.2.23.8888: Flags [S], seq 96880261, win 14600, options [mss 1424,nop,nop,sackOK,nop,wscale 7], length 0
+20:15:17.891021 IP 172.16.2.23.8888 &gt; 172.16.2.1.38074: Flags [R.], seq 0, ack 96880262, win 0, length 0
+20:15:17.906744 IP 10.0.0.16.54132 &gt; 172.16.2.23.8888: Flags [S], seq 1207014342, win 14600, options [mss 1424,nop,nop,sackOK,nop,wscale 7], length 0
+20:15:17.906766 IP 172.16.2.23.8888 &gt; 10.0.0.16.54132: Flags [R.], seq 0, ack 1207014343, win 0, length 0
+</code></pre>
+<p>&#x8FDE;&#x63A5;&#x5F02;&#x5E38;&#xFF0C;&#x4ECE;&#x800C;&#x5065;&#x5EB7;&#x68C0;&#x67E5;&#x5931;&#x8D25; </p>
+<footer class="page-footer"><span class="copyright">&#xA9; roc all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
+2019-09-20 13:47:22
+</span></footer>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                
+                <a href="pod-restart.html" class="navigation navigation-next navigation-unique" aria-label="Next page: Pod 异常重启">
+                    <i class="fa fa-angle-right"></i>
+                </a>
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"健康检查失败","level":"2.2.1","depth":2,"next":{"title":"Pod 异常重启","level":"2.2.2","depth":2,"path":"troubleshooting/pod/pod-restart.md","ref":"troubleshooting/pod/pod-restart.md","articles":[]},"previous":{"title":"Pod 问题","level":"2.2","depth":1,"ref":"","articles":[{"title":"健康检查失败","level":"2.2.1","depth":2,"path":"troubleshooting/pod/healthcheck-failed.md","ref":"troubleshooting/pod/healthcheck-failed.md","articles":[]},{"title":"Pod 异常重启","level":"2.2.2","depth":2,"path":"troubleshooting/pod/pod-restart.md","ref":"troubleshooting/pod/pod-restart.md","articles":[]},{"title":"Pod 一直 Pending","level":"2.2.3","depth":2,"path":"troubleshooting/pod/pod-pending-forever.md","ref":"troubleshooting/pod/pod-pending-forever.md","articles":[]},{"title":"Pod 一直 ContainerCreating","level":"2.2.4","depth":2,"path":"troubleshooting/pod/pod-containercreating-forever.md","ref":"troubleshooting/pod/pod-containercreating-forever.md","articles":[]},{"title":"Pod 一直 Terminating","level":"2.2.5","depth":2,"path":"troubleshooting/pod/pod-terminating-forever.md","ref":"troubleshooting/pod/pod-terminating-forever.md","articles":[]},{"title":"Pod 无法被 exec 和 logs","level":"2.2.6","depth":2,"path":"troubleshooting/pod/pod-cannot-exec-or-logs.md","ref":"troubleshooting/pod/pod-cannot-exec-or-logs.md","articles":[]},{"title":"TODO:Pod Terminating 慢","level":"2.2.7","depth":2,"path":"troubleshooting/pod/slow-pod-terminating.md","ref":"troubleshooting/pod/slow-pod-terminating.md","articles":[]}]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","-lunr","-search","search-plus","tbfed-pagefooter","codesnippet","splitter","page-toc-button","image-captions","back-to-top-button","-lunr","-search","search-plus","github-buttons@2.1.0","favicon@^0.0.2","3-ba","disqus","theme-default","language-picker"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy roc","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"disqus":{"useIdentifier":false,"shortName":"kubernetes-practice-guide"},"language-picker":{"grid-columns":3},"github":{"url":"https://github.com/imroc/kubernetes-practice-guide"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/imroc/kubernetes-practice-guide/blob/master"},"splitter":{},"mermaid":{},"codesnippet":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"favicon":{"shortcut":"favicon.ico","bookmark":"favicon.ico"},"page-toc-button":{},"back-to-top-button":{},"github-buttons":{"repo":"imroc/kubernetes-practice-guide","types":["star"],"size":"small"},"3-ba":{"configuration":"auto","token":"f20c61878dd8f7a4eff595bdc636eb7c"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"search-plus":{},"image-captions":{"caption":"图片 - _CAPTION_","variable_name":"_pictures"}},"theme":"default","author":"roc","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"_pictures":[{"backlink":"best-practice/wildcard-domain-forward.html#fig3.5.1","level":"3.5","list_caption":"Figure: nginx.conf","alt":"nginx.conf","nro":1,"url":"https://imroc.io/assets/blog/nginx-wilcard-conf.png","index":1,"caption_template":"图片 - _CAPTION_","label":"nginx.conf","attributes":{},"skip":false,"key":"3.5.1"},{"backlink":"best-practice/efficient-kubectl.html#fig3.6.1","level":"3.6","list_caption":"Figure: kk","alt":"kk","nro":2,"url":"https://imroc.io/assets/blog/dash_kk.png","index":1,"caption_template":"图片 - _CAPTION_","label":"kk","attributes":{},"skip":false,"key":"3.6.1"},{"backlink":"best-practice/efficient-kubectl.html#fig3.6.2","level":"3.6","list_caption":"Figure: demo","alt":"demo","nro":3,"url":"https://imroc.io/assets/blog/k.gif","index":2,"caption_template":"图片 - _CAPTION_","label":"demo","attributes":{},"skip":false,"key":"3.6.2"}]},"title":"Kubernetes 实践指南","language":"zh-hans","links":{"sidebar":{"roc":"https://imroc.io"}},"gitbook":"*","description":"Kubernetes 实践指南"},"file":{"path":"troubleshooting/pod/healthcheck-failed.md","mtime":"2019-09-20T05:47:22.675Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-20T05:48:08.258Z"},"basePath":"../..","book":{"language":"zh"}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../../gitbook/gitbook.js"></script>
+    <script src="../../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-editlink/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search-plus/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search-plus/search.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-page-toc-button/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-back-to-top-button/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-github-buttons/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-3-ba/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.16.1/URI.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-disqus/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-language-picker/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+

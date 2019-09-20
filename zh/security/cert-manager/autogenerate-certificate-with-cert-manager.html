@@ -1,0 +1,2231 @@
+
+<!DOCTYPE HTML>
+<html lang="zh-hans" >
+    <head>
+        <meta charset="UTF-8">
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <title>使用 cert-manager 自动生成证书 · Kubernetes 实践指南</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="description" content="">
+        <meta name="generator" content="GitBook 3.2.3">
+        <meta name="author" content="roc">
+        
+        
+    
+    <link rel="stylesheet" href="../../../gitbook/style.css">
+
+    
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-search-plus/search.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-tbfed-pagefooter/footer.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-splitter/splitter.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-page-toc-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-image-captions/image-captions.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-back-to-top-button/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-disqus/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-language-picker/plugin.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-highlight/website.css">
+                
+            
+                
+                <link rel="stylesheet" href="../../../gitbook/gitbook-plugin-fontsettings/website.css">
+                
+            
+        
+
+    
+
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+
+        
+    
+    
+    
+    
+    <meta name="HandheldFriendly" content="true"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="apple-touch-icon-precomposed" sizes="152x152" href="../../../gitbook/images/apple-touch-icon-precomposed-152.png">
+    <link rel="shortcut icon" href="../../../gitbook/images/favicon.ico" type="image/x-icon">
+
+    
+    
+    <link rel="prev" href="install-cert-manger.html" />
+    
+
+    
+        <link rel="shortcut icon" href='../../favicon.ico' type="image/x-icon">
+    
+    
+        <link rel="bookmark" href='../../favicon.ico' type="image/x-icon">
+    
+    
+    
+
+    <style>
+    @media only screen and (max-width: 640px) {
+        .book-header .hidden-mobile {
+            display: none;
+        }
+    }
+    </style>
+    <script>
+        window["gitbook-plugin-github-buttons"] = {"repo":"imroc/kubernetes-practice-guide","types":["star"],"size":"small"};
+    </script>
+
+    </head>
+    <body>
+        
+<div class="book">
+    <div class="book-summary">
+        
+            
+<div id="book-search-input" role="search">
+    <input type="text" placeholder="输入并搜索" />
+</div>
+
+            
+                <nav role="navigation">
+                
+
+
+<ul class="summary">
+    
+    
+    
+        
+        <li>
+            <a href="https://imroc.io" target="_blank" class="custom-link">roc</a>
+        </li>
+    
+    
+
+    
+    <li class="divider"></li>
+    
+
+    
+        
+        
+    
+        <li class="chapter " data-level="1.1" data-path="../../">
+            
+                <a href="../../">
+            
+                    
+                    Introduction
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">问题排查</li>
+        
+        
+    
+        <li class="chapter " data-level="2.1" data-path="../../troubleshooting/debug-skill/">
+            
+                <a href="../../troubleshooting/debug-skill/">
+            
+                    
+                    问题定位技巧
+            
+                </a>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.1.1" data-path="../../troubleshooting/debug-skill/analysis-exitcode.html">
+            
+                <a href="../../troubleshooting/debug-skill/analysis-exitcode.html">
+            
+                    
+                    分析 ExitCode 定位 Pod 异常退出原因
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.2" data-path="../../troubleshooting/debug-skill/capture-packets-in-container.html">
+            
+                <a href="../../troubleshooting/debug-skill/capture-packets-in-container.html">
+            
+                    
+                    容器内抓包定位网络问题
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.1.3" data-path="../../troubleshooting/debug-skill/use-systemtap-to-locate-problems.html">
+            
+                <a href="../../troubleshooting/debug-skill/use-systemtap-to-locate-problems.html">
+            
+                    
+                    使用 systemtap 定位疑难杂症
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2" >
+            
+                <span>
+            
+                    
+                    Pod 问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.2.1" data-path="../../troubleshooting/pod/healthcheck-failed.html">
+            
+                <a href="../../troubleshooting/pod/healthcheck-failed.html">
+            
+                    
+                    健康检查失败
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.2" data-path="../../troubleshooting/pod/pod-restart.html">
+            
+                <a href="../../troubleshooting/pod/pod-restart.html">
+            
+                    
+                    Pod 异常重启
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.3" data-path="../../troubleshooting/pod/pod-pending-forever.html">
+            
+                <a href="../../troubleshooting/pod/pod-pending-forever.html">
+            
+                    
+                    Pod 一直 Pending
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.4" data-path="../../troubleshooting/pod/pod-containercreating-forever.html">
+            
+                <a href="../../troubleshooting/pod/pod-containercreating-forever.html">
+            
+                    
+                    Pod 一直 ContainerCreating
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.5" data-path="../../troubleshooting/pod/pod-terminating-forever.html">
+            
+                <a href="../../troubleshooting/pod/pod-terminating-forever.html">
+            
+                    
+                    Pod 一直 Terminating
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.6" data-path="../../troubleshooting/pod/pod-cannot-exec-or-logs.html">
+            
+                <a href="../../troubleshooting/pod/pod-cannot-exec-or-logs.html">
+            
+                    
+                    Pod 无法被 exec 和 logs
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.2.7" data-path="../../troubleshooting/pod/slow-pod-terminating.html">
+            
+                <a href="../../troubleshooting/pod/slow-pod-terminating.html">
+            
+                    
+                    TODO:Pod Terminating 慢
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.3" data-path="../../troubleshooting/cannot-delete-job.html">
+            
+                <a href="../../troubleshooting/cannot-delete-job.html">
+            
+                    
+                    Job 无法被删除
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4" >
+            
+                <span>
+            
+                    
+                    节点问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.4.1" data-path="../../troubleshooting/node/node-notready.html">
+            
+                <a href="../../troubleshooting/node/node-notready.html">
+            
+                    
+                    节点 NotReady
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.2" data-path="../../troubleshooting/node/no-space-left-on-device.html">
+            
+                <a href="../../troubleshooting/node/no-space-left-on-device.html">
+            
+                    
+                    no space left on device
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.3" data-path="../../troubleshooting/node/rancher-remove-node-cause-cluster-abnormal.html">
+            
+                <a href="../../troubleshooting/node/rancher-remove-node-cause-cluster-abnormal.html">
+            
+                    
+                    Rancher 清除 Node 导致集群异常
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.4" data-path="../../troubleshooting/node/memory-fragmentation.html">
+            
+                <a href="../../troubleshooting/node/memory-fragmentation.html">
+            
+                    
+                    内存碎片化
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.5" data-path="../../troubleshooting/node/high-load-on-node.html">
+            
+                <a href="../../troubleshooting/node/high-load-on-node.html">
+            
+                    
+                    节点高负载
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.6" data-path="../../troubleshooting/node/eviction-leads-to-service-disruption.html">
+            
+                <a href="../../troubleshooting/node/eviction-leads-to-service-disruption.html">
+            
+                    
+                    驱逐导致服务中断
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.7" data-path="../../troubleshooting/node/cgroup-leaking.html">
+            
+                <a href="../../troubleshooting/node/cgroup-leaking.html">
+            
+                    
+                    cgroup 泄露
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.8" data-path="../../troubleshooting/node/runnig-out-of-inotify-watches.html">
+            
+                <a href="../../troubleshooting/node/runnig-out-of-inotify-watches.html">
+            
+                    
+                    inotify watch 耗尽
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.9" data-path="../../troubleshooting/node/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.html">
+            
+                <a href="../../troubleshooting/node/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.html">
+            
+                    
+                    tcp_tw_recycle 导致在 NAT 环境会丢包
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.10" data-path="../../troubleshooting/node/arp_cache-neighbor-table-overflow.html">
+            
+                <a href="../../troubleshooting/node/arp_cache-neighbor-table-overflow.html">
+            
+                    
+                    arp_cache: neighbor table overflow!
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.11" data-path="../../troubleshooting/node/cannot-allocate-memory.html">
+            
+                <a href="../../troubleshooting/node/cannot-allocate-memory.html">
+            
+                    
+                    Cannot allocate memory
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.4.12" >
+            
+                <span>
+            
+                    
+                    TODO: cgroup oom 导致内核 crash
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5" >
+            
+                <span>
+            
+                    
+                    Master 问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.5.1" >
+            
+                <span>
+            
+                    
+                    TODO:apiserver 响应慢
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.5.2" >
+            
+                <span>
+            
+                    
+                    TODO:ETCD频繁选主
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6" >
+            
+                <span>
+            
+                    
+                    网络问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.6.1" data-path="../../troubleshooting/network/service-unreachable.html">
+            
+                <a href="../../troubleshooting/network/service-unreachable.html">
+            
+                    
+                    Service 访问不通
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.2" data-path="../../troubleshooting/network/service-cannot-resolve.html">
+            
+                <a href="../../troubleshooting/network/service-cannot-resolve.html">
+            
+                    
+                    Service 无法解析
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.3" data-path="../../troubleshooting/network/lb-healthcheck-failed.html">
+            
+                <a href="../../troubleshooting/network/lb-healthcheck-failed.html">
+            
+                    
+                    LB 健康检查失败
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.4" data-path="../../troubleshooting/network/dns-lookup-5s-delay.html">
+            
+                <a href="../../troubleshooting/network/dns-lookup-5s-delay.html">
+            
+                    
+                    DNS 5秒延时
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.5" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 无法访问外网
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="2.6.6" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 无法访问集群外的内网服务
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="2.7" >
+            
+                <span>
+            
+                    
+                    Docker 问题
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="2.7.1" >
+            
+                <span>
+            
+                    
+                    TODO:容器内无法 mount
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">最佳实践</li>
+        
+        
+    
+        <li class="chapter " data-level="3.1" data-path="../../best-practice/cluster-permission-control.html">
+            
+                <a href="../../best-practice/cluster-permission-control.html">
+            
+                    
+                    集群权限控制
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.2" data-path="../../best-practice/kubernetes-grace-update.html">
+            
+                <a href="../../best-practice/kubernetes-grace-update.html">
+            
+                    
+                    优雅热更新
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.3" data-path="../../best-practice/scale-keepalive-service.html">
+            
+                <a href="../../best-practice/scale-keepalive-service.html">
+            
+                    
+                    解决长连接服务扩容失效
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.4" data-path="../../best-practice/handle-cgroup-oom-with-oom-guard-in-userspace.html">
+            
+                <a href="../../best-practice/handle-cgroup-oom-with-oom-guard-in-userspace.html">
+            
+                    
+                    使用 oom-guard 在用户态处理 cgroup OOM
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.5" data-path="../../best-practice/wildcard-domain-forward.html">
+            
+                <a href="../../best-practice/wildcard-domain-forward.html">
+            
+                    
+                    泛域名动态 Service 转发解决方案
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.6" data-path="../../best-practice/efficient-kubectl.html">
+            
+                <a href="../../best-practice/efficient-kubectl.html">
+            
+                    
+                    kubectl 高效技巧
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.7" data-path="../../best-practice/handle-disk-full.html">
+            
+                <a href="../../best-practice/handle-disk-full.html">
+            
+                    
+                    TODO:处理容器磁盘被写满
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.8" >
+            
+                <span>
+            
+                    
+                    TODO:使用 MetalLB 创建负载均衡器
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.9" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 原地升级
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.10" >
+            
+                <span>
+            
+                    
+                    TODO:Pod 固定 IP
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.11" >
+            
+                <span>
+            
+                    
+                    TODO:使用 lxcfs 隔离 /proc
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="3.12" >
+            
+                <span>
+            
+                    
+                    TODO:容器磁盘隔离
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">K8S 配置管理</li>
+        
+        
+    
+        <li class="chapter " data-level="4.1" >
+            
+                <span>
+            
+                    
+                    Helm
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="4.1.1" data-path="../../configuration-management/helm/install-helm.html">
+            
+                <a href="../../configuration-management/helm/install-helm.html">
+            
+                    
+                    安装 Helm
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="4.1.2" data-path="../../configuration-management/helm/upgrade-helm-v2-to-v3.html">
+            
+                <a href="../../configuration-management/helm/upgrade-helm-v2-to-v3.html">
+            
+                    
+                    Helm V2 迁移到 V3
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="4.2" >
+            
+                <span>
+            
+                    
+                    TODO:Kustomize
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">安全</li>
+        
+        
+    
+        <li class="chapter " data-level="5.1" >
+            
+                <span>
+            
+                    
+                    cert-manager
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="5.1.1" data-path="install-cert-manger.html">
+            
+                <a href="install-cert-manger.html">
+            
+                    
+                    安装 cert-manager
+            
+                </a>
+            
+
+            
+        </li>
+    
+        <li class="chapter active" data-level="5.1.2" data-path="autogenerate-certificate-with-cert-manager.html">
+            
+                <a href="autogenerate-certificate-with-cert-manager.html">
+            
+                    
+                    使用 cert-manager 自动生成证书
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Kubernetes 部署</li>
+        
+        
+    
+        <li class="chapter " data-level="6.1" >
+            
+                <span>
+            
+                    
+                    TODO:二进制部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.2" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Kubeadm 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.3" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Minikube 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.4" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Bootkube 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="6.5" >
+            
+                <span>
+            
+                    
+                    TODO:使用 Ansible 部署
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">K8S 管理工具</li>
+        
+        
+    
+        <li class="chapter " data-level="7.1" >
+            
+                <span>
+            
+                    
+                    TODO:Rancher
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.2" >
+            
+                <span>
+            
+                    
+                    TODO:Weave Scope
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.3" >
+            
+                <span>
+            
+                    
+                    TODO:Kui
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.4" >
+            
+                <span>
+            
+                    
+                    TODO:Kubernetes Dashboard
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.5" >
+            
+                <span>
+            
+                    
+                    TODO:Kubetail
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="7.6" >
+            
+                <span>
+            
+                    
+                    TODO:Kubebox
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">运行时</li>
+        
+        
+    
+        <li class="chapter " data-level="8.1" >
+            
+                <span>
+            
+                    
+                    TODO:Docker
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.2" >
+            
+                <span>
+            
+                    
+                    TODO:Containerd
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="8.3" >
+            
+                <span>
+            
+                    
+                    TODO:CRI-O
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">服务发现</li>
+        
+        
+    
+        <li class="chapter " data-level="9.1" >
+            
+                <span>
+            
+                    
+                    TODO:ETCD
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.2" >
+            
+                <span>
+            
+                    
+                    TODO:Zookeeper
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="9.3" >
+            
+                <span>
+            
+                    
+                    TODO:Consul
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">存储</li>
+        
+        
+    
+        <li class="chapter " data-level="10.1" >
+            
+                <span>
+            
+                    
+                    ElasticSearch
+            
+                </span>
+            
+
+            
+            <ul class="articles">
+                
+    
+        <li class="chapter " data-level="10.1.1" data-path="../../storage/install-elasticsearch-and-kibana-with-elastic-oparator.html">
+            
+                <a href="../../storage/install-elasticsearch-and-kibana-with-elastic-oparator.html">
+            
+                    
+                    使用 elastic-oparator 部署 Elasticsearch 和 Kibana
+            
+                </a>
+            
+
+            
+        </li>
+    
+
+            </ul>
+            
+        </li>
+    
+        <li class="chapter " data-level="10.2" >
+            
+                <span>
+            
+                    
+                    TODO:Rook
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.3" >
+            
+                <span>
+            
+                    
+                    TODO:TiKV
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.4" >
+            
+                <span>
+            
+                    
+                    TODO:ETCD
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.5" >
+            
+                <span>
+            
+                    
+                    TODO:Zookeeper
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.6" >
+            
+                <span>
+            
+                    
+                    TODO:Cassandra
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.7" >
+            
+                <span>
+            
+                    
+                    TODO:MySQL
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.8" >
+            
+                <span>
+            
+                    
+                    TODO:TiDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.9" >
+            
+                <span>
+            
+                    
+                    TODO:PostgreSQL
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.10" >
+            
+                <span>
+            
+                    
+                    TODO:MongoDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.11" >
+            
+                <span>
+            
+                    
+                    TODO:InfluxDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="10.12" >
+            
+                <span>
+            
+                    
+                    TODO:OpenTSDB
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">监控</li>
+        
+        
+    
+        <li class="chapter " data-level="11.1" >
+            
+                <span>
+            
+                    
+                    TODO:Prometheus
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="11.2" >
+            
+                <span>
+            
+                    
+                    TODO:Grafana
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="11.3" >
+            
+                <span>
+            
+                    
+                    TODO:Jaeger
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Ingress</li>
+        
+        
+    
+        <li class="chapter " data-level="12.1" >
+            
+                <span>
+            
+                    
+                    TODO:Nginx
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.2" >
+            
+                <span>
+            
+                    
+                    TODO:Traefik
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.3" >
+            
+                <span>
+            
+                    
+                    TODO:Envoy
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.4" >
+            
+                <span>
+            
+                    
+                    TODO:Kong
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.5" >
+            
+                <span>
+            
+                    
+                    TODO:Gloo
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.6" >
+            
+                <span>
+            
+                    
+                    TODO:Contour
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.7" >
+            
+                <span>
+            
+                    
+                    TODO:Ambassador
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.8" >
+            
+                <span>
+            
+                    
+                    TODO:HAProxy
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="12.9" >
+            
+                <span>
+            
+                    
+                    TODO:Skipper
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Service Mesh</li>
+        
+        
+    
+        <li class="chapter " data-level="13.1" >
+            
+                <span>
+            
+                    
+                    TODO:Istio
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="13.2" >
+            
+                <span>
+            
+                    
+                    TODO:Maesh
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="13.3" >
+            
+                <span>
+            
+                    
+                    TODO:Kuma
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">Serverless</li>
+        
+        
+    
+        <li class="chapter " data-level="14.1" >
+            
+                <span>
+            
+                    
+                    TODO:Knative
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="14.2" >
+            
+                <span>
+            
+                    
+                    TODO:Kubeless
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="14.3" >
+            
+                <span>
+            
+                    
+                    TODO:Fission
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">CI/CD</li>
+        
+        
+    
+        <li class="chapter " data-level="15.1" >
+            
+                <span>
+            
+                    
+                    TODO:Jenkins X
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.2" >
+            
+                <span>
+            
+                    
+                    TODO:Tekton
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.3" >
+            
+                <span>
+            
+                    
+                    TODO:Argo
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.4" >
+            
+                <span>
+            
+                    
+                    TODO:GoCD
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="15.5" >
+            
+                <span>
+            
+                    
+                    TODO:GitLab CI
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">镜像相关</li>
+        
+        
+    
+        <li class="chapter " data-level="16.1" >
+            
+                <span>
+            
+                    
+                    TODO:Harbor
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="16.2" >
+            
+                <span>
+            
+                    
+                    TODO:Dragonfly
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="16.3" >
+            
+                <span>
+            
+                    
+                    TODO:Kaniko
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="16.4" >
+            
+                <span>
+            
+                    
+                    TODO:kpack
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+        
+        <li class="header">网络方案</li>
+        
+        
+    
+        <li class="chapter " data-level="17.1" >
+            
+                <span>
+            
+                    
+                    TODO:Flannel
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.2" >
+            
+                <span>
+            
+                    
+                    TODO:Macvlan
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.3" >
+            
+                <span>
+            
+                    
+                    TODO:Calico
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.4" >
+            
+                <span>
+            
+                    
+                    TODO:Cilium
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.5" >
+            
+                <span>
+            
+                    
+                    TODO:Kube-router
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.6" >
+            
+                <span>
+            
+                    
+                    TODO:Kube-OVN
+            
+                </span>
+            
+
+            
+        </li>
+    
+        <li class="chapter " data-level="17.7" >
+            
+                <span>
+            
+                    
+                    TODO:OpenVSwitch
+            
+                </span>
+            
+
+            
+        </li>
+    
+
+    
+
+    <li class="divider"></li>
+
+    <li>
+        <a href="https://www.gitbook.com" target="blank" class="gitbook-link">
+            本书使用 GitBook 发布
+        </a>
+    </li>
+</ul>
+
+
+                </nav>
+            
+        
+    </div>
+
+    <div class="book-body">
+        
+            <div class="body-inner">
+                
+                    
+
+<div class="book-header" role="navigation">
+    
+
+    <!-- Title -->
+    <h1>
+        <i class="fa fa-circle-o-notch fa-spin"></i>
+        <a href="../.." >使用 cert-manager 自动生成证书</a>
+    </h1>
+</div>
+
+
+
+
+                    <div class="page-wrapper" tabindex="-1" role="main">
+                        <div class="page-inner">
+                            
+<div class="search-plus" id="book-search-results">
+    <div class="search-noresults">
+    
+                                <section class="normal markdown-section">
+                                
+                                <h1 id="&#x4F7F;&#x7528;-cert-manager-&#x81EA;&#x52A8;&#x751F;&#x6210;&#x8BC1;&#x4E66;">&#x4F7F;&#x7528; cert-manager &#x81EA;&#x52A8;&#x751F;&#x6210;&#x8BC1;&#x4E66;</h1>
+<p>&#x786E;&#x4FDD; <code>cert-manager</code> &#x5DF2;&#x5B89;&#x88C5;&#xFF0C;&#x53C2;&#x8003; <a href="install-cert-manger.html">&#x5B89;&#x88C5; cert-manager</a></p>
+<h2 id="&#x5229;&#x7528;-lets-encrypt-&#x751F;&#x6210;&#x514D;&#x8D39;&#x8BC1;&#x4E66;">&#x5229;&#x7528; Let&#x2019;s Encrypt &#x751F;&#x6210;&#x514D;&#x8D39;&#x8BC1;&#x4E66;</h2>
+<h3 id="&#x514D;&#x8D39;&#x8BC1;&#x4E66;&#x9881;&#x53D1;&#x539F;&#x7406;">&#x514D;&#x8D39;&#x8BC1;&#x4E66;&#x9881;&#x53D1;&#x539F;&#x7406;</h3>
+<p>Let&#x2019;s Encrypt &#x5229;&#x7528; <a href="https://tools.ietf.org/html/rfc8555" target="_blank">ACME</a> &#x534F;&#x8BAE;&#x6765;&#x6821;&#x9A8C;&#x57DF;&#x540D;&#x662F;&#x5426;&#x771F;&#x7684;&#x5C5E;&#x4E8E;&#x4F60;&#xFF0C;&#x6821;&#x9A8C;&#x6210;&#x529F;&#x540E;&#x5C31;&#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x9881;&#x53D1;&#x514D;&#x8D39;&#x8BC1;&#x4E66;&#xFF0C;&#x8BC1;&#x4E66;&#x6709;&#x6548;&#x671F;&#x53EA;&#x6709; 90 &#x5929;&#xFF0C;&#x5728;&#x5230;&#x671F;&#x524D;&#x9700;&#x8981;&#x518D;&#x6821;&#x9A8C;&#x4E00;&#x6B21;&#x6765;&#x5B9E;&#x73B0;&#x7EED;&#x671F;&#xFF0C;&#x5E78;&#x8FD0;&#x7684;&#x662F; cert-manager &#x53EF;&#x4EE5;&#x81EA;&#x52A8;&#x7EED;&#x671F;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x6C38;&#x4E45;&#x514D;&#x8D39;&#x7684;&#x8BC1;&#x4E66;&#x4E86;&#x3002;&#x4E3B;&#x6D41;&#x7684;&#x4E24;&#x79CD;&#x6821;&#x9A8C;&#x65B9;&#x5F0F;&#x662F; HTTP-01 &#x548C; DNS-01&#xFF0C;&#x4E0B;&#x9762;&#x7B80;&#x5355;&#x4ECB;&#x7ECD;&#x4E0B;&#x6821;&#x9A8C;&#x539F;&#x7406;:</p>
+<h4 id="http-01-&#x6821;&#x9A8C;&#x539F;&#x7406;">HTTP-01 &#x6821;&#x9A8C;&#x539F;&#x7406;</h4>
+<p>HTTP-01 &#x7684;&#x6821;&#x9A8C;&#x539F;&#x7406;&#x662F;&#x7ED9;&#x4F60;&#x57DF;&#x540D;&#x6307;&#x5411;&#x7684; HTTP &#x670D;&#x52A1;&#x589E;&#x52A0;&#x4E00;&#x4E2A;&#x4E34;&#x65F6; location &#xFF0C;<code>Let&#x2019;s Encrypt</code> &#x4F1A;&#x53D1;&#x9001; http &#x8BF7;&#x6C42;&#x5230; <code>http://&lt;YOUR_DOMAIN&gt;/.well-known/acme-challenge/&lt;TOKEN&gt;</code>&#xFF0C;<code>YOUR_DOMAIN</code> &#x5C31;&#x662F;&#x88AB;&#x6821;&#x9A8C;&#x7684;&#x57DF;&#x540D;&#xFF0C;<code>TOKEN</code> &#x662F; ACME &#x534F;&#x8BAE;&#x7684;&#x5BA2;&#x6237;&#x7AEF;&#x8D1F;&#x8D23;&#x653E;&#x7F6E;&#x7684;&#x6587;&#x4EF6;&#xFF0C;&#x5728;&#x8FD9;&#x91CC; ACME &#x5BA2;&#x6237;&#x7AEF;&#x5C31;&#x662F; cert-manager&#xFF0C;&#x5B83;&#x901A;&#x8FC7;&#x4FEE;&#x6539; Ingress &#x89C4;&#x5219;&#x6765;&#x589E;&#x52A0;&#x8FD9;&#x4E2A;&#x4E34;&#x65F6;&#x6821;&#x9A8C;&#x8DEF;&#x5F84;&#x5E76;&#x6307;&#x5411;&#x63D0;&#x4F9B; <code>TOKEN</code> &#x7684;&#x670D;&#x52A1;&#x3002;<code>Let&#x2019;s Encrypt</code> &#x4F1A;&#x5BF9;&#x6BD4; <code>TOKEN</code> &#x662F;&#x5426;&#x7B26;&#x5408;&#x9884;&#x671F;&#xFF0C;&#x6821;&#x9A8C;&#x6210;&#x529F;&#x540E;&#x5C31;&#x4F1A;&#x9881;&#x53D1;&#x8BC1;&#x4E66;&#x3002;&#x6B64;&#x65B9;&#x6CD5;&#x4EC5;&#x9002;&#x7528;&#x4E8E;&#x7ED9;&#x4F7F;&#x7528; Ingress &#x66B4;&#x9732;&#x6D41;&#x91CF;&#x7684;&#x670D;&#x52A1;&#x9881;&#x53D1;&#x8BC1;&#x4E66;&#xFF0C;&#x5E76;&#x4E14;&#x4E0D;&#x652F;&#x6301;&#x6CDB;&#x57DF;&#x540D;&#x8BC1;&#x4E66;&#x3002;</p>
+<h4 id="dns-01-&#x6821;&#x9A8C;&#x539F;&#x7406;">DNS-01 &#x6821;&#x9A8C;&#x539F;&#x7406;</h4>
+<p>DNS-01 &#x7684;&#x6821;&#x9A8C;&#x539F;&#x7406;&#x662F;&#x5229;&#x7528; DNS &#x63D0;&#x4F9B;&#x5546;&#x7684; API Key &#x62FF;&#x5230;&#x4F60;&#x7684; DNS &#x63A7;&#x5236;&#x6743;&#x9650;&#xFF0C; &#x5728; Let&#x2019;s Encrypt &#x4E3A; ACME &#x5BA2;&#x6237;&#x7AEF;&#x63D0;&#x4F9B;&#x4EE4;&#x724C;&#x540E;&#xFF0C;ACME &#x5BA2;&#x6237;&#x7AEF; (cert-manager) &#x5C06;&#x521B;&#x5EFA;&#x4ECE;&#x8BE5;&#x4EE4;&#x724C;&#x548C;&#x60A8;&#x7684;&#x5E10;&#x6237;&#x5BC6;&#x94A5;&#x6D3E;&#x751F;&#x7684; TXT &#x8BB0;&#x5F55;&#xFF0C;&#x5E76;&#x5C06;&#x8BE5;&#x8BB0;&#x5F55;&#x653E;&#x5728; <code>_acme-challenge.&lt;YOUR_DOMAIN&gt;</code>&#x3002; &#x7136;&#x540E; Let&#x2019;s Encrypt &#x5C06;&#x5411; DNS &#x7CFB;&#x7EDF;&#x67E5;&#x8BE2;&#x8BE5;&#x8BB0;&#x5F55;&#xFF0C;&#x5982;&#x679C;&#x627E;&#x5230;&#x5339;&#x914D;&#x9879;&#xFF0C;&#x5C31;&#x53EF;&#x4EE5;&#x9881;&#x53D1;&#x8BC1;&#x4E66;&#x3002;&#x6B64;&#x65B9;&#x6CD5;&#x4E0D;&#x9700;&#x8981;&#x4F60;&#x7684;&#x670D;&#x52A1;&#x4F7F;&#x7528; Ingress&#xFF0C;&#x5E76;&#x4E14;&#x652F;&#x6301;&#x6CDB;&#x57DF;&#x540D;&#x8BC1;&#x4E66;&#x3002;</p>
+<h3 id="&#x521B;&#x5EFA;&#x9881;&#x53D1;&#x673A;&#x6784;-clusterissuerissuer">&#x521B;&#x5EFA;&#x9881;&#x53D1;&#x673A;&#x6784; (ClusterIssuer/Issuer)</h3>
+<p>&#x6211;&#x4EEC;&#x9700;&#x8981;&#x5148;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x7B7E;&#x53D1;&#x673A;&#x6784;&#xFF0C;cert-manager &#x7ED9;&#x6211;&#x4EEC;&#x63D0;&#x4F9B;&#x4E86; Issuer &#x548C; ClusterIssuer &#x8FD9;&#x4E24;&#x79CD;&#x7528;&#x4E8E;&#x521B;&#x5EFA;&#x7B7E;&#x53D1;&#x673A;&#x6784;&#x7684;&#x81EA;&#x5B9A;&#x4E49;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF0C;&#x4ED6;&#x4EEC;&#x552F;&#x4E00;&#x533A;&#x522B;&#x5C31;&#x662F; Issuer &#x53EA;&#x80FD;&#x7528;&#x6765;&#x7B7E;&#x53D1;&#x81EA;&#x5DF1;&#x6240;&#x5728; namespace &#x4E0B;&#x7684;&#x8BC1;&#x4E66;&#xFF0C;ClusterIssuer &#x53EF;&#x4EE5;&#x7B7E;&#x53D1;&#x4EFB;&#x610F; namespace &#x4E0B;&#x7684;&#x8BC1;&#x4E66;&#xFF0C;&#x8FD9;&#x91CC;&#x4EE5; ClusterIssuer &#x4E3A;&#x4F8B;&#xFF0C;HTTP-01 &#x548C; DNS-01 &#x6821;&#x9A8C;&#x90FD;&#x652F;&#x6301;&#xFF0C;&#x5047;&#x8BBE;&#x57DF;&#x540D;&#x662F;&#x7528; <code>cloudflare</code> &#x7BA1;&#x7406;&#x7684;&#xFF0C;&#x5148;&#x767B;&#x5F55; <code>cloudflare</code> &#x62FF;&#x5230; API Key&#xFF0C;&#x7136;&#x540E;&#x521B;&#x5EFA;&#x4E00;&#x4E2A; Secret:</p>
+<pre><code class="lang-bash">kubectl -n cert-manager create secret generic cloudflare-apikey --from-literal=apikey=213807bd0fb1ca59bba24a58eac90492e6287
+</code></pre>
+<ul>
+<li>&#x7531;&#x4E8E; <code>ClusterIssuer</code> &#x662F; NonNamespaced &#x7C7B;&#x578B;&#x7684;&#x8D44;&#x6E90;&#xFF0C;&#x4E0D;&#x5728;&#x4EFB;&#x4F55;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#xFF0C;&#x5B83;&#x9700;&#x8981;&#x5F15;&#x7528; Secret&#xFF0C;&#x800C; Secret &#x5FC5;&#x987B;&#x5B58;&#x5728;&#x67D0;&#x4E2A;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x4E0B;&#xFF0C;&#x6240;&#x4EE5;&#x5C31;&#x89C4;&#x5B9A; <code>ClusterIssuer</code> &#x5F15;&#x7528;&#x7684; Secret &#x8981;&#x4E0E; cert-manager &#x5728;&#x540C;&#x4E00;&#x4E2A;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x4E0B;&#x3002;</li>
+</ul>
+<p>&#x4E0B;&#x9762;&#x6765;&#x521B;&#x5EFA; <code>ClusterIssuer</code>:</p>
+<pre><code>- http01: # Enable the HTTP-01 challenge provider
+    ingress: {}
+</code></pre><pre><code class="lang-bash">cat &lt;&lt;EOF | kubectl apply <span class="hljs-_">-f</span> -
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    <span class="hljs-comment"># The ACME server URL</span>
+    server: https://acme-v02.api.letsencrypt.org/directory
+    <span class="hljs-comment"># Email address used for ACME registration</span>
+    email: roc@imroc.io
+    <span class="hljs-comment"># Name of a secret used to store the ACME account private key</span>
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    <span class="hljs-comment"># ACME DNS-01 provider configurations</span>
+    dns01:
+      <span class="hljs-comment"># Here we define a list of DNS-01 providers that can solve DNS challenges</span>
+      providers:
+        - name: cf-dns
+          cloudflare:
+            email: roc@imroc.io
+            <span class="hljs-comment"># A secretKeyRef to a cloudflare api key</span>
+            apiKeySecretRef:
+              name: cloudflare-apikey
+              key: apikey
+EOF
+</code></pre>
+<ul>
+<li><code>metadata.name</code>: &#x662F;&#x6211;&#x4EEC;&#x521B;&#x5EFA;&#x7684;&#x7B7E;&#x53D1;&#x673A;&#x6784;&#x7684;&#x540D;&#x79F0;&#xFF0C;&#x540E;&#x9762;&#x6211;&#x4EEC;&#x521B;&#x5EFA;&#x8BC1;&#x4E66;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x5F15;&#x7528;&#x5B83;</li>
+<li><code>acme.email</code>: &#x662F;&#x4F60;&#x81EA;&#x5DF1;&#x7684;&#x90AE;&#x7BB1;&#xFF0C;&#x8BC1;&#x4E66;&#x5FEB;&#x8FC7;&#x671F;&#x7684;&#x65F6;&#x5019;&#x4F1A;&#x6709;&#x90AE;&#x4EF6;&#x63D0;&#x9192;&#xFF0C;&#x4E0D;&#x8FC7; cert-manager &#x4F1A;&#x5229;&#x7528; acme &#x534F;&#x8BAE;&#x81EA;&#x52A8;&#x7ED9;&#x6211;&#x4EEC;&#x91CD;&#x65B0;&#x9881;&#x53D1;&#x8BC1;&#x4E66;&#x6765;&#x7EED;&#x671F;</li>
+<li><code>acme.server</code>: &#x662F; acme &#x534F;&#x8BAE;&#x7684;&#x670D;&#x52A1;&#x7AEF;&#xFF0C;&#x6211;&#x4EEC;&#x8FD9;&#x91CC;&#x7528; Let&#x2019;s Encrypt&#xFF0C;&#x8FD9;&#x4E2A;&#x5730;&#x5740;&#x5C31;&#x5199;&#x6B7B;&#x6210;&#x8FD9;&#x6837;&#x5C31;&#x884C;</li>
+<li><code>acme.privateKeySecretRef</code> &#x6307;&#x793A;&#x6B64;&#x7B7E;&#x53D1;&#x673A;&#x6784;&#x7684;&#x79C1;&#x94A5;&#x5C06;&#x8981;&#x5B58;&#x50A8;&#x5230;&#x54EA;&#x4E2A; Secret &#x4E2D;&#xFF0C;&#x5728; cert-manager &#x6240;&#x5728;&#x547D;&#x540D;&#x7A7A;&#x95F4;</li>
+<li><code>acme.http01</code>: &#x8FD9;&#x91CC;&#x6307;&#x793A;&#x7B7E;&#x53D1;&#x673A;&#x6784;&#x652F;&#x6301;&#x4F7F;&#x7528; HTTP-01 &#x7684;&#x65B9;&#x5F0F;&#x8FDB;&#x884C; acme &#x534F;&#x8BAE;</li>
+<li><code>acme.dns01</code>: &#x914D;&#x7F6E; DNS-01 &#x6821;&#x9A8C;&#x65B9;&#x5F0F;&#x6240;&#x9700;&#x7684;&#x53C2;&#x6570;&#xFF0C;&#x6700;&#x91CD;&#x8981;&#x7684;&#x662F; API Key (&#x5F15;&#x7528;&#x63D0;&#x524D;&#x521B;&#x5EFA;&#x597D;&#x7684; Secret)&#xFF0C;&#x4E0D;&#x540C; DNS &#x63D0;&#x4F9B;&#x5546;&#x914D;&#x7F6E;&#x4E0D;&#x4E00;&#x6837;&#xFF0C;&#x5177;&#x4F53;&#x53C2;&#x8003;&#x5B98;&#x65B9;API&#x6587;&#x6863;</li>
+<li>&#x66F4;&#x591A;&#x5B57;&#x6BB5;&#x53C2;&#x8003; API &#x6587;&#x6863;: <a href="https://docs.cert-manager.io/en/latest/reference/api-docs/index.html#clusterissuer-v1alpha1" target="_blank">https://docs.cert-manager.io/en/latest/reference/api-docs/index.html#clusterissuer-v1alpha1</a></li>
+</ul>
+<h3 id="&#x521B;&#x5EFA;&#x8BC1;&#x4E66;-certificate">&#x521B;&#x5EFA;&#x8BC1;&#x4E66; (Certificate)</h3>
+<p>&#x6709;&#x4E86;&#x7B7E;&#x53D1;&#x673A;&#x6784;&#xFF0C;&#x63A5;&#x4E0B;&#x6765;&#x6211;&#x4EEC;&#x5C31;&#x53EF;&#x4EE5;&#x751F;&#x6210;&#x514D;&#x8D39;&#x8BC1;&#x4E66;&#x4E86;&#xFF0C;cert-manager &#x7ED9;&#x6211;&#x4EEC;&#x63D0;&#x4F9B;&#x4E86; Certificate &#x8FD9;&#x4E2A;&#x7528;&#x4E8E;&#x751F;&#x6210;&#x8BC1;&#x4E66;&#x7684;&#x81EA;&#x5B9A;&#x4E49;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#xFF0C;&#x5B83;&#x5FC5;&#x987B;&#x5C40;&#x9650;&#x5728;&#x67D0;&#x4E00;&#x4E2A; namespace &#x4E0B;&#xFF0C;&#x8BC1;&#x4E66;&#x6700;&#x7EC8;&#x4F1A;&#x5728;&#x8FD9;&#x4E2A; namespace &#x4E0B;&#x4EE5; Secret &#x7684;&#x8D44;&#x6E90;&#x5BF9;&#x8C61;&#x5B58;&#x50A8;&#xFF0C;&#x5047;&#x5982;&#x6211;&#x60F3;&#x5728; dashboard &#x8FD9;&#x4E2A; namespace &#x4E0B;&#x751F;&#x6210;&#x514D;&#x8D39;&#x8BC1;&#x4E66;&#xFF08;&#x8FD9;&#x4E2A; namespace &#x5DF2;&#x5B58;&#x5728;)&#xFF0C;&#x521B;&#x5EFA;&#x4E00;&#x4E2A; Certificate &#x8D44;&#x6E90;&#x6765;&#x4E3A;&#x6211;&#x4EEC;&#x81EA;&#x52A8;&#x751F;&#x6210;&#x8BC1;&#x4E66;&#xFF0C;&#x4EE5; kubernetes dashboard &#x4E3A;&#x4F8B;&#xFF0C;&#x5206;&#x522B;&#x793A;&#x8303;&#x4E0B; HTTP-01 &#x548C; DNS-01 &#x4E24;&#x79CD;&#x6821;&#x9A8C;&#x65B9;&#x5F0F;&#x751F;&#x6210;&#x8BC1;&#x4E66;&#x3002;</p>
+<h4 id="http-01-&#x65B9;&#x5F0F;">HTTP-01 &#x65B9;&#x5F0F;</h4>
+<p>&#x63D0;&#x524D;&#x4E3A;&#x670D;&#x52A1;&#x521B;&#x5EFA;&#x597D; Ingress:</p>
+<pre><code class="lang-bash">cat &lt;&lt;EOF | kubectl apply <span class="hljs-_">-f</span> -
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: dashboard
+  namespace: kubernetes-dashboard
+spec:
+  rules:
+  - host: dashboard.imroc.io
+    http:
+      paths:
+      - backend:
+          serviceName: dashboard
+          servicePort: 80
+        path: /
+EOF
+</code></pre>
+<p>&#x68C0;&#x67E5; Ingress:</p>
+<pre><code class="lang-bash">$ kubectl -n kube-system get ingress
+NAME        HOSTS                ADDRESS          PORTS   AGE
+dashboard   dashboard.imroc.io   150.109.28.133   80      19s
+</code></pre>
+<p>&#x914D;&#x7F6E; DNS&#xFF0C;&#x5C06;&#x57DF;&#x540D;&#x6307;&#x5411; Ingress &#x7684; IP&#xFF0C;&#x7136;&#x540E;&#x521B;&#x5EFA; Certificate:</p>
+<pre><code class="lang-bash">cat &lt;&lt;EOF | kubectl apply <span class="hljs-_">-f</span> -
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: dashboard-imroc-io
+  namespace: kubernetes-dashboard
+spec:
+  secretName: dashboard-imroc-io-tls
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - dashboard.imroc.io
+  acme:
+    config:
+    - http01:
+        ingress: dashboard
+      domains:
+      - dashboard.imroc.io
+EOF
+</code></pre>
+<ul>
+<li><code>secretName</code>: &#x6307;&#x793A;&#x8BC1;&#x4E66;&#x6700;&#x7EC8;&#x5B58;&#x5230;&#x54EA;&#x4E2A; Secret &#x4E2D;</li>
+<li><code>issuerRef.kind</code>: &#x503C;&#x4E3A; ClusterIssuer &#x8BF4;&#x660E;&#x7B7E;&#x53D1;&#x673A;&#x6784;&#x4E0D;&#x5728;&#x672C; namespace &#x4E0B;&#xFF0C;&#x800C;&#x662F;&#x5728;&#x5168;&#x5C40;</li>
+<li><code>issuerRef.name</code>: &#x6211;&#x4EEC;&#x521B;&#x5EFA;&#x7684;&#x7B7E;&#x53D1;&#x673A;&#x6784;&#x7684;&#x540D;&#x79F0; (ClusterIssuer.metadata.name)</li>
+<li><code>dnsNames</code>: &#x6307;&#x793A;&#x8BE5;&#x8BC1;&#x4E66;&#x7684;&#x53EF;&#x4EE5;&#x7528;&#x4E8E;&#x54EA;&#x4E9B;&#x57DF;&#x540D;</li>
+<li><code>acme.config.http01.ingress</code>: &#x4F7F;&#x7528; HTTP-01 &#x65B9;&#x5F0F;&#x6821;&#x9A8C;&#x8BE5;&#x57DF;&#x540D;&#x548C;&#x673A;&#x5668;&#x65F6;&#xFF0C;&#x6307;&#x5B9A;&#x540E;&#x7AEF;&#x670D;&#x52A1;&#x6240;&#x5728; ingress &#x540D;&#x79F0;&#xFF0C;cert-manager &#x4F1A;&#x5C1D;&#x8BD5;&#x4FEE;&#x6539;&#x8BE5; ingress &#x89C4;&#x5219;&#xFF0C;&#x589E;&#x52A0;&#x4E34;&#x65F6;&#x8DEF;&#x5F84;&#x8FDB;&#x884C; ACME &#x534F;&#x8BAE;&#x7684; HTTP-01 &#x65B9;&#x5F0F;&#x6821;&#x9A8C;&#x3002;&#x5982;&#x679C;&#x4F60;&#x4F7F;&#x7528;&#x7684; ingress controller &#x662F;&#x6240;&#x6709; ingress &#x90FD;&#x7528;&#x540C;&#x4E00;&#x4E2A;&#x5165;&#x53E3; IP&#xFF0C;&#x6BD4;&#x5982; nginx ingress&#xFF0C;&#x8FD9;&#x65F6;&#x4F60;&#x53EF;&#x4EE5;&#x4E0D;&#x7528;&#x63D0;&#x524D;&#x521B;&#x5EFA; ingress&#xFF0C;&#x53EA;&#x9700;&#x8981;&#x6307;&#x5B9A; <code>ingressClass</code> &#x5C31;&#x53EF;&#x4EE5;&#xFF0C;cert-manager &#x4F1A;&#x81EA;&#x52A8;&#x521B;&#x5EFA; ingress &#x5305;&#x542B; HTTP-01 &#x4E34;&#x65F6;&#x6821;&#x9A8C;&#x8DEF;&#x5F84;&#xFF0C;&#x5E76;&#x6307;&#x5B9A; <code>kubernetes.io/ingress.class</code> &#x8FD9;&#x4E2A; annotation&#xFF0C;&#x7136;&#x540E;&#x4F60;&#x7684; ingress controller &#x4F1A;&#x81EA;&#x52A8;&#x6839;&#x636E;&#x8BE5; ingress &#x66F4;&#x65B0;&#x8F6C;&#x53D1;&#x89C4;&#x5219;&#xFF0C;&#x4ECE;&#x800C;&#x5B9E;&#x73B0; ACME &#x534F;&#x8BAE;&#x7684; HTTP-01 &#x65B9;&#x5F0F;&#x6821;&#x9A8C;&#x3002;</li>
+<li><code>acme.config.http01.domains</code>: &#x6307;&#x793A;&#x8BE5;&#x8BC1;&#x4E66;&#x7684;&#x53EF;&#x4EE5;&#x7528;&#x4E8E;&#x54EA;&#x4E9B;&#x57DF;&#x540D;</li>
+<li>&#x66F4;&#x591A;&#x5B57;&#x6BB5;&#x53C2;&#x8003; API &#x6587;&#x6863;: <a href="https://docs.cert-manager.io/en/latest/reference/api-docs/index.html#certificate-v1alpha1" target="_blank">https://docs.cert-manager.io/en/latest/reference/api-docs/index.html#certificate-v1alpha1</a></li>
+</ul>
+<h4 id="dns-01-&#x65B9;&#x5F0F;">DNS-01 &#x65B9;&#x5F0F;</h4>
+<pre><code class="lang-bash">cat &lt;&lt;EOF | kubectl apply <span class="hljs-_">-f</span> -
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: dashboard-imroc-io
+  namespace: kubernetes-dashboard
+spec:
+  secretName: kubernetes-dashboard-certs
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  dnsNames:
+  - dashboard.imroc.io
+  acme:
+    config:
+    - dns01:
+        provider: cf-dns
+      domains:
+      - dashboard.imroc.io
+EOF
+</code></pre>
+<h4 id="&#x68C0;&#x67E5;&#x7ED3;&#x679C;">&#x68C0;&#x67E5;&#x7ED3;&#x679C;</h4>
+<p>&#x521B;&#x5EFA;&#x5B8C;&#x6210;&#x7B49;&#x5F85;&#x4E00;&#x6BB5;&#x65F6;&#x95F4;&#xFF0C;&#x6821;&#x9A8C;&#x6210;&#x529F;&#x9881;&#x53D1;&#x8BC1;&#x4E66;&#x540E;&#x4F1A;&#x5C06;&#x8BC1;&#x4E66;&#x4FE1;&#x606F;&#x5199;&#x5165; Certificate &#x6240;&#x5728;&#x547D;&#x540D;&#x7A7A;&#x95F4;&#x7684; <code>secretName</code> &#x6307;&#x5B9A;&#x7684; Secret &#x4E2D;&#xFF0C;&#x5176;&#x5B83;&#x5E94;&#x7528;&#x9700;&#x8981;&#x8BC1;&#x4E66;&#x5C31;&#x53EF;&#x4EE5;&#x76F4;&#x63A5;&#x6302;&#x8F7D;&#x8BE5; Secret &#x4E86;&#x3002;</p>
+<pre><code class="lang-txt">Events:
+  Type    Reason              Age   From          Message
+  ----    ------              ----  ----          -------
+  Normal  Generated           15s   cert-manager  Generated new private key
+  Normal  GenerateSelfSigned  15s   cert-manager  Generated temporary self signed certificate
+  Normal  OrderCreated        15s   cert-manager  Created Order resource &quot;dashboard-imroc-io-780134401&quot;
+  Normal  OrderComplete       9s    cert-manager  Order &quot;dashboard-imroc-io-780134401&quot; completed successfully
+  Normal  CertIssued          9s    cert-manager  Certificate issued successfully
+</code></pre>
+<p>&#x770B;&#x4E0B;&#x6211;&#x4EEC;&#x7684;&#x8BC1;&#x4E66;&#x662F;&#x5426;&#x6210;&#x529F;&#x751F;&#x6210;:</p>
+<pre><code class="lang-bash">kubectl -n dashboard get secret kubernetes-dashboard-certs -o yaml
+apiVersion: v1
+data:
+  ca.crt: null
+  tls.crt: LS0***0tLQo=
+  tls.key: LS0***0tCg==
+kind: Secret
+metadata:
+  annotations:
+    certmanager.k8s.io/alt-names: dashboard.imroc.io
+    certmanager.k8s.io/certificate-name: dashboard-imroc-io
+    certmanager.k8s.io/common-name: dashboard.imroc.io
+    certmanager.k8s.io/ip-sans: <span class="hljs-string">&quot;&quot;</span>
+    certmanager.k8s.io/issuer-kind: ClusterIssuer
+    certmanager.k8s.io/issuer-name: letsencrypt-prod
+  creationTimestamp: 2019-09-19T13:53:55Z
+  labels:
+    certmanager.k8s.io/certificate-name: dashboard-imroc-io
+  name: kubernetes-dashboard-certs
+  namespace: dashboard
+  resourceVersion: <span class="hljs-string">&quot;5689447213&quot;</span>
+  selfLink: /api/v1/namespaces/dashboard/secrets/kubernetes-dashboard-certs
+  uid: ebfc4aec-dae4-11e9-89f7-be8690a7fdcf
+<span class="hljs-built_in">type</span>: kubernetes.io/tls
+</code></pre>
+<ul>
+<li><code>tls.crt</code> &#x5C31;&#x662F;&#x9881;&#x53D1;&#x7684;&#x8BC1;&#x4E66;</li>
+<li><code>tls.key</code> &#x662F;&#x8BC1;&#x4E66;&#x5BC6;&#x94A5;</li>
+</ul>
+<p>&#x5C06; secret &#x6302;&#x8F7D;&#x5230;&#x9700;&#x8981;&#x8BC1;&#x4E66;&#x7684;&#x5E94;&#x7528;&#xFF0C;&#x901A;&#x5E38;&#x5E94;&#x7528;&#x4E5F;&#x8981;&#x914D;&#x7F6E;&#x4E0B;&#x8BC1;&#x4E66;&#x8DEF;&#x5F84;&#x3002; </p>
+<footer class="page-footer"><span class="copyright">&#xA9; roc all right reserved&#xFF0C;powered by Gitbook</span><span class="footer-modification">Updated at
+2019-09-20 13:47:22
+</span></footer>
+                                
+                                </section>
+                            
+    </div>
+    <div class="search-results">
+        <div class="has-results">
+            
+            <h1 class="search-results-title"><span class='search-results-count'></span> results matching "<span class='search-query'></span>"</h1>
+            <ul class="search-results-list"></ul>
+            
+        </div>
+        <div class="no-results">
+            
+            <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+            
+        </div>
+    </div>
+</div>
+
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+                
+                <a href="install-cert-manger.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page: 安装 cert-manager">
+                    <i class="fa fa-angle-left"></i>
+                </a>
+                
+                
+            
+        
+    </div>
+
+    <script>
+        var gitbook = gitbook || [];
+        gitbook.push(function() {
+            gitbook.page.hasChanged({"page":{"title":"使用 cert-manager 自动生成证书","level":"5.1.2","depth":2,"next":{"title":"TODO:二进制部署","level":"6.1","depth":1,"ref":"","articles":[]},"previous":{"title":"安装 cert-manager","level":"5.1.1","depth":2,"path":"security/cert-manager/install-cert-manger.md","ref":"security/cert-manager/install-cert-manger.md","articles":[]},"dir":"ltr"},"config":{"plugins":["mermaid","github","editlink","-lunr","-search","search-plus","tbfed-pagefooter","codesnippet","splitter","page-toc-button","image-captions","back-to-top-button","-lunr","-search","search-plus","github-buttons@2.1.0","favicon@^0.0.2","3-ba","disqus","theme-default","language-picker"],"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"},"pluginsConfig":{"tbfed-pagefooter":{"copyright":"&copy roc","modify_label":"Updated at","modify_format":"YYYY-MM-DD HH:mm:ss"},"disqus":{"useIdentifier":false,"shortName":"kubernetes-practice-guide"},"language-picker":{"grid-columns":3},"github":{"url":"https://github.com/imroc/kubernetes-practice-guide"},"editlink":{"label":"编辑本页","multilingual":false,"base":"https://github.com/imroc/kubernetes-practice-guide/blob/master"},"splitter":{},"mermaid":{},"codesnippet":{},"fontsettings":{"theme":"white","family":"sans","size":2},"highlight":{},"favicon":{"shortcut":"favicon.ico","bookmark":"favicon.ico"},"page-toc-button":{},"back-to-top-button":{},"github-buttons":{"repo":"imroc/kubernetes-practice-guide","types":["star"],"size":"small"},"3-ba":{"configuration":"auto","token":"f20c61878dd8f7a4eff595bdc636eb7c"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"showLevel":false,"styles":{"ebook":"styles/ebook.css","epub":"styles/epub.css","mobi":"styles/mobi.css","pdf":"styles/pdf.css","print":"styles/print.css","website":"styles/website.css"}},"search-plus":{},"image-captions":{"caption":"图片 - _CAPTION_","variable_name":"_pictures"}},"theme":"default","author":"roc","pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56},"toc":true},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"variables":{"_pictures":[{"backlink":"best-practice/wildcard-domain-forward.html#fig3.5.1","level":"3.5","list_caption":"Figure: nginx.conf","alt":"nginx.conf","nro":1,"url":"https://imroc.io/assets/blog/nginx-wilcard-conf.png","index":1,"caption_template":"图片 - _CAPTION_","label":"nginx.conf","attributes":{},"skip":false,"key":"3.5.1"},{"backlink":"best-practice/efficient-kubectl.html#fig3.6.1","level":"3.6","list_caption":"Figure: kk","alt":"kk","nro":2,"url":"https://imroc.io/assets/blog/dash_kk.png","index":1,"caption_template":"图片 - _CAPTION_","label":"kk","attributes":{},"skip":false,"key":"3.6.1"},{"backlink":"best-practice/efficient-kubectl.html#fig3.6.2","level":"3.6","list_caption":"Figure: demo","alt":"demo","nro":3,"url":"https://imroc.io/assets/blog/k.gif","index":2,"caption_template":"图片 - _CAPTION_","label":"demo","attributes":{},"skip":false,"key":"3.6.2"}]},"title":"Kubernetes 实践指南","language":"zh-hans","links":{"sidebar":{"roc":"https://imroc.io"}},"gitbook":"*","description":"Kubernetes 实践指南"},"file":{"path":"security/cert-manager/autogenerate-certificate-with-cert-manager.md","mtime":"2019-09-20T05:47:22.671Z","type":"markdown"},"gitbook":{"version":"3.2.3","time":"2019-09-20T05:48:08.258Z"},"basePath":"../..","book":{"language":"zh"}});
+        });
+    </script>
+</div>
+
+        
+    <script src="../../../gitbook/gitbook.js"></script>
+    <script src="../../../gitbook/theme.js"></script>
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-github/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-editlink/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search-plus/jquery.mark.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-search-plus/search.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-splitter/splitter.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-page-toc-button/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-back-to-top-button/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-github-buttons/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-3-ba/plugin.js"></script>
+        
+    
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/URI.js/1.16.1/URI.min.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-disqus/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-language-picker/plugin.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-sharing/buttons.js"></script>
+        
+    
+        
+        <script src="../../../gitbook/gitbook-plugin-fontsettings/fontsettings.js"></script>
+        
+    
+
+    </body>
+</html>
+
