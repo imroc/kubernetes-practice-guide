@@ -20,7 +20,7 @@
   * [tcp_tw_recycle 引发丢包](troubleshooting/damn/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.md)
   * [驱逐导致服务中断](troubleshooting/damn/eviction-leads-to-service-disruption.md)
   * conntrack 冲突导致丢包
-* [排错技巧](troubleshooting/trick/README.md)
+* [排错技巧]()
   * [分析 ExitCode 定位 Pod 异常退出原因](troubleshooting/trick/analysis-exitcode.md)
   * [容器内抓包定位网络问题](troubleshooting/trick/capture-packets-in-container.md)
   * [使用 Systemtap 定位疑难杂症](troubleshooting/trick/use-systemtap-to-locate-problems.md)
