@@ -8,6 +8,10 @@
 * 单机部署
 * 二进制部署
 * 工具部署
+  * Kubeadm
+  * Minikube
+  * Bootkube
+  * Ansible
 
 ## 插件扩展 <a id="plugin"></a>
 
@@ -15,8 +19,10 @@
 * 运行时
 * 存储
 * Ingress Controller
-* Device 插件
+* Scheduler Plugin
+* Device Plugin
 * Cloud Provider
+* Network Policy
 
 ## 排错指南 <a id="troubleshooting"></a>
 
@@ -40,6 +46,44 @@
   * [分析 ExitCode 定位 Pod 异常退出原因](troubleshooting/trick/analysis-exitcode.md)
   * [容器内抓包定位网络问题](troubleshooting/trick/capture-packets-in-container.md)
   * [使用 Systemtap 定位疑难杂症](troubleshooting/trick/use-systemtap-to-locate-problems.md)
+
+## 最佳实践
+
+* 服务高可用
+  * 使用反亲和性避免单点故障
+  * 优雅热更新
+  * 下线驱逐节点不停服
+* 动态伸缩
+  * 使用 HPA 对 Pod 水平伸缩
+  * 使用 VPA 对 Pod 垂直伸缩
+  * 使用 Cluster Autoscaler 对节点水平伸缩
+* 资源限制
+  * 资源预留
+  * 合理设置 request 与 limit
+  * Quota
+* 资源隔离
+  * 利用 lvm 和 xfs 实现容器磁盘隔离
+  * 利用 lxcfs 隔离 proc 提升容器资源可见性
+* GPU
+* 大页内存
+* 证书管理
+  * [安装 cert-manager](best-practice/cert-manager/install-cert-manger.md)
+  * [使用 cert-manager 自动生成证书](best-practice/cert-manager/autogenerate-certificate-with-cert-manager.md)
+* 发布管理
+  * Helm
+    * [安装 Helm](best-practice/configuration-management/helm/install-helm.md)
+    * [Helm V2 迁移到 V3](best-practice/configuration-management/helm/upgrade-helm-v2-to-v3.md)
+    * 使用 Helm 部署与管理应用
+    * 开发 Helm Charts
+  * Kustomize
+    * Kustomize 基础入门
+* 集群审计
+* 备份恢复
+* 大规模集群
+* 集群迁移
+* 多集群
+* 泛域名转发
+* kubectl 实用技巧
 
 ## 开发指南 <a id="dev"></a>
 
