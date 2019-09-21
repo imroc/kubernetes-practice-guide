@@ -24,7 +24,7 @@
   * Network Policy
 * 排错指南
   * [问题排查](troubleshooting/problems/)
-    * [Pod 排错](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/problems/pod/README.md)
+    * [Pod 排错](troubleshooting/problems/pod/)
     * [网络排错](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/problems/network/README.md)
     * [集群排错](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/problems/cluster/README.md)
     * [其它排错](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/problems/others/README.md)
