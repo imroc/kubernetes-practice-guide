@@ -2,7 +2,7 @@
 
 * [序言](README.md)
 
-## 第一章: 排错指南
+## 排错指南
 
 * [问题排查]()
   * [Pod 排错](troubleshooting/pod.md)
