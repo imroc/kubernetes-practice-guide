@@ -15,6 +15,13 @@
     * [ ] Ansible
 * [ ] 插件扩展
   * [ ] 网络
+    * [ ] Flannel
+    * [ ] Macvlan
+    * [ ] Calico
+    * [ ] Cilium
+    * [ ] Kube-router
+    * [ ] Kube-OVN
+    * [ ] OpenVSwitch
   * [ ] 运行时
     * [ ] Docker
     * [ ] Containerd
@@ -25,6 +32,7 @@
   * [ ] Device Plugin
   * [ ] Cloud Provider
   * [ ] Network Policy
+  * [ ] 使用 MetalLB 创建负载均衡器
 * [ ] 排错指南
   * [ ] 问题排查
     * [x] Pod 排错
@@ -42,6 +50,7 @@
     * [x] tcp\_tw\_recycle 引发丢包
     * [x] 驱逐导致服务中断
     * [ ] conntrack 冲突导致丢包
+    * [x] 频繁 cgroup OOM 导致内核 crash
   * [ ] 排错技巧
     * [x] 分析 ExitCode 定位 Pod 异常退出原因
     * [x] 容器内抓包定位网络问题
@@ -83,6 +92,11 @@
       * [ ] 开发 Helm Charts
     * [ ] Kustomize
       * [ ] Kustomize 基础入门
+  * [ ] 镜像管理
+    * [ ] Harbor
+    * [ ] Dragonfly
+    * [ ] Kaniko
+    * [ ] kpack
   * [ ] 备份恢复
   * [ ] 大规模集群
     * [ ] 内核参数优化
@@ -112,7 +126,7 @@
     * [ ] Redis
     * [ ] TiKV
     * [ ] ElasticSearch
-      * [x] [使用 elastic-oparator 部署 Elasticsearch 和 Kibana](best-practice/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator)
+      * [x] 使用 elastic-oparator 部署 Elasticsearch 和 Kibana
     * [ ] MySQL
     * [ ] TiDB
     * [ ] PostgreSQL
@@ -120,6 +134,8 @@
     * [ ] Cassandra
     * [ ] InfluxDB
     * [ ] OpenTSDB
+  * [ ] 原地升级
+  * [ ] 固定 IP
 * [ ] 开发指南
   * [ ] 开发环境搭建
   * [ ] Operator
@@ -130,7 +146,16 @@
   * [ ] Service Mesh
     * [ ] Istio
   * [ ] Serverless
+    * [ ] Knative
+    * [ ] Kubeless
+    * [ ] Fission
   * [ ] DevOps
+    * [ ] Jenkins X
+    * [ ] Tekton
+    * [ ] Argo
+    * [ ] GoCD
+    * [ ] Argo
+    * [ ] GitLab CI
   * [ ] 人工智能
   * [ ] 大数据
 

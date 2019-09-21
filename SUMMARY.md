@@ -24,6 +24,7 @@
   * [tcp\_tw\_recycle 引发丢包](troubleshooting/damn/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.md)
   * [驱逐导致服务中断](troubleshooting/damn/eviction-leads-to-service-disruption.md)
   * [conntrack 冲突导致丢包](troubleshooting/damn/conntrack-conflict.md)
+  * [频繁 cgroup OOM 导致内核 crash](troubleshooting/damn/cgroup-oom-cause-kernel-crash.md)
 * [排错技巧](troubleshooting/trick/README.md)
   * [分析 ExitCode 定位 Pod 异常退出原因](troubleshooting/trick/analysis-exitcode.md)
   * [容器内抓包定位网络问题](troubleshooting/trick/capture-packets-in-container.md)

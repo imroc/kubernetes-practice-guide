@@ -1,6 +1,4 @@
-# 使用 oom-guard 在用户态处理 cgroup OOM
-
-## 背景
+# 频繁 cgroup OOM 导致内核 crash
 
 由于 linux 内核对 cgroup OOM 的处理，存在很多 bug，经常有由于频繁 cgroup OOM 导致节点故障(卡死， 重启， 进程异常但无法杀死)，于是 TKE 团队开发了 `oom-guard`，在用户态处理 cgroup OOM 规避了内核 bug。
 
