@@ -6,7 +6,7 @@ Helm 是 Kubernetes 的包管理器，可以帮我们简化 kubernetes 的操作
 
 执行脚本安装 helm 客户端:
 
-``` bash
+```bash
 $ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash
   % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
                                  Dload  Upload   Total   Spent    Left  Speed
@@ -19,14 +19,14 @@ Run 'helm init' to configure helm.
 
 查看客户端版本：
 
-``` bash
+```bash
 $ helm version
 Client: &version.Version{SemVer:"v2.9.1", GitCommit:"20adb27c7c5868466912eebdf6664e7390ebe710", GitTreeState:"clean"}
 ```
 
 安装 tiller 服务端到 kubernetes 集群：
 
-``` bash
+```bash
 $ helm init
 Creating /root/.helm
 Creating /root/.helm/repository
@@ -49,14 +49,14 @@ Happy Helming!
 
 查看 tiller 是否启动成功:
 
-``` bash
+```bash
 $ kubectl get pods --namespace=kube-system | grep tiller
 tiller-deploy-dccdb6fd9-2df4r          0/1       ImagePullBackOff   0          14h
 ```
 
-如果状态是 ImagePullBackOff ，说明是镜像问题，一般是未拉取到镜像（国内机器拉取不到 gcr.io 下的镜像) 可以查看下是什么镜像:
+如果状态是 ImagePullBackOff ，说明是镜像问题，一般是未拉取到镜像（国内机器拉取不到 gcr.io 下的镜像\) 可以查看下是什么镜像:
 
-``` bash
+```bash
 $ kubectl describe pod tiller-deploy-dccdb6fd9-2df4r --namespace=kube-system
 Events:
   Type     Reason   Age                   From                Message
@@ -69,14 +69,14 @@ Events:
 
 把这个没拉取到镜像想办法下载到这台机器上。当我们看到状态为 `Running` 说明 tiller 已经成功运行了:
 
-``` bash
+```bash
 $ kubectl get pods -n kube-system | grep tiller
 tiller-deploy-dccdb6fd9-2df4r                   1/1       Running   1          41d
 ```
 
 默认安装的 tiller 权限很小，我们执行下面的脚本给它加最大权限，这样方便我们可以用 helm 部署应用到任意 namespace 下:
 
-``` bash
+```bash
 kubectl create serviceaccount --namespace=kube-system tiller
 
 kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
@@ -84,19 +84,19 @@ kubectl create clusterrolebinding tiller-cluster-rule --clusterrole=cluster-admi
 kubectl patch deploy --namespace=kube-system tiller-deploy -p '{"spec":{"template":{"spec":{"serviceAccount":"tiller"}}}}'
 ```
 
-更多参考官方文档: https://helm.sh/docs/using_helm/#quickstart-guide
+更多参考官方文档: [https://helm.sh/docs/using\_helm/\#quickstart-guide](https://helm.sh/docs/using_helm/#quickstart-guide)
 
 ## 安装 Helm V3
 
-在 https://github.com/helm/helm/releases 找到对应系统的二进制包下载，比如下载 `v3.0.0-beta.3` 的 `linux amd64` 版:
+在 [https://github.com/helm/helm/releases](https://github.com/helm/helm/releases) 找到对应系统的二进制包下载，比如下载 `v3.0.0-beta.3` 的 `linux amd64` 版:
 
-``` bash
+```bash
 $ wget https://get.helm.sh/helm-v3.0.0-beta.3-linux-amd64.tar.gz
 ```
 
 解压并移动到 `PATH` 下面:
 
-``` bash
+```bash
 $ tar -zxvf helm-v3.0.0-beta.3-linux-amd64.tar.gz
 linux-amd64/
 linux-amd64/LICENSE
@@ -107,3 +107,4 @@ $ ls
 LICENSE  README.md  helm
 $ mv helm /usr/local/bin/helm3
 ```
+

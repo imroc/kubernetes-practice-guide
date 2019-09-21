@@ -2,7 +2,7 @@
 
 ## 需求
 
-集群对外暴露了一个公网IP作为流量入口(可以是 Ingress 或 Service)，DNS 解析配置了一个泛域名指向该IP（比如 `*.test.imroc.io`），现希望根据请求中不同 Host 转发到不同的后端 Service。比如 `a.test.imroc.io` 的请求被转发到 `my-svc-a`，`b.test.imroc.io` 的请求转发到 `my-svc-b`。当前 K8S 的 Ingress 并不原生支持这种泛域名转发规则，本文将给出一个解决方案来实现泛域名转发。
+集群对外暴露了一个公网IP作为流量入口\(可以是 Ingress 或 Service\)，DNS 解析配置了一个泛域名指向该IP（比如 `*.test.imroc.io`），现希望根据请求中不同 Host 转发到不同的后端 Service。比如 `a.test.imroc.io` 的请求被转发到 `my-svc-a`，`b.test.imroc.io` 的请求转发到 `my-svc-b`。当前 K8S 的 Ingress 并不原生支持这种泛域名转发规则，本文将给出一个解决方案来实现泛域名转发。
 
 ## 简单做法
 
@@ -10,7 +10,7 @@
 
 假如泛域名有两个不同 Host 分别转发到不同 Service，Ingress 类似这样写:
 
-``` yaml
+```yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -35,20 +35,20 @@ spec:
 
 但是！如果 Host 非常多会怎样？（比如200+）
 
-- 每次新增 Host 都要改 Ingress 规则，太麻烦
-- 单个 Ingress 上面的规则越来越多，更改规则对 LB 的压力变大，可能会导致偶尔访问不了
+* 每次新增 Host 都要改 Ingress 规则，太麻烦
+* 单个 Ingress 上面的规则越来越多，更改规则对 LB 的压力变大，可能会导致偶尔访问不了
 
 ## 正确姿势
 
-我们可以约定请求中泛域名 Host 通配符的 `*` 号匹配到的字符跟 Service 的名字相关联（可以是相等，或者 Service 统一在前面加个前缀，比如 `a.test.imroc.io` 转发到 `my-svc-a` 这个 Service)，集群内起一个反向代理服务，匹配泛域名的请求全部转发到这个代理服务上，这个代理服务只做一件简单的事，解析 Host，正则匹配抓取泛域名中 `*` 号这部分，把它转换为 Service 名字，然后在集群里转发（集群 DNS 解析)
+我们可以约定请求中泛域名 Host 通配符的 `*` 号匹配到的字符跟 Service 的名字相关联（可以是相等，或者 Service 统一在前面加个前缀，比如 `a.test.imroc.io` 转发到 `my-svc-a` 这个 Service\)，集群内起一个反向代理服务，匹配泛域名的请求全部转发到这个代理服务上，这个代理服务只做一件简单的事，解析 Host，正则匹配抓取泛域名中 `*` 号这部分，把它转换为 Service 名字，然后在集群里转发（集群 DNS 解析\)
 
 这个反向代理服务可以是 Nginx+Lua脚本 来实现，或者自己写个简单程序来做反向代理，这里我用 [OpenResty](https://openresty.org) 来实现，它可以看成是 Nginx 的发行版，自带 lua 支持。
 
 有几点需要说明下：
 
-- 我们使用 nginx 的  `proxy_pass` 来反向代理到后端服务，`proxy_pass` 后面跟的变量，我们需要用 lua 来判断 Host 修改变量
-- nginx 的 `proxy_pass` 后面跟的如果是可变的域名（非IP，需要 dns 解析)，它需要一个域名解析器，不会走默认的 dns 解析，需要在 `nginx.conf` 里添加 `resolver` 配置项来设置一个外部的 dns 解析器
-- 这个解析器我们是用 go-dnsmasq 来实现，它可以将集群的 dns 解析代理给 nginx，以 sidecar 的形式注入到 pod 中，监听 53 端口
+* 我们使用 nginx 的  `proxy_pass` 来反向代理到后端服务，`proxy_pass` 后面跟的变量，我们需要用 lua 来判断 Host 修改变量
+* nginx 的 `proxy_pass` 后面跟的如果是可变的域名（非IP，需要 dns 解析\)，它需要一个域名解析器，不会走默认的 dns 解析，需要在 `nginx.conf` 里添加 `resolver` 配置项来设置一个外部的 dns 解析器
+* 这个解析器我们是用 go-dnsmasq 来实现，它可以将集群的 dns 解析代理给 nginx，以 sidecar 的形式注入到 pod 中，监听 53 端口
 
 `nginx.conf` 里关键的配置如下图所示：
 
@@ -58,7 +58,7 @@ spec:
 
 `proxy.yaml`:
 
-``` yaml
+```yaml
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
@@ -187,7 +187,7 @@ data:
         autoindex off;
 
         resolver      127.0.0.1:53 ipv6=off;
-  
+
         server {
             listen 80;
 
@@ -208,9 +208,9 @@ data:
 
 让该代理服务暴露公网访问可以用 Service 或 Ingress
 
-用 Service 的示例 (`service.yaml`):
+用 Service 的示例 \(`service.yaml`\):
 
-``` yaml
+```yaml
 apiVersion: v1
 kind: Service
 metadata:
@@ -227,9 +227,9 @@ spec:
     component: nginx
 ```
 
-用 Ingress 的示例 (`ingress.yaml`):
+用 Ingress 的示例 \(`ingress.yaml`\):
 
-```  yaml
+```yaml
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
@@ -244,3 +244,4 @@ spec:
           servicePort: 80
         path: /
 ```
+
