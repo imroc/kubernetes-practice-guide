@@ -163,8 +163,8 @@
 
 本书将支持中英文两个语言版本，通常文章会先用中文起草并更新，等待其内容较为成熟完善，更新不再频繁的时候才会翻译成英文，点击左上角切换语言。
 
-* [ ] 中文: [https://k8s.imroc.io](https://k8s.imroc.io)
-* [ ] English: [https://k8s.imroc.io/v/en/](https://k8s.imroc.io/v/en/)
+* 中文: [https://k8s.imroc.io](https://k8s.imroc.io)
+* English: [https://k8s.imroc.io/v/en/](https://k8s.imroc.io/v/en/)
 
 ## 项目源码
 
