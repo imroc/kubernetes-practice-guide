@@ -4,25 +4,7 @@
 
 ## 部署指南 <a id="deploy"></a>
 
-* 部署方案选型
-* 单机部署
-* 二进制部署
-* 工具部署
-  * Kubeadm
-  * Minikube
-  * Bootkube
-  * Ansible
-
 ## 插件扩展 <a id="plugin"></a>
-
-* [网络](plugin/wang-luo.md)
-* [运行时](plugin/yun-hang-shi.md)
-* [存储](plugin/cun-chu.md)
-* [Ingress Controller](plugin/ingress-controller.md)
-* [Scheduler Plugin](plugin/scheduler-plugin.md)
-* [Device Plugin](plugin/device-plugin.md)
-* [Cloud Provider](plugin/cloud-provider.md)
-* [Network Policy](plugin/network-policy.md)
 
 ## 排错指南 <a id="troubleshooting"></a>
 
@@ -50,60 +32,23 @@
 ## 最佳实践 <a id="best-practice"></a>
 
 * [服务高可用](best-practice/ha/README.md)
-  * 使用反亲和性避免单点故障
   * [服务更新不中断](best-practice/ha/smooth-update.md)
-  * 节点下线不停服
   * [解决长连接服务扩容失效](best-practice/ha/scale-keepalive-service.md)
-* 动态伸缩
-  * 使用 HPA 对 Pod 水平伸缩
-  * 使用 VPA 对 Pod 垂直伸缩
-  * 使用 Cluster Autoscaler 对节点水平伸缩
-* 资源限制
-  * 资源预留
-  * Request 与 Limit
-  * Resource Quotas
-  * Limit Ranges
-* 资源隔离
-  * 利用 kata-container 隔离容器资源
-  * 利用 gVisor 隔离容器资源
-  * 利用 lvm 和 xfs 实现容器磁盘隔离
-  * 利用 lxcfs 隔离 proc 提升容器资源可见性
-* 集群安全
+* [集群安全](best-practice/security/README.md)
   * [集群权限控制](best-practice/security/permission-control.md)
-  * PodSecurityPolicy
-  * 集群审计
-* GPU
-* 大页内存
-* 证书管理
+* [证书管理](best-practice/cert-manager/README.md)
   * [安装 cert-manager](best-practice/cert-manager/install-cert-manger.md)
   * [使用 cert-manager 自动生成证书](best-practice/cert-manager/autogenerate-certificate-with-cert-manager.md)
-* 配置管理
-  * Helm
+* [配置管理](best-practice/configuration-management/README.md)
+  * [Helm](best-practice/configuration-management/helm/README.md)
     * [安装 Helm](best-practice/configuration-management/helm/install-helm.md)
     * [Helm V2 迁移到 V3](best-practice/configuration-management/helm/upgrade-helm-v2-to-v3.md)
-    * 使用 Helm 部署与管理应用
-    * 开发 Helm Charts
-  * Kustomize
-    * Kustomize 基础入门
-* 备份恢复
-* 大规模集群
-* 集群迁移
-* 多集群
 * [泛域名转发](best-practice/wildcard-domain-forward.md)
 * [kubectl 实用技巧](best-practice/kubectl-trick.md)
+* [基础设施容器化](best-practice/infra-containerization/README.md)
+  * [ElasticSearch](best-practice/infra-containerization/elasticsearch/README.md)
+    * [使用 elastic-oparator 部署 Elasticsearch 和 Kibana](best-practice/infra-containerization/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator.md)
 
 ## 开发指南 <a id="dev"></a>
 
-* 开发环境搭建
-* Operator
-* client-go
-* 社区贡献
-
 ## 领域应用 <a id="domain"></a>
-
-* 微服务架构
-* Service Mesh
-* Serverless
-* DevOps
-* 人工智能
-* 大数据

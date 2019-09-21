@@ -2,7 +2,7 @@
 
 ## Kubernetes 实践指南
 
-本书正在起草初期，内容将包含大量 Kubernetes 实践干货，大量内容还正在路上，GitBook 左侧导航分不出哪些标题是有内容的，这里统一列举下，有超链接的是有内容的 \(请在 [https://k8s.imroc.io](https://k8s.imroc.io) 中打开\):
+本书正在起草初期，内容将包含大量 Kubernetes 实践干货，大量规划内容还正在路上
 
 * 部署指南
   * 部署方案选型
@@ -16,6 +16,9 @@
 * 插件扩展
   * 网络
   * 运行时
+    * Docker
+    * Containerd
+    * CRI-O
   * 存储
   * Ingress Controller
   * Scheduler Plugin
@@ -23,23 +26,23 @@
   * Cloud Provider
   * Network Policy
 * 排错指南
-  * [问题排查](https://k8s.imroc.io/troubleshooting/problems/)
+  * 问题排查
     * [Pod 排错](https://k8s.imroc.io/troubleshooting/problems/pod)
     * [网络排错](https://k8s.imroc.io/troubleshooting/problems/network)
     * [集群排错](https://k8s.imroc.io/troubleshooting/problems/cluster)
     * [其它排错](https://k8s.imroc.io/troubleshooting/problems/others)
-  * [处理实践](https://k8s.imroc.io/troubleshooting/handling-practice/)
+  * 处理实践
     * [高负载](https://k8s.imroc.io/troubleshooting/handling-practice/high-load/)
     * [内存碎片化](https://k8s.imroc.io/troubleshooting/handling-practice/memory-fragmentation/)
     * [磁盘空间满](https://k8s.imroc.io/troubleshooting/handling-practice/disk-full/)
     * [inotify watch 耗尽](https://k8s.imroc.io/troubleshooting/handling-practice/runnig-out-of-inotify-watches/)
-  * [踩坑分享](https://k8s.imroc.io/troubleshooting/damn/)
+  * 踩坑分享
     * [DNS 5 秒延时](https://k8s.imroc.io/troubleshooting/damn/dns-lookup-5s-delay/)
     * [cgroup 泄露](https://k8s.imroc.io/troubleshooting/damn/cgroup-leaking/)
     * [tcp\_tw\_recycle 引发丢包](https://k8s.imroc.io/troubleshooting/damn/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle/)
     * [驱逐导致服务中断](https://k8s.imroc.io/troubleshooting/damn/eviction-leads-to-service-disruption/)
     * conntrack 冲突导致丢包
-  * [排错技巧](troubleshooting/trick/)
+  * 排错技巧
     * [分析 ExitCode 定位 Pod 异常退出原因](https://k8s.imroc.io/troubleshooting/trick/analysis-exitcode/)
     * [容器内抓包定位网络问题](https://k8s.imroc.io/troubleshooting/trick/capture-packets-in-container/)
     * [使用 Systemtap 定位疑难杂症](https://k8s.imroc.io/troubleshooting/trick/use-systemtap-to-locate-problems/)
@@ -82,10 +85,41 @@
       * Kustomize 基础入门
   * 备份恢复
   * 大规模集群
+    * 内核参数优化
+    * 调度器优化
   * 集群迁移
   * 多集群
   * [泛域名转发](https://k8s.imroc.io/best-practice/wildcard-domain-forward/)
   * [kubectl 实用技巧](https://k8s.imroc.io/best-practice/kubectl-trick/)
+  * 监控
+    * Prometheus
+    * Grafana
+  * 服务治理
+    * 服务发现
+    * 分布式追踪
+      * Jaeger
+  * K8S 可视化管理
+    * Kubernetes Dashboard
+    * KubSphere
+    * Weave Scope
+    * Rancher
+    * Kui
+    * Kubebox
+  * 服务发现
+  * 基础设施容器化部署
+    * ETCD
+    * Zookeeper
+    * Redis
+    * TiKV
+    * ElasticSearch
+      * [使用 elastic-oparator 部署 Elasticsearch 和 Kibana](best-practice/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator)
+    * MySQL
+    * TiDB
+    * PostgreSQL
+    * MongoDB
+    * Cassandra
+    * InfluxDB
+    * OpenTSDB
 * 开发指南
   * 开发环境搭建
   * Operator
@@ -94,6 +128,7 @@
 * 领域应用
   * 微服务架构
   * Service Mesh
+    * Istio
   * Serverless
   * DevOps
   * 人工智能
