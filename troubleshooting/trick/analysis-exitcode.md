@@ -2,7 +2,7 @@
 
 使用 `kubectl describe pod <pod name>` 查看异常 pod 的状态:
 
-``` bash
+```bash
 Containers:
   kubedns:
     Container ID:  docker://5fb8adf9ee62afc6d3f6f3d9590041818750b392dff015d7091eaaf99cf1c945
@@ -30,37 +30,38 @@ Containers:
 
 ## 退出状态码的区间
 
-- 必须在 0-255 之间
-- 0 表示正常退出
-- 外界中断将程序退出的时候状态码区间在 129-255，(操作系统给程序发送中断信号，比如 `kill -9` 是 `SIGKILL`，`ctrl+c` 是 `SIGINT`)
-- 一般程序自身原因导致的异常退出状态区间在 1-128 (这只是一般约定，程序如果一定要用129-255的状态码也是可以的)
+* 必须在 0-255 之间
+* 0 表示正常退出
+* 外界中断将程序退出的时候状态码区间在 129-255，\(操作系统给程序发送中断信号，比如 `kill -9` 是 `SIGKILL`，`ctrl+c` 是 `SIGINT`\)
+* 一般程序自身原因导致的异常退出状态区间在 1-128 \(这只是一般约定，程序如果一定要用129-255的状态码也是可以的\)
 
 假如写代码指定的退出状态码时不在 0-255 之间，例如: `exit(-1)`，这时会自动做一个转换，最终呈现的状态码还是会在 0-255 之间。我们把状态码记为 `code`
 
-- 当指定的退出时状态码为负数，那么转换公式如下:
+* 当指定的退出时状态码为负数，那么转换公式如下:
 
-``` txt
+```text
 256 - (|code| % 256)
 ```
 
-- 当指定的退出时状态码为正数，那么转换公式如下:
+* 当指定的退出时状态码为正数，那么转换公式如下:
 
-``` txt
+```text
 code % 256
 ```
 
 ## 常见异常状态码
 
-- 137 (被 `SIGKILL` 中断信号杀死)
-  - 此状态码一般是因为 pod 中容器内存达到了它的资源限制(`resources.limits`)，一般是内存溢出(OOM)，CPU达到限制只需要不分时间片给程序就可以。因为限制资源是通过 linux 的 cgroup 实现的，所以 cgroup 会将此容器强制杀掉，类似于 `kill -9`，此时在 `describe pod` 中可以看到 Reason 是 `OOMKilled`
-  - 还可能是宿主机本身资源不够用了(OOM)，内核会选取一些进程杀掉来释放内存
-  - 不管是 cgroup 限制杀掉进程还是因为节点机器本身资源不够导致进程死掉，都可以从系统日志中找到记录:
+* 137 \(被 `SIGKILL` 中断信号杀死\)
+  * 此状态码一般是因为 pod 中容器内存达到了它的资源限制\(`resources.limits`\)，一般是内存溢出\(OOM\)，CPU达到限制只需要不分时间片给程序就可以。因为限制资源是通过 linux 的 cgroup 实现的，所以 cgroup 会将此容器强制杀掉，类似于 `kill -9`，此时在 `describe pod` 中可以看到 Reason 是 `OOMKilled`
+  * 还可能是宿主机本身资源不够用了\(OOM\)，内核会选取一些进程杀掉来释放内存
+  * 不管是 cgroup 限制杀掉进程还是因为节点机器本身资源不够导致进程死掉，都可以从系统日志中找到记录:
 
     > ubuntu 的系统日志在 `/var/log/syslog`，centos 的系统日志在 `/var/log/messages`，都可以用 `journalctl -k` 来查看系统日志
-  - 也可能是 livenessProbe (存活检查) 失败，kubelet 杀死的 pod
-  - 还可能是被恶意木马进程杀死
-- 1 和 255
-  - 这种可能是一般错误，具体错误原因只能看容器日志，因为很多程序员写异常退出时习惯用 `exit(1)` 或 `exit(-1)`，-1 会根据转换规则转成 255
+
+  * 也可能是 livenessProbe \(存活检查\) 失败，kubelet 杀死的 pod
+  * 还可能是被恶意木马进程杀死
+* 1 和 255
+  * 这种可能是一般错误，具体错误原因只能看容器日志，因为很多程序员写异常退出时习惯用 `exit(1)` 或 `exit(-1)`，-1 会根据转换规则转成 255
 
 ## 状态码参考
 
@@ -70,7 +71,7 @@ code % 256
 
 Linux 程序被外界中断时会发送中断信号，程序退出时的状态码就是中断信号值加上 128 得到的，比如 `SIGKILL` 的中断信号值为 9，那么程序退出状态码就为 9+128=137。以下是标准信号值参考：
 
-``` txt
+```text
 Signal     Value     Action   Comment
 ──────────────────────────────────────────────────────────────────────
 SIGHUP        1       Term    Hangup detected on controlling terminal
@@ -98,9 +99,9 @@ SIGTTOU   22,22,27    Stop    Terminal output for background process
 
 ## C/C++ 退出状态码
 
-`/usr/include/sysexits.h` 试图将退出状态码标准化(仅限 C/C++):
+`/usr/include/sysexits.h` 试图将退出状态码标准化\(仅限 C/C++\):
 
-``` txt
+```text
 #define EX_OK           0       /* successful termination */
 
 #define EX__BASE        64      /* base value for error messages */
@@ -123,3 +124,4 @@ SIGTTOU   22,22,27    Stop    Terminal output for background process
 
 #define EX__MAX 78      /* maximum listed value */
 ```
+

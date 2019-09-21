@@ -13,3 +13,4 @@
 ### 规避方案
 
 不要在 rancher 组件卸载完之前手动 `delete ns local`。
+

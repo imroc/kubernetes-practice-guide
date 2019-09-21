@@ -4,14 +4,14 @@
 
 查看最大 inotify watch 数:
 
-``` bash
+```bash
 $ cat /proc/sys/fs/inotify/max_user_watches
 8192
 ```
 
 使用下面的脚本查看当前有 inotify watch 类型 fd 的进程以及每个 fd watch 的目录数量，降序输出，带总数统计:
 
-``` bash
+```bash
 #!/usr/bin/env bash
 #
 # Copyright 2019 (c) roc
@@ -28,12 +28,11 @@ while read pid fd; do \
     result+="$exe $pid $fdinfo $count\n"; \
   fi
 done <<< "$(lsof +c 0 -n -P -u root|awk '/inotify$/ { gsub(/[urw]$/,"",$4); print $2" "$4 }')" && echo "total $total inotify watches" && result="$(echo -e $result|column -t)\n" && echo -e "$result" | head -1 && echo -e "$result" | sed "1d" | sort -k 4rn;
-
 ```
 
 示例输出:
 
-``` bash
+```bash
 total 7882 inotify watches
 EXE                                         PID    FD-INFO                INOTIFY-WATCHES
 /usr/local/qcloud/YunJing/YDEyes/YDService  25813  /proc/25813/fdinfo/8   7077
@@ -77,18 +76,19 @@ EXE                                         PID    FD-INFO                INOTIF
 
 临时调整:
 
-``` bash
+```bash
 sudo sysctl fs.inotify.max_user_watches=524288
 ```
 
 永久生效:
 
-``` bash
+```bash
 echo "fs.inotify.max_user_watches=524288" >> /etc/sysctl.conf && sysctl -p
 ```
 
-打开 inotify_add_watch 跟踪，进一步 debug inotify watch 耗尽的原因:
+打开 inotify\_add\_watch 跟踪，进一步 debug inotify watch 耗尽的原因:
 
-``` bash
+```bash
 echo 1 >> /sys/kernel/debug/tracing/events/syscalls/sys_exit_inotify_add_watch/enable
 ```
+

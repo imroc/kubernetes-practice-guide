@@ -1,4 +1,4 @@
-# 节点高负载
+# 高负载
 
 TODO 优化
 
@@ -6,11 +6,11 @@ TODO 优化
 
 ## 过多 IO 等待
 
-有时候即便 cpu ‘us’ (user) 不高但 cpu ‘id’ (idle) 很高的情况节点负载也很高，这是为什么呢？通常是文件 IO 性能达到瓶颈导致 IO WAIT 过多，从而使得节点整体负载升高，影响其它进程的性能。
+有时候即便 cpu ‘us’ \(user\) 不高但 cpu ‘id’ \(idle\) 很高的情况节点负载也很高，这是为什么呢？通常是文件 IO 性能达到瓶颈导致 IO WAIT 过多，从而使得节点整体负载升高，影响其它进程的性能。
 
 使用 `top` 命令看下当前负载：
 
-``` txt
+```text
 top - 19:42:06 up 23:59,  2 users,  load average: 34.64, 35.80, 35.76
 Tasks: 679 total,   1 running, 678 sleeping,   0 stopped,   0 zombie
 Cpu(s): 15.6%us,  1.7%sy,  0.0%ni, 74.7%id,  7.9%wa,  0.0%hi,  0.1%si,  0.0%st
@@ -45,9 +45,9 @@ Swap:  8388604k total,     5440k used,  8383164k free,  7982424k cached
  5285 nginx     20   0 1302m  38m 9696 S  2.7  0.1   0:23.41 php-fpm
 ```
 
-`wa` (wait) 表示 IO WAIT 的 cpu 占用，默认看到的是所有核的平均值，要看每个核的 `wa` 值需要按下 "1":
+`wa` \(wait\) 表示 IO WAIT 的 cpu 占用，默认看到的是所有核的平均值，要看每个核的 `wa` 值需要按下 "1":
 
-``` txt
+```text
 top - 19:42:08 up 23:59,  2 users,  load average: 34.64, 35.80, 35.76
 Tasks: 679 total,   1 running, 678 sleeping,   0 stopped,   0 zombie
 Cpu0  : 29.5%us,  3.7%sy,  0.0%ni, 48.7%id, 17.9%wa,  0.0%hi,  0.1%si,  0.0%st
@@ -82,7 +82,7 @@ Swap:  8388604k total,     5440k used,  8383164k free,  7986552k cached
 
 使用 `atop` 看下当前磁盘 IO 状态:
 
-``` txt
+```text
 ATOP - lemp              2017/01/23  19:42:32              ---------                10s elapsed
 PRC | sys    3.18s | user  33.24s | #proc    679 | #tslpu    28 | #zombie    0 | #exit      0 |
 CPU | sys      29% | user    330% | irq       1% | idle   1857% | wait    182% | curscal  69% |
@@ -119,7 +119,7 @@ NET | lo      ---- | pcki    4082 | pcko    4082 | si 8967 Kbps | so 8967 Kbps |
 
 在本例中磁盘 `sda` 已经 100% busy，已经严重达到性能瓶颈。按 'd' 看下是哪些进程在使用磁盘IO:
 
-``` txt
+```text
 ATOP - lemp               2017/01/23  19:42:46               ---------               2s elapsed
 PRC | sys    0.24s | user   1.99s | #proc    679 | #tslpu    54 | #zombie    0 | #exit      0 |
 CPU | sys      11% | user    101% | irq       1% | idle   2089% | wait    208% | curscal  63% |
@@ -156,7 +156,7 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
 
 也可以使用 `iotop -oPa` 查看哪些进程占用磁盘 IO:
 
-``` txt
+```text
 Total DISK READ: 15.02 K/s | Total DISK WRITE: 3.82 M/s
   PID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO>    COMMAND
  1930 be/4 root          0.00 B   1956.00 K  0.00 % 83.34 % [flush-8:0]
@@ -193,7 +193,7 @@ Total DISK READ: 15.02 K/s | Total DISK WRITE: 3.82 M/s
 
 通过 `man iotop` 可以看下这几个参数的含义：
 
-``` bash
+```bash
 -o, --only
        Only show processes or threads actually doing I/O, instead of showing all processes or threads. This can be dynamically toggled by pressing o.
 -P, --processes
@@ -211,4 +211,5 @@ TODO 优化
 
 ## 参考资料
 
-- Linux server performance: Is disk I/O slowing your application: https://haydenjames.io/linux-server-performance-disk-io-slowing-application/
+* Linux server performance: Is disk I/O slowing your application: [https://haydenjames.io/linux-server-performance-disk-io-slowing-application/](https://haydenjames.io/linux-server-performance-disk-io-slowing-application/)
+
