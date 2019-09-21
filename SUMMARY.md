@@ -51,8 +51,8 @@
 
 * 服务高可用
   * 使用反亲和性避免单点故障
-  * [优雅热更新](best-practice/ha/kubernetes-grace-update.md)
-  * 下线驱逐节点不停服
+  * [服务更新不中断](best-practice/ha/smooth-update)
+  * 节点下线不停服
 * 动态伸缩
   * 使用 HPA 对 Pod 水平伸缩
   * 使用 VPA 对 Pod 垂直伸缩
