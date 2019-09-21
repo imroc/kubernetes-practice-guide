@@ -1,2 +1,0 @@
-# Scheduler Plugin
-

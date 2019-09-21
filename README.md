@@ -38,7 +38,7 @@
     * [cgroup 泄露](https://k8s.imroc.io/troubleshooting/damn/cgroup-leaking/)
     * [tcp\_tw\_recycle 引发丢包](https://k8s.imroc.io/troubleshooting/damn/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle/)
     * [驱逐导致服务中断](https://k8s.imroc.io/troubleshooting/damn/eviction-leads-to-service-disruption/)
-    * [conntrack 冲突导致丢包](https://k8s.imroc.io/troubleshooting/damn/conntrack-chong-tu-dao-zhi-diu-bao/)
+    * conntrack 冲突导致丢包
   * [排错技巧](troubleshooting/trick/)
     * [分析 ExitCode 定位 Pod 异常退出原因](https://k8s.imroc.io/troubleshooting/trick/analysis-exitcode/)
     * [容器内抓包定位网络问题](https://k8s.imroc.io/troubleshooting/trick/capture-packets-in-container/)
@@ -48,6 +48,7 @@
     * 使用反亲和性避免单点故障
     * [服务更新不中断](https://k8s.imroc.io/best-practice/ha/smooth-update/)
     * 节点下线不停服
+    * [解决长连接服务扩容失效](https://k8s.imroc.io/best-practice/ha/scale-keepalive-service/)
   * 动态伸缩
     * 使用 HPA 对 Pod 水平伸缩
     * 使用 VPA 对 Pod 垂直伸缩
@@ -63,7 +64,7 @@
     * 利用 lvm 和 xfs 实现容器磁盘隔离
     * 利用 lxcfs 隔离 proc 提升容器资源可见性
   * 集群安全
-    * [集群权限控制](https://k8s.imroc.io/best-practice/security/permission-control.md)
+    * [集群权限控制](https://k8s.imroc.io/best-practice/security/permission-control)
     * PodSecurityPolicy
     * 集群审计
   * GPU
