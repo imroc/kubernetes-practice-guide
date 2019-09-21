@@ -159,7 +159,7 @@ pod spec:
 
 方法5\)对集群使用者最省事，照常提交工作负载即可。不过初期需要一定的开发工作量。
 
-#### 规避方案三：使用本地DNS缓存
+### 规避方案三：使用本地DNS缓存
 
 容器的DNS请求都发往本地的DNS缓存服务\(dnsmasq, nscd等\)，不需要走DNAT，也不会发生conntrack冲突。另外还有个好处，就是避免DNS服务成为性能瓶颈。
 
@@ -170,7 +170,7 @@ pod spec:
 
 从资源效率的角度来考虑的话，推荐后一种方式。官方也意识到了这个问题比较常见，给出了 coredns 以 cache 模式作为 daemonset 部署的解决方案: [https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/](https://kubernetes.io/docs/tasks/administer-cluster/nodelocaldns/)
 
-#### 实施办法
+### 实施办法
 
 条条大路通罗马，不管怎么做，最终到达上面描述的效果即可。
 
