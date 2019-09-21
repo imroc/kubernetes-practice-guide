@@ -23,30 +23,30 @@
   * Cloud Provider
   * Network Policy
 * 排错指南
-  * [问题排查](troubleshooting/problems/)
-    * [Pod 排错](troubleshooting/problems/pod/)
-    * [网络排错](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/problems/network/README.md)
-    * [集群排错](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/problems/cluster/README.md)
-    * [其它排错](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/problems/others/README.md)
-  * [处理实践](troubleshooting/handling-practice/)
-    * [高负载](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/handling-practice/high-load/README.md)
-    * [内存碎片化](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/handling-practice/memory-fragmentation/README.md)
-    * [磁盘空间满](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/handling-practice/disk-full/README.md)
-    * [inotify watch 耗尽](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/handling-practice/runnig-out-of-inotify-watches/README.md)
-  * [踩坑分享](troubleshooting/damn/)
-    * [DNS 5 秒延时](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/damn/dns-lookup-5s-delay/README.md)
-    * [cgroup 泄露](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/damn/cgroup-leaking/README.md)
-    * [tcp\_tw\_recycle 引发丢包](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/damn/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle/README.md)
-    * [驱逐导致服务中断](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/damn/eviction-leads-to-service-disruption/README.md)
-    * [conntrack 冲突导致丢包](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/damn/conntrack-chong-tu-dao-zhi-diu-bao/README.md)
+  * [问题排查](https://k8s.imroc.io/troubleshooting/problems/)
+    * [Pod 排错](https://k8s.imroc.io/troubleshooting/problems/pod)
+    * [网络排错](https://k8s.imroc.io/troubleshooting/problems/network)
+    * [集群排错](https://k8s.imroc.io/troubleshooting/problems/cluster)
+    * [其它排错](https://k8s.imroc.io/troubleshooting/problems/others)
+  * [处理实践](https://k8s.imroc.io/troubleshooting/handling-practice/)
+    * [高负载](https://k8s.imroc.io/troubleshooting/handling-practice/high-load/)
+    * [内存碎片化](https://k8s.imroc.io/troubleshooting/handling-practice/memory-fragmentation/)
+    * [磁盘空间满](https://k8s.imroc.io/troubleshooting/handling-practice/disk-full/)
+    * [inotify watch 耗尽](https://k8s.imroc.io/troubleshooting/handling-practice/runnig-out-of-inotify-watches/)
+  * [踩坑分享](https://k8s.imroc.io/troubleshooting/damn/)
+    * [DNS 5 秒延时](https://k8s.imroc.io/troubleshooting/damn/dns-lookup-5s-delay/)
+    * [cgroup 泄露](https://k8s.imroc.io/troubleshooting/damn/cgroup-leaking/)
+    * [tcp\_tw\_recycle 引发丢包](https://k8s.imroc.io/troubleshooting/damn/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle/)
+    * [驱逐导致服务中断](https://k8s.imroc.io/troubleshooting/damn/eviction-leads-to-service-disruption/)
+    * [conntrack 冲突导致丢包](https://k8s.imroc.io/troubleshooting/damn/conntrack-chong-tu-dao-zhi-diu-bao/)
   * [排错技巧](troubleshooting/trick/)
-    * [分析 ExitCode 定位 Pod 异常退出原因](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/trick/analysis-exitcode/README.md)
-    * [容器内抓包定位网络问题](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/trick/capture-packets-in-container/README.md)
-    * [使用 Systemtap 定位疑难杂症](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/troubleshooting/trick/use-systemtap-to-locate-problems/README.md)
+    * [分析 ExitCode 定位 Pod 异常退出原因](https://k8s.imroc.io/troubleshooting/trick/analysis-exitcode/)
+    * [容器内抓包定位网络问题](https://k8s.imroc.io/troubleshooting/trick/capture-packets-in-container/)
+    * [使用 Systemtap 定位疑难杂症](https://k8s.imroc.io/troubleshooting/trick/use-systemtap-to-locate-problems/)
 * 最佳实践
   * 服务高可用
     * 使用反亲和性避免单点故障
-    * [服务更新不中断](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/best-practice/ha/smooth-update/README.md)
+    * [服务更新不中断](https://k8s.imroc.io/best-practice/ha/smooth-update/)
     * 节点下线不停服
   * 动态伸缩
     * 使用 HPA 对 Pod 水平伸缩
@@ -63,18 +63,18 @@
     * 利用 lvm 和 xfs 实现容器磁盘隔离
     * 利用 lxcfs 隔离 proc 提升容器资源可见性
   * 集群安全
-    * [集群权限控制](best-practice/security/permission-control.md)
+    * [集群权限控制](https://k8s.imroc.io/best-practice/security/permission-control.md)
     * PodSecurityPolicy
     * 集群审计
   * GPU
   * 大页内存
   * 证书管理
-    * [安装 cert-manager](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/best-practice/cert-manager/install-cert-manger/README.md)
-    * [使用 cert-manager 自动生成证书](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/best-practice/cert-manager/autogenerate-certificate-with-cert-manager/README.md)
+    * [安装 cert-manager](https://k8s.imroc.io/best-practice/cert-manager/install-cert-manger/)
+    * [使用 cert-manager 自动生成证书](https://k8s.imroc.io/best-practice/cert-manager/autogenerate-certificate-with-cert-manager/)
   * 配置管理
     * Helm
-      * [安装 Helm](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/best-practice/configuration-management/helm/install-helm/README.md)
-      * [Helm V2 迁移到 V3](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3/README.md)
+      * [安装 Helm](https://k8s.imroc.io/best-practice/configuration-management/helm/install-helm/)
+      * [Helm V2 迁移到 V3](https://k8s.imroc.io/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3/)
       * 使用 Helm 部署与管理应用
       * 开发 Helm Charts
     * Kustomize
@@ -83,8 +83,8 @@
   * 大规模集群
   * 集群迁移
   * 多集群
-  * [泛域名转发](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/best-practice/wildcard-domain-forward/README.md)
-  * [kubectl 实用技巧](https://github.com/imroc/kubernetes-practice-guide/tree/ad61a830bca96aaa0d2d8780b10e681fe9c15892/best-practice/kubectl-trick/README.md)
+  * [泛域名转发](https://k8s.imroc.io/best-practice/wildcard-domain-forward/)
+  * [kubectl 实用技巧](https://k8s.imroc.io/best-practice/kubectl-trick/)
 * 开发指南
   * 开发环境搭建
   * Operator
