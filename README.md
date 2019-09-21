@@ -141,17 +141,18 @@
 * [ ] 中文: [https://k8s.imroc.io](https://k8s.imroc.io)
 * [ ] English: [https://k8s.imroc.io/v/en/](https://k8s.imroc.io/v/en/)
 
-### 项目源码
+## 项目源码
 
 项目源码存放于 Github 上: [https://github.com/imroc/kubernetes-practice-guide](https://github.com/imroc/kubernetes-practice-guide)
 
-### 贡献
+## 贡献
 
 欢迎参与贡献和完善内容，贡献方法参考 [CONTRIBUTING](https://github.com/imroc/kubernetes-practice-guide/blob/master/CONTRIBUTING.md)
 
-### License
+## License
 
-![](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
+![License](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
 
 [署名-非商业性使用-相同方式共享 4.0 \(CC BY-NC-SA 4.0\)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)
+
 
