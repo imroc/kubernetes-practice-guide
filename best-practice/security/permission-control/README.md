@@ -1,10 +1,21 @@
 # 集群权限控制
 
-## 简单粗暴的最高权限
+## 账户类型
 
-- 为了简单方便，通常我们使用 token 认证，在 `kubeconfig` 中配置的账号拥有集群最高权限的 token，可以做任何操作。
-- 开启 token 认证的方法: `kube-apiserver` 启动参数 `--token-auth-file` 传一个 token 认证文件，比如: `--token-auth-file=/etc/kubernetes/known_tokens.csv`
-- token 认证文件包含最高权限 token，比如: `wJmqmTMK7BMNOfC1YDmOVydboBdOPPWj,admin,admin,system:masters`
+K8S 主要有以下两种账户类型概念:
+
+- 用户账户 (`User`): 控制人的权限。
+- 服务账户 (`ServiceAccount`): 控制应用程序的权限
+
+如果开启集群审计，就可以区分某个操作是哪个用户或哪个应程序执行的。
+
+## 控制用户权限
+
+### 简单粗暴的最高权限
+
+为了简单方便，小集群或测试环境集群我们通常使用 token 认证，在 `kubeconfig` 中配置拥有集群最高权限账号的 token，可以做任何操作。
+
+开启 token 认证的方法: `kube-apiserver` 启动参数 `--token-auth-file` 传一个 token 认证文件，比如: `--token-auth-file=/etc/kubernetes/known_tokens.csv` (token 认证文件包含最高权限 token，比如: `wJmq****PPWj,admin,admin,system:masters`)
 
 在 `kubeconfig` (`~/.kube/config`) 中配置 token:
 
@@ -12,7 +23,7 @@
 apiVersion: v1
 clusters:
 - cluster:
-    certificate-authority-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURaRENDQWt5Z0F3SUJBZ0lJQVhqdnpFVDBMcFF3RFFZSktvWklodmNOQVFFTEJRQXdVREVMTUFrR0ExVUUKQmhNQ1EwNHhLakFSQmdOVkJBb1RDblJsYm1ObGJuUjVkVzR3RlFZRFZRUUtFdzV6ZVhOMFpXMDZiV0Z6ZEdWeQpjekVWTUJNR0ExVUVBeE1NWTJ4ekxXRjJPVFZxZEdJeU1CNFhEVEU1TURReE9UQXpNRFl4TWxvWERUTTVNRFF4Ck9UQXpNRFl4TWxvd1VERUxNQWtHQTFVRUJoTUNRMDR4S2pBUkJnTlZCQW9UQ25SbGJtTmxiblI1ZFc0d0ZRWUQKVlFRS0V3NXplWE4wWlcwNmJXRnpkR1Z5Y3pFVk1CTUdBMVVFQXhNTVkyeHpMV0YyT1RWcWRHSXlNSUlCSWpBTgpCZ2txaGtpRzl3MEJBUUVGQUFPQ0FROEFNSUlCQ2dLQ0FRRUF5bHRhNytQSVhTUk45ZUtrMUtCRG9hWjFRZ0YxCjBORG5tWFl5V3BTREZvb3JJN2V6eFVTQzNydVFiWk5MYXM0cDJTRE02U0ZyVEkzRHI4dUZETytUV2k0aFFQNTYKak1zUHBSTUdCZ29hNzV0bkRTanY4TkgwUitFak0vdmNxQ3hWc1hZeUFSZEZlVDZ0dEFNZU9IcGRpYk5yTEN3dgpPSzBBVnl4OFlpeHI2bFpSQ1BKMTEwcmlPVllGNlgzMVZhUmNMTmJ5d1lJWGdiWUdVTC9UZEZoUExGUDRpTU5BCnRtaWYzUG9tUnZUcDI3R3RFcUlicndVbUdNT3hGV25LTWo0dXlIcTlZS0phYjVlRGV3V1liZ2craW9HUVJwcG0KSVJXdUQ5RFVOaHVRL3RKWVBodVJ0VzY5c2FzVVRpSjNmaThDQmhSN1ZyVDZ1Z0ZKc2J3RlZYN3d2d0lEQVFBQgpvMEl3UURBT0JnTlZIUThCQWY4RUJBTUNBb1F3SFFZRFZSMGxCQll3RkFZSUt3WUJCUVVIQXdJR0NDc0dBUVVGCkJ3TUJNQThHQTFVZEV3RUIvd1FGTUFNQkFmOHdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBSXZxT1V0SGU1Zy8KdDJsMWM2UEFkdlgrWkRPdE04S0JyZEdZd2RQQVplSTU3WklOT2p6ZFprWG9hTmY0aXZCekxab1pYSmZ4b1NWLwoyVEQrSUM4TFN1S1JvMlh0Z1Z1WnRVb3htUitMYXdmUjZvSmFDT0xKRmdVemdlaTcwTHJiTWI1cUkrMUV1TnBaCkt0TTdRQmtDSG5UdFZzbGM0czJpeTZvMFJFSGpady9NV04xanE3V1QxYVpKUGMydlYxWmlReUpFM0xNT21QYksKSzhtdFBnZUxBcTN0KzRUanRkWGY4TEJBb3dxZDNLakpiMGF2QXNaSFpGNEg0azI1d0VneFFIaDNmUnU5eEdudgpPemt4eUd0NWh3RWg0QXVhcVMyRUlMRUxWTmlydmFKSzEzY2EwNldQSmdYNUlqWnlnNUtqbGxPU2RZWlpsYnR1CloydFRheXA3b3djPQotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0tCg==
+    certificate-authority-data: LS0t****Cg==
     server: https://169.254.128.15:60002
   name: local
 contexts:
@@ -26,16 +37,20 @@ preferences: {}
 users:
 - name: admin
   user:
-    token: wJmqmTMK7BMNOfC1YDmOVydboBdOPPWj
+    token: wJmk****PPWj
 ```
 
-## 使用 RBAC 细化用户权限
+### 使用 RBAC 细化用户权限
 
-如果可以操作集群的人比较多，使用最高权限的 token 可能会比较危险，如果有人误操作或恶意操作，即使 apiserver 开启审计也无法知道是谁做的操作，所以最好控制下权限，分发不同的 `kubeconfig` 给不同的人，这个可以通过 RBAC 来实现(确保 `kube-apiserver` 启动参数 `--authorization-mode` 包含 RBAC)，基本思想是创建 ServiceAccount 绑定 Role 或 ClusterRole 来控制权限，拿到给 ServiceAccount 自动创建的 secret 中的 token 后 base64 解码再配置到 `kubeconfig` 中。
+使用最高权限 token 虽然简单方便，但是如果是重要的生产环境集群，可以操作集群的人比较多可能会比较危险，一旦有人误操作或故意搞事就可能酿成大错，即使 apiserver 开启审计也无法知道是谁做的操作，所以最好控制下权限，根据人的级别或角色创建拥有对应权限的账号，这个可以通过 RBAC 来实现(确保 `kube-apiserver` 启动参数 `--authorization-mode=RBAC`)，基本思想是创建 User 或 ServiceAccount 绑定 Role 或 fClusterRole 来控制权限，拿到给 User 自动创建的 secret 中的 token 后 base64 解码再配置到 `kubeconfig` 中。
 
-### RBAC 示例
+通常用户的权限管理对象使用 User 而不是 ServiceAccount，但 K8S 不自带 User 管理，不能像 ServiceAccount 一样直接通过 API 动态创建， User 的动态管理依赖平台自身的支持，比如通过证书签发或认证服务器等机制来实现 User 的管理，如果嫌自己管理太麻烦，实际也可以直接用 ServiceAccount 来控制用户权限，只是如果开启审计看到的操作记录是服务账户而不是用户账户，并且注意如果 ServiceAccount 自身有了 Secret 读权限，那使用这个 ServiceAccount 的用户就可能能拿到其它更高权限的 ServiceAccount 的 token，通过替换自身 token 可以实现提权。
 
-给 roc 授权 test 命名空间所有权限，istio-system 命名空间的只读权限:
+TODO: 优化
+
+下面是 RBAC 示例:
+
+#### 给 roc 授权 test 命名空间所有权限，istio-system 命名空间的只读权限:
 
 ``` yaml
 apiVersion: v1
@@ -54,7 +69,6 @@ rules:
   - apiGroups: ["*"]
     resources: ["*"]
     verbs: ["*"]
-
 
 ---
 kind: RoleBinding
@@ -187,3 +201,12 @@ kubectl config view
 # 配置当前使用的context
 kubectl config use-context <context>
 ```
+
+## 控制应用权限
+
+对于用户有用户账户 service acount
+
+## 参考资料
+
+- https://kubernetes.io/zh/docs/reference/access-authn-authz/service-accounts-admin/
+- https://kubernetes.io/docs/reference/access-authn-authz/rbac/
