@@ -2,6 +2,22 @@
 
 * [序言](README.md)
 
+## 部署指南 <a id="deploy"></a>
+
+* 部署方案选型
+* 单机部署
+* 二进制部署
+* 工具部署
+
+## 插件扩展 <a id="plugin"></a>
+
+* 网络
+* 运行时
+* 存储
+* Ingress Controller
+* Device 插件
+* Cloud Provider
+
 ## 排错指南 <a id="troubleshooting"></a>
 
 * [问题排查](troubleshooting/problems/README.md)
@@ -25,3 +41,18 @@
   * [容器内抓包定位网络问题](troubleshooting/trick/capture-packets-in-container.md)
   * [使用 Systemtap 定位疑难杂症](troubleshooting/trick/use-systemtap-to-locate-problems.md)
 
+## 开发指南 <a id="dev"></a>
+
+* 开发环境搭建
+* Operator
+* client-go
+* 社区贡献
+
+## 领域应用 <a id="domain"></a>
+
+* 微服务架构
+* Service Mesh
+* Serverless
+* DevOps
+* 人工智能
+* 大数据
