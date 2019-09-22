@@ -98,17 +98,17 @@
 
 * [ ] 问题排查
   * [x] Pod 排错
-    * [x] Pod 一直处于 ContainerCreating 或 Waiting 状态
-    * [x] Pod 一直处于 Pending 状态
-    * [x] Pod 一直处于 Terminating 状态
-    * [x] Pod Terminating 慢
-    * [x] Pod 一直处于 Unknown 状态
-    * [x] Pod 一直处于 Error 状态
-    * [x] Pod 一直处于 CrashLoopBackOff 状态
-    * [x] Pod 一直处于 ImagePullBackOff 状态
-    * [x] Pod 一直处于 ImageInspectError 状态
-    * [x] Pod 健康检查失败
-    * [x] Pod 无法被 exec 或查 logs
+      * [x] Pod 一直处于 ContainerCreating 或 Waiting 状态
+      * [x] Pod 一直处于 Pending 状态
+      * [x] Pod 一直处于 Terminating 状态
+      * [x] Pod Terminating 慢
+      * [x] Pod 一直处于 Unknown 状态
+      * [x] Pod 一直处于 Error 状态
+      * [x] Pod 一直处于 CrashLoopBackOff 状态
+      * [x] Pod 一直处于 ImagePullBackOff 状态
+      * [x] Pod 一直处于 ImageInspectError 状态
+      * [x] Pod 健康检查失败
+      * [x] Pod 无法被 exec 或查 logs
   * [ ] 网络排错
     * [x] LB 健康检查失败
     * [x] DNS 解析异常
