@@ -21,9 +21,6 @@ Events:
 * 剩余可以被分配的内存不够
 * 剩余可用 GPU 数量不够 (通常在机器学习场景，GPU 集群环境)
 
-``` bash
-```
-
 如果判断某个 Node 资源是否足够？ 通过 `kubectl describe node <node-name>` 查看 node 资源情况，关注以下信息：
 
 * `Allocatable`: 表示此节点能够申请的资源总和
