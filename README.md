@@ -98,9 +98,30 @@
 
 * [ ] 问题排查
   * [x] Pod 排错
-  * [x] 网络排错
-  * [x] 集群排错
-  * [x] 其它排错
+    * [x] Pod 一直处于 ContainerCreating 或 Waiting 状态
+    * [x] Pod 一直处于 Pending 状态
+    * [x] Pod 一直处于 Terminating 状态
+    * [x] Pod Terminating 慢
+    * [x] Pod 一直处于 Unknown 状态
+    * [x] Pod 一直处于 Error 状态
+    * [x] Pod 一直处于 CrashLoopBackOff 状态
+    * [x] Pod 一直处于 ImagePullBackOff 状态
+    * [x] Pod 一直处于 ImageInspectError 状态
+    * [x] Pod 健康检查失败
+    * [x] Pod 无法被 exec 或查 logs
+  * [ ] 网络排错
+    * [x] LB 健康检查失败
+    * [x] DNS 解析异常
+    * [x] Service 不通
+    * [x] Service 无法解析
+  * [ ] 集群排错
+    * [x] Node 全部消失
+    * [x] Daemonset 没有被调度
+    * [ ] Apiserver 响应慢
+    * [ ] ETCD 频繁选主
+    * [ ] Node 异常
+  * [ ] 其它排错
+    * [x] Job 无法被删除
 * [ ] 处理实践
   * [x] 高负载
   * [x] 内存碎片化

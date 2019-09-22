@@ -1,12 +1,4 @@
-# 集群排错
-
-## Apiserver 响应慢
-
-TODO
-
-## ETCD 频繁选主
-
-TODO
+# Node 全部消失
 
 ## Rancher 清除 Node 导致集群异常
 
@@ -21,4 +13,3 @@ TODO
 ### 规避方案
 
 不要在 rancher 组件卸载完之前手动 `delete ns local`。
-
