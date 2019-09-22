@@ -187,7 +187,7 @@
 
 ## License
 
-<img src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png" align="left" >
+<img  align="left" width="100" height="100" src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png">
 
 [署名-非商业性使用-相同方式共享 4.0 \(CC BY-NC-SA 4.0\)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)
 
