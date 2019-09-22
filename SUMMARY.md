@@ -56,7 +56,7 @@
   * [案例分享](troubleshooting/damn/cases/README.md)
     * [驱逐导致服务中断](troubleshooting/damn/cases/eviction-leads-to-service-disruption.md)
     * [DNS 5 秒延时](troubleshooting/damn/cases/dns-lookup-5s-delay.md)
-    * [ARP 缓存爆满导致健康检查失败](troubleshooting/damn/cases/)
+    * [ARP 缓存爆满导致健康检查失败](troubleshooting/damn/cases/arp-cache-overflow-causes-healthcheck-failed.md)
 * [排错技巧](troubleshooting/trick/README.md)
   * [分析 ExitCode 定位 Pod 异常退出原因](troubleshooting/trick/analysis-exitcode.md)
   * [容器内抓包定位网络问题](troubleshooting/trick/capture-packets-in-container.md)
