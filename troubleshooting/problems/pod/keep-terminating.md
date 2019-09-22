@@ -37,4 +37,13 @@ k8s 资源的 metadata 里如果存在 `finalizers`，那么该资源一般是�
 
 ## dockerd 与 containerd 的状态不同步
 
-containerd 看容器状态是 stopped，而 docker 看容器状态却是 running，说明 dockerd 与 containerd 之间容器状态同步有问题，已提issue:  https://github.com/docker/for-linux/issues/779
+containerd 看容器状态是 stopped 或者已经没有记录，而 docker 看容器状态却是 runing，说明 dockerd 与 containerd 之间容器状态同步有问题，目前发现了 docker 在 aufs 存储驱动下如果磁盘爆满可能发生内核 panic :
+
+``` txt
+aufs au_opts_verify:1597:dockerd[5347]: dirperm1 breaks the protection by the permission bits on the lower branch
+```
+
+随后可能发生状态不同步，已提issue:  https://github.com/docker/for-linux/issues/779
+
+运行时推荐直接使用 containerd，绕过 dockerd 避免 docker 本身的各种 BUG。
+
