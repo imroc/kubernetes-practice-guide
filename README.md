@@ -122,6 +122,10 @@
   * [ ] Node 异常
 * [ ] 其它排错
   * [x] Job 无法被删除
+* [x] 报错指南
+  * [x] no space left on device
+  * [x] arp_cache: neighbor table overflow!
+  * [x] Cannot allocate memory
 
 #### 处理实践
 
@@ -137,8 +141,6 @@
   * [x] tcp\_tw\_recycle 引发丢包
   * [x] 频繁 cgroup OOM 导致内核 crash
   * [x] 使用 oom-guard 在用户态处理 cgroup OOM
-  * [x] no space left on device
-  * [x] arp_cache: neighbor table overflow!
   * [ ] conntrack 冲突导致丢包
 * [ ] 案例分享
   * [x] DNS 5 秒延时
