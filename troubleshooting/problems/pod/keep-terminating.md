@@ -34,3 +34,7 @@ k8s 资源的 metadata 里如果存在 `finalizers`，那么该资源一般是�
 ## 低版本 kubelet list-watch 的 bug
 
 之前遇到过使用 v1.8.13 版本的 k8s，kubelet 有时 list-watch 出问题，删除 pod 后 kubelet 没收到事件，导致 kubelet 一直没做删除操作，所以 pod 状态一直是 Terminating
+
+## dockerd 与 containerd 的状态不同步
+
+containerd 看容器状态是 stopped，而 docker 看容器状态却是 running，说明 dockerd 与 containerd 之间容器状态同步有问题，已提issue:  https://github.com/docker/for-linux/issues/779
