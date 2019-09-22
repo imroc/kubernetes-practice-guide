@@ -30,7 +30,7 @@
   * [inotify watch 耗尽](troubleshooting/handling-practice/runnig-out-of-inotify-watches.md)
 * [踩坑分享](troubleshooting/damn/README.md)
   * [cgroup 泄露](troubleshooting/damn/cgroup-leaking.md)
-  * [tcp\_tw\_recycle 引发丢包](troubleshooting/damn/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.md)
+  * [tcp\_tw\_recycle 引发丢包](troubleshooting/damn/tcp_tw_recycle-causes-packet-loss.md)
   * [驱逐导致服务中断](troubleshooting/damn/eviction-leads-to-service-disruption.md)
   * [频繁 cgroup OOM 导致内核 crash](troubleshooting/damn/cgroup-oom-cause-kernel-crash.md)
 * [排错技巧](troubleshooting/trick/README.md)
