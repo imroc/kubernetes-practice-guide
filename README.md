@@ -97,37 +97,37 @@
 ### 排错指南
 
 * [ ] 问题排查
-  * [x] Pod 排错
-      * [x] Pod 一直处于 ContainerCreating 或 Waiting 状态
-      * [x] Pod 一直处于 Pending 状态
-      * [x] Pod 一直处于 Terminating 状态
-      * [x] Pod Terminating 慢
-      * [x] Pod 一直处于 Unknown 状态
-      * [x] Pod 一直处于 Error 状态
-      * [x] Pod 一直处于 CrashLoopBackOff 状态
-      * [x] Pod 一直处于 ImagePullBackOff 状态
-      * [x] Pod 一直处于 ImageInspectError 状态
-      * [x] Pod 健康检查失败
-      * [x] Pod 无法被 exec 或查 logs
-  * [ ] 网络排错
+  * Pod 排错
+    * [x] Pod 一直处于 ContainerCreating 或 Waiting 状态
+    * [x] Pod 一直处于 Pending 状态
+    * [x] Pod 一直处于 Terminating 状态
+    * [x] Pod Terminating 慢
+    * [x] Pod 一直处于 Unknown 状态
+    * [x] Pod 一直处于 Error 状态
+    * [x] Pod 一直处于 CrashLoopBackOff 状态
+    * [x] Pod 一直处于 ImagePullBackOff 状态
+    * [x] Pod 一直处于 ImageInspectError 状态
+    * [x] Pod 健康检查失败
+    * [x] Pod 无法被 exec 或查 logs
+  * 网络排错
     * [x] LB 健康检查失败
     * [x] DNS 解析异常
     * [x] Service 不通
     * [x] Service 无法解析
-  * [ ] 集群排错
+  * 集群排错
     * [x] Node 全部消失
     * [x] Daemonset 没有被调度
     * [ ] Apiserver 响应慢
     * [ ] ETCD 频繁选主
     * [ ] Node 异常
-  * [ ] 其它排错
+  * 其它排错
     * [x] Job 无法被删除
-* [ ] 处理实践
+* 处理实践
   * [x] 高负载
   * [x] 内存碎片化
   * [x] 磁盘空间满
   * [x] inotify watch 耗尽
-* [ ] 踩坑分享
+* 踩坑分享
   * [x] cgroup 泄露
   * [x] tcp\_tw\_recycle 引发丢包
   * [x] 驱逐导致服务中断
@@ -135,7 +135,7 @@
   * [x] DNS 5 秒延时
   * [ ] LB 压测 NodePort CPS 低
   * [ ] conntrack 冲突导致丢包
-* [ ] 排错技巧
+* 排错技巧
   * [x] 分析 ExitCode 定位 Pod 异常退出原因
   * [x] 容器内抓包定位网络问题
   * [x] 使用 Systemtap 定位疑难杂症
@@ -143,24 +143,24 @@
 
 ### 集群管理
 
-* [ ] 集群监控管理
+* 集群监控管理
   * [ ] Prometheus
   * [ ] Grafana
-* [ ] 集群安全管理
+* 集群安全管理
   * [x] 集群权限控制
   * [ ] 使用 PodSecurityPolicy 配置全局 Pod 安全策略
   * [ ] 集群审计
-* [ ] 集群可视化管理
+* 集群可视化管理
   * [ ] Kubernetes Dashboard
   * [ ] KubSphere
   * [ ] Weave Scope
   * [ ] Rancher
   * [ ] Kui
   * [ ] Kubebox
-* [ ] 集群证书管理
+* 集群证书管理
   * [x] 安装 cert-manager
   * [x] 使用 cert-manager 自动生成证书
-* [ ] 集群配置管理
+* 集群配置管理
   * [ ] Helm
     * [x] 安装 Helm
     * [x] Helm V2 迁移到 V3
@@ -168,7 +168,7 @@
     * [ ] 开发 Helm Charts
   * [ ] Kustomize
     * [ ] Kustomize 基础入门
-* [ ] 集群镜像管理
+* 集群镜像管理
   * [ ] Harbor
   * [ ] Dragonfly
   * [ ] Kaniko
