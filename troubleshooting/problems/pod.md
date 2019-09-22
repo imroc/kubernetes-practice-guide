@@ -287,7 +287,7 @@ TODO
 
 如果节点上内存碎片化严重，缺少大页内存，会导致即使总的剩余内存较多，但还是会申请内存失败，参考 [处理实践: 内存碎片化](https://k8s.imroc.io/troubleshooting/handling-practice/memory-fragmentation)
 
-## 健康检查失败
+### 健康检查失败
 
 TODO
 
@@ -343,7 +343,7 @@ kubelet 默认串行下载镜像:
 * 如果是TKE独立集群，检查节点安全组是否对master节点放通了 10250 端口，如果没放通会导致 apiserver 无法访问 kubelet 10250 端口，从而导致无法进入容器或查看log\(`kubectl exec`和`kubectl logs`\)
 * 检查防火墙、iptables规则是否对 10250 端口数据包进行了拦截
 
-:\#\# Pod 健康检查失败
+## Pod 健康检查失败
 
 * Kubernetes 健康检查包含就绪检查\(readinessProbe\)和存活检查\(livenessProbe\)
 * pod 如果就绪检查失败会将此 pod ip 从 service 中摘除，通过 service 访问，流量将不会被转发给就绪检查失败的 pod
