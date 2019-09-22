@@ -83,8 +83,7 @@
   * [ ] 内核参数优化
   * [ ] 调度器优化
   * [ ] Pod 原地升级
-* [ ] 容器化迁移
-  * [ ] 镜像构建
+* [ ] 传统服务容器化过渡
   * [ ] Pod 固定 IP
 * [ ] 服务转发
   * [ ] 掌握 Ingress 与 Service
@@ -150,31 +149,44 @@
 
 ### 集群管理
 
-* [ ] 集群监控管理
-  * [ ] Prometheus
-  * [ ] Grafana
-* [ ] 集群安全管理
-  * [x] 集群权限控制
-  * [ ] 使用 PodSecurityPolicy 配置全局 Pod 安全策略
-  * [ ] 集群审计
-* [ ] 集群可视化管理
-  * [ ] Kubernetes Dashboard
-  * [ ] KubSphere
-  * [ ] Weave Scope
-  * [ ] Rancher
-  * [ ] Kui
-  * [ ] Kubebox
-* [ ] 集群证书管理
-  * [x] 安装 cert-manager
-  * [x] 使用 cert-manager 自动生成证书
-* [ ] 集群配置管理
-  * [ ] Helm
-    * [x] 安装 Helm
-    * [x] Helm V2 迁移到 V3
-    * [ ] 使用 Helm 部署与管理应用
-    * [ ] 开发 Helm Charts
-  * [ ] Kustomize
-    * [ ] Kustomize 基础入门
+#### 集群监控
+
+* [ ] Prometheus
+* [ ] Grafana
+
+#### 日志搜集
+
+* [ ] EFK
+
+#### 集群安全
+
+* [x] 集群权限控制
+* [ ] 使用 PodSecurityPolicy 配置全局 Pod 安全策略
+* [ ] 集群审计
+
+#### 集群可视化管理
+
+* [ ] Kubernetes Dashboard
+* [ ] KubSphere
+* [ ] Weave Scope
+* [ ] Rancher
+* [ ] Kui
+* [ ] Kubebox
+
+#### 集群证书管理
+
+* [x] 安装 cert-manager
+* [x] 使用 cert-manager 自动生成证书
+
+#### 集群配置管理
+
+* [ ] Helm
+  * [x] 安装 Helm
+  * [x] Helm V2 迁移到 V3
+  * [ ] 使用 Helm 部署与管理应用
+  * [ ] 开发 Helm Charts
+* [ ] Kustomize
+  * [ ] Kustomize 基础入门
 * [ ] 集群镜像管理
   * [ ] Harbor
   * [ ] Dragonfly
@@ -199,36 +211,50 @@
 
 ### 领域应用
 
-* [ ] 微服务架构
-  * [ ] 服务发现
-  * [ ] 服务治理
-  * [ ] 分布式追踪
-    * [ ] Jaeger
-* [ ] Service Mesh
-  * [ ] Istio
-  * [ ] Maesh
-  * [ ] Kuma
-* [ ] Serverless
-  * [ ] Knative
-  * [ ] Kubeless
-  * [ ] Fission
-* [ ] DevOps
-  * [ ] Jenkins X
-  * [ ] Tekton
-  * [ ] Argo
-  * [ ] GoCD
-  * [ ] Argo
-  * [ ] GitLab CI
-  * [ ] Knative Build
-  * [ ] Drone
-* [ ] 人工智能
-  * [ ] Kubeflow
-* [ ] 大数据
+#### 微服务架构
+
+* [ ] 服务发现
+* [ ] 服务治理
+* [ ] 分布式追踪
+  * [ ] Jaeger
+
+#### Service Mesh
+
+* [ ] Istio
+* [ ] Maesh
+* [ ] Kuma
+
+#### Serverless
+
+* [ ] Knative
+* [ ] Kubeless
+* [ ] Fission
+
+#### DevOps
+
+* [ ] Jenkins X
+* [ ] Tekton
+* [ ] Argo
+* [ ] GoCD
+* [ ] Argo
+* [ ] GitLab CI
+* [ ] Knative Build
+* [ ] Drone
+
+#### 人工智能
+
+* [ ] nvidia-docker
+* [ ] Kubeflow
+
+#### 大数据
 
 ### 开发指南
 
 * [ ] 开发环境搭建
 * [ ] Operator
+  * [ ] Operator 概述
+  * [ ] operator-sdk
+  * [ ] kubebuilder
 * [ ] client-go
 * [ ] 社区贡献
 
