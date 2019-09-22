@@ -34,14 +34,24 @@
 
 ## Service 访问不通
 
-可能原因：
+### 集群 dns 故障
 
-* 集群 dns 故障
-* 节点防火墙没放开集群容器网络 \(iptables/安全组\)
+TODO
+
+### 节点防火墙没放开集群容器网络 \(iptables/安全组\)
+
+TODO
+
+### kube-proxy 没有工作，命中 netlink deadlock 的 bug
+
+* issue: https://github.com/kubernetes/kubernetes/issues/71071
+* 1.14 版本已修复，修复的 PR: https://github.com/kubernetes/kubernetes/pull/72361
 
 ## Service 无法解析
 
-### 检查 dns 服务是否正常\(kube-dns或CoreDNS\)
+### 集群 DNS 没有正常运行\(kube-dns或CoreDNS\)
+
+检查集群 DNS 是否运行正常:
 
 * kubelet 启动参数 `--cluster-dns` 可以看到 dns 服务的 cluster ip:
 
@@ -72,16 +82,16 @@ $ kubectl -n kube-system get pod -o wide | grep 172.16.0.156
 kube-dns-898dbbfc6-hvwlr            3/3       Running   0          8d        172.16.0.156   10.0.0.3
 ```
 
-### dns 服务正常，pod 与 dns 服务之间网络不通
+### Pod 与 DNS 服务之间网络不通
 
-* 检查 dns 服务运行正常，再检查下 pod 是否连不上 dns 服务，可以在 pod 里 telnet 一下 dns 的 53 端口:
+检查下 pod 是否连不上 dns 服务，可以在 pod 里 telnet 一下 dns 的 53 端口:
 
 ```bash
 # 连 dns service 的 cluster ip
 $ telnet 172.16.14.217 53
 ```
 
-* 如果检查到是网络不通，就需要排查下网络设置
-  * 检查节点的安全组设置，需要放开集群的容器网段
-  * 检查是否还有防火墙规则，检查 iptables
+如果检查到是网络不通，就需要排查下网络设置:
 
+* 检查节点的安全组设置，需要放开集群的容器网段
+* 检查是否还有防火墙规则，检查 iptables

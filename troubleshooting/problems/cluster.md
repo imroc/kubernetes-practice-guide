@@ -1,5 +1,13 @@
 # 集群排错
 
+## Apiserver 响应慢
+
+TODO
+
+## ETCD 频繁选主
+
+TODO
+
 ## Rancher 清除 Node 导致集群异常
 
 ### 现象
