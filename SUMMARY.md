@@ -12,7 +12,8 @@
   * [服务更新不中断](best-practice/ha/smooth-update.md)
   * [解决长连接服务扩容失效](best-practice/ha/scale-keepalive-service.md)
 * [泛域名转发](best-practice/forward/wildcard-domain-forward.md)
-* [kubectl 实用技巧](best-practice/efficient/kubectl.md)
+* [提高生产力](best-practice/productive/README.md)
+  * [kubectl 高效技巧](best-practice/productive/efficient-kubectl.md)
 
 ## 排错指南 <a id="troubleshooting"></a>
 
@@ -29,7 +30,6 @@
 * [踩坑分享](troubleshooting/damn/README.md)
   * [cgroup 泄露](troubleshooting/damn/cgroup-leaking.md)
   * [tcp\_tw\_recycle 引发丢包](troubleshooting/damn/lost-packets-in-nat-environment-once-enable-tcp_tw_recycle.md)
-  * [DNS 5 秒延时](troubleshooting/damn/dns-lookup-5s-delay.md)
   * [驱逐导致服务中断](troubleshooting/damn/eviction-leads-to-service-disruption.md)
   * [频繁 cgroup OOM 导致内核 crash](troubleshooting/damn/cgroup-oom-cause-kernel-crash.md)
 * [排错技巧](troubleshooting/trick/README.md)
