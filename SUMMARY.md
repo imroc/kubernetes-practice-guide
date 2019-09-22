@@ -20,6 +20,7 @@
 
 * [问题排查](troubleshooting/problems/README.md)
   * [Pod 排错](troubleshooting/problems/pod.md)
+    * [Pod 一直处于 ContainerCreating 或 Waiting 状态](troubleshooting/problems/pod/keep-containercreating-or-waiting.md)
   * [网络排错](troubleshooting/problems/network.md)
   * [集群排错](troubleshooting/problems/cluster.md)
   * [其它排错](troubleshooting/problems/others.md)
