@@ -53,10 +53,10 @@
   * [x] 服务平滑更新不中断
   * [ ] 节点驱逐下线不停服
   * [x] 解决长连接服务扩容失效
-  * [ ] 容灾与备份
-    * [ ] 使用反亲和性避免单点故障
-    * [ ] 备份恢复
-    * [ ] 集群联邦
+  * [ ] 使用反亲和性避免单点故障
+  * [ ] 使用 PodDisruptionBudget 保障单点故障服务的高可用
+  * [ ] 备份恢复
+  * [ ] 集群联邦
 * [ ] 弹性伸缩
   * [ ] 使用 HPA 对 Pod 水平伸缩
   * [ ] 使用 VPA 对 Pod 垂直伸缩
@@ -99,17 +99,18 @@
   * [x] 磁盘空间满
   * [x] inotify watch 耗尽
 * [ ] 踩坑分享
-  * [x] DNS 5 秒延时
   * [x] cgroup 泄露
   * [x] tcp\_tw\_recycle 引发丢包
   * [x] 驱逐导致服务中断
   * [x] 频繁 cgroup OOM 导致内核 crash
+  * [x] DNS 5 秒延时
   * [ ] LB 压测 NodePort CPS 低
   * [ ] conntrack 冲突导致丢包
 * [ ] 排错技巧
   * [x] 分析 ExitCode 定位 Pod 异常退出原因
   * [x] 容器内抓包定位网络问题
   * [x] 使用 Systemtap 定位疑难杂症
+  * [ ] 使用 kubectl-debug 帮助定位问题
 
 ### 集群管理
 
