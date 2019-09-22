@@ -6,6 +6,14 @@
 
 ## 插件扩展 <a id="plugin"></a>
 
+## 最佳实践 <a id="best-practice"></a>
+
+* [服务高可用](best-practice/ha/README.md)
+  * [服务更新不中断](best-practice/ha/smooth-update.md)
+  * [解决长连接服务扩容失效](best-practice/ha/scale-keepalive-service.md)
+* [泛域名转发](best-practice/forward/wildcard-domain-forward.md)
+* [kubectl 实用技巧](best-practice/efficient/kubectl.md)
+
 ## 排错指南 <a id="troubleshooting"></a>
 
 * [问题排查](troubleshooting/problems/README.md)
@@ -29,26 +37,23 @@
   * [容器内抓包定位网络问题](troubleshooting/trick/capture-packets-in-container.md)
   * [使用 Systemtap 定位疑难杂症](troubleshooting/trick/use-systemtap-to-locate-problems.md)
 
-## 最佳实践 <a id="best-practice"></a>
+## 集群管理 <a id="manage"></a>
 
-* [服务高可用](best-practice/ha/README.md)
-  * [服务更新不中断](best-practice/ha/smooth-update.md)
-  * [解决长连接服务扩容失效](best-practice/ha/scale-keepalive-service.md)
-* [集群安全](best-practice/security/README.md)
-  * [集群权限控制](best-practice/security/permission-control.md)
-* [证书管理](best-practice/cert-manager/README.md)
-  * [安装 cert-manager](best-practice/cert-manager/install-cert-manger.md)
-  * [使用 cert-manager 自动生成证书](best-practice/cert-manager/autogenerate-certificate-with-cert-manager.md)
-* [配置管理](best-practice/configuration-management/README.md)
-  * [Helm](best-practice/configuration-management/helm/README.md)
-    * [安装 Helm](best-practice/configuration-management/helm/install-helm.md)
-    * [Helm V2 迁移到 V3](best-practice/configuration-management/helm/upgrade-helm-v2-to-v3.md)
-* [泛域名转发](best-practice/wildcard-domain-forward.md)
-* [kubectl 实用技巧](best-practice/kubectl-trick.md)
-* [基础设施容器化](best-practice/infra-containerization/README.md)
-  * [ElasticSearch](best-practice/infra-containerization/elasticsearch/README.md)
-    * [使用 elastic-oparator 部署 Elasticsearch 和 Kibana](best-practice/infra-containerization/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator.md)
+* [集群安全](manage/security/README.md)
+  * [集群权限控制](manage/security/permission-control.md)
+* [证书管理](manage/cert/README.md)
+  * [安装 cert-manager](manage/cert/install-cert-manger.md)
+  * [使用 cert-manager 自动生成证书](manage/cert/autogenerate-certificate-with-cert-manager.md)
+* [配置管理](manage/configuration/README.md)
+  * [Helm](manage/configuration/helm/README.md)
+    * [安装 Helm](manage/configuration/helm/install-helm.md)
+    * [Helm V2 迁移到 V3](manage/configuration/helm/upgrade-helm-v2-to-v3.md)
 
-## 开发指南 <a id="dev"></a>
+## 基础设施容器化部署 <a id="infra"></a>
+
+* [ElasticSearch](infra/elasticsearch/README.md)
+  * [使用 elastic-oparator 部署 Elasticsearch 和 Kibana](infra/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator.md)
 
 ## 领域应用 <a id="domain"></a>
+
+## 开发指南 <a id="dev"></a>

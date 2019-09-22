@@ -30,12 +30,61 @@
   * [ ] Containerd
   * [ ] CRI-O
 * [ ] 存储
+  * [ ] Rook
 * [ ] Ingress Controller
+  * [ ] Nginx
+  * [ ] Traefik
+  * [ ] Contour
+  * [ ] Ambassador
+  * [ ] Kong
+  * [ ] Gloo
+  * [ ] HAProxy
+  * [ ] Istio
+  * [ ] Skipper
 * [ ] Scheduler Plugin
 * [ ] Device Plugin
 * [ ] Cloud Provider
 * [ ] Network Policy
 * [ ] 使用 MetalLB 创建负载均衡器
+
+### 最佳实践
+
+* [ ] 服务高可用
+  * [x] 服务平滑更新不中断
+  * [ ] 节点驱逐下线不停服
+  * [x] 解决长连接服务扩容失效
+  * [ ] 容灾与备份
+    * [ ] 使用反亲和性避免单点故障
+    * [ ] 备份恢复
+    * [ ] 集群联邦
+* [ ] 弹性伸缩
+  * [ ] 使用 HPA 对 Pod 水平伸缩
+  * [ ] 使用 VPA 对 Pod 垂直伸缩
+  * [ ] 使用 Cluster Autoscaler 对节点水平伸缩
+* [ ] 资源分配与限制
+  * [ ] 资源预留
+  * [ ] Request 与 Limit
+  * [ ] Resource Quotas
+  * [ ] Limit Ranges
+  * [ ] GPU
+  * [ ] 大页内存
+* [ ] 资源隔离
+  * [ ] 利用 kata-container 隔离容器资源
+  * [ ] 利用 gVisor 隔离容器资源
+  * [ ] 利用 lvm 和 xfs 实现容器磁盘隔离
+  * [ ] 利用 lxcfs 隔离 proc 提升容器资源可见性
+* [ ] 性能优化
+  * [ ] 内核参数优化
+  * [ ] 调度器优化
+  * [ ] Pod 原地升级
+* [ ] 容器化迁移
+  * [ ] 镜像构建
+  * [ ] Pod 固定 IP
+* [ ] 服务转发
+  * [ ] 掌握 Ingress 与 Service
+  * [x] 泛域名转发
+* [ ] 提高生产力
+  * [x] kubectl 高效技巧
 
 ### 排错指南
 
@@ -54,40 +103,30 @@
   * [x] cgroup 泄露
   * [x] tcp\_tw\_recycle 引发丢包
   * [x] 驱逐导致服务中断
-  * [ ] conntrack 冲突导致丢包
   * [x] 频繁 cgroup OOM 导致内核 crash
+  * [ ] LB 压测 NodePort CPS 低
+  * [ ] conntrack 冲突导致丢包
 * [ ] 排错技巧
   * [x] 分析 ExitCode 定位 Pod 异常退出原因
   * [x] 容器内抓包定位网络问题
   * [x] 使用 Systemtap 定位疑难杂症
 
-### 最佳实践
+### 集群管理
 
-* [ ] 服务高可用
-  * [ ] 使用反亲和性避免单点故障
-  * [x] 服务更新不中断
-  * [ ] 节点下线不停服
-  * [x] 解决长连接服务扩容失效
-* [ ] 动态伸缩
-  * [ ] 使用 HPA 对 Pod 水平伸缩
-  * [ ] 使用 VPA 对 Pod 垂直伸缩
-  * [ ] 使用 Cluster Autoscaler 对节点水平伸缩
-* [ ] 资源限制
-  * [ ] 资源预留
-  * [ ] Request 与 Limit
-  * [ ] Resource Quotas
-  * [ ] Limit Ranges
-* [ ] 资源隔离
-  * [ ] 利用 kata-container 隔离容器资源
-  * [ ] 利用 gVisor 隔离容器资源
-  * [ ] 利用 lvm 和 xfs 实现容器磁盘隔离
-  * [ ] 利用 lxcfs 隔离 proc 提升容器资源可见性
-* [ ] 集群安全
+* [ ] 监控管理
+  * [ ] Prometheus
+  * [ ] Grafana
+* [ ] 安全管理
   * [x] 集群权限控制
   * [ ] PodSecurityPolicy
   * [ ] 集群审计
-* [ ] GPU
-* [ ] 大页内存
+* [ ] 可视化管理
+  * [ ] Kubernetes Dashboard
+  * [ ] KubSphere
+  * [ ] Weave Scope
+  * [ ] Rancher
+  * [ ] Kui
+  * [ ] Kubebox
 * [ ] 证书管理
   * [x] 安装 cert-manager
   * [x] 使用 cert-manager 自动生成证书
@@ -104,58 +143,34 @@
   * [ ] Dragonfly
   * [ ] Kaniko
   * [ ] kpack
-* [ ] 备份恢复
-* [ ] 大规模集群
-  * [ ] 内核参数优化
-  * [ ] 调度器优化
-* [ ] 集群迁移
-* [ ] 多集群
-* [x] 泛域名转发
-* [x] kubectl 实用技巧
-* [ ] 监控
-  * [ ] Prometheus
-  * [ ] Grafana
-* [ ] 服务治理
-  * [ ] 服务发现
-  * [ ] 分布式追踪
-    * [ ] Jaeger
-* [ ] K8S 可视化管理
-  * [ ] Kubernetes Dashboard
-  * [ ] KubSphere
-  * [ ] Weave Scope
-  * [ ] Rancher
-  * [ ] Kui
-  * [ ] Kubebox
-* [ ] 服务发现
-* [ ] 基础设施容器化部署
-  * [ ] ETCD
-  * [ ] Zookeeper
-  * [ ] Redis
-  * [ ] TiKV
-  * [ ] ElasticSearch
-    * [x] 使用 elastic-oparator 部署 Elasticsearch 和 Kibana
-  * [ ] MySQL
-  * [ ] TiDB
-  * [ ] PostgreSQL
-  * [ ] MongoDB
-  * [ ] Cassandra
-  * [ ] InfluxDB
-  * [ ] OpenTSDB
-* [ ] 原地升级
-* [ ] 固定 IP
 
-### 开发指南
+### 基础设施容器化部署
 
-* [ ] 开发环境搭建
-* [ ] Operator
-* [ ] client-go
-* [ ] 社区贡献
+* [ ] ETCD
+* [ ] Zookeeper
+* [ ] Redis
+* [ ] TiKV
+* [ ] ElasticSearch
+  * [x] 使用 elastic-oparator 部署 Elasticsearch 和 Kibana
+* [ ] MySQL
+* [ ] TiDB
+* [ ] PostgreSQL
+* [ ] MongoDB
+* [ ] Cassandra
+* [ ] InfluxDB
+* [ ] OpenTSDB
 
 ### 领域应用
 
 * [ ] 微服务架构
+  * [ ] 服务发现
+  * [ ] 服务治理
+  * [ ] 分布式追踪
+    * [ ] Jaeger
 * [ ] Service Mesh
   * [ ] Istio
+  * [ ] Maesh
+  * [ ] Kuma
 * [ ] Serverless
   * [ ] Knative
   * [ ] Kubeless
@@ -167,8 +182,18 @@
   * [ ] GoCD
   * [ ] Argo
   * [ ] GitLab CI
+  * [ ] Knative Build
+  * [ ] Drone
 * [ ] 人工智能
+  * [ ] Kubeflow
 * [ ] 大数据
+
+### 开发指南
+
+* [ ] 开发环境搭建
+* [ ] Operator
+* [ ] client-go
+* [ ] 社区贡献
 
 ## 在线阅读
 
@@ -187,7 +212,7 @@
 
 ## License
 
-<img  align="left" width="100" height="100" src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png">
+![](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
 
 [署名-非商业性使用-相同方式共享 4.0 \(CC BY-NC-SA 4.0\)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)
 
