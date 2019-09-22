@@ -13,6 +13,7 @@
   * [ ] Minikube
   * [ ] Bootkube
   * [ ] Ansible
+
 ### 插件扩展
 * [ ] 网络
   * [ ] Flannel
@@ -33,6 +34,7 @@
 * [ ] Cloud Provider
 * [ ] Network Policy
 * [ ] 使用 MetalLB 创建负载均衡器
+
 ### 排错指南
 * [ ] 问题排查
   * [x] Pod 排错
@@ -136,11 +138,13 @@
   * [ ] OpenTSDB
 * [ ] 原地升级
 * [ ] 固定 IP
+
 ### 开发指南
 * [ ] 开发环境搭建
 * [ ] Operator
 * [ ] client-go
 * [ ] 社区贡献
+
 ### 领域应用
 * [ ] 微服务架构
 * [ ] Service Mesh
