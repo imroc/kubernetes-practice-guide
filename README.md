@@ -130,15 +130,17 @@
 * [x] 磁盘空间满
 * [x] inotify watch 耗尽
 
-#### 踩坑分享
+#### 避坑宝典
 
-* [x] cgroup 泄露
-* [x] tcp\_tw\_recycle 引发丢包
-* [x] 驱逐导致服务中断
-* [x] 频繁 cgroup OOM 导致内核 crash
-* [x] DNS 5 秒延时
-* [ ] LB 压测 NodePort CPS 低
-* [ ] conntrack 冲突导致丢包
+* [ ] 踩坑总结
+  * [x] cgroup 泄露
+  * [x] tcp\_tw\_recycle 引发丢包
+  * [x] 频繁 cgroup OOM 导致内核 crash
+  * [ ] conntrack 冲突导致丢包
+* [ ] 案例分享
+  * [x] DNS 5 秒延时
+  * [x] 驱逐导致服务中断
+  * [ ] LB 压测 NodePort CPS 低
 
 #### 排错技巧
 
