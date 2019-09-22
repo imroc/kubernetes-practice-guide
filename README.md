@@ -136,10 +136,14 @@
   * [x] cgroup 泄露
   * [x] tcp\_tw\_recycle 引发丢包
   * [x] 频繁 cgroup OOM 导致内核 crash
+  * [x] 使用 oom-guard 在用户态处理 cgroup OOM
+  * [x] no space left on device
+  * [x] arp_cache: neighbor table overflow!
   * [ ] conntrack 冲突导致丢包
 * [ ] 案例分享
   * [x] DNS 5 秒延时
   * [x] 驱逐导致服务中断
+  * [x] ARP 缓存爆满导致健康检查失败
   * [ ] LB 压测 NodePort CPS 低
 
 #### 排错技巧
