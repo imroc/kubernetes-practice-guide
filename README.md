@@ -45,7 +45,9 @@
 * [ ] Device Plugin
 * [ ] Cloud Provider
 * [ ] Network Policy
-* [ ] 使用 MetalLB 创建负载均衡器
+* [ ] LoadBalancer
+  * [ ] MetalLB
+  * [ ] Porter
 
 ### 最佳实践
 
@@ -120,24 +122,24 @@
 
 ### 集群管理
 
-* [ ] 监控管理
+* [ ] 集群监控管理
   * [ ] Prometheus
   * [ ] Grafana
-* [ ] 安全管理
+* [ ] 集群安全管理
   * [x] 集群权限控制
   * [ ] 使用 PodSecurityPolicy 配置全局 Pod 安全策略
   * [ ] 集群审计
-* [ ] 可视化管理
+* [ ] 集群可视化管理
   * [ ] Kubernetes Dashboard
   * [ ] KubSphere
   * [ ] Weave Scope
   * [ ] Rancher
   * [ ] Kui
   * [ ] Kubebox
-* [ ] 证书管理
+* [ ] 集群证书管理
   * [x] 安装 cert-manager
   * [x] 使用 cert-manager 自动生成证书
-* [ ] 配置管理
+* [ ] 集群配置管理
   * [ ] Helm
     * [x] 安装 Helm
     * [x] Helm V2 迁移到 V3
@@ -145,7 +147,7 @@
     * [ ] 开发 Helm Charts
   * [ ] Kustomize
     * [ ] Kustomize 基础入门
-* [ ] 镜像管理
+* [ ] 集群镜像管理
   * [ ] Harbor
   * [ ] Dragonfly
   * [ ] Kaniko
