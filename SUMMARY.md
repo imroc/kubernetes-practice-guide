@@ -40,12 +40,12 @@
 
 ## 集群管理 <a id="manage"></a>
 
-* [集群安全](manage/security/README.md)
+* [集群安全管理](manage/security/README.md)
   * [集群权限控制](manage/security/permission-control.md)
-* [证书管理](manage/cert/README.md)
+* [集群证书管理](manage/cert/README.md)
   * [安装 cert-manager](manage/cert/install-cert-manger.md)
   * [使用 cert-manager 自动生成证书](manage/cert/autogenerate-certificate-with-cert-manager.md)
-* [配置管理](manage/configuration/README.md)
+* [集群配置管理](manage/configuration/README.md)
   * [Helm](manage/configuration/helm/README.md)
     * [安装 Helm](manage/configuration/helm/install-helm.md)
     * [Helm V2 迁移到 V3](manage/configuration/helm/upgrade-helm-v2-to-v3.md)
