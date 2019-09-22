@@ -122,10 +122,12 @@
   * [ ] Node 异常
 * [ ] 其它排错
   * [x] Job 无法被删除
-* [x] 报错指南
-  * [x] no space left on device
-  * [x] arp_cache: neighbor table overflow!
-  * [x] Cannot allocate memory
+
+#### 经典报错
+
+* [x] no space left on device
+* [x] arp_cache: neighbor table overflow!
+* [x] Cannot allocate memory
 
 #### 处理实践
 
