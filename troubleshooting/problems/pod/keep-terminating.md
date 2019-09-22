@@ -8,7 +8,7 @@
 Normal  Killing  39s (x735 over 15h)  kubelet, 10.179.80.31  Killing container with id docker://apigateway:Need to kill Pod
 ```
 
-处理建议是参考Kubernetes 最佳实践：[处理容器数据磁盘被写满](https://github.com/imroc/kubernetes-practice-guide/tree/08d0c3fe178f3d54ec7849d9497a4cd83853dffa/solution/handle-disk-full.html)
+处理建议是参考本书 处理实践:磁盘空间满 (TODO)
 
 ## docker 17 的 bug
 
