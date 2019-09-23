@@ -97,7 +97,7 @@
 
 #### 问题排查
 
-* [ ] Pod 排错
+* [ ] [Pod 排错](troubleshooting/problems/README.md)
   * [x] Pod 一直处于 ContainerCreating 或 Waiting 状态
   * [x] Pod 一直处于 Pending 状态
   * [x] Pod 一直处于 Terminating 状态
@@ -275,8 +275,8 @@
 
 本书将支持中英文两个语言版本，通常文章会先用中文起草并更新，等待其内容较为成熟完善，更新不再频繁的时候才会翻译成英文，点击左上角切换语言。
 
-* 中文: [https://k8s.imroc.io](https://k8s.imroc.io)
-* English: [https://k8s.imroc.io/v/en/](https://k8s.imroc.io/v/en/)
+* 中文: https://k8s.imroc.io
+* English: https://k8s.imroc.io/v/en
 
 ## 项目源码
 
@@ -292,3 +292,11 @@
 
 [署名-非商业性使用-相同方式共享 4.0 \(CC BY-NC-SA 4.0\)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)
 
+
+## test
+
+- first
+  - second
+    - third
+      - fourth
+        - fifth
