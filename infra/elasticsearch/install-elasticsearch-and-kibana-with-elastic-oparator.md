@@ -149,9 +149,6 @@ rhd6jdw9brbj69d49k46px9j
 
 还可以再部署一个 Kibana 集群作为 UI:
 
-  config:
-    server.ssl.enabled: false
-  http.tls.selfSignedCertificate.disabled: true
 ``` bash
 cat <<EOF | kubectl apply -f -
 apiVersion: kibana.k8s.elastic.co/v1alpha1
