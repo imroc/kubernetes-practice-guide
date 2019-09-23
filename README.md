@@ -4,94 +4,89 @@
 
 本书正在起草初期，内容将包含大量 Kubernetes 实践干货，大量规划内容还正在路上，勾选的表示是已经可以在左侧导航栏中找到的并预览的文章，但不代表已经完善，还会不断的补充和优化。
 
-### 部署指南
-
-* [ ] 部署方案选型
-* [ ] 单机部署
-* [ ] 二进制部署
-* [ ] 工具部署
-  * [ ] Kubeadm
-  * [ ] Minikube
-  * [ ] Bootkube
-  * [ ] Ansible
-
-### 插件扩展
-
-* [ ] 网络
-  * [ ] Flannel
-  * [ ] Macvlan
-  * [ ] Calico
-  * [ ] Cilium
-  * [ ] Kube-router
-  * [ ] Kube-OVN
-  * [ ] OpenVSwitch
-* [ ] 运行时
-  * [ ] Docker
-  * [ ] Containerd
-  * [ ] CRI-O
-* [ ] 存储
-  * [ ] Rook
-* [ ] Ingress Controller
-  * [ ] Nginx
-  * [ ] Traefik
-  * [ ] Contour
-  * [ ] Ambassador
-  * [ ] Kong
-  * [ ] Gloo
-  * [ ] HAProxy
-  * [ ] Istio
-  * [ ] Skipper
-* [ ] Scheduler Plugin
-* [ ] Device Plugin
-* [ ] Cloud Provider
-* [ ] Network Policy
-* [ ] LoadBalancer
-  * [ ] MetalLB
-  * [ ] Porter
-
-### 最佳实践
-
-* [ ] 服务高可用
-  * [x] 服务平滑更新不中断
-  * [ ] 节点驱逐下线不停服
-  * [x] 解决长连接服务扩容失效
-  * [ ] 使用反亲和性避免单点故障
-  * [ ] 使用 PodDisruptionBudget 保障单点故障服务的高可用
-  * [ ] 使用 Critical Pod 部署关键服务
-  * [ ] 备份恢复
-  * [ ] 集群联邦
-* [ ] 弹性伸缩
-  * [ ] 使用 HPA 对 Pod 水平伸缩
-  * [ ] 使用 VPA 对 Pod 垂直伸缩
-  * [ ] 使用 Cluster Autoscaler 对节点水平伸缩
-* [ ] 资源分配与限制
-  * [ ] 资源预留
-  * [ ] Request 与 Limit
-  * [ ] Resource Quotas
-  * [ ] Limit Ranges
-  * [ ] GPU
-  * [ ] 大页内存
-* [ ] 资源隔离
-  * [ ] 利用 kata-container 隔离容器资源
-  * [ ] 利用 gVisor 隔离容器资源
-  * [ ] 利用 lvm 和 xfs 实现容器磁盘隔离
-  * [ ] 利用 lxcfs 隔离 proc 提升容器资源可见性
-* [ ] 资源共享
-  * [ ] 共享存储
-  * [ ] 共享内存
-* [ ] 性能优化
-  * [ ] 内核参数优化
-  * [ ] 调度器优化
-  * [ ] Pod 快速原地重启
-* [ ] 传统服务容器化过渡
-  * [ ] Pod 固定 IP
-* [ ] 服务转发
-  * [x] 泛域名转发
-* [ ] 有状态服务部署
-* [ ] 集群升级
-* [ ] 提高生产力
-  * [x] kubectl 高效技巧
-* [ ] 实用 yaml 片段
+* 部署指南
+  * 部署方案选型
+  * 单机部署
+  * 二进制部署
+  * 工具部署
+    * Kubeadm
+    * Minikube
+    * Bootkube
+    * Ansible
+* 插件扩展
+  * 网络
+    * Flannel
+    * Macvlan
+    * Calico
+    * Cilium
+    * Kube-router
+    * Kube-OVN
+    * OpenVSwitch
+  * 运行时
+    * Docker
+    * Containerd
+    * CRI-O
+  * 存储
+    * Rook
+  * Ingress Controller
+    * Nginx
+    * Traefik
+    * Contour
+    * Ambassador
+    * Kong
+    * Gloo
+    * HAProxy
+    * Istio
+    * Skipper
+  * Scheduler Plugin
+  * Device Plugin
+  * Cloud Provider
+  * Network Policy
+  * LoadBalancer
+    * MetalLB
+    * Porter
+* 最佳实践
+  * 服务高可用
+    * [服务平滑更新不中断](best-practice/ha/smooth-update.md)
+    * 节点驱逐下线不停服
+    * [解决长连接服务扩容失效](best-practice/ha/scale-keepalive-service.md)
+    * 使用反亲和性避免单点故障
+    * 使用 PodDisruptionBudget 保障单点故障服务的高可用
+    * 使用 Critical Pod 部署关键服务
+    * 备份恢复
+    * 集群联邦
+  *  弹性伸缩
+    * 使用 HPA 对 Pod 水平伸缩
+    * 使用 VPA 对 Pod 垂直伸缩
+    * 使用 Cluster Autoscaler 对节点水平伸缩
+  * 资源分配与限制
+    * 资源预留
+    * Request 与 Limit
+    * Resource Quotas
+    * Limit Ranges
+    * GPU
+    * 大页内存
+  * 资源隔离
+    * 利用 kata-container 隔离容器资源
+    * 利用 gVisor 隔离容器资源
+    * 利用 lvm 和 xfs 实现容器磁盘隔离
+    * 利用 lxcfs 隔离 proc 提升容器资源可见性
+  * 资源共享
+    * 共享存储
+    * 共享内存
+  * 性能优化
+    * 内核参数优化
+    * 调度器优化
+    * Pod 快速原地重启
+  * 传统服务容器化过渡
+    * Pod 固定 IP
+  * 服务转发
+    * [泛域名转发](best-practice/forward/wildcard-domain-forward.md)
+  * 有状态服务部署
+  * 集群升级
+  * 提高生产力
+    * [kubectl 高效技巧](best-practice/productive/efficient-kubectl.md)
+  * 实用 yaml 片段
 
 ### 排错指南
 
@@ -294,9 +289,3 @@
 
 
 ## test
-
-- first
-  - second
-    - third
-      - fourth
-        - fifth
