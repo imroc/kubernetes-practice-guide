@@ -49,7 +49,7 @@ Events:
 
 ## 节点内存碎片化
 
-如果节点上内存碎片化严重，缺少大页内存，会导致即使总的剩余内存较多，但还是会申请内存失败，参考 [处理实践: 内存碎片化](https://k8s.imroc.io/troubleshooting/handling-practice/memory-fragmentation)
+如果节点上内存碎片化严重，缺少大页内存，会导致即使总的剩余内存较多，但还是会申请内存失败，参考 [处理实践: 内存碎片化](../..//handle/memory-fragmentation.md)
 
 ## limit 设置太小或者单位不对
 

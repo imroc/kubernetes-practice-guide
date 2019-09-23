@@ -12,11 +12,11 @@
 
 ## 节点负载过高
 
-cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常会 timeout，导致 kubelet 认为 pod 不健康。参考本书 [处理实践: 高负载](https://k8s.imroc.io/troubleshooting/handling-practice/high-load) 一节。
+cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常会 timeout，导致 kubelet 认为 pod 不健康。参考本书 [处理实践: 高负载](../../handle/high-load.md) 一节。
 
 ## 容器进程被木马进程杀死
 
-参考 [处理实践: 使用 systemtap 定位疑难杂症](https://k8s.imroc.io/troubleshooting/trick/use-systemtap-to-locate-problems) 进一步定位。
+参考本书 [处理实践: 使用 systemtap 定位疑难杂症](../../trick/use-systemtap-to-locate-problems.md) 进一步定位。
 
 ## 容器内进程端口监听挂掉
 

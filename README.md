@@ -102,7 +102,6 @@
       * [Pod 一直处于 ImageInspectError 状态](troubleshooting/problems/pod/keep-imageinspecterror.md)
       * [Pod Terminating 慢](troubleshooting/problems/pod/slow-terminating.md)
       * [Pod 健康检查失败](troubleshooting/problems/pod/healthcheck-failed.md)
-      * [Pod 无法被 exec 或查 logs](troubleshooting/problems/pod/cannot-exec-or-logs.md)
     * 网络排错
       * [LB 健康检查失败](troubleshooting/problems/network/lb-healthcheck-failed.md)
       * [DNS 解析异常](troubleshooting/problems/network/dns.md)
@@ -116,6 +115,7 @@
       * Node 异常
     * 其它排错
       * [Job 无法被删除](troubleshooting/problems/others/job-cannot-delete.md)
+      * [kubectl 执行 exec 或 logs 失败](troubleshooting/problems/others/kubectl-exec-or-logs-failed.md)
   * 经典报错
     * [no space left on device](troubleshooting/errors/no-space-left-on-device.md)
     * [arp_cache: neighbor table overflow!](troubleshooting/errors/arp_cache-neighbor-table-overflow.md)
