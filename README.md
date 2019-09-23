@@ -2,7 +2,7 @@
 
 ## Roadmap
 
-本书正在起草初期，内容将包含大量 Kubernetes 实践干货，大量规划内容还正在路上，勾选的表示是已经可以在左侧导航栏中找到的并预览的文章，但不代表已经完善，还会不断的补充和优化。
+本书正在起草初期，内容将包含大量 Kubernetes 实践干货，大量规划内容还正在路上，可以点击的表示是已经可以在左侧导航栏中找到的并预览的文章，但不代表已经完善，还会不断的补充和优化。
 
 * 部署指南
   * 部署方案选型
@@ -90,59 +90,58 @@
   * 实用 yaml 片段
 
 * 排错指南
-  * 问题排查
-    * Pod 排错
-      * [x] Pod 一直处于 ContainerCreating 或 Waiting 状态
-      * [x] Pod 一直处于 Pending 状态
-      * [x] Pod 一直处于 Terminating 状态
-      * [x] Pod Terminating 慢
-      * [x] Pod 一直处于 Unknown 状态
-      * [x] Pod 一直处于 Error 状态
-      * [x] Pod 一直处于 CrashLoopBackOff 状态
-      * [x] Pod 一直处于 ImagePullBackOff 状态
-      * [x] Pod 一直处于 ImageInspectError 状态
-      * [x] Pod 健康检查失败
-      * [x] Pod 无法被 exec 或查 logs
+  * [问题排查](troubleshooting/problems/README.md)
+    * [Pod 排错](troubleshooting/problems/pod/README.md)
+      * [Pod 一直处于 Pending 状态](troubleshooting/problems/pod/keep-pending.md)
+      * [Pod 一直处于 ContainerCreating 或 Waiting 状态](troubleshooting/problems/pod/keep-containercreating-or-waiting.md)
+      * [Pod 一直处于 Terminating 状态](troubleshooting/problems/pod/keep-terminating.md)
+      * [Pod 一直处于 Unknown 状态](troubleshooting/problems/pod/keep-unkown.md)
+      * [Pod 一直处于 Error 状态](troubleshooting/problems/pod/keep-error.md)
+      * [Pod 一直处于 CrashLoopBackOff 状态](troubleshooting/problems/pod/keep-crashloopbackoff.md)
+      * [Pod 一直处于 ImagePullBackOff 状态](troubleshooting/problems/pod/keep-imagepullbackoff.md)
+      * [Pod 一直处于 ImageInspectError 状态](troubleshooting/problems/pod/keep-imageinspecterror.md)
+      * [Pod Terminating 慢](troubleshooting/problems/pod/slow-terminating.md)
+      * [Pod 健康检查失败](troubleshooting/problems/pod/healthcheck-failed.md)
+      * [Pod 无法被 exec 或查 logs](troubleshooting/problems/pod/cannot-exec-or-logs.md)
     * 网络排错
-      * [x] LB 健康检查失败
-      * [x] DNS 解析异常
-      * [x] Service 不通
-      * [x] Service 无法解析
+      * [LB 健康检查失败](troubleshooting/problems/network/lb-healthcheck-failed.md)
+      * [DNS 解析异常](troubleshooting/problems/network/dns.md)
+      * [Service 不通](troubleshooting/problems/network/service-unrecheable.md)
+      * [Service 无法解析](troubleshooting/problems/network/service-cannot-resolve.md)
     * 集群排错
-      * [x] Node 全部消失
-      * [x] Daemonset 没有被调度
-      * [ ] Apiserver 响应慢
-      * [ ] ETCD 频繁选主
-      * [ ] Node 异常
+      * [Node 全部消失](troubleshooting/problems/cluster/node-all-gone.md)
+      * [Daemonset 没有被调度](troubleshooting/problems/cluster/daemonset-not-scheduled.md)
+      * Apiserver 响应慢
+      * ETCD 频繁选主
+      * Node 异常
     * 其它排错
-      * [x] Job 无法被删除
+      * [Job 无法被删除](troubleshooting/problems/others/job-cannot-delete.md)
   * 经典报错
-    * [x] no space left on device
-    * [x] arp_cache: neighbor table overflow!
-    * [x] Cannot allocate memory
+    * [no space left on device](troubleshooting/errors/no-space-left-on-device.md)
+    * [arp_cache: neighbor table overflow!](troubleshooting/errors/arp_cache-neighbor-table-overflow.md)
+    * [Cannot allocate memory](troubleshooting/errors/cannot-allocate-memory.md)
   * 处理实践
-    * [x] 高负载
-    * [x] 内存碎片化
-    * [x] 磁盘空间满
-    * [x] inotify watch 耗尽
-    * [x] PID 爆满
+    * [高负载](troubleshooting/handle/high-load.md)
+    * [内存碎片化](troubleshooting/handle/memory-fragmentation.md)
+    * [磁盘空间满](troubleshooting/handle/disk-full.md)
+    * [inotify watch 耗尽](troubleshooting/handle/runnig-out-of-inotify-watches.md)
+    * [PID 爆满](troubleshooting/handle/pid-full.md)
   * 避坑宝典
     * 踩坑总结
-      * [x] cgroup 泄露
-      * [x] tcp\_tw\_recycle 引发丢包
-      * [x] 频繁 cgroup OOM 导致内核 crash
-      * [x] 使用 oom-guard 在用户态处理 cgroup OOM
-      * [ ] conntrack 冲突导致丢包
+      * [cgroup 泄露](troubleshooting/damn/summary/cgroup-leaking.md)
+      * [tcp\_tw\_recycle 引发丢包](troubleshooting/damn/summary/tcp_tw_recycle-causes-packet-loss.md)
+      * [使用 oom-guard 在用户态处理 cgroup OOM](troubleshooting/damn/summary/handle-cgroup-oom-in-userspace-with-oom-guard.md)
+      * conntrack 冲突导致丢包
     * 案例分享
-      * [x] DNS 5 秒延时
-      * [x] 驱逐导致服务中断
-      * [x] ARP 缓存爆满导致健康检查失败
-      * [ ] LB 压测 NodePort CPS 低
+      * [驱逐导致服务中断](troubleshooting/damn/cases/eviction-leads-to-service-disruption.md)
+      * [DNS 5 秒延时](troubleshooting/damn/cases/dns-lookup-5s-delay.md)
+      * [ARP 缓存爆满导致健康检查失败](troubleshooting/damn/cases/arp-cache-overflow-causes-healthcheck-failed.md)
+      * LB 压测 NodePort CPS 低
   * 排错技巧
-    * [x] 分析 ExitCode 定位 Pod 异常退出原因
-    * [x] 容器内抓包定位网络问题
-    * [x] 使用 Systemtap 定位疑难杂症
-    * [ ] 使用 kubectl-debug 帮助定位问题
+    * [分析 ExitCode 定位 Pod 异常退出原因](troubleshooting/trick/analysis-exitcode.md)
+    * [容器内抓包定位网络问题](troubleshooting/trick/capture-packets-in-container.md)
+    * [使用 Systemtap 定位疑难杂症](troubleshooting/trick/use-systemtap-to-locate-problems.md)
+    * 使用 kubectl-debug 帮助定位问题
 * 集群管理
   * 集群监控
     * Prometheus
@@ -150,9 +149,9 @@
   * 日志搜集
     * EFK
   * 集群安全
-    * [x] 集群权限控制
-    * [ ] 使用 PodSecurityPolicy 配置全局 Pod 安全策略
-    * [ ] 集群审计
+    * [集群权限控制](manage/security/permission-control.md)
+    * 使用 PodSecurityPolicy 配置全局 Pod 安全策略
+    * 集群审计
   * 集群可视化管理
     * Kubernetes Dashboard
     * KubSphere
@@ -161,21 +160,21 @@
     * Kui
     * Kubebox
   * 集群证书管理
-    * [x] 安装 cert-manager
-    * [x] 使用 cert-manager 自动生成证书
+    * [安装 cert-manager](manage/cert/install-cert-manger.md)
+    * [使用 cert-manager 自动生成证书](manage/cert/autogenerate-certificate-with-cert-manager.md)
   * 集群配置管理
-    * [ ] Helm
-      * [x] 安装 Helm
-      * [x] Helm V2 迁移到 V3
-      * [ ] 使用 Helm 部署与管理应用
-      * [ ] 开发 Helm Charts
-    * [ ] Kustomize
-      * [ ] Kustomize 基础入门
-    * [ ] 集群镜像管理
-      * [ ] Harbor
-      * [ ] Dragonfly
-      * [ ] Kaniko
-      * [ ] kpack
+    * Helm
+      * [安装 Helm](manage/configuration/helm/install-helm.md)
+      * [Helm V2 迁移到 V3](manage/configuration/helm/upgrade-helm-v2-to-v3.md)
+      * 使用 Helm 部署与管理应用
+      * 开发 Helm Charts
+    * Kustomize
+      * Kustomize 基础入门
+    * 集群镜像管理
+      * Harbor
+      * Dragonfly
+      * Kaniko
+      * kpack
 
 * 基础设施容器化部署
   * ETCD
@@ -183,7 +182,7 @@
   * Redis
   * TiKV
   * ElasticSearch
-    * [x] 使用 elastic-oparator 部署 Elasticsearch 和 Kibana
+    * [使用 elastic-oparator 部署 Elasticsearch 和 Kibana](infra/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator.md)
   * MySQL
   * TiDB
   * PostgreSQL
