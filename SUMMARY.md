@@ -9,7 +9,7 @@
 ## 最佳实践 <a id="best-practice"></a>
 
 * [高可用](best-practice/ha/README.md)
-  * [服务更新不中断](best-practice/ha/smooth-update.md)
+  * [服务平滑更新不中断](best-practice/ha/smooth-update.md)
   * [解决长连接服务扩容失效](best-practice/ha/scale-keepalive-service.md)
 * [服务转发](best-practice/forward/README.md)
   * [泛域名转发](best-practice/forward/wildcard-domain-forward.md)
