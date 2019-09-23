@@ -123,9 +123,10 @@
   * 处理实践
     * [高负载](troubleshooting/handle/high-load.md)
     * [内存碎片化](troubleshooting/handle/memory-fragmentation.md)
-    * [磁盘空间满](troubleshooting/handle/disk-full.md)
+    * [磁盘爆满](troubleshooting/handle/disk-full.md)
     * [inotify watch 耗尽](troubleshooting/handle/runnig-out-of-inotify-watches.md)
-    * [PID 爆满](troubleshooting/handle/pid-full.md)
+    * [PID 耗尽](troubleshooting/handle/pid-full.md)
+    * [arp_cache 溢出](troubleshooting/handle/arp_cache-overflow.md)
   * 避坑宝典
     * 踩坑总结
       * [cgroup 泄露](troubleshooting/damn/summary/cgroup-leaking.md)
@@ -135,7 +136,7 @@
     * 案例分享
       * [驱逐导致服务中断](troubleshooting/damn/cases/eviction-leads-to-service-disruption.md)
       * [DNS 5 秒延时](troubleshooting/damn/cases/dns-lookup-5s-delay.md)
-      * [ARP 缓存爆满导致健康检查失败](troubleshooting/damn/cases/arp-cache-overflow-causes-healthcheck-failed.md)
+      * [arp_cache 溢出导致健康检查失败](troubleshooting/damn/cases/arp-cache-overflow-causes-healthcheck-failed.md)
       * LB 压测 NodePort CPS 低
   * 排错技巧
     * [分析 ExitCode 定位 Pod 异常退出原因](troubleshooting/trick/analysis-exitcode.md)
