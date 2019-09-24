@@ -63,3 +63,12 @@ Sep 18 10:19:49 VM-1-33-ubuntu dockerd[4822]: time="2019-09-18T10:19:49.90394365
 
 * 临时恢复: 执行 `docker prune` 或重启 dockerd
 * 长期方案: 运行时推荐直接使用 containerd，绕过 dockerd 避免 docker 本身的各种 BUG
+
+## Daemonset Controller 的 BUG
+
+有个 k8s 的 bug 会导致 daemonset pod 无限 terminating，1.10 和 1.11 版本受影响，原因是 daemonset controller 复用 scheduler 的 predicates 逻辑，里面将 nodeAffinity 的 nodeSelector 数组做了排序（传的指针），spec 就会跟 apiserver 中的不一致，daemonset controller 又会为 rollingUpdate类型计算 hash (会用到spec)，用于版本控制，造成不一致从而无限启动和停止的循环。
+
+* issue: https://github.com/kubernetes/kubernetes/issues/66298
+* 修复的PR: https://github.com/kubernetes/kubernetes/pull/66480
+
+升级集群版本可以彻底解决，临时规避可以给 rollingUpdate 类型 daemonset 不使用 nodeAffinity，改用 nodeSelector。
