@@ -79,6 +79,7 @@
   * [Helm](manage/configuration/helm/README.md)
     * [安装 Helm](manage/configuration/helm/install-helm.md)
     * [Helm V2 迁移到 V3](manage/configuration/helm/upgrade-helm-v2-to-v3.md)
+* [实用 yaml 片段](manage/yaml.md)
 
 ## 基础设施容器化部署 <a id="infra"></a>
 
