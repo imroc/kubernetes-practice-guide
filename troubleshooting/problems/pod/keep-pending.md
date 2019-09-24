@@ -28,6 +28,7 @@ Events:
 
 前者与后者相减，可得出剩余可申请的资源。如果这个值小于 Pod 的 request，就不满足 Pod 的资源要求，Scheduler 在 Predicates (预选) 阶段就会剔除掉这个 Node，也就不会调度上去。
 
+
 ## 不满足 nodeSelector 与 affinity
 
 如果 Pod 包含 nodeSelector 指定了节点需要包含的 label，调度器将只会考虑将 Pod 调度到包含这些 label 的 Node 上，如果没有 Node 有这些 label 或者有这些 label 的 Node 其它条件不满足也将会无法调度。参考官方文档：https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
@@ -90,10 +91,6 @@ NetworkUnavailable     True        node.kubernetes.io/network-unavailable
 
 另外，在云环境下，比如腾讯云 TKE，添加新节点会先给这个 Node 加上 `node.cloudprovider.kubernetes.io/uninitialized` 的污点，等 Node 初始化成功后才自动移除这个污点，避免 Pod 被调度到没初始化好的 Node 上。
 
-### 镜像无法下载
-
-看下 pod 的 event，看下是否是因为网络原因无法下载镜像或者下载私有镜像给的 secret 不对
-
 ### 低版本 kube-scheduler 的 bug
 
 可能是低版本 `kube-scheduler` 的 bug, 可以升级下调度器版本。
@@ -101,3 +98,7 @@ NetworkUnavailable     True        node.kubernetes.io/network-unavailable
 ### kube-scheduler 没有正常运行
 
 检查 maser 上的 `kube-scheduler` 是否运行正常，异常的话可以尝试重启临时恢复。
+
+## 驱逐后其它可用节点与当前节点有状态应用不在同一个可用区
+
+有时候服务部署成功运行过，但在某个时候节点突然挂了，此时就会触发驱逐，创建新的副本调度到其它节点上，对于已经挂载了磁盘的 Pod，它通常需要被调度到跟当前节点和磁盘在同一个可用区，如果集群中同一个可用区的节点不满足调度条件，即使其它可用区节点各种条件都满足，但不跟当前节点在同一个可用区，也是不会调度的。为什么需要限制挂载了磁盘的 Pod 不能漂移到其它可用区的节点？试想一下，云上的磁盘虽然可以被动态挂载到不同机器，但也只是相对同一个数据中心，通常不允许跨数据中心挂载磁盘设备，因为网络时延会极大的降低 IO 速率。
