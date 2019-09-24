@@ -88,7 +88,6 @@
   * 集群升级
   * 提高生产力
     * [kubectl 高效技巧](best-practice/productive/efficient-kubectl.md)
-  * 实用 yaml 片段
 
 
 * 排错指南
@@ -181,6 +180,8 @@
       * Dragonfly
       * Kaniko
       * kpack
+  * 实用 yaml 片段
+  * 实用命令脚本
 
 
 * 基础设施容器化部署
