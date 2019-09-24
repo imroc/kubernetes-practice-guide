@@ -13,8 +13,15 @@
 
 ## Pod 状态
 
-Pod 有多种异常状态，这里罗列一下:
+Pod 有多种状态，这里罗列一下:
 
+* `Error`: Pod 启动过程中发生错误
+* `NodeLost`: Pod 所在节点失联
+* `Unkown`: Pod 所在节点失联或其它未知异常
+* `Waiting`: Pod 等待启动
+* `Pending`: Pod 等待被调度
+* `ContainerCreating`: Pod 容器正在被创建
+* `Terminating`: Pod 正在被销毁
 * `CrashLoopBackOff`： 容器退出，kubelet 正在将它重启
 * `InvalidImageName`： 无法解析镜像名称
 * `ImageInspectError`： 无法校验镜像
