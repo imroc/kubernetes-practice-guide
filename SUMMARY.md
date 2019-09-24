@@ -48,7 +48,7 @@
 * [处理实践](troubleshooting/handle/README.md)
   * [高负载](troubleshooting/handle/high-load.md)
   * [内存碎片化](troubleshooting/handle/memory-fragmentation.md)
-  * [磁盘爆满满](troubleshooting/handle/disk-full.md)
+  * [磁盘爆满](troubleshooting/handle/disk-full.md)
   * [inotify watch 耗尽](troubleshooting/handle/runnig-out-of-inotify-watches.md)
   * [PID 耗尽](troubleshooting/handle/pid-full.md)
   * [arp_cache 溢出](troubleshooting/handle/arp_cache-overflow.md)

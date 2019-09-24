@@ -143,6 +143,7 @@
     * [容器内抓包定位网络问题](troubleshooting/trick/capture-packets-in-container.md)
     * [使用 Systemtap 定位疑难杂症](troubleshooting/trick/use-systemtap-to-locate-problems.md)
     * 使用 kubectl-debug 帮助定位问题
+    * 分析 Docker 磁盘占用
 * 集群管理
   * 集群监控
     * Prometheus
