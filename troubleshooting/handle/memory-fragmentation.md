@@ -21,7 +21,7 @@ mysqld: page allocation failure. order:4, mode:0x10c0d0
 K8S 会为每个 pod 创建 netns 来隔离 network namespace，内核初始化 netns 时会为其创建 nf\_conntrack 表的 cache，需要申请大页内存，如果此时系统内存已经碎片化，无法分配到足够的大页内存内核就会报错\(`v2.6.33 - v4.6`\):
 
 ```bash
-Unable to to create nf_conn slab cache
+runc:[1:CHILD]: page allocation failure: order:6, mode:0x10c0d0
 ```
 
 Pod 状态将会一直在 ContainerCreating，dockerd 启动容器失败，日志报错:
