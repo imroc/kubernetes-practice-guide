@@ -109,6 +109,7 @@
       * [DNS 解析异常](troubleshooting/problems/network/dns.md)
       * [Service 不通](troubleshooting/problems/network/service-unrecheable.md)
       * [Service 无法解析](troubleshooting/problems/network/service-cannot-resolve.md)
+      * [网络性能差](troubleshooting/problems/network/low-throughput.md)
     * 集群排错
       * [Node 全部消失](troubleshooting/problems/cluster/node-all-gone.md)
       * [Daemonset 没有被调度](troubleshooting/problems/cluster/daemonset-not-scheduled.md)

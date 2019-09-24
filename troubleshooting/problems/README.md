@@ -21,6 +21,7 @@
   * [DNS 解析异常](network/dns.md)
   * [Service 不通](network/service-unrecheable.md)
   * [Service 无法解析](network/service-cannot-resolve.md)
+  * [网络性能差](network/low-throughput.md)
 * [集群排错](cluster/README.md)
   * [Node 全部消失](cluster/node-all-gone.md)
   * [Daemonset 没有被调度](cluster/daemonset-not-scheduled.md)
