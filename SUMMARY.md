@@ -68,7 +68,7 @@
 
 ## 集群管理 <a id="manage"></a>
 
-* [集群安全管理](manage/security/README.md)
+* [集群安全](manage/security/README.md)
   * [集群权限控制](manage/security/permission-control.md)
 * [集群证书管理](manage/cert/README.md)
   * [安装 cert-manager](manage/cert/install-cert-manger.md)
