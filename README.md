@@ -103,6 +103,7 @@
       * [Pod 一直处于 ImageInspectError 状态](troubleshooting/problems/pod/keep-imageinspecterror.md)
       * [Pod Terminating 慢](troubleshooting/problems/pod/slow-terminating.md)
       * [Pod 健康检查失败](troubleshooting/problems/pod/healthcheck-failed.md)
+      * [容器进程主动退出](troubleshooting/problems/pod/container-proccess-exit-by-itself.md)
     * 网络排错
       * [LB 健康检查失败](troubleshooting/problems/network/lb-healthcheck-failed.md)
       * [DNS 解析异常](troubleshooting/problems/network/dns.md)
