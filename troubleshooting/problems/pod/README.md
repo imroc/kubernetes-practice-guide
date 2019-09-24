@@ -1,6 +1,6 @@
 # Pod 排错
 
-本章介绍 Pod 运行状态异常的排错方法，可能的原因以及解决方法。
+本文是本书排查指南板块下问题排查章节的 Pod排错 一节，介绍 Pod 各种异常现象，可能的原因以及解决方法。
 
 ## 常用命令
 
@@ -55,3 +55,6 @@ Pod 有多种状态，这里罗列一下:
 * [Pod 一直处于 ImageInspectError 状态](keep-imageinspecterror.md)
 * [Pod Terminating 慢](slow-terminating.md)
 * [Pod 健康检查失败](healthcheck-failed.md)
+
+> 更多内容还在不断 Loading，如果发发现了更多奇怪现象或相同现象但不同的原因导致的，欢迎一起分享，也可以给本书提 PR，一起完善补充。
+

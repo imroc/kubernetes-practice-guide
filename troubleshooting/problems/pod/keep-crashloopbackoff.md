@@ -4,11 +4,11 @@ Pod 如果处于 `CrashLoopBackOff` 状态说明之前是启动了，只是又�
 
 ## 系统 OOM
 
-TODO
+如果发生系统 OOM，可以看到 Pod 中容器退出状态码是 137，表示被 `SIGKILL` 信号杀死，同时内核会报错: `Out of memory: Kill process ...`。大概率是节点上部署了其它非 K8S 管理的进程消耗了比较多的内存，或者 kubelet 的 `--kube-reserved` 和 `--system-reserved` 配的比较小，没有预留足够的空间给其它非容器进程，节点上所有 Pod 的实际内存占用总量不会超过 `/sys/fs/cgroup/memory/kubepods` 这里 cgroup 的限制，这个限制等于 `capacity - "kube-reserved" - "system-reserved"`，如果预留空间设置合理，节点上其它非容器进程（kubelet, dockerd, kube-proxy, sshd 等) 内存占用没有超过 kubelet 配置的预留空间是不会发生系统 OOM 的，可以根据实际需求做合理的调整。
 
 ## cgroup OOM
 
-如果是 cgrou OOM 杀掉的进程，从 Pod 事件的下 `Reason` 可以看到是 `OOMKilled`，说明容器实际占用的内存超过 limit 了，可以根据需求调整下 limit。
+如果是 cgrou OOM 杀掉的进程，从 Pod 事件的下 `Reason` 可以看到是 `OOMKilled`，说明容器实际占用的内存超过 limit 了，同时内核日志会报: ``。 可以根据需求调整下 limit。
 
 ## 节点内存碎片化
 
@@ -17,7 +17,3 @@ TODO
 ## 健康检查失败
 
 参考 [Pod 健康检查失败](./healthcheck-failed.md) 进一步定位。
-
-## 镜像文件损坏
-
-TODO
