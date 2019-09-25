@@ -2,9 +2,9 @@
 
 ## Roadmap
 
-本书正在起草初期，内容将包含大量 Kubernetes 实践干货，大量规划内容还正在路上，可以点击的表示是已经可以在左侧导航栏中找到的并预览的文章，但不代表已经完善，还会不断的补充和优化。
+The book is in the early stages of drafting, the content will contain a lot of Kubernetes practice. A lot of planning content is still on the road, the clickable link below is the article that can be found and previewed in the left navigation bar, but it does not mean that it has been perfected, it will continue been improved and optimized.
 
-* 部署指南
+* Deployment Guide
   * 部署方案选型
   * 单机部署
   * 二进制部署
@@ -13,7 +13,8 @@
     * Minikube
     * Bootkube
     * Ansible
-* 插件扩展
+
+* Plugins
   * 网络
     * Flannel
     * Macvlan
@@ -47,7 +48,7 @@
     * Porter
 
 
-* 最佳实践
+* Best Practice
   * 服务高可用
     * [服务平滑更新不中断](best-practice/ha/smooth-update.md)
     * 节点驱逐下线不停服
@@ -90,7 +91,7 @@
     * [kubectl 高效技巧](best-practice/productive/efficient-kubectl.md)
 
 
-* 排错指南
+* Troubleshooting
   * [问题排查](troubleshooting/problems/README.md)
     * [Pod 排错](troubleshooting/problems/pod/README.md)
       * [Pod 一直处于 Pending 状态](troubleshooting/problems/pod/keep-pending.md)
@@ -149,7 +150,7 @@
     * 分析 Docker 磁盘占用
 
 
-* 集群管理
+* Cluster Management
   * 集群监控
     * Prometheus
     * Grafana
@@ -186,7 +187,7 @@
   * 实用命令脚本
 
 
-* 基础设施容器化部署
+* Infra Containerized
   * ETCD
   * Zookeeper
   * Redis
@@ -202,7 +203,7 @@
   * OpenTSDB
 
 
-* 领域应用
+* Domain Application
   * 微服务架构
     * 服务发现
     * 服务治理
@@ -232,7 +233,7 @@
     * Spark
 
 
-* 开发指南
+* Development Guide
   * 开发环境搭建
   * Operator
     * Operator 概述
