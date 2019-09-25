@@ -234,6 +234,7 @@
 
 * 开发指南
   * 开发环境搭建
+  * [Go 语言编译原理与优化](/dev/golang-build.md)
   * Operator
     * Operator 概述
     * operator-sdk

@@ -89,3 +89,5 @@
 ## 领域应用 <a id="domain"></a>
 
 ## 开发指南 <a id="dev"></a>
+
+* [Go 语言编译原理与优化](/dev/golang-build.md)
