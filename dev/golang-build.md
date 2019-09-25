@@ -74,7 +74,28 @@ go编译出来就是一个二进制，自带runtime，不需要解释器，但�
 
 ## 使用 Docker 编译
 
-使用 Docker 编译可以不用依赖本机 go 环境，将编译环境标准化，特别在有外部动态链接库依赖的情况下很有用，下面给个示例（使用docker多阶段构建，完全静态编译，没有外部依赖）:
+使用 Docker 编译可以不用依赖本机 go 环境，将编译环境标准化，特别在有外部动态链接库依赖的情况下很有用，可以直接 run 一个容器来编译，给它挂载源码目录和二进制输出目录，这样我们就可以拿到编译出来的二进制了，这里以编译cfssl为例:
+
+``` bash
+ROOT_PKG=github.com/cloudflare/cfssl
+CMD_PKG=$ROOT_PKG/cmd
+LOCAL_SOURCE_PATH=/Users/roc/go/src/$ROOT_PKG
+LOCAL_OUTPUT_PATH=$PWD
+GOPATH=/go/src
+ROOT_PATH=$GOPATH/$ROOT_PKG
+CMD_PATH=$GOPATH/$CMD_PKG
+docker run --rm \
+  -v $LOCAL_SOURCE_PATH:$ROOT_PATH \
+  -v $LOCAL_OUTPUT_PATH:/output \
+  -w $ROOT_PATH \
+  golang:1.13 \
+  go build -v \
+  -ldflags '-d' \
+  -o /output/ \
+  $CMD_PATH/...
+```
+
+编译镜像可以参考下面示例（使用docker多阶段构建，完全静态编译，没有外部依赖）:
 
 ``` dockerfile
 FROM golang:1.12-stretch as builder
@@ -84,8 +105,7 @@ WORKDIR $BUILD_DIR
 
 COPY ./ $BUILD_DIR
 RUN CGO_ENABLED=0 go build -v -o /hpa-metrics-server \
-    -gcflags '-m' \
-    -ldflags '-d -s -w' \
+    -ldflags '-d' \
     ./
 
 FROM ubuntu:16.04

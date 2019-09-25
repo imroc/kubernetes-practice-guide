@@ -1,4 +1,4 @@
-# 使用 cert-manager 自动生成证书
+# 使用 cert\-manager 自动生成证书
 
 确保 `cert-manager` 已安装，参考 [安装 cert-manager](install-cert-manger.md)
 

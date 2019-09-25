@@ -167,8 +167,8 @@
     * Kui
     * Kubebox
   * 集群证书管理
-    * [安装 cert-manager](/manage/cert/install-cert-manger.md)
-    * [使用 cert-manager 自动生成证书](/manage/cert/autogenerate-certificate-with-cert-manager.md)
+    * [安装 cert\-manager](/manage/cert/install-cert-manger.md)
+    * [使用 cert\-manager 自动生成证书](/manage/cert/autogenerate-certificate-with-cert-manager.md)
   * 集群配置管理
     * Helm
       * [安装 Helm](/manage/configuration/helm/install-helm.md)

@@ -1,4 +1,4 @@
-# 安装 cert-manager
+# 安装 cert\-manager
 
 参考官方文档: [https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html](https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html)
 
