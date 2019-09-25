@@ -22,11 +22,11 @@ kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.10.0/cert-manager.yaml
 ```
 
-* 使用 `kubectl v1.12` 及其以下的版本需要加上 `--validate=false`，否则会报错\(参考 issue [\#69590](https://github.com/kubernetes/kubernetes/issues/69590)\):
+使用 `kubectl v1.12` 及其以下的版本需要加上 `--validate=false`，否则会报错\(参考 issue [\#69590](https://github.com/kubernetes/kubernetes/issues/69590)\):
 
-  ```text
-  error: error validating "https://github.com/jetstack/cert-manager/releases/download/v0.10.0/cert-manager.yaml": error validating data: ValidationError(MutatingWebhookConfiguration.webhooks[0].clientConfig): missing required field "caBundle" in io.k8s.api.admissionregistration.v1beta1.WebhookClientConfig; if you choose to ignore these errors, turn validation off with --validate=false
-  ```
+```text
+error: error validating "https://github.com/jetstack/cert-manager/releases/download/v0.10.0/cert-manager.yaml": error validating data: ValidationError(MutatingWebhookConfiguration.webhooks[0].clientConfig): missing required field "caBundle" in io.k8s.api.admissionregistration.v1beta1.WebhookClientConfig; if you choose to ignore these errors, turn validation off with --validate=false
+```
 
 ## 使用 Helm 安装
 
