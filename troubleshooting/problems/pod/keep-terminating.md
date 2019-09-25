@@ -1,6 +1,6 @@
 # Pod 一直处于 Terminating 状态
 
-## 容器数据磁盘被写满
+## 磁盘爆满
 
 如果 docker 的数据目录所在磁盘被写满，docker 无法正常运行，无法进行删除和创建操作，所以 kubelet 调用 docker 删除容器没反应，看 event 类似这样：
 
@@ -8,7 +8,7 @@
 Normal  Killing  39s (x735 over 15h)  kubelet, 10.179.80.31  Killing container with id docker://apigateway:Need to kill Pod
 ```
 
-处理建议是参考本书 处理实践:磁盘空间满 (TODO)
+处理建议是参考本书 [处理实践：磁盘爆满](/troubleshooting/handle/disk-full.md)
 
 ## docker 17 的 bug
 

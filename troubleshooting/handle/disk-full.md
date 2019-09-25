@@ -26,12 +26,22 @@ Pod 启动可能报类似下面的事件:
 ```
 
 ``` txt
+  Warning  FailedCreatePodSandBox  2m (x4307 over 16h)  kubelet, 10.179.80.31  (combined from similar events): Failed create pod sandbox: rpc error: code = Unknown desc = failed to create a sandbox for pod "apigateway-6dc48bf8b6-l8xrw": Error response from daemon: mkdir /var/lib/docker/aufs/mnt/1f09d6c1c9f24e8daaea5bf33a4230de7dbc758e3b22785e8ee21e3e3d921214-init: no space left on device
+```
+
+``` txt
   Warning  Failed   5m1s (x3397 over 17h)  kubelet, ip-10-0-151-35.us-west-2.compute.internal  (combined from similar events): Error: container create failed: container_linux.go:336: starting container process caused "process_linux.go:399: container init caused \"rootfs_linux.go:58: mounting \\\"/sys\\\" to rootfs \\\"/var/lib/dockerd/storage/overlay/051e985771cc69f3f699895a1dada9ef6483e912b46a99e004af7bb4852183eb/merged\\\" at \\\"/var/lib/dockerd/storage/overlay/051e985771cc69f3f699895a1dada9ef6483e912b46a99e004af7bb4852183eb/merged/sys\\\" caused \\\"no space left on device\\\"\""
+```
+
+Pod 删除可能报类似下面的事件:
+
+``` txt
+Normal  Killing  39s (x735 over 15h)  kubelet, 10.179.80.31  Killing container with id docker://apigateway:Need to kill Pod
 ```
 
 ### kubelet 使用的目录所在磁盘爆满
 
-如果 kubelet 使用的目录所在磁盘空间爆满，新建 Pod 时连 Sandbox 都无法创建成功，因为 mkdir 将会失败，通常会有类似这样的 Pod 事件:
+如果 kubelet 使用的目录所在磁盘空间爆满(通常是系统盘)，新建 Pod 时连 Sandbox 都无法创建成功，因为 mkdir 将会失败，通常会有类似这样的 Pod 事件:
 
 ``` txt
   Warning  UnexpectedAdmissionError  44m                 kubelet, 172.22.0.44  Update plugin resources failed due to failed to write checkpoint file "kubelet_internal_checkpoint": write /var/lib/kubelet/device-plugins/.728425055: no space left on device, which is unexpected.

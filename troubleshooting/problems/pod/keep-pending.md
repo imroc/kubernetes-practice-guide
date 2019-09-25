@@ -91,11 +91,11 @@ NetworkUnavailable     True        node.kubernetes.io/network-unavailable
 
 另外，在云环境下，比如腾讯云 TKE，添加新节点会先给这个 Node 加上 `node.cloudprovider.kubernetes.io/uninitialized` 的污点，等 Node 初始化成功后才自动移除这个污点，避免 Pod 被调度到没初始化好的 Node 上。
 
-### 低版本 kube-scheduler 的 bug
+## 低版本 kube-scheduler 的 bug
 
 可能是低版本 `kube-scheduler` 的 bug, 可以升级下调度器版本。
 
-### kube-scheduler 没有正常运行
+## kube-scheduler 没有正常运行
 
 检查 maser 上的 `kube-scheduler` 是否运行正常，异常的话可以尝试重启临时恢复。
 

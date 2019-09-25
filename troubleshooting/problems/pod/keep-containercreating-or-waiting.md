@@ -34,7 +34,7 @@ at \\\"/run/containerd/io.containerd.runtime.v1.linux/k8s.io/e6746201faa1dfe7f32
 caused \\\"no such file or directory\\\"\"": unknown'
 ```
 
-## 容器数据磁盘被写满
+## 磁盘爆满
 
 启动 Pod 会调 CRI 接口创建容器，容器运行时创建容器时通常会在数据目录下为新建的容器创建一些目录和文件，如果数据目录所在的磁盘空间满了就会创建失败并报错:
 
@@ -45,7 +45,7 @@ Events:
   Warning  FailedCreatePodSandBox  2m (x4307 over 16h)  kubelet, 10.179.80.31  (combined from similar events): Failed create pod sandbox: rpc error: code = Unknown desc = failed to create a sandbox for pod "apigateway-6dc48bf8b6-l8xrw": Error response from daemon: mkdir /var/lib/docker/aufs/mnt/1f09d6c1c9f24e8daaea5bf33a4230de7dbc758e3b22785e8ee21e3e3d921214-init: no space left on device
 ```
 
-解决方法参考处理实践：处理容器数据磁盘被写满(TODO)
+解决方法参考本书 [处理实践：磁盘爆满](/troubleshooting/handle/disk-full.md)
 
 ## 节点内存碎片化
 
