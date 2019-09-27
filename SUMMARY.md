@@ -4,7 +4,16 @@
 
 ## 部署指南 <a id="deploy"></a>
 
+* [二进制部署](/deploy/manual/README.md)
+  * [准备集群证书](/deploy/manual/prepare-cluster-certs.md)
+  * [准备 kubeconfig](/deploy/manual/prepare-kubeconfig.md)
+
 ## 插件扩展 <a id="plugin"></a>
+
+## 用法指南 <a id="usage">
+
+* [集群权限控制](/usage/permission-control.md)
+* [实用 yaml 片段](/usage/yaml.md)
 
 ## 最佳实践 <a id="best-practice"></a>
 
@@ -68,18 +77,15 @@
   * [容器内抓包定位网络问题](/troubleshooting/trick/capture-packets-in-container.md)
   * [使用 Systemtap 定位疑难杂症](/troubleshooting/trick/use-systemtap-to-locate-problems.md)
 
-## 集群管理 <a id="manage"></a>
+## 运维管理 <a id="manage"></a>
 
-* [集群安全](/manage/security/README.md)
-  * [集群权限控制](/manage/security/permission-control.md)
-* [集群证书管理](/manage/cert/README.md)
+* [证书管理](/manage/cert/README.md)
   * [安装 cert\-manager](/manage/cert/install-cert-manger.md)
   * [使用 cert\-manager 自动生成证书](/manage/cert/autogenerate-certificate-with-cert-manager.md)
 * [集群配置管理](/manage/configuration/README.md)
   * [Helm](/manage/configuration/helm/README.md)
     * [安装 Helm](/manage/configuration/helm/install-helm.md)
     * [Helm V2 迁移到 V3](/manage/configuration/helm/upgrade-helm-v2-to-v3.md)
-* [实用 yaml 片段](/manage/yaml.md)
 
 ## 基础设施容器化部署 <a id="infra"></a>
 

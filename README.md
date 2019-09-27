@@ -8,11 +8,14 @@
   * 部署方案选型
   * 单机部署
   * 二进制部署
+    * [准备集群证书](/deploy/manual/prepare-cluster-certs.md)
+    * [准备 kubeconfig](/deploy/manual/prepare-kubeconfig.md)
   * 工具部署
     * Kubeadm
     * Minikube
     * Bootkube
     * Ansible
+
 * 插件扩展
   * 网络
     * Flannel
@@ -28,6 +31,7 @@
     * CRI-O
   * 存储
     * Rook
+    * OpenEBS
   * Ingress Controller
     * Nginx
     * Traefik
@@ -46,6 +50,9 @@
     * MetalLB
     * Porter
 
+* 用法指南
+  * [集群权限控制](/usage/permission-control.md)
+  * [实用 yaml 片段](/usage/yaml.md)
 
 * 最佳实践
   * 服务高可用
@@ -88,7 +95,6 @@
   * 集群升级
   * 提高生产力
     * [kubectl 高效技巧](/best-practice/productive/efficient-kubectl.md)
-
 
 * 排错指南
   * [问题排查](/troubleshooting/problems/README.md)
@@ -148,7 +154,6 @@
     * 使用 kubectl-debug 帮助定位问题
     * 分析 Docker 磁盘占用
 
-
 * 集群管理
   * 集群监控
     * Prometheus
@@ -156,7 +161,6 @@
   * 日志搜集
     * EFK
   * 集群安全
-    * [集群权限控制](/manage/security/permission-control.md)
     * 使用 PodSecurityPolicy 配置全局 Pod 安全策略
     * 集群审计
   * 集群可视化管理
@@ -182,13 +186,12 @@
       * Dragonfly
       * Kaniko
       * kpack
-  * 实用 yaml 片段
   * 实用命令脚本
 
-
-* 基础设施容器化部署
+* 基础设施
   * ETCD
   * Zookeeper
+  * Kafka
   * Redis
   * TiKV
   * ElasticSearch
@@ -200,7 +203,6 @@
   * Cassandra
   * InfluxDB
   * OpenTSDB
-
 
 * 领域应用
   * 微服务架构
