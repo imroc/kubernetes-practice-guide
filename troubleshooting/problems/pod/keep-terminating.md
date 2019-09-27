@@ -27,6 +27,14 @@ link can be created to this file and no data can be written to the file.  Only t
 or a process possessing the CAP_LINUX_IMMUTABLE capability can set or clear this attribute.
 ```
 
+彻底解决当然是不要在容器镜像中或启动后的容器设置 "i" 文件属性，临时恢复方法： 复制 kubelet 日志报错提示的文件路径，然后执行 `chattr -i <file>`:
+
+``` bash
+chattr -i /data/docker/overlay2/b1aea29c590aa9abda79f7cf3976422073fb3652757f0391db88534027546868/diff/usr/bin/bash
+```
+
+执行完后等待 kubelet 自动重试，Pod 就可以被自动删除了。
+
 ## docker 17 的 bug
 
 docker hang 住，没有任何响应，看 event:
