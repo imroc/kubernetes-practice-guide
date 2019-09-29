@@ -12,7 +12,9 @@
 
 ## 用法指南 <a id="usage">
 
-* [集群权限控制](/usage/permission-control.md)
+* [集群权限控制](/usage/permission/README.md)
+  * [控制用户权限](/usage/permission/user.md)
+  * [控制应用权限](/usage/permission/app.md)
 * [实用 yaml 片段](/usage/yaml.md)
 
 ## 最佳实践 <a id="best-practice"></a>
