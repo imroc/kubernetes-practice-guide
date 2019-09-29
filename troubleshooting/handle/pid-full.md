@@ -31,3 +31,5 @@ echo 65535 > /proc/sys/kernel/pid_max
 ``` bash
 echo "kernel.pid_max=65535 " >> /etc/sysctl.conf && sysctl -p
 ```
+
+k8s 1.14 支持了限制 Pod 的进程数量: https://kubernetes.io/blog/2019/04/15/process-id-limiting-for-stability-improvements-in-kubernetes-1.14/
