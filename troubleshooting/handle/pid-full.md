@@ -16,7 +16,7 @@ cat /proc/sys/kernel/pid_max
 ps -eLf | wc -l
 ```
 
-如果发现实际 PID 数量接近最大限制说明 PID 就可能会爆满导致经常有进程无法启动，报错: `Cannot allocate memory`
+如果发现实际 PID 数量接近最大限制说明 PID 就可能会爆满导致经常有进程无法启动，低版本内核可能报错: `Cannot allocate memory`，这个报错信息不准确，在内核 4.1 以后改进了: https://github.com/torvalds/linux/commit/35f71bc0a09a45924bed268d8ccd0d3407bc476f
 
 ## 如何解决
 
