@@ -136,7 +136,7 @@ cfssl gencert \
 * `kubernetes-key.pem`: kube-apiserver 证书密钥
 * `kubernetes.pem`: kube-apiserver 证书
 
-## 为管理员签发证书
+## 为管理员签发证书 <a id="for-admin"></a>
 
 为最高权限管理员证书:
 
