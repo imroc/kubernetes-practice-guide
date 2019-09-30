@@ -116,20 +116,17 @@ cat > kubernetes-csr.json <<EOF
     ]
 }
 EOF
-```
 
-> hosts 这里只准备了必要的，根据需求可增加，通常 Master 节点 IP 也都要加进去，你可以执行了上面的命令后再编辑一下 `kubernetes-csr.json`，将需要 hosts 都加进去。
-
-生成证书:
-
-``` bash
 cfssl gencert \
   -ca=ca.pem \
   -ca-key=ca-key.pem \
   -config=ca-config.json \
   -profile=kubernetes \
   kubernetes-csr.json | cfssljson -bare kubernetes
+
 ```
+
+> hosts 这里只准备了必要的，根据需求可增加，通常 Master 节点 IP 也都要加进去，你可以执行了上面的命令后再编辑一下 `kubernetes-csr.json`，将需要 hosts 都加进去。
 
 会生成下面两个重要的文件:
 
@@ -209,6 +206,7 @@ cfssl gencert \
   -config=ca-config.json \
   -profile=kubernetes \
   ${node}-csr.json | cfssljson -bare ${node}
+
 ```
 
 * `node` 改为节点的名称，自己自己定，也可以直接写节点的 hostname
@@ -240,6 +238,7 @@ cat > kube-controller-manager-csr.json <<EOF
   ]
 }
 EOF
+
 cfssl gencert \
   -ca=ca.pem \
   -ca-key=ca-key.pem \
