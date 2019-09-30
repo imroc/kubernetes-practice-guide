@@ -36,7 +36,7 @@ cat > ca-csr.json <<EOF
 }
 EOF
 
-./cfssl gencert -initca ca-csr.json | ./cfssljson -bare ca
+cfssl gencert -initca ca-csr.json | cfssljson -bare ca
 ```
 
 将会生成以下两个重要文件:
