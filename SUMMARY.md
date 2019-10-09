@@ -4,9 +4,12 @@
 
 ## 部署指南 <a id="deploy"></a>
 
-* [二进制部署](/deploy/manual/README.md)
-  * [准备集群证书](/deploy/manual/prepare-cluster-certs.md)
-  * [准备 kubeconfig](/deploy/manual/prepare-kubeconfig.md)
+* [手工部署](/deploy/manual/README.md)
+  * [部署前的准备工作](/deploy/manual/prepare.md)
+  * [部署 ETCD](/deploy/manual/bootstraping-etcd.md)
+  * [部署 Master](/deploy/manual/bootstraping-master.md)
+  * [部署 Worker 节点](/deploy/manual/bootstraping-worker-nodes.md)
+  * [部署关键附加组件](/deploy/manual/deploy-critical-addons.md)
 
 ## 插件扩展 <a id="plugin"></a>
 

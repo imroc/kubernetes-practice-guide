@@ -11,12 +11,16 @@
 这里我们用 `apiserver` 这个变量表示 apiserver 的访问地址，其它组件都需要配置这个地址，根据自身情况改下这个变量的值:
 
 ``` bash
-apiserver="https://172.27.17.155:6443"
+apiserver="https://10.200.16.79:6443"
 ```
+
+我们使用 `kubectl` 来辅助生成 kubeconfig，确保 kubectl 已安装
 
 ## kube-proxy
 
 ``` bash
+apiserver="https://10.200.16.79:6443"
+
 kubectl config set-cluster roc \
   --certificate-authority=ca.pem \
   --embed-certs=true \
@@ -47,6 +51,8 @@ kube-proxy.kubeconfig
 ## kube-controller-manager
 
 ``` bash
+apiserver="https://10.200.16.79:6443"
+
 kubectl config set-cluster roc \
   --certificate-authority=ca.pem \
   --embed-certs=true \
@@ -77,6 +83,8 @@ kube-controller-manager.kubeconfig
 ## kube-scheduler
 
 ``` bash
+apiserver="https://10.200.16.79:6443"
+
 kubectl config set-cluster roc \
   --certificate-authority=ca.pem \
   --embed-certs=true \
@@ -107,7 +115,9 @@ kube-scheduler.kubeconfig
 ## kubelet
 
 ``` bash
-node="node1"
+node="10.200.16.79"
+apiserver="https://10.200.16.79:6443"
+
 kubectl config set-cluster roc \
   --certificate-authority=ca.pem \
   --embed-certs=true \
@@ -129,7 +139,7 @@ kubectl config use-context default --kubeconfig=${node}.kubeconfig
 
 ```
 
-* `node` 为节点的名称，在上一步 [准备证书](prepare-cluster-certs.md#for-kubelet) 中已确定
+* `node` 为节点的名称，在上一步 [准备证书](prepare-cluster-certs.md#for-kubelet) 中已确定，也保证 kubelet 证书公钥私钥文件在当前目录
 
 生成文件:
 

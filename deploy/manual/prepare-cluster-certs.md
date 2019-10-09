@@ -2,16 +2,15 @@
 
 ## 安装 cfssl
 
+将之前 [准备二进制](prepare-binary.md#cfssl) 下载的 cfssl 二进制解压安装到 PATH 下:
+
 ``` bash
 curl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl
-chmod +x cfssl
 curl -L https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -o cfssljson
-chmod +x cfssljson
 curl -L https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -o cfssl-certinfo
-chmod +x cfssl-certinfo
 
-mv cfssl cfssljson cfssl-certinfo /usr/local/bin/
-
+chmod +x cfssl cfssljson cfssl-certinfo
+sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/
 ```
 
 ## 生成 CA 证书
@@ -84,6 +83,7 @@ kube-apiserver 是 k8s 的访问核心，所有 K8S 组件和用户 kubectl 操�
 通过集群外也可能访问 kube-apiserver，比如使用 kubectl，或者部署在集群外的服务会连 kube-apiserver (比如部署在集群外的 Promethues 采集集群指标做监控)，这里列一下通过集群外连 kube-apiserver 有哪些可能地址:
 
 * `127.0.0.1`: 在 Master 所在机器通过 127.0.0.1 访问本机 kube-apiserver
+* Service CIDR 的第一个 IP，比如 kube-controller-manager 的 `--service-cluster-ip-range` 启动参数是 `10.32.0.0/16`，那么第一个 IP 就是 `10.32.0.1`
 * 域名: 配了 DNS，通过域名访问 kube-apiserver，也要将域名写入证书
 * LB IP: 如果 Master 节点前面挂了一个负载均衡器，外界可以通过 LB IP 来访问 kube-apiserver
 * Master 节点 IP: 如果没有 Master 负载均衡器，管理员在节点上执行 kubectl 通常使用 Master 节点 IP 访问 kube-apiserver
@@ -94,7 +94,8 @@ cat > kubernetes-csr.json <<EOF
     "CN": "kubernetes",
     "hosts": [
       "127.0.0.1",
-      "172.27.17.155",
+      "10.32.0.1",
+      "10.200.16.79",
       "kubernetes",
       "kubernetes.default",
       "kubernetes.default.svc",
@@ -179,9 +180,8 @@ cfssl gencert \
 ## 为 kubelet 签发证书 <a id="for-kubelet"></a>
 
 ``` bash
-node="node1"
-ip="172.27.17.155"
-cat > ${node}-csr.json <<EOF
+node="10.200.16.79"
+cat <<EOF | sudo tee ${node}-csr.json
 {
   "CN": "system:node:${node}",
   "key": {
@@ -210,7 +210,6 @@ cfssl gencert \
 ```
 
 * `node` 改为节点的名称，自己自己定，也可以直接写节点的 hostname
-* `ip` 改为节点的内网 IP
 
 假如 `host` 为 node1，将生成以下两个文件:
 
@@ -362,7 +361,50 @@ cfssl gencert \
 * `service-account-key.pem`: service account 证书公钥
 * `service-account.pem`: service account 证书私钥
 
+## 为 ETCD 签发证书
+
+``` bash
+cat > etcd-csr.json <<EOF
+{
+    "CN": "etcd",
+    "hosts": [
+      "127.0.0.1",
+      "10.200.16.79",
+      "10.200.17.6",
+      "10.200.16.70"
+    ],
+    "key": {
+        "algo": "rsa",
+        "size": 2048
+    },
+    "names": [
+        {
+            "C": "CN",
+            "ST": "SiChuan",
+            "L": "Chengdu",
+            "O": "etcd",
+            "OU": "etcd"
+        }
+    ]
+}
+EOF
+
+cfssl gencert \
+  -ca=ca.pem \
+  -ca-key=ca-key.pem \
+  -config=ca-config.json \
+  -profile=kubernetes \
+  etcd-csr.json | cfssljson -bare etcd
+
+```
+
+> hosts 需要写 etcd 每个实例所在节点的 IP
+
+会生成下面两个重要的文件:
+
+* `etcd-key.pem`: kube-apiserver 证书密钥
+* `etcd.pem`: kube-apiserver 证书
+
 ## 参考资料
 
 * https://kubernetes.io/docs/concepts/cluster-administration/certificates/#cfssl
-
