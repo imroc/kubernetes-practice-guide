@@ -13,6 +13,10 @@
 
 ## 插件扩展 <a id="plugin"></a>
 
+* [网络](/plugins/network/README.md)
+  * [flannel](/plugins/network/flannel/README.md)
+    * [部署 flannel](/plugins/network/flannel/deploy.md)
+
 ## 用法指南 <a id="usage">
 
 * [集群权限控制](/usage/permission/README.md)
