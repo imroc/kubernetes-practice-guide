@@ -18,8 +18,9 @@
     * Minikube
     * Bootkube
     * Ansible
-  * 附录
-    * 证书自动签发与轮转
+  * [部署附加组件](/deploy/addons/README.md)
+    * [部署 CoreDNS](/deploy/addons/coredns.md)
+    * [以 Daemonset 方式部署 kube-proxy](/deploy/addons/kube-proxy.md)
 
 * 插件扩展
   * [网络](/plugins/network/README.md)

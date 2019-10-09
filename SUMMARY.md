@@ -10,6 +10,9 @@
   * [部署 Master](/deploy/manual/bootstrapping-master.md)
   * [部署 Worker 节点](/deploy/manual/bootstrapping-worker-nodes.md)
   * [部署关键附加组件](/deploy/manual/deploy-critical-addons.md)
+* [部署附加组件](/deploy/addons/README.md)
+  * [部署 CoreDNS](/deploy/addons/coredns.md)
+  * [以 Daemonset 方式部署 kube-proxy](/deploy/addons/kube-proxy.md)
 
 ## 插件扩展 <a id="plugin"></a>
 

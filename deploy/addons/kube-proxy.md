@@ -1,6 +1,5 @@
 # 以 Daemonset 方式部署 kube-proxy
 
-
 kube-proxy 可以用二进制部署，也可以用 kubelet 的静态 Pod 部署，但最简单使用 DaemonSet 部署。直接使用 ServiceAccount 的 token 认证，不需要签发证书，也就不用担心证书过期问题。
 
 为 kube-proxy 创建 RBAC 权限和配置文件:
