@@ -1,4 +1,4 @@
-# 部署 flannel
+# 部署 Flannel
 
 记集群网段为 CLUSTER_CIDR:
 
