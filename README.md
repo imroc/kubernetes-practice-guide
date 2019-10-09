@@ -22,8 +22,9 @@
     * 证书自动签发与轮转
 
 * 插件扩展
-  * 网络
-    * Flannel
+  * [网络](/plugins/network/README.md)
+    * [Flannel](/plugins/network/flannel/README.md)
+      * [部署 Flannel](/plugins/network/flannel/deploy.md)
     * Macvlan
     * Calico
     * Cilium
