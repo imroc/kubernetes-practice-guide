@@ -206,6 +206,7 @@ ExecStart=/usr/local/bin/kubelet \\
   --container-runtime=remote \\
   --container-runtime-endpoint=unix:///var/run/containerd/containerd.sock \\
   --image-pull-progress-deadline=2m \\
+  --bootstrap-kubeconfig=/var/lib/kubelet/bootstrap-kubeconfig \\
   --kubeconfig=/var/lib/kubelet/kubeconfig \\
   --network-plugin=cni \\
   --register-node=true \\
