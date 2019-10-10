@@ -24,7 +24,7 @@
 
 我们需要用 `cfssl` 和 `kubectl` 来为各个组件生成证书和 kubeconfig，所以先将这两个工具在某个机器下载安装好。
 
-### 安装 cfssl
+### 安装 cfssl <a id="install-cfssl"></a>
 
 ``` bash
 curl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl
@@ -70,23 +70,7 @@ cat > ca-csr.json <<EOF
 EOF
 
 cfssl gencert -initca ca-csr.json | cfssljson -bare ca
-```
 
-将会生成以下两个重要文件:
-
-* `ca-key.pem`: CA 证书密钥
-* `ca.pem`: CA 证书
-
-csr 文件字段解释:
-
-* `CN`: `Common Name`，apiserver 从证书中提取该字段作为请求的用户名 (User Name)
-* `Organization`，apiserver 从证书中提取该字段作为请求用户所属的组 (Group)
-
-> 由于这里是 CA 证书，是签发其它证书的根证书，这个证书密钥不会分发出去作为 client 证书，所有组件使用的 client 证书都是由 CA 证书签发而来，所以 CA 证书的 CN 和 O 的名称并不重要，后续其它签发出来的证书的 CN 和 O 的名称才是有用的
-
-有了 CA 证书，后面我们就需要使用 CA 证书来为其它组件和用户签发证书，签发时 cfssl 需要一份证书签发配置，我们准备一个配置文件 `ca-config.json` :
-
-``` bash
 cat > ca-config.json <<EOF
 {
   "signing": {
@@ -103,3 +87,16 @@ cat > ca-config.json <<EOF
 }
 EOF
 ```
+
+生成的文件中有下面三个后面会用到:
+
+* `ca-key.pem`: CA 证书密钥
+* `ca.pem`: CA 证书
+* `ca-config.json`: 证书签发配置
+
+csr 文件字段解释:
+
+* `CN`: `Common Name`，apiserver 从证书中提取该字段作为请求的用户名 (User Name)
+* `Organization`，apiserver 从证书中提取该字段作为请求用户所属的组 (Group)
+
+> 由于这里是 CA 证书，是签发其它证书的根证书，这个证书密钥不会分发出去作为 client 证书，所有组件使用的 client 证书都是由 CA 证书签发而来，所以 CA 证书的 CN 和 O 的名称并不重要，后续其它签发出来的证书的 CN 和 O 的名称才是有用的

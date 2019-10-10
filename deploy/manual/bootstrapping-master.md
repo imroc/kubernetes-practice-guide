@@ -1,8 +1,25 @@
 # 部署 Master
 
+## 下载安装控制面组件
+
+``` bash
+wget -q --show-progress --https-only --timestamping \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-apiserver \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-controller-manager \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-scheduler
+
+chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
+mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
+```
+
 ## 准备证书 <a id="prepare-certs"></a>
 
 Master 节点的准备证书操作只需要做一次，将生成的证书拷到每个 Master 节点上以复用。
+
+### 前提条件
+
+* 签发证书需要用到 [生成 CA 证书](#generate-ca-cert) 时创建的 CA 证书及其密钥文件，确保它们在当前目录
+* 确保 cfssl 在当前环境已安装，安装方法参考 [这里](prepare.md#install-cfssl)
 
 ### 为 kube-apiserver 签发证书 <a id="sign-certs-for-kube-apiserver"></a>
 
@@ -169,7 +186,6 @@ cfssl gencert \
   -config=ca-config.json \
   -profile=kubernetes \
   service-account-csr.json | cfssljson -bare service-account
-
 ```
 
 生成以下两个文件:
@@ -222,65 +238,41 @@ cfssl gencert \
 
 ## 准备 kubeconfig <a id="prepare-kubeconfig"></a>
 
-Master 节点的准备 kubeconfig 操作只需要做一次，将生成的 kubeconfig 拷到每个 Master 节点上以复用。
+部署 Master 的准备 kubeconfig 操作只需要做一次，将生成的 kubeconfig 拷到每个 Master 节点上以复用。
 
-`kubeconfig` 主要是用于各组件访问 apiserver 的必要配置，包含 apiserver 地址、client 证书与 CA 证书等信息。下面介绍为各个组件生成 `kubeconfig` 的方法。
+`kubeconfig` 主要是各组件以及用户访问 apiserver 的必要配置，包含 apiserver 地址、client 证书与 CA 证书等信息。下面介绍为各个组件生成 `kubeconfig` 的方法。
+
+### 前提条件
+
+* 我们使用 `kubectl` 来辅助生成 kubeconfig，确保 kubectl 已安装。
+* 生成 kubeconfig 会用到之前[准备证书](#prepare-certs)时创建的证书与密钥，确保这些生成的文件在当前目录。
+
+### 确定 apiserver 访问入口
 
 所有组件都会去连 apiserver，所以首先需要确定你的 apiserver 访问入口的地址:
 
 * 如果所有 master 组件都部署在一个节点，它们可以通过 127.0.0.1 这个 IP访问 apiserver。
 * 如果 master 有多个节点，但 apiserver 只有一个实例，可以直接写 apiserver 所在机器的内网 IP 访问地址。
 * 如果做了高可用，有多个 apiserver 实例，前面挂了负载均衡器，就可以写负载均衡器的访问地址。
+* 入口地址的域名或IP必须是在之前 [为 kube-apiserver 签发证书](#sign-certs-for-kube-apiserver) 的 hosts 列表里。
 
-这里我们用 `apiserver` 这个变量表示 apiserver 的访问地址，其它组件都需要配置这个地址，根据自身情况改下这个变量的值:
+这里我们用 `APISERVER` 这个变量表示 apiserver 的访问地址，其它组件都需要配置这个地址，根据自身情况改下这个变量的值:
 
 ``` bash
-apiserver="https://10.200.16.79:6443"
+APISERVER="https://10.200.16.79:6443"
 ```
 
-我们使用 `kubectl` 来辅助生成 kubeconfig，确保 kubectl 已安装。
-
-### 为 kube-proxy 创建 kubeconfig <a id="create-kubeconfig-for-kube-proxy"></a>
+### 为 kube-controller-manager 创建 kubeconfig <a id="create-kubeconfig-for-kube-controller-manager"></a>
 
 ``` bash
-apiserver="https://10.200.16.79:6443"
+APISERVER="https://10.200.16.79:6443"
+```
 
+``` bash
 kubectl config set-cluster roc \
   --certificate-authority=ca.pem \
   --embed-certs=true \
-  --server=${apiserver} \
-  --kubeconfig=kube-proxy.kubeconfig
-
-kubectl config set-credentials system:kube-proxy \
-  --client-certificate=kube-proxy.pem \
-  --client-key=kube-proxy-key.pem \
-  --embed-certs=true \
-  --kubeconfig=kube-proxy.kubeconfig
-
-kubectl config set-context default \
-  --cluster=roc \
-  --user=system:kube-proxy \
-  --kubeconfig=kube-proxy.kubeconfig
-
-kubectl config use-context default --kubeconfig=kube-proxy.kubeconfig
-
-```
-
-生成文件:
-
-``` txt
-kube-proxy.kubeconfig
-```
-
-### kube-controller-manager <a id="create-kubeconfig-for-kube-controller-manager"></a>
-
-``` bash
-apiserver="https://10.200.16.79:6443"
-
-kubectl config set-cluster roc \
-  --certificate-authority=ca.pem \
-  --embed-certs=true \
-  --server=${apiserver} \
+  --server=${APISERVER} \
   --kubeconfig=kube-controller-manager.kubeconfig
 
 kubectl config set-credentials system:kube-controller-manager \
@@ -295,7 +287,6 @@ kubectl config set-context default \
   --kubeconfig=kube-controller-manager.kubeconfig
 
 kubectl config use-context default --kubeconfig=kube-controller-manager.kubeconfig
-
 ```
 
 生成文件:
@@ -304,15 +295,17 @@ kubectl config use-context default --kubeconfig=kube-controller-manager.kubeconf
 kube-controller-manager.kubeconfig
 ```
 
-### kube-scheduler <a id="create-kubeconfig-for-kube-scheduler"></a>
+### 为 kube-scheduler 创建 kubeconfig <a id="create-kubeconfig-for-kube-scheduler"></a>
 
 ``` bash
-apiserver="https://10.200.16.79:6443"
+APISERVER="https://10.200.16.79:6443"
+```
 
+``` bash
 kubectl config set-cluster roc \
   --certificate-authority=ca.pem \
   --embed-certs=true \
-  --server=${apiserver} \
+  --server=${APISERVER} \
   --kubeconfig=kube-scheduler.kubeconfig
 
 kubectl config set-credentials system:kube-scheduler \
@@ -327,7 +320,6 @@ kubectl config set-context default \
   --kubeconfig=kube-scheduler.kubeconfig
 
 kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
-
 ```
 
 生成文件:
@@ -336,7 +328,7 @@ kubectl config use-context default --kubeconfig=kube-scheduler.kubeconfig
 kube-scheduler.kubeconfig
 ```
 
-### 管理员 <a id="create-kubeconfig-for-admin"></a>
+### 为管理员创建 kubeconfig <a id="create-kubeconfig-for-admin"></a>
 
 这里为管理员生成 kubeconfig，方便使用 kubectl 来管理集群:
 
@@ -344,7 +336,7 @@ kube-scheduler.kubeconfig
 kubectl config set-cluster roc \
   --certificate-authority=ca.pem \
   --embed-certs=true \
-  --server=${apiserver} \
+  --server=${APISERVER} \
   --kubeconfig=admin.kubeconfig
 
 kubectl config set-credentials admin \
@@ -359,7 +351,6 @@ kubectl config set-context default \
   --kubeconfig=admin.kubeconfig
 
 kubectl config use-context default --kubeconfig=admin.kubeconfig
-
 ```
 
 生成文件:
@@ -368,18 +359,10 @@ kubectl config use-context default --kubeconfig=admin.kubeconfig
 admin.kubeconfig
 ```
 
-> 可以将 `admin.kubeconfig` 放到 `~/.kube/config`，这是 kubectl 读取 kubeconfig 的默认路径，执行 kubectl 时就不需要指定 kubeconfig 路径了
-
-## 下载安装控制面组件
+将 `admin.kubeconfig` 放到需要执行 kubectl 的机器的 `~/.kube/config` 这个目录，这是 kubectl 读取 kubeconfig 的默认路径，执行 kubectl 时就不需要指定 kubeconfig 路径了:
 
 ``` bash
-wget -q --show-progress --https-only --timestamping \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-apiserver \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-controller-manager \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-scheduler
-
-chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
-mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
+mv admin.kubeconfig ~/.kube/config
 ```
 
 ## 配置控制面组件 <a id="configure-control-plane"></a>
@@ -566,10 +549,10 @@ sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
 
 ## RBAC 授权 kube-apiserver 访问 kubelet
 
-使用 [这里](#create-kubeconfig-for-admin) 给管理员创建好的 kubeconfig 来执行 kubectl，为集群配置 RBAC 规则，授权 kube-apiserver 访问 kubelet，此步骤只需要做一次:
+kube-apiserver 有些情况也会访问 kubelet，比如获取 metrics、查看容器日志或登录容器，这是 kubelet 作为 server， kube-apiserver 作为 client，kubelet 监听的 https，kube-apiserver 经过证书认证访问 kubelet，但还需要经过授权才能成功调用接口，我们通过创建 RBAC 规则授权 kube-apiserver 访问 kubelet:
 
 ``` bash
-cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
 metadata:
@@ -591,7 +574,7 @@ rules:
       - "*"
 EOF
 
-cat <<EOF | kubectl apply --kubeconfig admin.kubeconfig -f -
+cat <<EOF | kubectl apply -f -
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
 metadata:
@@ -610,7 +593,7 @@ EOF
 
 ## RBAC 授权 kubelet 创建 CSR 自动签发并轮转证书
 
-节点 kubelet 通过 Bootstrap Token 调用 apiserver CSR API 请求签发证书，bootstrap token 在 `system:bootstrappers` 用户组，我们需要给它授权调用 CSR API，为这个用户组绑定预定义的 `system:node-bootstrapper` 这个 ClusterRole 就可以:
+节点 kubelet 通过 Bootstrap Token 调用 apiserver CSR API 请求签发证书，kubelet 通过 bootstrap token 认证后会在 `system:bootstrappers` 用户组里，我们还需要给它授权调用 CSR API，为这个用户组绑定预定义的 `system:node-bootstrapper` 这个 ClusterRole 就可以:
 
 ``` bash
 cat <<EOF | kubectl apply -f -
@@ -630,7 +613,7 @@ roleRef:
 EOF
 ```
 
-给 kubelet 授权审批 CSR 权限以创建新证书 (之前没创建过证书，通过 bootstrap token 认证，在 `system:bootstrappers` 用户组):
+给 kubelet 授权审批 CSR 权限以实现自动创建新证书 (之前没创建过证书，通过 bootstrap token 认证后在 `system:bootstrappers` 用户组里):
 
 ``` bash
 cat <<EOF | kubectl apply -f -
@@ -650,7 +633,7 @@ roleRef:
 EOF
 ```
 
-给已启动过的 kubelet 授权审批 CSR 权限以更新证书 (之前创建过证书，通过证书认证，在 `system:nodes` 用户组):
+给已启动过的 kubelet 授权审批 CSR 权限以实现自动更新证书 (之前创建过证书，在证书还未过期前通过证书认证后在 `system:nodes` 用户组里):
 
 ``` bash
 cat <<EOF | kubectl apply -f -
@@ -670,17 +653,28 @@ roleRef:
 EOF
 ```
 
-## 创建 Bootstrap Token
+## 创建 Bootstrap Token 与 bootstrap-kubeconfig <a id="create-bootstrap-token-and-bootstrap-kubeconfig"></a>
 
-Bootstrap Token 以 Secret 形式存储，不需要给 apiserver 配置静态 token，这样也易于管理，下面是创建 Bootstrap Token 示例:
+bootstrap token 用于 kubelet 自动请求签发证书，以 Secret 形式存储，不需要事先给 apiserver 配置静态 token，这样也易于管理。
+
+创建了 bootstrap token 后我们利用它使用它来创建 bootstrap-kubeconfig 以供后面部署 Worker 节点用 (kubelet 使用 bootstrap-kubeconfig 自动创建证书)，下面是创建方法:
 
 ``` bash
+APISERVER="https://10.200.16.79:6443"
+```
+
+``` bash
+# token id should match regex: [a-z0-9]{6}
+TOKEN_ID=$(head -c 16 /dev/urandom | od -An -t x | tr -d ' ' | head -c 6)
+# token secret should match regex: [a-z0-9]{16}
+TOKEN_SECRET=$(head -c 16 /dev/urandom | od -An -t x | tr -d ' ' | head -c 16)
+
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: Secret
 metadata:
-  # Name MUST be of form "bootstrap-token-<token id>", <token id> should match regex: [a-z0-9]{6}
-  name: bootstrap-token-000000
+  # Name MUST be of form "bootstrap-token-<token id>", 
+  name: bootstrap-token-${TOKEN_ID}
   namespace: kube-system
 
 # Type MUST be 'bootstrap.kubernetes.io/token'
@@ -690,44 +684,27 @@ stringData:
   description: "The default bootstrap token used for signing certificates"
 
   # Token ID and secret. Required.
-  token-id: "000000"
-  token-secret: $(head -c 16 /dev/urandom | od -An -t x | tr -d ' ')
+  token-id: "${TOKEN_ID}"
+  token-secret: "${TOKEN_SECRET}"
 
   # Expiration. Optional.
-  expiration: 2020-03-10T03:22:11Z
+  # expiration: 2020-03-10T03:22:11Z
 
   # Allowed usages.
   usage-bootstrap-authentication: "true"
   usage-bootstrap-signing: "true"
 
   # Extra groups to authenticate the token as. Must start with "system:bootstrappers:"
-  auth-extra-groups: system:bootstrappers:worker,system:bootstrappers:ingress
+  # auth-extra-groups: system:bootstrappers:worker,system:bootstrappers:ingress
 EOF
-```
-
-> bootstrap token 的 secret 格式参考: https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/#bootstrap-token-secret-format
-
-查看 secret 是否创建成功:
-
-``` bash
-$ kubectl get secret -n kube-system bootstrap-token-000000
-NAME                     TYPE                            DATA   AGE
-bootstrap-token-000000   bootstrap.kubernetes.io/token   7      26s
-```
-
-## 创建 bootstrap-kubeconfig <a id="create-bootstrap-kubeconfig"></a>
-
-上一步我们生成了 bootstrap token，这里我们使用它来创建 bootstrap-kubeconfig 以供后面部署 Worker 节点用 (kubelet 使用 bootstrap-kubeconfig 自动创建证书)
-
-``` bash
-APISERVER="https://10.200.16.79:6443"
-TOKEN=$(kubectl -n kube-system get secret bootstrap-token-000000 -o=jsonpath='{.data.token-secret}' | base64 -d)
 
 kubectl config --kubeconfig=bootstrap-kubeconfig set-cluster bootstrap --server="${APISERVER}" --certificate-authority=ca.pem --embed-certs=true
 kubectl config --kubeconfig=bootstrap-kubeconfig set-credentials kubelet-bootstrap --token=000000.${TOKEN}
 kubectl config --kubeconfig=bootstrap-kubeconfig set-context bootstrap --user=kubelet-bootstrap --cluster=bootstrap
 kubectl config --kubeconfig=bootstrap-kubeconfig use-context bootstrap
 ```
+
+> bootstrap token 的 secret 格式参考: https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/#bootstrap-token-secret-format
 
 生成文件:
 

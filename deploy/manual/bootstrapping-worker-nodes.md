@@ -1,36 +1,6 @@
 # 部署 Worker 节点
 
-Worker 节点会安装 kubelet 来管理容器，运行工作负载，安装 kube-proxy 来实现 service 转发。
-
-> Master 节点也可以部署为 Worker 节点
-
-## 下载安装二进制
-
-下载二进制:
-
-``` bash
-wget -q --show-progress --https-only --timestamping \
-  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc8/runc.amd64 \
-  https://github.com/containerd/containerd/releases/download/v1.3.0/containerd-1.3.0.linux-amd64.tar.gz \
-  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.16.0/crictl-v1.16.0-linux-amd64.tar.gz \
-  https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-linux-amd64-v0.8.2.tgz \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-proxy \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubelet \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl
-
-sudo mv runc.amd64 runc
-```
-
-安装二进制:
-
-``` bash
-chmod +x crictl kubectl kube-proxy kubelet runc
-tar -xvf crictl-v1.16.0-linux-amd64.tar.gz
-mkdir containerd
-tar -xvf containerd-1.3.0.linux-amd64.tar.gz -C containerd
-sudo cp crictl kubectl kube-proxy kubelet runc /usr/local/bin/
-sudo cp containerd/bin/* /bin/
-```
+Worker 节点主要安装 kubelet 来管理、运行工作负载 (Master 节点也可以部署为特殊 Worker 节点来部署关键服务)
 
 ## 安装依赖
 
@@ -75,16 +45,42 @@ sudo setenforce 0
 sudo sed -i "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config
 ```
 
+## 下载安装二进制
+
+下载二进制:
+
+``` bash
+wget -q --show-progress --https-only --timestamping \
+  https://github.com/opencontainers/runc/releases/download/v1.0.0-rc8/runc.amd64 \
+  https://github.com/containerd/containerd/releases/download/v1.3.0/containerd-1.3.0.linux-amd64.tar.gz \
+  https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.16.0/crictl-v1.16.0-linux-amd64.tar.gz \
+  https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-linux-amd64-v0.8.2.tgz \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubelet \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl
+
+sudo mv runc.amd64 runc
+```
+
+安装二进制:
+
+``` bash
+chmod +x crictl kubectl kubelet runc
+tar -xvf crictl-v1.16.0-linux-amd64.tar.gz
+mkdir containerd
+tar -xvf containerd-1.3.0.linux-amd64.tar.gz -C containerd
+sudo cp crictl kubectl kubelet runc /usr/local/bin/
+sudo cp containerd/bin/* /bin/
+```
+
 ## 配置
 
-准备目录:
+### 准备目录
 
 ``` bash
 sudo mkdir -p \
   /etc/cni/net.d \
   /opt/cni/bin \
   /var/lib/kubelet \
-  /var/lib/kube-proxy \
   /var/lib/kubernetes \
   /var/run/kubernetes
 ```
@@ -142,12 +138,6 @@ EOF
 
 ### 配置 kubelet
 
-用 `node` 变量表示节点名称:
-
-``` bash
-node="10.200.16.79"
-```
-
 放入 [这里](prepare.md#generate-ca-cert) 创建好的 CA 证书与 [这里](bootstrapping-master.md#create-bootstrap-kubeconfig) 创建好的 bootstrap-kubeconfig:
 
 ``` bash
@@ -158,14 +148,12 @@ sudo cp bootstrap-kubeconfig /var/lib/kubelet/
 事先确定好集群 DNS 的 CLUSTER IP 地址，通常可以用 service 网段的最后一个可用 IP 地址:
 
 ``` bash
-dns=10.32.0.255
+DNS=10.32.0.255
 ```
 
 创建 kubelet 启动配置 `config.yaml`:
 
 ``` bash
-dns=10.32.0.255
-
 cat <<EOF | sudo tee /var/lib/kubelet/config.yaml
 kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
@@ -180,7 +168,7 @@ authorization:
   mode: Webhook
 clusterDomain: "cluster.local"
 clusterDNS:
-  - "${dns}"
+  - "${DNS}"
 resolvConf: "/run/systemd/resolve/resolv.conf"
 runtimeRequestTimeout: "15m"
 rotateCertificates: true
@@ -188,11 +176,15 @@ serverTLSBootstrap: true
 EOF
 ```
 
+用 `NODE` 变量表示节点名称，kube-apiserver 所在节点需要能够通过这个名称访问到节点，这里推荐直接使用节点内网 IP，不需要配 hosts 就能访问:
+
+``` bash
+NODE="10.200.16.79"
+```
+
 创建 systemd 配置 `kubelet.service`:
 
 ``` bash
-node="10.200.16.79"
-
 cat <<EOF | sudo tee /etc/systemd/system/kubelet.service
 [Unit]
 Description=Kubernetes Kubelet
@@ -210,7 +202,7 @@ ExecStart=/usr/local/bin/kubelet \\
   --kubeconfig=/var/lib/kubelet/kubeconfig \\
   --network-plugin=cni \\
   --register-node=true \\
-  --hostname-override=${node} \\
+  --hostname-override=${NODE} \\
   --v=2
 Restart=on-failure
 RestartSec=5
@@ -224,8 +216,8 @@ EOF
 
 ``` bash
 sudo systemctl daemon-reload
-sudo systemctl enable containerd kubelet kube-proxy
-sudo systemctl start containerd kubelet kube-proxy
+sudo systemctl enable containerd kubelet
+sudo systemctl start containerd kubelet
 ```
 
 ## 验证
@@ -238,4 +230,4 @@ NAME           STATUS     ROLES    AGE   VERSION
 10.200.16.79   NotReady   <none>   11m   v1.16.1
 ```
 
-没有装网络插件，节点状态会是 `NotReady`，带 `node.kubernetes.io/not-ready:NoSchedule` 这个污点，默认是无法调度 Pod，网络插件通常以 Daemonset 部署，使用 hostNetwork，并且容忍这个污点。
+没有装网络插件，节点状态会是 `NotReady`，带 `node.kubernetes.io/not-ready:NoSchedule` 这个污点，默认是无法调度普通 Pod，这个是正常的。后面会装网络插件，通常以 Daemonset 部署，使用 hostNetwork，并且容忍这个污点。
