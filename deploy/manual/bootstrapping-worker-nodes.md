@@ -212,6 +212,27 @@ sudo systemctl enable containerd kubelet
 sudo systemctl start containerd kubelet
 ```
 
+## 签发 kubelet server 证书
+
+由于之前做过 [RBAC 授权 kubelet 创建 CSR 与自动签发和更新证书](bootstrapping-master.md#authorize-kubelet-create-csr-and-auto-approval)，kubelet 启动时可以发起 client 与 server 证书的 CSR 请求，并自动审批通过 client 证书的 CSR 请求，kube-controller-manager 在自动执行证书签发，最后 kubelet 可以获取到 client 证书并加入集群，我们可以在 `/var/lib/kubelet/pki` 下面看到签发出来的 client 证书:
+
+``` bash
+ls -l /var/lib/kubelet/pki
+-rw------- 1 root root 1277 Oct 10 19:55 kubelet-client-2019-10-10-19-55-11.pem
+lrwxrwxrwx 1 root root   59 Oct 10 19:55 kubelet-client-current.pem -> /var/lib/kubelet/pki/kubelet-client-2019-10-10-19-55-11.pem
+```
+
+> kubeconfig 中引用这里的 `kubelet-client-current.pem` 这个证书，是一个 bundle，包含公钥与私钥
+
+但 server 证书默认无法自动审批，需要管理员人工审批，下面是审批方法，首先看下未审批的 CSR:
+
+``` bash
+$ kubectl get csr
+NAME        AGE     REQUESTOR                  CONDITION
+csr-hf47c   15m     system:node:10.200.16.79   Approved,Issued
+csr-shmlf   20m     system:bootstrap:360483    Approved,Issued
+```
+
 ## 验证
 
 配置好 kubectl，执行下 kubectl:

@@ -603,7 +603,7 @@ subjects:
 EOF
 ```
 
-## RBAC 授权 kubelet 创建 CSR 自动签发并轮转证书
+## RBAC 授权 kubelet 创建 CSR 与自动签发和更新证书 <a id="authorize-kubelet-create-csr-and-auto-approval"></a>
 
 节点 kubelet 通过 Bootstrap Token 调用 apiserver CSR API 请求签发证书，kubelet 通过 bootstrap token 认证后会在 `system:bootstrappers` 用户组里，我们还需要给它授权调用 CSR API，为这个用户组绑定预定义的 `system:node-bootstrapper` 这个 ClusterRole 就可以:
 
