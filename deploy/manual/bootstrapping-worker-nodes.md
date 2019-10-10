@@ -69,6 +69,7 @@ mkdir containerd
 tar -xvf containerd-1.3.0.linux-amd64.tar.gz -C containerd
 sudo cp crictl kubelet runc /usr/local/bin/
 sudo cp containerd/bin/* /bin/
+sudo tar -xvf cni-plugins-linux-amd64-v0.8.2.tgz -C /opt/cni/bin/
 ```
 
 ## 配置
@@ -82,14 +83,6 @@ sudo mkdir -p \
   /var/lib/kubelet \
   /var/lib/kubernetes \
   /var/run/kubernetes
-```
-
-### 配置 CNI
-
-将 kubelet 会调用的 CNI 二进制放入 `/opt/cni/bin`:
-
-``` bash
-sudo tar -xvf cni-plugins-linux-amd64-v0.8.2.tgz -C /opt/cni/bin/
 ```
 
 ### 配置 containerd
