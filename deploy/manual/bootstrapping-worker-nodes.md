@@ -55,8 +55,7 @@ wget -q --show-progress --https-only --timestamping \
   https://github.com/containerd/containerd/releases/download/v1.3.0/containerd-1.3.0.linux-amd64.tar.gz \
   https://github.com/kubernetes-sigs/cri-tools/releases/download/v1.16.1/crictl-v1.16.1-linux-amd64.tar.gz \
   https://github.com/containernetworking/plugins/releases/download/v0.8.2/cni-plugins-linux-amd64-v0.8.2.tgz \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kubelet \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kubectl
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kubelet
 
 sudo mv runc.amd64 runc
 ```
@@ -64,11 +63,11 @@ sudo mv runc.amd64 runc
 安装二进制:
 
 ``` bash
-chmod +x crictl kubectl kubelet runc
+chmod +x crictl kubelet runc
 tar -xvf crictl-v1.16.1-linux-amd64.tar.gz
 mkdir containerd
 tar -xvf containerd-1.3.0.linux-amd64.tar.gz -C containerd
-sudo cp crictl kubectl kubelet runc /usr/local/bin/
+sudo cp crictl kubelet runc /usr/local/bin/
 sudo cp containerd/bin/* /bin/
 ```
 
