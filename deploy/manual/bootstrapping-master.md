@@ -324,6 +324,10 @@ kube-scheduler.kubeconfig
 这里为管理员生成 kubeconfig，方便使用 kubectl 来管理集群:
 
 ``` bash
+APISERVER="https://10.200.16.79:6443"
+```
+
+``` bash
 kubectl config set-cluster roc \
   --certificate-authority=ca.pem \
   --embed-certs=true \
