@@ -82,6 +82,12 @@ NAME=infra0
 INTERNAL_IP=10.200.16.79
 ```
 
+记所有 ETCD 成员的名称和成员间通信的 https 监听地址为 ETCD_SERVERS (注意是 2380 端口，不是 2379):
+
+``` bash
+ETCD_SERVERS="infra0=https://10.200.16.79:2380,infra1=https://10.200.17.6:2380,infra2=https://10.200.16.70:2380"
+```
+
 创建 systemd 配置:
 
 ``` bash
@@ -107,7 +113,7 @@ ExecStart=/usr/local/bin/etcd \\
   --listen-client-urls https://${INTERNAL_IP}:2379,https://127.0.0.1:2379 \\
   --advertise-client-urls https://${INTERNAL_IP}:2379 \\
   --initial-cluster-token etcd-cluster-0 \\
-  --initial-cluster infra0=https://10.200.16.79:2380,infra1=https://10.200.17.6:2380,infra2=https://10.200.16.70:2380 \\
+  --initial-cluster ${ETCD_SERVERS} \\
   --initial-cluster-state new \\
   --data-dir=/var/lib/etcd
 Restart=on-failure
@@ -117,8 +123,6 @@ RestartSec=5
 WantedBy=multi-user.target
 EOF
 ```
-
-* `initial-cluster` 包含所有 etcd 的成员的名称和成员间通信的 https 监听地址，逗号隔开。
 
 ## 启动
 
