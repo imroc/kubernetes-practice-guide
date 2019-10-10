@@ -368,8 +368,8 @@ wget -q --show-progress --https-only --timestamping \
   https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-controller-manager \
   https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-scheduler
 
-chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
-mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
+chmod +x kube-apiserver kube-controller-manager kube-scheduler
+mv kube-apiserver kube-controller-manager kube-scheduler /usr/local/bin/
 ```
 
 ## 配置控制面组件 <a id="configure-control-plane"></a>
