@@ -191,4 +191,3 @@ spec:
         beta.kubernetes.io/arch: ${ARCH}
 EOF
 ```
-
