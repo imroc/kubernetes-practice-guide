@@ -1,21 +1,5 @@
 # 部署 ETCD
 
-## 下载安装
-
-下载 release 包:
-
-``` bash
-wget -q --show-progress --https-only --timestamping \
-  "https://github.com/etcd-io/etcd/releases/download/v3.4.1/etcd-v3.4.1-linux-amd64.tar.gz"
-```
-
-解压安装 `etcd` 和 `etcdctl`  到 PATH:
-
-``` bash
-tar -xvf etcd-v3.4.1-linux-amd64.tar.gz
-sudo mv etcd-v3.4.1-linux-amd64/etcd* /usr/local/bin/
-```
-
 ## 签发证书
 
 ``` bash
@@ -58,6 +42,24 @@ cfssl gencert \
 
 * `etcd-key.pem`: kube-apiserver 证书密钥
 * `etcd.pem`: kube-apiserver 证书
+
+> 这里证书可以只创建一次，所有 etcd 实例都公用这里创建的证书
+
+## 下载安装
+
+下载 release 包:
+
+``` bash
+wget -q --show-progress --https-only --timestamping \
+  "https://github.com/etcd-io/etcd/releases/download/v3.4.1/etcd-v3.4.1-linux-amd64.tar.gz"
+```
+
+解压安装 `etcd` 和 `etcdctl`  到 PATH:
+
+``` bash
+tar -xvf etcd-v3.4.1-linux-amd64.tar.gz
+sudo mv etcd-v3.4.1-linux-amd64/etcd* /usr/local/bin/
+```
 
 ## 配置
 
