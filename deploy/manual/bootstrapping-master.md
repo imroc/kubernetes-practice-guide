@@ -1,22 +1,10 @@
 # 部署 Master
 
-## 下载安装控制面组件
-
-``` bash
-wget -q --show-progress --https-only --timestamping \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-apiserver \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-controller-manager \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-scheduler
-
-chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
-mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
-```
-
 ## 准备证书 <a id="prepare-certs"></a>
 
 Master 节点的准备证书操作只需要做一次，将生成的证书拷到每个 Master 节点上以复用。
 
-### 前提条件
+前提条件:
 
 * 签发证书需要用到 [生成 CA 证书](#generate-ca-cert) 时创建的 CA 证书及其密钥文件，确保它们在当前目录
 * 确保 cfssl 在当前环境已安装，安装方法参考 [这里](prepare.md#install-cfssl)
@@ -245,7 +233,7 @@ cfssl gencert \
 
 `kubeconfig` 主要是各组件以及用户访问 apiserver 的必要配置，包含 apiserver 地址、client 证书与 CA 证书等信息。下面介绍为各个组件生成 `kubeconfig` 的方法。
 
-### 前提条件
+前提条件:
 
 * 我们使用 `kubectl` 来辅助生成 kubeconfig，确保 kubectl 已安装。
 * 生成 kubeconfig 会用到之前[准备证书](#prepare-certs)时创建的证书与密钥，确保这些生成的文件在当前目录。
@@ -366,6 +354,18 @@ admin.kubeconfig
 
 ``` bash
 mv admin.kubeconfig ~/.kube/config
+```
+
+## 下载安装控制面组件
+
+``` bash
+wget -q --show-progress --https-only --timestamping \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-apiserver \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-controller-manager \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-scheduler
+
+chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
+mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
 ```
 
 ## 配置控制面组件 <a id="configure-control-plane"></a>
