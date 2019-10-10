@@ -404,6 +404,12 @@ sudo cp ca.pem ca-key.pem apiserver-key.pem apiserver.pem \
   service-account-key.pem service-account.pem /var/lib/kubernetes/
 ```
 
+记所有 ETCD 实例的访问地址为 `ETCD_SERVERS` (替换 IP 为所有 ETCD 节点内网 IP):
+
+``` bash
+ETCD_SERVERS="https://10.200.16.79:2379,https://10.200.17.6:2379,https://10.200.16.70:2379"
+```
+
 记当前节点内网 IP 为 INTERNAL_IP:
 
 ``` bash
@@ -435,7 +441,7 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --etcd-cafile=/var/lib/kubernetes/ca.pem \\
   --etcd-certfile=/var/lib/kubernetes/apiserver.pem \\
   --etcd-keyfile=/var/lib/kubernetes/apiserver-key.pem \\
-  --etcd-servers=https://10.200.16.79:2379,https://10.200.17.6:2379,https://10.200.16.70:2379 \\
+  --etcd-servers=${ETCD_SERVERS} \\
   --event-ttl=1h \\
   --kubelet-certificate-authority=/var/lib/kubernetes/ca.pem \\
   --kubelet-client-certificate=/var/lib/kubernetes/apiserver.pem \\
@@ -457,7 +463,6 @@ EOF
 ```
 
 * `--enable-bootstrap-token-auth=true` 启用 bootstrap token 方式为 kubelet 签发证书
-* `--etcd-servers` 替换 IP 为所有 etcd 节点内网 IP
 
 ### 配置 kube-controller-manager <a id="configure-kube-controller-manager"></a>
 
