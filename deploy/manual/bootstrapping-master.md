@@ -625,7 +625,9 @@ roleRef:
 EOF
 ```
 
-给 kubelet 授权审批 CSR 权限以实现自动创建新证书 (之前没创建过证书，通过 bootstrap token 认证后在 `system:bootstrappers` 用户组里):
+> 这里的 CSR API 主要用于 kubelet 发起 client 和 server 证书签发请求
+
+给 kubelet 授权自动审批通过 client 证书的 CSR 请求权限以实现自动创建新的 client 证书 (之前没创建过 client 证书，通过 bootstrap token 认证后在 `system:bootstrappers` 用户组里):
 
 ``` bash
 cat <<EOF | kubectl apply -f -
@@ -645,7 +647,7 @@ roleRef:
 EOF
 ```
 
-给已启动过的 kubelet 授权审批 CSR 权限以实现自动更新证书 (之前创建过证书，在证书还未过期前通过证书认证后在 `system:nodes` 用户组里):
+给已启动过的 kubelet 授权自动审批通过 server 证书的 CSR 请求权限以实现自动轮转 client 证书 (之前创建过证书，在证书还未过期前通过证书认证后在 `system:nodes` 用户组里):
 
 ``` bash
 cat <<EOF | kubectl apply -f -
@@ -664,6 +666,8 @@ roleRef:
   apiGroup: rbac.authorization.k8s.io
 EOF
 ```
+
+> 注意上面两个授权都只是针对于 client 证书签发的自动审批权限，server 证书目前不支持自动审批，需要管理员通过 `kubectl certificate approve <csr name>` 来人工审批或者自己写外部 controller 来实现自动审批 (kubelet 访问 apiserver 使用 client 证书, apiserver 主动访问 kubelet 时才会用到 server 证书，通常用于获取 metrics 的场景)
 
 ## 创建 Bootstrap Token 与 bootstrap-kubeconfig <a id="create-bootstrap-token-and-bootstrap-kubeconfig"></a>
 
