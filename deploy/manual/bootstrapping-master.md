@@ -400,7 +400,7 @@ SERVICE_CIDR=10.32.0.0/16
 放入证书文件:
 
 ``` bash
-sudo cp ca.pem ca-key.pem kubernetes-key.pem kubernetes.pem \
+sudo cp ca.pem ca-key.pem apiserver-key.pem apiserver.pem \
   service-account-key.pem service-account.pem /var/lib/kubernetes/
 ```
 
@@ -433,20 +433,20 @@ ExecStart=/usr/local/bin/kube-apiserver \\
   --client-ca-file=/var/lib/kubernetes/ca.pem \\
   --enable-admission-plugins=NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
   --etcd-cafile=/var/lib/kubernetes/ca.pem \\
-  --etcd-certfile=/var/lib/kubernetes/kubernetes.pem \\
-  --etcd-keyfile=/var/lib/kubernetes/kubernetes-key.pem \\
+  --etcd-certfile=/var/lib/kubernetes/apiserver.pem \\
+  --etcd-keyfile=/var/lib/kubernetes/apiserver-key.pem \\
   --etcd-servers=https://10.200.16.79:2379,https://10.200.17.6:2379,https://10.200.16.70:2379 \\
   --event-ttl=1h \\
   --kubelet-certificate-authority=/var/lib/kubernetes/ca.pem \\
-  --kubelet-client-certificate=/var/lib/kubernetes/kubernetes.pem \\
-  --kubelet-client-key=/var/lib/kubernetes/kubernetes-key.pem \\
+  --kubelet-client-certificate=/var/lib/kubernetes/apiserver.pem \\
+  --kubelet-client-key=/var/lib/kubernetes/apiserver-key.pem \\
   --kubelet-https=true \\
   --runtime-config=api/all \\
   --service-account-key-file=/var/lib/kubernetes/service-account.pem \\
   --service-cluster-ip-range=${SERVICE_CIDR} \\
   --service-node-port-range=30000-32767 \\
-  --tls-cert-file=/var/lib/kubernetes/kubernetes.pem \\
-  --tls-private-key-file=/var/lib/kubernetes/kubernetes-key.pem \\
+  --tls-cert-file=/var/lib/kubernetes/apiserver.pem \\
+  --tls-private-key-file=/var/lib/kubernetes/apiserver-key.pem \\
   --v=2
 Restart=on-failure
 RestartSec=5
