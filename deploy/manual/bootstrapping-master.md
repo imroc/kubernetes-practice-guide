@@ -477,7 +477,9 @@ sudo cp kube-controller-manager.kubeconfig /var/lib/kubernetes/
 ``` bash
 CLUSTER_CIDR=10.10.0.0/16
 SERVICE_CIDR=10.32.0.0/16
+```
 
+``` bash
 cat <<EOF | sudo tee /etc/systemd/system/kube-controller-manager.service
 [Unit]
 Description=Kubernetes Controller Manager
