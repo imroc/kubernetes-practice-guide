@@ -39,8 +39,10 @@ kube-apiserver 是 k8s 的访问核心，所有 K8S 组件和用户 kubectl 操�
 * LB IP: 如果 Master 节点前面挂了一个负载均衡器，外界可以通过 LB IP 来访问 kube-apiserver
 * Master 节点 IP: 如果没有 Master 负载均衡器，管理员在节点上执行 kubectl 通常使用 Master 节点 IP 访问 kube-apiserver
 
+准备 CSR 文件:
+
 ``` bash
-cat > kubernetes-csr.json <<EOF
+cat > apiserver-csr.json <<EOF
 {
     "CN": "kubernetes",
     "hosts": [
@@ -68,22 +70,23 @@ cat > kubernetes-csr.json <<EOF
     ]
 }
 EOF
+```
 
+> hosts 这里只准备了必要的，根据需求可增加，通常 Master 节点 IP 也都要加进去，你可以执行了上面的命令后再编辑一下 `apiserver-csr.json`，将需要 hosts 都加进去。
+
+``` bash
 cfssl gencert \
   -ca=ca.pem \
   -ca-key=ca-key.pem \
   -config=ca-config.json \
   -profile=kubernetes \
-  kubernetes-csr.json | cfssljson -bare kubernetes
-
+  apiserver-csr.json | cfssljson -bare apiserver
 ```
-
-> hosts 这里只准备了必要的，根据需求可增加，通常 Master 节点 IP 也都要加进去，你可以执行了上面的命令后再编辑一下 `kubernetes-csr.json`，将需要 hosts 都加进去。
 
 会生成下面两个重要的文件:
 
-* `kubernetes-key.pem`: kube-apiserver 证书密钥
-* `kubernetes.pem`: kube-apiserver 证书
+* `apiserver-key.pem`: kube-apiserver 证书密钥
+* `apiserver.pem`: kube-apiserver 证书
 
 ### 为 kube-controller-manager 签发证书 <a id="sign-certs-for-kube-controller-manager"></a>
 
