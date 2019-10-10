@@ -1,6 +1,8 @@
 # 部署 ETCD
 
-## 签发证书
+## 为 ETCD 签发证书
+
+这里证书可以只创建一次，所有 etcd 实例都公用这里创建的证书:
 
 ``` bash
 cat > etcd-csr.json <<EOF
@@ -43,9 +45,7 @@ cfssl gencert \
 * `etcd-key.pem`: kube-apiserver 证书密钥
 * `etcd.pem`: kube-apiserver 证书
 
-> 这里证书可以只创建一次，所有 etcd 实例都公用这里创建的证书
-
-## 下载安装
+## 下载安装 ETCD
 
 下载 release 包:
 

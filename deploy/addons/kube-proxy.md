@@ -2,12 +2,19 @@
 
 kube-proxy 可以用二进制部署，也可以用 kubelet 的静态 Pod 部署，但最简单使用 DaemonSet 部署。直接使用 ServiceAccount 的 token 认证，不需要签发证书，也就不用担心证书过期问题。
 
-为 kube-proxy 创建 RBAC 权限和配置文件:
+先在终端设置下面的变量:
 
 ``` bash
 APISERVER="https://10.200.16.79:6443"
 CLUSTER_CIDR="10.10.0.0/16"
+```
 
+* `APISERVER` 替换为 apiserver 对外暴露的访问地址。有同学想问为什么不直接用集群内的访问地址(`kubernetes.default` 或对应的 CLUSTER IP)，这是一个鸡生蛋还是蛋生鸡的问题，CLSUTER IP 本身就是由 kube-proxy 来生成 iptables 或 ipvs 规则转发 Service 对应 Endpoint 的 Pod IP，kube-proxy 刚启动还没有生成这些转发规则，生成规则的前提是 kube-proxy 需要访问 apiserver 获取 Service 与 Endpoint，而由于还没有转发规则，kube-proxy 访问 apiserver 的 CLUSTER IP 的请求无法被转发到 apiserver。
+* `CLUSTER_CIDR` 替换为集群 Pod IP 的 CIDR 范围，这个在部署 kube-controller-manager 时也设置过
+
+为 kube-proxy 创建 RBAC 权限和配置文件:
+
+``` bash
 cat <<EOF | kubectl apply -f -
 apiVersion: v1
 kind: ServiceAccount
@@ -106,10 +113,7 @@ data:
 EOF
 ```
 
-* `APISERVER` 替换为 apiserver 对外暴露的访问地址。有同学想问为什么不直接用集群内的访问地址(`kubernetes.default` 或对应的 CLUSTER IP)，这是一个鸡生蛋还是蛋生鸡的问题，CLSUTER IP 本身就是由 kube-proxy 来生成 iptables 或 ipvs 规则转发 Service 对应 Endpoint 的 Pod IP，kube-proxy 刚启动还没有生成这些转发规则，生成规则的前提是 kube-proxy 需要访问 apiserver 获取 Service 与 Endpoint，而由于还没有转发规则，kube-proxy 访问 apiserver 的 CLUSTER IP 的请求无法被转发到 apiserver。
-* `CLUSTER_CIDR` 替换为集群 Pod IP 的 CIDR 范围，这个在部署 kube-controller-manager 时也设置过
-
-以 Daemonset 方式部署 kube-proxy 到每个节点:
+使用 hostNetwork 以 Daemonset 方式部署 kube-proxy 到每个节点:
 
 ``` bash
 ARCH="amd64"
