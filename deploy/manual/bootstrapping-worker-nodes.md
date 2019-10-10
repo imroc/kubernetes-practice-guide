@@ -45,6 +45,17 @@ sudo setenforce 0
 sudo sed -i "s/SELINUX=enforcing/SELINUX=disabled/g" /etc/selinux/config
 ```
 
+## 准备目录
+
+``` bash
+sudo mkdir -p \
+  /etc/cni/net.d \
+  /opt/cni/bin \
+  /var/lib/kubelet \
+  /var/lib/kubernetes \
+  /var/run/kubernetes
+```
+
 ## 下载安装二进制
 
 下载二进制:
@@ -73,17 +84,6 @@ sudo tar -xvf cni-plugins-linux-amd64-v0.8.2.tgz -C /opt/cni/bin/
 ```
 
 ## 配置
-
-### 准备目录
-
-``` bash
-sudo mkdir -p \
-  /etc/cni/net.d \
-  /opt/cni/bin \
-  /var/lib/kubelet \
-  /var/lib/kubernetes \
-  /var/run/kubernetes
-```
 
 ### 配置 containerd
 
@@ -212,27 +212,6 @@ sudo systemctl enable containerd kubelet
 sudo systemctl start containerd kubelet
 ```
 
-## 签发 kubelet server 证书
-
-由于之前做过 [RBAC 授权 kubelet 创建 CSR 与自动签发和更新证书](bootstrapping-master.md#authorize-kubelet-create-csr-and-auto-approval)，kubelet 启动时可以发起 client 与 server 证书的 CSR 请求，并自动审批通过 client 证书的 CSR 请求，kube-controller-manager 在自动执行证书签发，最后 kubelet 可以获取到 client 证书并加入集群，我们可以在 `/var/lib/kubelet/pki` 下面看到签发出来的 client 证书:
-
-``` bash
-ls -l /var/lib/kubelet/pki
--rw------- 1 root root 1277 Oct 10 19:55 kubelet-client-2019-10-10-19-55-11.pem
-lrwxrwxrwx 1 root root   59 Oct 10 19:55 kubelet-client-current.pem -> /var/lib/kubelet/pki/kubelet-client-2019-10-10-19-55-11.pem
-```
-
-> kubeconfig 中引用这里的 `kubelet-client-current.pem` 这个证书，是一个 bundle，包含公钥与私钥
-
-但 server 证书默认无法自动审批，需要管理员人工审批，下面是审批方法，首先看下未审批的 CSR:
-
-``` bash
-$ kubectl get csr
-NAME        AGE     REQUESTOR                  CONDITION
-csr-hf47c   15m     system:node:10.200.16.79   Approved,Issued
-csr-shmlf   20m     system:bootstrap:360483    Approved,Issued
-```
-
 ## 验证
 
 配置好 kubectl，执行下 kubectl:
@@ -244,3 +223,41 @@ NAME           STATUS     ROLES    AGE   VERSION
 ```
 
 没有装网络插件，节点状态会是 `NotReady`，带 `node.kubernetes.io/not-ready:NoSchedule` 这个污点，默认是无法调度普通 Pod，这个是正常的。后面会装网络插件，通常以 Daemonset 部署，使用 hostNetwork，并且容忍这个污点。
+
+## 签发 kubelet server 证书
+
+由于之前做过 [RBAC 授权 kubelet 创建 CSR 与自动签发和更新证书](bootstrapping-master.md#authorize-kubelet-create-csr-and-auto-approval)，kubelet 启动时可以发起 client 与 server 证书的 CSR 请求，并自动审批通过 client 证书的 CSR 请求，kube-controller-manager 在自动执行证书签发，最后 kubelet 可以获取到 client 证书并加入集群，我们可以在 `/var/lib/kubelet/pki` 下面看到签发出来的 client 证书:
+
+``` bash
+ls -l /var/lib/kubelet/pki
+total 4
+-rw------- 1 root root 1277 Oct 10 20:46 kubelet-client-2019-10-10-20-46-23.pem
+lrwxrwxrwx 1 root root   59 Oct 10 20:46 kubelet-client-current.pem -> /var/lib/kubelet/pki/kubelet-client-2019-10-10-20-46-23.pem
+```
+
+> kubeconfig 中引用这里的 `kubelet-client-current.pem` 这个证书，是一个指向证书 bundle 的软连接，包含证书公钥与私钥
+
+但 server 证书默认无法自动审批，需要管理员人工审批，下面是审批方法，首先看下未审批的 CSR:
+
+``` bash
+$ kubectl get csr
+NAME        AGE     REQUESTOR                  CONDITION
+csr-6gkn6   2m4s    system:bootstrap:360483    Approved,Issued
+csr-vf285   103s    system:node:10.200.17.6    Pending
+```
+
+> 可以看到 `system:bootstrap` 开头的用户的 CSR 请求已经自动 approve 并签发证书了，这就是因为 kubelet 使用 bootstrap token 认证后在 `system:bootstrappers` 用户组，而我们创建了对应 RBAC 为此用户组授权自动 approve CSR 的权限。下面 `system:node` 开头的用户的 CSR 请求状态是 Pending，需要管理员来 approve。
+
+``` bash
+$ kubectl certificate approve csr-vf285
+certificatesigningrequest.certificates.k8s.io/csr-vf285 approved
+
+$ ls -l /var/lib/kubelet/pki
+total 8
+-rw------- 1 root root 1277 Oct 10 20:46 kubelet-client-2019-10-10-20-46-23.pem
+lrwxrwxrwx 1 root root   59 Oct 10 20:46 kubelet-client-current.pem -> /var/lib/kubelet/pki/kubelet-client-2019-10-10-20-46-23.pem
+-rw------- 1 root root 1301 Oct 10 21:09 kubelet-server-2019-10-10-21-09-15.pem
+lrwxrwxrwx 1 root root   59 Oct 10 21:09 kubelet-server-current.pem -> /var/lib/kubelet/pki/kubelet-server-2019-10-10-21-09-15.pem
+```
+
+> 和 client 证书一样，`kubelet-server-current.pem` 也是一个指向证书 bundle 的软连接，包含证书公钥与私钥，用与 kubelet 监听 10250 端口
