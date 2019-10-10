@@ -85,7 +85,7 @@ cfssl gencert \
 * `kubernetes-key.pem`: kube-apiserver 证书密钥
 * `kubernetes.pem`: kube-apiserver 证书
 
-### 为 kube-controller-manager 签发证书 <id="sign-for-kube-controller-manager"></a>
+### 为 kube-controller-manager 签发证书 <a id="sign-certs-for-kube-controller-manager"></a>
 
 ``` bash
 cat > kube-controller-manager-csr.json <<EOF
@@ -120,7 +120,7 @@ cfssl gencert \
 * `kube-controller-manager-key.pem`: kube-controller-manager 证书密钥
 * `kube-controller-manager.pem`: kube-controller-manager 证书
 
-### 为 kube-scheduler 签发证书 <a id="sign-for-kube-scheduler"></a>
+### 为 kube-scheduler 签发证书 <a id="sign-certs-for-kube-scheduler"></a>
 
 ``` bash
 cat > kube-scheduler-csr.json <<EOF
@@ -156,7 +156,7 @@ cfssl gencert \
 * `kube-scheduler-key.pem`: kube-scheduler 证书密钥
 * `kube-scheduler.pem`: kube-scheduler 证书公钥
 
-### 签发 Service Account 密钥对 <a id="sign-for-serviceaccount"></a>
+### 签发 Service Account 密钥对 <a id="sign-certs-for-serviceaccount"></a>
 
 `kube-controller-manager` 会使用此密钥对来给 service account 签发 token，更多详情参考官方文档: https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/
 
@@ -193,7 +193,7 @@ cfssl gencert \
 * `service-account-key.pem`: service account 证书公钥
 * `service-account.pem`: service account 证书私钥
 
-### 为管理员签发证书 <a id="sign-for-admin"></a>
+### 为管理员签发证书 <a id="sign-certs-for-admin"></a>
 
 为最高权限管理员证书:
 
