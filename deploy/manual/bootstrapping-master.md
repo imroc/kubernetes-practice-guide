@@ -493,8 +493,6 @@ ExecStart=/usr/local/bin/kube-controller-manager \\
   --cluster-name=kubernetes \\
   --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \\
   --cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem \\
-  --rotate-certificates \\
-  --rotate-server-certificates \\
   --kubeconfig=/var/lib/kubernetes/kube-controller-manager.kubeconfig \\
   --leader-elect=true \\
   --root-ca-file=/var/lib/kubernetes/ca.pem \\
