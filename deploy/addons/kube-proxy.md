@@ -113,11 +113,19 @@ data:
 EOF
 ```
 
-使用 hostNetwork 以 Daemonset 方式部署 kube-proxy 到每个节点:
+在终端设置下面的变量:
 
 ``` bash
 ARCH="amd64"
 VERSION="v1.16.1"
+```
+
+* `VERSION` 是 K8S 版本
+* `ARCH` 是节点的 cpu 架构，大多数用的 `amd64`，即 x86_64。其它常见的还有: `arm64`, `arm`, `ppc64le`, `s390x`，如果你的集群有不同 cpu 架构的节点，可以分别指定 `ARCH` 部署多个 daemonset (每个节点不会有多个 kube-proxy，nodeSelector 会根据 cpu 架构来选中节点)
+
+使用 hostNetwork 以 Daemonset 方式部署 kube-proxy 到每个节点:
+
+``` bash
 cat <<EOF | kubectl apply -f -
 apiVersion: apps/v1
 kind: DaemonSet
@@ -184,5 +192,3 @@ spec:
 EOF
 ```
 
-* `VERSION` 是 K8S 版本
-* `ARCH` 是节点的 cpu 架构，大多数用的 `amd64`，即 x86_64。其它常见的还有: `arm64`, `arm`, `ppc64le`, `s390x`，如果你的集群有不同 cpu 架构的节点，可以分别指定 `ARCH` 部署多个 daemonset (每个节点不会有多个 kube-proxy，nodeSelector 会根据 cpu 架构来选中节点)
