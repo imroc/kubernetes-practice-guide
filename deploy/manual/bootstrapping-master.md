@@ -713,7 +713,7 @@ stringData:
 EOF
 
 kubectl config --kubeconfig=bootstrap-kubeconfig set-cluster bootstrap --server="${APISERVER}" --certificate-authority=ca.pem --embed-certs=true
-kubectl config --kubeconfig=bootstrap-kubeconfig set-credentials kubelet-bootstrap --token=000000.${TOKEN}
+kubectl config --kubeconfig=bootstrap-kubeconfig set-credentials kubelet-bootstrap --token=${TOKEN_ID}.${TOKEN_SECRET}
 kubectl config --kubeconfig=bootstrap-kubeconfig set-context bootstrap --user=kubelet-bootstrap --cluster=bootstrap
 kubectl config --kubeconfig=bootstrap-kubeconfig use-context bootstrap
 ```
