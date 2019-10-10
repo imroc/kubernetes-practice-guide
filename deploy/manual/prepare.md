@@ -39,7 +39,7 @@ sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/
 
 ``` bash
 wget -q --show-progress --https-only --timestamping \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kubectl
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kubectl
 
 chmod +x kubectl
 mv kubectl /usr/local/bin/

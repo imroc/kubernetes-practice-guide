@@ -50,7 +50,6 @@ cfssl gencert \
   -config=ca-config.json \
   -profile=kubernetes \
   etcd-csr.json | cfssljson -bare etcd
-
 ```
 
 > hosts 需要包含 etcd 每个实例所在节点的内网 IP

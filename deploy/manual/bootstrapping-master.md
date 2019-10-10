@@ -4,9 +4,9 @@
 
 ``` bash
 wget -q --show-progress --https-only --timestamping \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-apiserver \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-controller-manager \
-  https://storage.googleapis.com/kubernetes-release/release/v1.16.0/bin/linux/amd64/kube-scheduler
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-apiserver \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-controller-manager \
+  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-scheduler
 
 chmod +x kube-apiserver kube-controller-manager kube-scheduler kubectl
 mv kube-apiserver kube-controller-manager kube-scheduler kubectl /usr/local/bin/
