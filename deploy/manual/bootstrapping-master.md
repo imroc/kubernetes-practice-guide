@@ -6,7 +6,7 @@ Master 节点的准备证书操作只需要做一次，将生成的证书拷到�
 
 前提条件:
 
-* 签发证书需要用到 [生成 CA 证书](#generate-ca-cert) 时创建的 CA 证书及其密钥文件，确保它们在当前目录
+* 签发证书需要用到 [生成 CA 证书](prepare.md#generate-ca-cert) 时创建的 CA 证书及其密钥文件，确保它们在当前目录
 * 确保 cfssl 在当前环境已安装，安装方法参考 [这里](prepare.md#install-cfssl)
 
 ### 为 kube-apiserver 签发证书 <a id="sign-certs-for-kube-apiserver"></a>
