@@ -86,7 +86,7 @@
   * [容器内抓包定位网络问题](/troubleshooting/trick/capture-packets-in-container.md)
   * [使用 Systemtap 定位疑难杂症](/troubleshooting/trick/use-systemtap-to-locate-problems.md)
 
-## 运维管理 <a id="manage"></a>
+## 集群管理 <a id="manage"></a>
 
 * [证书管理](/manage/cert/README.md)
   * [安装 cert\-manager](/manage/cert/install-cert-manger.md)
