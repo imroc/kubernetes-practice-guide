@@ -7,6 +7,8 @@
 我们先看下服务更新有哪些场景:
 
 * 手动调整服务的副本数量
+* 手动删除 Pod 触发重新调度
+* 驱逐节点 (主动或被动驱逐，Pod会先删除再在其它节点重建)
 * 修改 Pod Template (常见的是修改镜像 tag 来升级程序版本)
 * HPA (HorizontalPodAutoscaler) 自动对服务进行水平伸缩
 * VPA (VerticalPodAutoscaler) 自动对服务进行垂直伸缩
