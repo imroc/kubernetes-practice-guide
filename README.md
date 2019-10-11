@@ -22,24 +22,28 @@
     * [部署 CoreDNS](/deploy/addons/coredns.md)
     * [以 Daemonset 方式部署 kube-proxy](/deploy/addons/kube-proxy.md)
 
-* 插件扩展
-  * [网络](/plugins/network/README.md)
-    * [Flannel](/plugins/network/flannel/README.md)
-      * [部署 Flannel](/plugins/network/flannel/deploy.md)
+* 集群方案
+  * [网络方案](/plan/network/README.md)
+    * 彻底理解集群网络
+    * Network Policy
+    * 开源网络方案
+    * [Flannel](/plan/network/flannel/README.md)
+      * Flannel 网络原理
+      * [部署 Flannel](/plan/network/flannel/deploy.md)
     * Macvlan
     * Calico
     * Cilium
     * Kube-router
     * Kube-OVN
     * OpenVSwitch
-  * 运行时
+  * 运行时方案
     * Docker
     * Containerd
     * CRI-O
-  * 存储
+  * 存储方案
     * Rook
     * OpenEBS
-  * Ingress Controller
+  * Ingress 方案
     * Nginx
     * Traefik
     * Contour
@@ -49,30 +53,11 @@
     * HAProxy
     * Istio
     * Skipper
-  * Scheduler Plugin
-  * Device Plugin
-  * Cloud Provider
-  * Network Policy
-  * LoadBalancer
+  * LoadBalancer 方案
     * MetalLB
     * Porter
 
-* 用法指南
-  * [集群权限控制](/usage/permission/README.md)
-    * [控制用户权限](/usage/permission/user.md)
-    * [控制应用权限](/usage/permission/app.md)
-  * [实用 yaml 片段](/usage/yaml.md)
-
-* 最佳实践
-  * 服务高可用
-    * [服务平滑更新不中断](/best-practice/ha/smooth-update.md)
-    * 节点驱逐下线不停服
-    * [解决长连接服务扩容失效](/best-practice/ha/scale-keepalive-service.md)
-    * 使用反亲和性避免单点故障
-    * 使用 PodDisruptionBudget 保障单点故障服务的高可用
-    * 使用 Critical Pod 部署关键服务
-    * 备份恢复
-    * 集群联邦
+* 用法实践
   * 弹性伸缩
     * 使用 HPA 对 Pod 水平伸缩
     * 使用 VPA 对 Pod 垂直伸缩
@@ -84,6 +69,17 @@
     * Limit Ranges
     * GPU
     * 大页内存
+  * [集群权限控制](/usage/permission/README.md)
+    * [控制用户权限](/usage/permission/user.md)
+    * [控制应用权限](/usage/permission/app.md)
+  * 有状态服务部署
+  * [实用工具和技巧](/usage/useful/README.md)
+    * [kubectl 高效技巧](/usage/useful/efficient-kubectl.md)
+    * [实用 yaml 片段](/usage/useful/yaml.md)
+
+* 解决方案
+  * [服务高可用](/solution/service-ha.md)
+  * Master 高可用
   * 资源隔离
     * 利用 kata-container 隔离容器资源
     * 利用 gVisor 隔离容器资源
@@ -96,14 +92,11 @@
     * 内核参数优化
     * 调度器优化
     * Pod 快速原地重启
-  * 传统服务容器化过渡
-    * Pod 固定 IP
-  * 服务转发
-    * [泛域名转发](/best-practice/forward/wildcard-domain-forward.md)
-  * 有状态服务部署
+    * ETCD 性能优化
   * 集群升级
-  * 提高生产力
-    * [kubectl 高效技巧](/best-practice/productive/efficient-kubectl.md)
+  * 固定 IP
+  * 备份与恢复
+  * [泛域名动态转发 Service](/solution/wildcard-domain-forward.md)
 
 * 排错指南
   * [问题排查](/troubleshooting/problems/README.md)

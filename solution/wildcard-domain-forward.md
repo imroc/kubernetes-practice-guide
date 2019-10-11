@@ -244,4 +244,3 @@ spec:
           servicePort: 80
         path: /
 ```
-
