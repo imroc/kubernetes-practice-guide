@@ -13,11 +13,10 @@
     * [部署 Master](/deploy/manual/bootstrapping-master.md)
     * [部署 Worker 节点](/deploy/manual/bootstrapping-worker-nodes.md)
     * [部署关键附加组件](/deploy/manual/deploy-critical-addons.md)
-  * 工具部署
-    * Kubeadm
-    * Minikube
-    * Bootkube
-    * Ansible
+  * 使用 Kubeadm 部署集群
+  * 使用 Minikube 部署测试集群
+  * 使用 Bootkube 部署集群
+  * 使用 Ansible 部署集群
   * [部署附加组件](/deploy/addons/README.md)
     * [部署 CoreDNS](/deploy/addons/coredns.md)
     * [以 Daemonset 方式部署 kube-proxy](/deploy/addons/kube-proxy.md)
@@ -234,7 +233,6 @@
     * Kubeflow
   * 大数据
     * Spark
-
 
 * 开发指南
   * 开发环境搭建
