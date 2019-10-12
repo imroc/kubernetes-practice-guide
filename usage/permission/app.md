@@ -67,7 +67,7 @@ spec:
   serviceAccountName: build-robot
 ```
 
-## 为应用默认指定 imagePullSecrets
+## 为应用默认指定 imagePullSecrets <id="set-default-image-pull-secrets"></a>
 
 ServiceAccount 中也可以指定 imagePullSecrets，也就是只要给 Pod 指定了这个 ServiceAccount，就有对应的 imagePullSecrets，而如果不指定 ServiceAccount 会默认指定 "default"，我们可以给 "default" 这个 ServiceAccount 指定 imagePullSecrets 来实现给某个命名空间指定默认的 imagePullSecrets
 
@@ -95,4 +95,4 @@ kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "<secret
 
 ## 参考资料
 
-- Configure Service Accounts for Pods: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
+* Configure Service Accounts for Pods: https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/
