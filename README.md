@@ -55,6 +55,8 @@
   * LoadBalancer 方案
     * MetalLB
     * Porter
+  * metrics 方案
+    * metrics-server
 
 * 用法实践
   * 弹性伸缩
@@ -75,6 +77,7 @@
   * [实用工具和技巧](/usage/useful/README.md)
     * [kubectl 高效技巧](/usage/useful/efficient-kubectl.md)
     * [实用 yaml 片段](/usage/useful/yaml.md)
+    * 实用命令脚本
 
 * 解决方案
   * [服务高可用](/solution/service-ha.md)
@@ -187,7 +190,6 @@
       * Dragonfly
       * Kaniko
       * kpack
-  * 实用命令脚本
 
 * 基础设施
   * ETCD
@@ -264,4 +266,3 @@
 ![](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png)
 
 [署名-非商业性使用-相同方式共享 4.0 \(CC BY-NC-SA 4.0\)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)
-
