@@ -194,6 +194,7 @@
 * 基础设施
   * ETCD
   * Zookeeper
+  * Consul
   * Kafka
   * Redis
   * TiKV
