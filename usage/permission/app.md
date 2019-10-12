@@ -67,7 +67,7 @@ spec:
   serviceAccountName: build-robot
 ```
 
-## 为应用默认指定 imagePullSecrets <id="set-default-image-pull-secrets"></a>
+## 为应用默认指定 imagePullSecrets <a id="set-default-image-pull-secrets"></a>
 
 ServiceAccount 中也可以指定 imagePullSecrets，也就是只要给 Pod 指定了这个 ServiceAccount，就有对应的 imagePullSecrets，而如果不指定 ServiceAccount 会默认指定 "default"，我们可以给 "default" 这个 ServiceAccount 指定 imagePullSecrets 来实现给某个命名空间指定默认的 imagePullSecrets
 
