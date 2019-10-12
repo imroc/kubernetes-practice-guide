@@ -32,3 +32,11 @@ kubelet 默认串行下载镜像:
 --registry-qps int32   If > 0, limit registry pull QPS to this value.  If 0, unlimited. (default 5)
 --registry-burst int32   Maximum size of a bursty pulls, temporarily allows pulls to burst to this number, while still not exceeding registry-qps. Only used if --registry-qps > 0 (default 10)
 ```
+
+## 镜像不不存在
+
+kubelet 日志:
+
+``` bash
+PullImage "imroc/test:v0.2" from image service failed: rpc error: code = Unknown desc = Error response from daemon: manifest for imroc/test:v0.2 not found
+```
