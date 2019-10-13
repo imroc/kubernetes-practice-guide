@@ -19,6 +19,9 @@
 * [网络方案](/plan/network/README.md)
   * [Flannel](/plan/network/flannel/README.md)
     * [部署 Flannel](/plan/network/flannel/deploy.md)
+* [运行时方案](/plan/runtime/README.md)
+  * [Containerd](/plan/runtime/containerd/README.md)
+    * [安装 containerd](/plan/runtime/containerd/install-containerd.md)
 
 ## 用法实践 <a id="usage"></a>
 
