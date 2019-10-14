@@ -61,6 +61,7 @@
   * [集群排错](/troubleshooting/problems/cluster/README.md)
     * [Node 全部消失](/troubleshooting/problems/cluster/node-all-gone.md)
     * [Daemonset 没有被调度](/troubleshooting/problems/cluster/daemonset-not-scheduled.md)
+    * [内核软死锁](/troubleshooting/problems/cluster/node-solft-lockup.md)
   * [其它排错](/troubleshooting/problems/others/README.md)
     * [Job 无法被删除](/troubleshooting/problems/others/job-cannot-delete.md)
     * [kubectl 执行 exec 或 logs 失败](/troubleshooting/problems/others/kubectl-exec-or-logs-failed.md)
