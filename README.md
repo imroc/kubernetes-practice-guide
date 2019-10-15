@@ -129,7 +129,7 @@
   * 集群排错
     * [Node 全部消失](/troubleshooting/problems/cluster/node-all-gone.md)
     * [Daemonset 没有被调度](/troubleshooting/problems/cluster/daemonset-not-scheduled.md)
-    * [内核软死锁](/troubleshooting/problems/cluster/node-solft-lockup.md)
+    * [内核软死锁](/troubleshooting/problems/cluster/kernel-solft-lockup.md)
     * Apiserver 响应慢
     * ETCD 频繁选主
     * Node 异常
