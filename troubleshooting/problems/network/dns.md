@@ -2,7 +2,7 @@
 
 ## 5 秒延时
 
-如果DNS查询经常延时5秒才返回，通常是遇到内核 conntrack 冲突导致的丢包，详见 [踩坑分享: DNS 5秒延时](https://github.com/imroc/kubernetes-practice-guide/tree/08d0c3fe178f3d54ec7849d9497a4cd83853dffa/damn/dns-lookup-5s-delay/README.md)
+如果DNS查询经常延时5秒才返回，通常是遇到内核 conntrack 冲突导致的丢包，详见 [案例分享: DNS 5秒延时](/troubleshooting/damn/cases/dns-lookup-5s-delay.md)
 
 ## 解析超时
 

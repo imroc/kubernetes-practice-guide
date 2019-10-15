@@ -6,7 +6,7 @@
 
 ## 抓包
 
-* 通过 `nsenter` 进入 pod netns，使用节点上的 tcpdump 抓 pod 中的包 \(抓包方法参考[这里](https://imroc.io/kubernetes-practice-guide/zh/troubleshooting/debug-skill/capture-packets-in-container)\)，发现是有的 DNS 请求没有收到响应，超时 5 秒后，再次发送 DNS 请求才成功收到响应。
+* 通过 `nsenter` 进入 pod netns，使用节点上的 tcpdump 抓 pod 中的包 \(抓包方法参考[这里](/troubleshooting/trick/capture-packets-in-container.md)\)，发现是有的 DNS 请求没有收到响应，超时 5 秒后，再次发送 DNS 请求才成功收到响应。
 * 在 kube-dns pod 抓包，发现是有 DNS 请求没有到达 kube-dns pod，在中途被丢弃了。
 
 为什么是 5 秒？ `man resolv.conf` 可以看到 glibc 的 resolver 的缺省超时时间是 5s:
