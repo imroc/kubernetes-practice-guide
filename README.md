@@ -86,6 +86,7 @@
 ### 解决方案
 
 * [服务高可用](/solution/service-ha.md)
+* [本地 DNS 缓存](/solution/node-local-dns.md)
 * Master 高可用
 * 资源隔离
   * 利用 kata-container 隔离容器资源

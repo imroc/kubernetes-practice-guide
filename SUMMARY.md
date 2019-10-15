@@ -35,6 +35,7 @@
 ## 解决方案 <a id="solution"></a>
 
 * [服务高可用](/solution/service-ha.md)
+* [本地 DNS 缓存](/solution/node-local-dns.md)
 * [泛域名动态转发 Service](/solution/wildcard-domain-forward.md)
 
 ## 排错指南 <a id="troubleshooting"></a>
