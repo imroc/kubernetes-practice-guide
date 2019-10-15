@@ -209,14 +209,16 @@ node-local-dns-qgrwl               1/1       Running   0          15m       10.0
 node-local-dns-s5mhw               1/1       Running   0          51s       10.0.0.76    10.0.0.76
 ```
 
-对于存量节点，登录节点执行以下命令:
+我们需要替换 kubelet 的 `--cluster-dns` 参数，指向 `169.254.20.10` 这个 IP。
+
+在TKE上，对于存量节点，登录节点执行以下命令:
 
 ``` bash
 sed -i '/CLUSTER_DNS/c\CLUSTER_DNS="--cluster-dns=169.254.20.10"' /etc/kubernetes/kubelet
 systemctl restart kubelet
 ```
 
-对于增量节点，在TKE上可以将上述命令放入新增节点的 user-data，以便加入节点后自动执行。
+对于增量节点，可以将上述命令放入新增节点的 user-data，以便加入节点后自动执行。
 
 后续新增才会用到本地 DNS 缓存，对于存量 Pod 可以销毁重建，比如改下 Deployment 中 template 里的 annotation，触发 Deployment 所有 Pod 滚动更新，如果怕滚动更新造成部分流量异常，可以参考 [服务更新最佳实践](/solution/service-ha.md#smooth-update)
 
