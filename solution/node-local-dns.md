@@ -218,7 +218,7 @@ systemctl restart kubelet
 
 对于增量节点，在TKE上可以将上述命令放入新增节点的 user-data，以便加入节点后自动执行。
 
-后续新增才会用到本地 DNS 缓存，对于存量 Pod 可以销毁重建，比如改下 Deployment 中 template 里的 annotation，触发 Deployment 所有 Pod 滚动更新，如果怕滚动更新造成部分流量异常，可以参考 [服务更新最佳实践](/solution/service-ha#smooth-update)
+后续新增才会用到本地 DNS 缓存，对于存量 Pod 可以销毁重建，比如改下 Deployment 中 template 里的 annotation，触发 Deployment 所有 Pod 滚动更新，如果怕滚动更新造成部分流量异常，可以参考 [服务更新最佳实践](/solution/service-ha.md#smooth-update)
 
 ## 参考资料
 
