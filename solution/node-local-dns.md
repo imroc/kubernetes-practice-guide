@@ -1,13 +1,24 @@
 # 本地 DNS 缓存
 
-## 注意
+## 为什么需要本地 DNS 缓存
+
+* 减轻集群 DNS 解析压力，提高 DNS 性能
+* 避免 netfilter 做 DNAT 导致 conntrack 冲突引发 [DNS 5 秒延时](/troubleshooting/damn/cases/dns-lookup-5s-delay.md)
+
+  > 镜像底层库 DNS 解析行为默认使用 UDP 在同一个 socket 并发 A 和 AAAA 记录请求，由于 UDP 无状态，两个请求可能会并发创建 conntrack 表项，如果最终 DNAT 成同一个集群 DNS 的 Pod IP 就会导致 conntrack 冲突，由于 conntrack 的创建和插入是不加锁的，最终后面插入的 conntrack 表项就会被丢弃，从而请求超时，默认 5s 后重试，造成现象就是 DNS 5 秒延时; 底层库是 glibc 的容器镜像可以通过配 resolv.conf 参数来控制 DNS 解析行为，不用 TCP 或者避免相同五元组并发(使用串行解析 A 和 AAAA 避免并发或者使用不同 socket 发请求避免相同源端口)，但像基于 alpine 镜像的容器由于底层库是 musl libc，不支持这些 resolv.conf 参数，也就无法规避，所以最佳方案还是使用本地 DNS 缓存。
+
+## 原理
+
+本地 DNS 缓存以 DaemonSet 方式在每个节点部署一个使用 hostNetwork 的 Pod，创建一个网卡绑上本地 DNS 的 IP，本机的 Pod 的 DNS 请求路由到本地 DNS，然后取缓存或者继续使用 TCP 请求上游集群 DNS 解析 (由于使用 TCP，同一个 socket 只会做一遍三次握手，不存在并发创建 conntrack 表项，也就不会有 conntrack 冲突)
+
+## IVPS 模式下需要修改 kubelet 参数
 
 有两点需要注意下:
 
-1. ipvs 模式下需要改 kubelet --cluster-dns 参数，指向一个非 kube-dns service 的 IP，通常用 169.254.20.10，ds会在每个节点创建一个网卡绑这个IP，pod 向本节点这个IP发dns请求，local dns 再代理到上游集群dns
-2. iptables 模式下不需要改 kubelet --cluster-dns 参数，pod还是向原来的 kube-dns CLUSTER IP 请求 dns，节点上有这个IP监听，被 node local dns 拦截，再请求集群上游dns(使用另一个 dns service 的 CLUSTER IP，但跟 kube-dns 的 service 一样的 selector 和 endpoint)
+1. ipvs 模式下需要改 kubelet `--cluster-dns` 参数，指向一个非 kube-dns service 的 IP，通常用 `169.254.20.10`，Daemonset 会在每个节点创建一个网卡绑这个 IP，Pod 向本节点这个 IP 发 DNS 请求，本机 DNS 再代理到上游集群 DNS
+2. iptables 模式下不需要改 kubelet `--cluster-dns` 参数，Pod 还是向原来的集群 DNS 请求，节点上有这个 IP 监听，被本机拦截，再请求集群上游 DNS (使用集群 DNS 的另一个 CLUSTER IP，来自事先创建好的 Service，跟原集群 DNS 的 Service 有相同的 selector 和 endpoint)
 
-ipvs 模式下必须修改 kubelet 参数的原因是：ds pod 创建了 kube-dns service 的本机 CLUSTER IP 网卡监听， kube-ipvs0 这个 dummy interface 上也会绑这个 IP (为了能让报文到达 INPUT 链进入 ipvs)，所以 pod 请求 kube-dns CLUSTER IP 的请求最终还是会到 ipvs, 做一次 dnat，相当于 node local dns 没有作用。
+ipvs 模式下必须修改 kubelet 参数的原因是：如果不修改，DaemonSet Pod 在本机创建了网卡，会绑跟集群 DNS 的 CLUSTER IP， 但 kube-ipvs0 这个 dummy interface 上也会绑这个 IP (这是 ipvs 的机制，为了能让报文到达 INPUT 链被 ipvs 处理)，所以 Pod 请求集群 DNS 的报文最终还是会被 ipvs 处理, DNAT 成集群 DNS 的 Pod IP，最终路由到集群 DNS，相当于本机 DNS 就没有作用了。
 
 ## IPVS 模式下部署方法
 
