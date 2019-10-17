@@ -84,19 +84,11 @@
 * metrics 方案
   * metrics-server
 
-### 用法实践
+### 最佳实践
 
-* 弹性伸缩
-  * 使用 HPA 对 Pod 水平伸缩
-  * 使用 VPA 对 Pod 垂直伸缩
-  * 使用 Cluster Autoscaler 对节点水平伸缩
-* 资源分配与限制
-  * 资源预留
-  * Request 与 Limit
-  * Resource Quotas
-  * Limit Ranges
-  * GPU
-  * 大页内存
+* [服务高可用](/solution/service-ha.md)
+* [本地 DNS 缓存](/solution/node-local-dns.md)
+* [泛域名动态转发 Service](/solution/wildcard-domain-forward.md)
 * [集群权限控制](/usage/permission/README.md)
   * [控制用户权限](/usage/permission/user.md)
   * [控制应用权限](/usage/permission/app.md)
@@ -105,29 +97,28 @@
   * [kubectl 高效技巧](/usage/useful/efficient-kubectl.md)
   * [实用 yaml 片段](/usage/useful/yaml.md)
   * 实用命令脚本
-
-### 解决方案
-
-* [服务高可用](/solution/service-ha.md)
-* [本地 DNS 缓存](/solution/node-local-dns.md)
-* [泛域名动态转发 Service](/solution/wildcard-domain-forward.md)
+* 弹性伸缩
+  * 使用 HPA 对 Pod 水平伸缩
+  * 使用 VPA 对 Pod 垂直伸缩
+  * 使用 Cluster Autoscaler 对节点水平伸缩
+* 资源分配与限制
 * Master 高可用
-* 资源隔离
+* 资源隔离与共享
   * 利用 kata-container 隔离容器资源
   * 利用 gVisor 隔离容器资源
   * 利用 lvm 和 xfs 实现容器磁盘隔离
   * 利用 lxcfs 隔离 proc 提升容器资源可见性
-* 资源共享
   * 共享存储
   * 共享内存
-* 性能优化
-  * 内核参数优化
-  * 调度器优化
-  * Pod 快速原地重启
-  * ETCD 性能优化
+* Pod 原地重启
 * 集群升级
 * 固定 IP
 * 备份与恢复
+* ETCD 性能优化
+* 内核参数优化
+* CPU 亲和性
+* 使用大页内存
+* 离在线混合部署
 
 ### 排错指南
 
