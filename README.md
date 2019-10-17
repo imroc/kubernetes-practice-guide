@@ -6,6 +6,8 @@
 
 ### 部署指南
 
+包含 k8s 集群自身的部署以及常见应用的部署(可能会被书内其它多个地方引用)
+
 * 部署方案选型
 * 单机部署
 * [手工部署](/deploy/manual/README.md)
@@ -21,6 +23,22 @@
 * [部署附加组件](/deploy/addons/README.md)
   * [部署 CoreDNS](/deploy/addons/coredns.md)
   * [以 Daemonset 方式部署 kube-proxy](/deploy/addons/kube-proxy.md)
+* 常见应用部署
+  * ElasticSearch 与 Kibana
+    * [使用 elastic-oparator 部署](/deploy/common/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator.md)
+  * ETCD
+  * Zookeeper
+  * Consul
+  * Kafka
+  * Redis
+  * TiKV
+  * MySQL
+  * TiDB
+  * PostgreSQL
+  * MongoDB
+  * Cassandra
+  * InfluxDB
+  * OpenTSDB
 
 ### 集群方案
 
@@ -39,9 +57,14 @@
   * OpenVSwitch
 * [运行时方案](/plan/runtime/README.md)
   * Docker
+    * Docker 介绍
+    * Docker 安装
   * [Containerd](/plan/runtime/containerd/README.md)
+    * containerd 介绍
     * [安装 containerd](/plan/runtime/containerd/install-containerd.md)
   * CRI-O
+    * CRI-O 介绍
+    * CRI-O 安装
 * 存储方案
   * Rook
   * OpenEBS
@@ -87,6 +110,7 @@
 
 * [服务高可用](/solution/service-ha.md)
 * [本地 DNS 缓存](/solution/node-local-dns.md)
+* [泛域名动态转发 Service](/solution/wildcard-domain-forward.md)
 * Master 高可用
 * 资源隔离
   * 利用 kata-container 隔离容器资源
@@ -104,7 +128,6 @@
 * 集群升级
 * 固定 IP
 * 备份与恢复
-* [泛域名动态转发 Service](/solution/wildcard-domain-forward.md)
 
 ### 排错指南
 
@@ -118,25 +141,23 @@
     * [Pod 一直处于 Error 状态](/troubleshooting/problems/pod/keep-error.md)
     * [Pod 一直处于 ImagePullBackOff 状态](/troubleshooting/problems/pod/keep-imagepullbackoff.md)
     * [Pod 一直处于 ImageInspectError 状态](/troubleshooting/problems/pod/keep-imageinspecterror.md)
-    * [Pod Terminating 慢](/troubleshooting/problems/pod/slow-terminating.md)
     * [Pod 健康检查失败](/troubleshooting/problems/pod/healthcheck-failed.md)
     * [容器进程主动退出](/troubleshooting/problems/pod/container-proccess-exit-by-itself.md)
   * 网络排错
     * [LB 健康检查失败](/troubleshooting/problems/network/lb-healthcheck-failed.md)
     * [DNS 解析异常](/troubleshooting/problems/network/dns.md)
     * [Service 不通](/troubleshooting/problems/network/service-unrecheable.md)
-    * [Service 无法解析](/troubleshooting/problems/network/service-cannot-resolve.md)
     * [网络性能差](/troubleshooting/problems/network/low-throughput.md)
   * 集群排错
     * [Node 全部消失](/troubleshooting/problems/cluster/node-all-gone.md)
     * [Daemonset 没有被调度](/troubleshooting/problems/cluster/daemonset-not-scheduled.md)
-    * [内核软死锁](/troubleshooting/problems/cluster/kernel-solft-lockup.md)
     * Apiserver 响应慢
     * ETCD 频繁选主
     * Node 异常
   * 其它排错
     * [Job 无法被删除](/troubleshooting/problems/others/job-cannot-delete.md)
     * [kubectl 执行 exec 或 logs 失败](/troubleshooting/problems/others/kubectl-exec-or-logs-failed.md)
+    * [内核软死锁](/troubleshooting/problems/others/kernel-solft-lockup.md)
 * 经典报错
   * [no space left on device](/troubleshooting/errors/no-space-left-on-device.md)
   * [arp_cache: neighbor table overflow!](/troubleshooting/errors/arp_cache-neighbor-table-overflow.md)
@@ -200,24 +221,6 @@
     * Kaniko
     * kpack
 
-### 基础设施
-
-* ETCD
-* Zookeeper
-* Consul
-* Kafka
-* Redis
-* TiKV
-* ElasticSearch
-  * [使用 elastic-oparator 部署 Elasticsearch 和 Kibana](/infra/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator.md)
-* MySQL
-* TiDB
-* PostgreSQL
-* MongoDB
-* Cassandra
-* InfluxDB
-* OpenTSDB
-
 ### 领域应用
 
 * 微服务架构
@@ -240,9 +243,8 @@
   * GoCD
   * Argo
   * GitLab CI
-  * Knative Build
   * Drone
-* 人工智能
+* AI
   * nvidia-docker
   * Kubeflow
 * 大数据

@@ -9,10 +9,13 @@
   * [部署 ETCD](/deploy/manual/bootstrapping-etcd.md)
   * [部署 Master](/deploy/manual/bootstrapping-master.md)
   * [部署 Worker 节点](/deploy/manual/bootstrapping-worker-nodes.md)
-  * [部署关键附加组件](/deploy/manual/deploy-critical-addons.md)
+  * [部署附加组件](/deploy/manual/deploy-critical-addons.md)
 * [部署附加组件](/deploy/addons/README.md)
   * [部署 CoreDNS](/deploy/addons/coredns.md)
   * [以 Daemonset 方式部署 kube-proxy](/deploy/addons/kube-proxy.md)
+* [常见应用部署](/deploy/common/README.md)
+  * [ElasticSearch 与 Kibana](/deploy/common/elasticsearch/README.md)
+    * [使用 elastic-oparator 部署](/deploy/common/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator.md)
 
 ## 集群方案 <a id="plan"></a>
 
@@ -50,22 +53,20 @@
     * [Pod 一直处于 Error 状态](/troubleshooting/problems/pod/keep-error.md)
     * [Pod 一直处于 ImagePullBackOff 状态](/troubleshooting/problems/pod/keep-imagepullbackoff.md)
     * [Pod 一直处于 ImageInspectError 状态](/troubleshooting/problems/pod/keep-imageinspecterror.md)
-    * [Pod Terminating 慢](/troubleshooting/problems/pod/slow-terminating.md)
     * [Pod 健康检查失败](/troubleshooting/problems/pod/healthcheck-failed.md)
     * [容器进程主动退出](/troubleshooting/problems/pod/container-proccess-exit-by-itself.md)
   * [网络排错](/troubleshooting/problems/network/README.md)
     * [LB 健康检查失败](/troubleshooting/problems/network/lb-healthcheck-failed.md)
     * [DNS 解析异常](/troubleshooting/problems/network/dns.md)
     * [Service 不通](/troubleshooting/problems/network/service-unrecheable.md)
-    * [Service 无法解析](/troubleshooting/problems/network/service-cannot-resolve.md)
     * [网络性能差](/troubleshooting/problems/network/low-throughput.md)
   * [集群排错](/troubleshooting/problems/cluster/README.md)
     * [Node 全部消失](/troubleshooting/problems/cluster/node-all-gone.md)
     * [Daemonset 没有被调度](/troubleshooting/problems/cluster/daemonset-not-scheduled.md)
-    * [内核软死锁](/troubleshooting/problems/cluster/kernel-solft-lockup.md)
   * [其它排错](/troubleshooting/problems/others/README.md)
     * [Job 无法被删除](/troubleshooting/problems/others/job-cannot-delete.md)
     * [kubectl 执行 exec 或 logs 失败](/troubleshooting/problems/others/kubectl-exec-or-logs-failed.md)
+    * [内核软死锁](/troubleshooting/problems/others/kernel-solft-lockup.md)
 * [经典报错](/troubleshooting/errors/README.md)
   * [no space left on device](/troubleshooting/errors/no-space-left-on-device.md)
   * [arp_cache: neighbor table overflow!](/troubleshooting/errors/arp_cache-neighbor-table-overflow.md)
@@ -103,8 +104,6 @@
 
 ## 基础设施 <a id="infra"></a>
 
-* [ElasticSearch](/infra/elasticsearch/README.md)
-  * [使用 elastic-oparator 部署 Elasticsearch 和 Kibana](/infra/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator.md)
 
 ## 领域应用 <a id="domain"></a>
 
