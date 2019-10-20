@@ -1,6 +1,6 @@
 # Pod 处于 CrashLoopBackOff 状态
 
-Pod 如果处于 `CrashLoopBackOff` 状态说明之前是启动了，只是又异常退出了，只要 Pod 的 [restartPolicy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy) 不是 Never 就可能被重启拉起，此时 Pod 的 `RestartCounts` 通常是大于 0 的，可以先看下容器进程的退出状态码来缩小问题范围，参考本书 [排错技巧: 分析 ExitCode 定位 Pod 异常退出原因](../../trick/analysis-exitcode.md)
+Pod 如果处于 `CrashLoopBackOff` 状态说明之前是启动了，只是又异常退出了，只要 Pod 的 [restartPolicy](https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#restart-policy) 不是 Never 就可能被重启拉起，此时 Pod 的 `RestartCounts` 通常是大于 0 的，可以先看下容器进程的退出状态码来缩小问题范围，参考本书 [排错技巧: 分析 ExitCode 定位 Pod 异常退出原因](/troubleshooting/trick/analysis-exitcode.md)
 
 ## 容器进程主动退出
 
@@ -16,7 +16,7 @@ Pod 如果处于 `CrashLoopBackOff` 状态说明之前是启动了，只是又�
 
 ## 节点内存碎片化
 
-如果节点上内存碎片化严重，缺少大页内存，会导致即使总的剩余内存较多，但还是会申请内存失败，参考 [处理实践: 内存碎片化](../../handle/memory-fragmentation.md)
+如果节点上内存碎片化严重，缺少大页内存，会导致即使总的剩余内存较多，但还是会申请内存失败，参考 [处理实践: 内存碎片化](/troubleshooting/handle/memory-fragmentation.md)
 
 ## 健康检查失败
 

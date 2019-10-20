@@ -16,7 +16,7 @@ cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常�
 
 ## 容器进程被木马进程杀死
 
-参考本书 [处理实践: 使用 systemtap 定位疑难杂症](../../trick/use-systemtap-to-locate-problems.md) 进一步定位。
+参考本书 [处理实践: 使用 systemtap 定位疑难杂症](/troubleshooting/trick/use-systemtap-to-locate-problems.md) 进一步定位。
 
 ## 容器内进程端口监听挂掉
 

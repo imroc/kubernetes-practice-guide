@@ -3,7 +3,7 @@
 ## 为什么需要本地 DNS 缓存
 
 * 减轻集群 DNS 解析压力，提高 DNS 性能
-* 避免 netfilter 做 DNAT 导致 conntrack 冲突引发 [DNS 5 秒延时](/troubleshooting/damn/cases/dns-lookup-5s-delay.md)
+* 避免 netfilter 做 DNAT 导致 conntrack 冲突引发 [DNS 5 秒延时](/troubleshooting/cases/dns-lookup-5s-delay.md)
 
   > 镜像底层库 DNS 解析行为默认使用 UDP 在同一个 socket 并发 A 和 AAAA 记录请求，由于 UDP 无状态，两个请求可能会并发创建 conntrack 表项，如果最终 DNAT 成同一个集群 DNS 的 Pod IP 就会导致 conntrack 冲突，由于 conntrack 的创建和插入是不加锁的，最终后面插入的 conntrack 表项就会被丢弃，从而请求超时，默认 5s 后重试，造成现象就是 DNS 5 秒延时; 底层库是 glibc 的容器镜像可以通过配 resolv.conf 参数来控制 DNS 解析行为，不用 TCP 或者避免相同五元组并发(使用串行解析 A 和 AAAA 避免并发或者使用不同 socket 发请求避免相同源端口)，但像基于 alpine 镜像的容器由于底层库是 musl libc，不支持这些 resolv.conf 参数，也就无法规避，所以最佳方案还是使用本地 DNS 缓存。
 

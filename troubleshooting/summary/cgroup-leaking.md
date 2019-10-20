@@ -6,7 +6,7 @@
 
 关于 cgroup kernel memory，在 [kernel.org](https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/memory.html#kernel-memory-extension-config-memcg-kmem) 中有如下描述：
 
-```text
+```
 2.7 Kernel Memory Extension (CONFIG_MEMCG_KMEM)
 -----------------------------------------------
 
@@ -39,7 +39,7 @@ to trigger slab reclaim when those limits are reached.
 
 pod 启动失败，报 event 示例:
 
-```bash
+``` bash
 Events:
   Type     Reason                    Age                 From                   Message
   ----     ------                    ----                ----                   -------
@@ -49,13 +49,13 @@ Events:
 
 dockerd 日志报错示例:
 
-```bash
+``` bash
 Dec 24 11:54:31 VM_16_11_centos dockerd[11419]: time="2018-12-24T11:54:31.195900301+08:00" level=error msg="Handler for POST /v1.31/containers/b98d4aea818bf9d1d1aa84079e1688cd9b4218e008c58a8ef6d6c3c106403e7b/start returned error: OCI runtime create failed: container_linux.go:348: starting container process caused \"process_linux.go:279: applying cgroup configuration for process caused \\\"mkdir /sys/fs/cgroup/memory/kubepods/burstable/pod79fe803c-072f-11e9-90ca-525400090c71/b98d4aea818bf9d1d1aa84079e1688cd9b4218e008c58a8ef6d6c3c106403e7b: no space left on device\\\"\": unknown"
 ```
 
 kubelet 日志报错示例:
 
-```bash
+``` bash
 Sep 09 18:09:09 VM-0-39-ubuntu kubelet[18902]: I0909 18:09:09.449722   18902 remote_runtime.go:92] RunPodSandbox from runtime service failed: rpc error: code = Unknown desc = failed to start sandbox container for pod "osp-xxx-com-ljqm19-54bf7678b8-bvz9s": Error response from daemon: oci runtime error: container_linux.go:247: starting container process caused "process_linux.go:258: applying cgroup configuration for process caused \"mkdir /sys/fs/cgroup/memory/kubepods/burstable/podf1bd9e87-1ef2-11e8-afd3-fa163ecf2dce/8710c146b3c8b52f5da62e222273703b1e3d54a6a6270a0ea7ce1b194f1b5053: no space left on device\""
 ```
 
@@ -71,7 +71,7 @@ kubelet 和 runc 都会给 memory cgroup 开启 kmem accounting，所以要规�
 
 runc 在合并 [这个PR](https://github.com/opencontainers/runc/pull/1350/files) \(2017-02-27\) 之后创建的容器都默认开启了 kmem accounting，后来社区也注意到这个问题，并做了比较灵活的修复， [PR 1921](https://github.com/opencontainers/runc/pull/1921) 给 runc 增加了 "nokmem" 编译选项，缺省的 release 版本没有使用这个选项， 自己使用 nokmem 选项编译 runc 的方法:
 
-```bash
+``` bash
 cd $GO_PATH/src/github.com/opencontainers/runc/
 make BUILDTAGS="seccomp nokmem"
 ```
@@ -82,7 +82,7 @@ docker-ce v18.09.1 之后的 runc 默认关闭了 kmem accounting，所以也可
 
 如果是 1.14 版本及其以上，可以在编译的时候通过 build tag 来关闭 kmem accounting:
 
-```bash
+``` bash
 KUBE_GIT_VERSION=v1.14.1 ./build/run.sh make kubelet GOFLAGS="-tags=nokmem"
 ```
 
@@ -92,4 +92,3 @@ KUBE_GIT_VERSION=v1.14.1 ./build/run.sh make kubelet GOFLAGS="-tags=nokmem"
 
 * 一行 kubernetes 1.9 代码引发的血案（与 CentOS 7.x 内核兼容性问题）: [http://dockone.io/article/4797](http://dockone.io/article/4797)
 * Cgroup泄漏--潜藏在你的集群中: [https://tencentcloudcontainerteam.github.io/2018/12/29/cgroup-leaking/](https://tencentcloudcontainerteam.github.io/2018/12/29/cgroup-leaking/)
-

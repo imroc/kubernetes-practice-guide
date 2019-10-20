@@ -14,4 +14,4 @@ net.ipv4.neigh.default.gc_thresh2 = 90000
 net.ipv4.neigh.default.gc_thresh3 = 100000
 ```
 
-并给 node 打下label，修改 pod spec，加下 nodeSelector 或者 nodeAffnity，让 pod 只调度到这部分改过内核参数的节点，更多请参考本书 [处理实践: arp_cache 溢出](../../handle/arp_cache-overflow.md)
+并给 node 打下label，修改 pod spec，加下 nodeSelector 或者 nodeAffnity，让 pod 只调度到这部分改过内核参数的节点，更多请参考本书 [处理实践: arp_cache 溢出](/troubleshooting/handle/arp_cache-overflow.md)

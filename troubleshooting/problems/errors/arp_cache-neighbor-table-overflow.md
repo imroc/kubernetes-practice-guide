@@ -22,7 +22,7 @@ net.ipv4.neigh.default.gc_thresh3 = 1024
 
 ## 什么场景下会发生
 
-集群规模大，node 和 pod 数量超多，参考本书避坑宝典的 [案例分享: ARP 缓存爆满导致健康检查失败](https://k8s.imroc.io/troubleshooting/damn/cases/arp-cache-overflow-causes-healthcheck-failed)
+集群规模大，node 和 pod 数量超多，参考本书避坑宝典的 [案例分享: ARP 缓存爆满导致健康检查失败](/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed.md)
 
 ## 解决方案
 

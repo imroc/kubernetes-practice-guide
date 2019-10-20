@@ -197,17 +197,16 @@ k8s 有先进的设计理念，也包含了大量概念，并提供了非常丰�
   * [inotify watch 耗尽](/troubleshooting/handle/runnig-out-of-inotify-watches.md)
   * [PID 耗尽](/troubleshooting/handle/pid-full.md)
   * [arp_cache 溢出](/troubleshooting/handle/arp_cache-overflow.md)
-* 避坑宝典
-  * 踩坑总结
-    * [cgroup 泄露](/troubleshooting/damn/summary/cgroup-leaking.md)
-    * [tcp\_tw\_recycle 引发丢包](/troubleshooting/damn/summary/tcp_tw_recycle-causes-packet-loss.md)
-    * [使用 oom-guard 在用户态处理 cgroup OOM](/troubleshooting/damn/summary/handle-cgroup-oom-in-userspace-with-oom-guard.md)
-    * conntrack 冲突导致丢包
-  * 案例分享
-    * [驱逐导致服务中断](/troubleshooting/damn/cases/eviction-leads-to-service-disruption.md)
-    * [DNS 5 秒延时](/troubleshooting/damn/cases/dns-lookup-5s-delay.md)
-    * [arp_cache 溢出导致健康检查失败](/troubleshooting/damn/cases/arp-cache-overflow-causes-healthcheck-failed.md)
-    * LB 压测 NodePort CPS 低
+* 踩坑总结
+  * [cgroup 泄露](/troubleshooting/summary/cgroup-leaking.md)
+  * [tcp\_tw\_recycle 引发丢包](/troubleshooting/summary/tcp_tw_recycle-causes-packet-loss.md)
+  * [使用 oom-guard 在用户态处理 cgroup OOM](/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard.md)
+  * conntrack 冲突导致丢包
+* 案例分享
+  * [驱逐导致服务中断](/troubleshooting/cases/eviction-leads-to-service-disruption.md)
+  * [DNS 5 秒延时](/troubleshooting/cases/dns-lookup-5s-delay.md)
+  * [arp_cache 溢出导致健康检查失败](/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed.md)
+  * LB 压测 NodePort CPS 低
 * 排错技巧
   * [分析 ExitCode 定位 Pod 异常退出原因](/troubleshooting/trick/analysis-exitcode.md)
   * [容器内抓包定位网络问题](/troubleshooting/trick/capture-packets-in-container.md)
