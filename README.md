@@ -182,14 +182,14 @@ k8s 有先进的设计理念，也包含了大量概念，并提供了非常丰�
     * Apiserver 响应慢
     * ETCD 频繁选主
     * Node 异常
-  * 其它排错
-    * [Job 无法被删除](/troubleshooting/problems/others/job-cannot-delete.md)
-    * [kubectl 执行 exec 或 logs 失败](/troubleshooting/problems/others/kubectl-exec-or-logs-failed.md)
-    * [内核软死锁](/troubleshooting/problems/others/kernel-solft-lockup.md)
   * 经典报错
     * [no space left on device](/troubleshooting/problems/errors/no-space-left-on-device.md)
     * [arp_cache: neighbor table overflow!](/troubleshooting/problems/errors/arp_cache-neighbor-table-overflow.md)
     * [Cannot allocate memory](/troubleshooting/problems/errors/cannot-allocate-memory.md)
+  * 其它排错
+    * [Job 无法被删除](/troubleshooting/problems/others/job-cannot-delete.md)
+    * [kubectl 执行 exec 或 logs 失败](/troubleshooting/problems/others/kubectl-exec-or-logs-failed.md)
+    * [内核软死锁](/troubleshooting/problems/others/kernel-solft-lockup.md)
 * 处理实践
   * [高负载](/troubleshooting/handle/high-load.md)
   * [内存碎片化](/troubleshooting/handle/memory-fragmentation.md)
