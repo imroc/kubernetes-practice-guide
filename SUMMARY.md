@@ -26,20 +26,24 @@
   * [Containerd](/plan/runtime/containerd/README.md)
     * [安装 containerd](/plan/runtime/containerd/install-containerd.md)
 
-## 用法实践 <a id="usage"></a>
+## 最佳实践 <a id="best-practice"></a>
 
-* [集群权限控制](/usage/permission/README.md)
-  * [控制用户权限](/usage/permission/user.md)
-  * [控制应用权限](/usage/permission/app.md)
-* [实用工具和技巧](/usage/useful/README.md)
-  * [kubectl 高效技巧](/usage/useful/efficient-kubectl.md)
-  * [实用 yaml 片段](/usage/useful/yaml.md)
-
-## 解决方案 <a id="solution"></a>
-
-* [服务高可用](/solution/service-ha.md)
-* [本地 DNS 缓存](/solution/node-local-dns.md)
-* [泛域名动态转发 Service](/solution/wildcard-domain-forward.md)
+* [服务高可用](/best-practice/service-ha.md)
+* [本地 DNS 缓存](/best-practice/node-local-dns.md)
+* [泛域名动态转发 Service](/best-practice/wildcard-domain-forward.md)
+* [集群权限控制](/best-practice/permission/README.md)
+  * [控制用户权限](/best-practice/permission/user.md)
+  * [控制应用权限](/best-practice/permission/app.md)
+* [实用工具和技巧](/best-practice/useful/README.md)
+  * [kubectl 高效技巧](/best-practice/useful/efficient-kubectl.md)
+  * [实用 yaml 片段](/best-practice/useful/yaml.md)
+* [证书管理](/best-practice/cert-management/README.md)
+  * [安装 cert\-manager](/best-practice/cert-management/install-cert-manger.md)
+  * [使用 cert\-manager 自动生成证书](/best-practice/cert-management/autogenerate-certificate-with-cert-manager.md)
+* [集群配置管理](/best-practice/configuration-management/README.md)
+  * [Helm](/best-practice/configuration-management/helm/README.md)
+    * [安装 Helm](/best-practice/configuration-management/helm/install-helm.md)
+    * [Helm V2 迁移到 V3](/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3.md)
 
 ## 排错指南 <a id="troubleshooting"></a>
 
@@ -91,19 +95,6 @@
   * [分析 ExitCode 定位 Pod 异常退出原因](/troubleshooting/trick/analysis-exitcode.md)
   * [容器内抓包定位网络问题](/troubleshooting/trick/capture-packets-in-container.md)
   * [使用 Systemtap 定位疑难杂症](/troubleshooting/trick/use-systemtap-to-locate-problems.md)
-
-## 集群管理 <a id="manage"></a>
-
-* [证书管理](/manage/cert/README.md)
-  * [安装 cert\-manager](/manage/cert/install-cert-manger.md)
-  * [使用 cert\-manager 自动生成证书](/manage/cert/autogenerate-certificate-with-cert-manager.md)
-* [集群配置管理](/manage/configuration/README.md)
-  * [Helm](/manage/configuration/helm/README.md)
-    * [安装 Helm](/manage/configuration/helm/install-helm.md)
-    * [Helm V2 迁移到 V3](/manage/configuration/helm/upgrade-helm-v2-to-v3.md)
-
-## 基础设施 <a id="infra"></a>
-
 
 ## 领域应用 <a id="domain"></a>
 

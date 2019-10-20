@@ -6,7 +6,7 @@
 
 ### 部署指南
 
-包含 k8s 集群自身的部署以及常见应用的部署(可能会被书内其它多个地方引用)
+自建的 k8s 集群有很多种方式部署方式，k8s 知识库将列举手工二进制部署与各种辅助工具部署的方法，可以根据自己使用场景选择对应合适的部署方法。除此之外，还会包含大量的常用应用的部署方法，比如各种数据库和存储基础设施部署，不同的业务场景和解决方案都可能依赖这些应用，每种应用部署方法都可能被书内其它多处地方引用。
 
 * 部署方案选型
 * 单机部署
@@ -41,6 +41,8 @@
   * OpenTSDB
 
 ### 集群方案
+
+k8s 拥有惊人的扩展能力，针对不同环境和场景可以使用不同的方案，涵盖网络、存储、运行时、Ingress、Metrics 等。k8s 知识库会帮助你彻底理清这些机制，并深入剖析各种方案的原理、用法与使用场景。
 
 * [网络方案](/plan/network/README.md)
   * 彻底理解集群网络
@@ -86,17 +88,30 @@
 
 ### 最佳实践
 
-* [服务高可用](/solution/service-ha.md)
-* [本地 DNS 缓存](/solution/node-local-dns.md)
-* [泛域名动态转发 Service](/solution/wildcard-domain-forward.md)
-* [集群权限控制](/usage/permission/README.md)
-  * [控制用户权限](/usage/permission/user.md)
-  * [控制应用权限](/usage/permission/app.md)
+k8s 有先进的设计理念，也包含了大量概念，并提供了非常丰富的能力，用法琳琅满目，但入门比较困难，k8s 知识库将提供使用 k8s 的各种场景里的最佳实践，帮助大家少走弯路，比如如何管理和运维集群、如何进行动态伸缩、如何保证部署的服务高可用、如何在更新服务或扩缩容节点保证业务零感知、如何部署有状态服务、如何针对大规模集群进行优化、如何对资源进行隔离和共享以及针对各种需求和问题的解决方案等。
+
+* [服务高可用](/best-practice/service-ha.md)
+* [本地 DNS 缓存](/best-practice/node-local-dns.md)
+* [泛域名动态转发 Service](/best-practice/wildcard-domain-forward.md)
+* [集群权限控制](/best-practice/permission/README.md)
+  * [控制用户权限](/best-practice/permission/user.md)
+  * [控制应用权限](/best-practice/permission/app.md)
 * 有状态服务部署
-* [实用工具和技巧](/usage/useful/README.md)
-  * [kubectl 高效技巧](/usage/useful/efficient-kubectl.md)
-  * [实用 yaml 片段](/usage/useful/yaml.md)
+* [实用工具和技巧](/best-practice/useful/README.md)
+  * [kubectl 高效技巧](/best-practice/useful/efficient-kubectl.md)
+  * [实用 yaml 片段](/best-practice/useful/yaml.md)
   * 实用命令脚本
+* 集群证书管理
+  * [安装 cert\-manager](/best-practice/cert-management/install-cert-manger.md)
+  * [使用 cert\-manager 自动生成证书](/best-practice/cert-management/autogenerate-certificate-with-cert-manager.md)
+* 集群配置管理
+  * Helm
+    * [安装 Helm](/best-practice/configuration-management/helm/install-helm.md)
+    * [Helm V2 迁移到 V3](/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3.md)
+    * 使用 Helm 部署与管理应用
+    * 开发 Helm Charts
+  * Kustomize
+    * Kustomize 基础入门
 * 弹性伸缩
   * 使用 HPA 对 Pod 水平伸缩
   * 使用 VPA 对 Pod 垂直伸缩
@@ -119,8 +134,30 @@
 * CPU 亲和性
 * 使用大页内存
 * 离在线混合部署
+* 集群监控
+  * Prometheus
+  * Grafana
+* 日志搜集
+  * EFK/ELK
+* 集群安全
+  * 使用 PodSecurityPolicy 配置全局 Pod 安全策略
+  * 集群审计
+* 集群可视化管理
+  * Kubernetes Dashboard
+  * KubSphere
+  * Weave Scope
+  * Rancher
+  * Kui
+  * Kubebox
+* 集群镜像管理
+  * Harbor
+  * Dragonfly
+  * Kaniko
+  * kpack
 
 ### 排错指南
+
+正是 k8s 功能如此丰富强大，迭代速度如此之快，其复杂性和不确定性也非常之大。知识库会总结出各种问题的排查思路与可能原因，还有对应解决方案的最佳实践，也分享一些踩坑案例与排错技巧，与排错技巧，让大家少走弯路。
 
 * [问题排查](/troubleshooting/problems/README.md)
   * [Pod 排错](/troubleshooting/problems/pod/README.md)
@@ -149,10 +186,10 @@
     * [Job 无法被删除](/troubleshooting/problems/others/job-cannot-delete.md)
     * [kubectl 执行 exec 或 logs 失败](/troubleshooting/problems/others/kubectl-exec-or-logs-failed.md)
     * [内核软死锁](/troubleshooting/problems/others/kernel-solft-lockup.md)
-* 经典报错
-  * [no space left on device](/troubleshooting/errors/no-space-left-on-device.md)
-  * [arp_cache: neighbor table overflow!](/troubleshooting/errors/arp_cache-neighbor-table-overflow.md)
-  * [Cannot allocate memory](/troubleshooting/errors/cannot-allocate-memory.md)
+  * 经典报错
+    * [no space left on device](/troubleshooting/problems/errors/no-space-left-on-device.md)
+    * [arp_cache: neighbor table overflow!](/troubleshooting/problems/errors/arp_cache-neighbor-table-overflow.md)
+    * [Cannot allocate memory](/troubleshooting/problems/errors/cannot-allocate-memory.md)
 * 处理实践
   * [高负载](/troubleshooting/handle/high-load.md)
   * [内存碎片化](/troubleshooting/handle/memory-fragmentation.md)
@@ -178,41 +215,9 @@
   * 使用 kubectl-debug 帮助定位问题
   * 分析 Docker 磁盘占用
 
-### 集群管理
-
-* 集群监控
-  * Prometheus
-  * Grafana
-* 日志搜集
-  * EFK
-* 集群安全
-  * 使用 PodSecurityPolicy 配置全局 Pod 安全策略
-  * 集群审计
-* 集群可视化管理
-  * Kubernetes Dashboard
-  * KubSphere
-  * Weave Scope
-  * Rancher
-  * Kui
-  * Kubebox
-* 集群证书管理
-  * [安装 cert\-manager](/manage/cert/install-cert-manger.md)
-  * [使用 cert\-manager 自动生成证书](/manage/cert/autogenerate-certificate-with-cert-manager.md)
-* 集群配置管理
-  * Helm
-    * [安装 Helm](/manage/configuration/helm/install-helm.md)
-    * [Helm V2 迁移到 V3](/manage/configuration/helm/upgrade-helm-v2-to-v3.md)
-    * 使用 Helm 部署与管理应用
-    * 开发 Helm Charts
-  * Kustomize
-    * Kustomize 基础入门
-  * 集群镜像管理
-    * Harbor
-    * Dragonfly
-    * Kaniko
-    * kpack
-
 ### 领域应用
+
+k8s 在各个领域都发挥了巨大作用，我们会将 k8s 在这些领域的应用汇总，给出各种场景化应用的指南，比如近年来如火如荼的 DevOps 领域，其中 CI/CD 的应用更是大家迫切期望想要的。还有 AI，大数据，微服务架构，Service Mesh，Serverless 等。
 
 * 微服务架构
   * 服务发现
@@ -239,9 +244,12 @@
   * nvidia-docker
   * Kubeflow
 * 大数据
-  * Spark
+  * Spark on K8S
+  * Hadoop on K8S
 
 ### 开发指南
+
+k8s 开放了很多扩展能力，基于这些扩展机制可以开发出各种功能的应用，比如集群管理应用、部署有状态服务的应用（Operator）等，知识库将介绍如何开发这些应用。
 
 * 开发环境搭建
 * [Go 语言编译原理与优化](/dev/golang-build.md)
