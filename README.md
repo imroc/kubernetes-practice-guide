@@ -206,7 +206,12 @@ k8s 有先进的设计理念，也包含了大量概念，并提供了非常丰�
   * [驱逐导致服务中断](/troubleshooting/cases/eviction-leads-to-service-disruption.md)
   * [DNS 5 秒延时](/troubleshooting/cases/dns-lookup-5s-delay.md)
   * [arp_cache 溢出导致健康检查失败](/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed.md)
-  * LB 压测 NodePort CPS 低
+  * [跨 VPC 访问 NodePort 经常超时](/troubleshooting/cases/cross-vpc-connect-nodeport-timeout.md)
+  * [访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时](/troubleshooting/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally.md)
+  * [Pod 偶尔存活检查失败](/troubleshooting/cases/livenesprobe-failed-occasionally.md)
+  * [DNS 解析异常](/troubleshooting/cases/dns-resolution-abnormal.md)
+  * [Pod 访问另一个集群的 apiserver 有延时](/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver.md)
+  * [LB 压测 NodePort CPS 低](/troubleshooting/cases/low-cps-from-lb-to-nodeport.md)
 * 排错技巧
   * [分析 ExitCode 定位 Pod 异常退出原因](/troubleshooting/trick/analysis-exitcode.md)
   * [容器内抓包定位网络问题](/troubleshooting/trick/capture-packets-in-container.md)
