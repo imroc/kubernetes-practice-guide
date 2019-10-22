@@ -88,3 +88,22 @@ to start sandbox container for pod ... Error response from daemon: OCI runtime c
 ## controller-manager 异常
 
 查看 master 上 kube-controller-manager 状态，异常的话尝试重启。
+
+## 安装 docker 没删干净旧版本
+
+如果节点上本身有 docker 或者没删干净，然后又安装 docker，比如在 centos 上用 yum 安装:
+
+``` bash
+yum install -y docker
+```
+
+这样可能会导致 dockerd 创建容器一直不成功，从而 Pod 状态一直 ContainerCreating，查看 event 报错:
+
+```
+  Type     Reason                  Age                     From                  Message
+  ----     ------                  ----                    ----                  -------
+  Warning  FailedCreatePodSandBox  18m (x3583 over 83m)    kubelet, 192.168.4.5  (combined from similar events): Failed create pod sandbox: rpc error: code = Unknown desc = failed to start sandbox container for pod "nginx-7db9fccd9b-2j6dh": Error response from daemon: ttrpc: client shutting down: read unix @->@/containerd-shim/moby/de2bfeefc999af42783115acca62745e6798981dff75f4148fae8c086668f667/shim.sock: read: connection reset by peer: unknown
+  Normal   SandboxChanged          3m12s (x4420 over 83m)  kubelet, 192.168.4.5  Pod sandbox changed, it will be killed and re-created.
+```
+
+可能是因为重复安装 docker 版本不一致导致一些组件之间不兼容，从而导致 dockerd 无法正常创建容器。
