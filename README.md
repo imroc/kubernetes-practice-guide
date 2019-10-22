@@ -112,6 +112,7 @@ k8s 有先进的设计理念，也包含了大量概念，并提供了非常丰�
     * 开发 Helm Charts
   * Kustomize
     * Kustomize 基础入门
+* [大规模集群优化](/best-practice/big-cluster.md)
 * 弹性伸缩
   * 使用 HPA 对 Pod 水平伸缩
   * 使用 VPA 对 Pod 垂直伸缩

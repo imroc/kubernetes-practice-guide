@@ -44,6 +44,7 @@
   * [Helm](/best-practice/configuration-management/helm/README.md)
     * [安装 Helm](/best-practice/configuration-management/helm/install-helm.md)
     * [Helm V2 迁移到 V3](/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3.md)
+* [大规模集群优化](/best-practice/big-cluster.md)
 
 ## 排错指南 <a id="troubleshooting"></a>
 
