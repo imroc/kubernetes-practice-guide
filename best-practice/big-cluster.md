@@ -180,7 +180,7 @@ kube-controller-manager 和 kube-scheduler 是通过 leader election 实现高�
 
 设置反亲和，让集群 DNS (kube-dns 或 coredns) 分散在不同节点，避免单点故障:
 
-``` bash
+``` yaml
 affinity:
  podAntiAffinity:
    requiredDuringSchedulingIgnoredDuringExecution:
