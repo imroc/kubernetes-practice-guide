@@ -88,8 +88,6 @@ spec:
 * HPA (HorizontalPodAutoscaler) 自动对服务进行水平伸缩
 * VPA (VerticalPodAutoscaler) 自动对服务进行垂直伸缩
 
-我们通常使用 Deployment 或 Statefulset 部署服务，虽然它们自带滚动更新的功能，但在默认配置情况下当我们尝试更新服务的时候，还是可能会遇到部分连接异常（比如连接被拒绝），我们来分析下原因并给出最佳实践。
-
 ### 更新过程连接异常的原因
 
 滚动更新时，Service 对应的 Pod 会被创建或销毁，Service 对应的 Endpoint 也会新增或移除相应的 Pod IP:Port，然后 kube-proxy 会根据 Service 的 Endpoint 里的 Pod IP:Port 列表更新节点上的转发规则，而这里 kube-proxy 更新节点转发规则的动作并不是那么及时，主要是由于 K8S 的设计理念，各个组件的逻辑是解耦的，各自使用 Controller 模式 listAndWatch 感兴趣的资源并做出相应的行为，所以从 Pod 创建或销毁到 Endpoint 更新再到节点上的转发规则更新，这个过程是异步的，所以会造成转发规则更新不及时，从而导致服务更新期间部分连接异常。
