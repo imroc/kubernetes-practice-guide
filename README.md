@@ -100,7 +100,7 @@ k8s 有先进的设计理念，也包含了大量概念，并提供了非常丰�
 * [实用工具和技巧](/best-practice/useful/README.md)
   * [kubectl 高效技巧](/best-practice/useful/efficient-kubectl.md)
   * [实用 yaml 片段](/best-practice/useful/yaml.md)
-  * 实用命令脚本
+  * [实用命令与脚本](/best-practice/useful/shell.md)
 * 集群证书管理
   * [安装 cert\-manager](/best-practice/cert-management/install-cert-manger.md)
   * [使用 cert\-manager 自动生成证书](/best-practice/cert-management/autogenerate-certificate-with-cert-manager.md)
