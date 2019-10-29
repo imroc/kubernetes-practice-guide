@@ -11,7 +11,7 @@ User 的来源有多种:
   * 第一个字段是 token 的值，最后一个字段是用户组，token 认证用户名不重要，不会识别
 * 证书: 通过使用 CA 证书给用户签发证书，签发的证书中 `CN` 字段是用户名，`O` 是用户组
 
-## 使用 RBAC 细化用户权限
+## 使用 RBAC 控制用户权限 <id="rbac"></a>
 
 下面给出几个 RBAC 定义示例。
 
@@ -61,13 +61,14 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: readonly-to-roc
+  namespace: istio-system
 subjects:
   - kind: User
     name: roc
     apiGroup: rbac.authorization.k8s.io
 roleRef:
   kind: Role
-  name: istio-system
+  name: readonly
   apiGroup: rbac.authorization.k8s.io
 ```
 

@@ -32,6 +32,7 @@
 * [本地 DNS 缓存](/best-practice/node-local-dns.md)
 * [泛域名动态转发 Service](/best-practice/wildcard-domain-forward.md)
 * [集群权限控制](/best-practice/permission/README.md)
+  * [利用 CertificateSigningRequest 创建用户](/best-practice/permission/create-user-using-csr-api.md)
   * [控制用户权限](/best-practice/permission/user.md)
   * [控制应用权限](/best-practice/permission/app.md)
 * [实用工具和技巧](/best-practice/useful/README.md)
