@@ -9,7 +9,18 @@ k8s 支持 CSR API，通过创建 `CertificateSigningRequest` 资源就可以发
 
 ## 创建步骤
 
-下面讲解如何利用 CSR API 为集群创建用户，首先指定要创建的用户名:
+我们用 cfssl 来创建 key 和 csr 文件，所以需要先安装 cfssl:
+
+``` bash
+curl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl
+curl -L https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -o cfssljson
+curl -L https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -o cfssl-certinfo
+
+chmod +x cfssl cfssljson cfssl-certinfo
+sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/
+```
+
+指定要创建的用户名:
 
 ``` bash
 USERNAME="roc"
