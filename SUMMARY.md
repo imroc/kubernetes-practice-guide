@@ -99,7 +99,6 @@
   * [Pod 访问另一个集群的 apiserver 有延时](/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver.md)
   * [LB 压测 NodePort CPS 低](/troubleshooting/cases/low-cps-from-lb-to-nodeport.md)
   * [kubectl edit 或者 apply 报 SchemaError](/troubleshooting/cases/schemaerror-when-using-kubectl-apply-or-edit.md)
-  
 * [排错技巧](/troubleshooting/trick/README.md)
   * [分析 ExitCode 定位 Pod 异常退出原因](/troubleshooting/trick/analysis-exitcode.md)
   * [容器内抓包定位网络问题](/troubleshooting/trick/capture-packets-in-container.md)

@@ -28,38 +28,34 @@ kubectl -n cert-manager create secret generic cloudflare-apikey --from-literal=a
 
 下面来创建 `ClusterIssuer`:
 
-* http01: \# Enable the HTTP-01 challenge provider
-
-    ingress: {}
-
-  ```bash
-  cat <<EOF | kubectl apply -f -
-  apiVersion: certmanager.k8s.io/v1alpha1
-  kind: ClusterIssuer
-  metadata:
-  name: letsencrypt-prod
-  spec:
-  acme:
-  # The ACME server URL
-  server: https://acme-v02.api.letsencrypt.org/directory
-  # Email address used for ACME registration
-  email: roc@imroc.io
-  # Name of a secret used to store the ACME account private key
-  privateKeySecretRef:
-  name: letsencrypt-prod
-  # ACME DNS-01 provider configurations
-  dns01:
-  # Here we define a list of DNS-01 providers that can solve DNS challenges
-  providers:
-    - name: cf-dns
-      cloudflare:
-        email: roc@imroc.io
-        # A secretKeyRef to a cloudflare api key
-        apiKeySecretRef:
-          name: cloudflare-apikey
-          key: apikey
-  EOF
-  ```
+```bash
+cat <<EOF | kubectl apply -f -
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: ClusterIssuer
+metadata:
+name: letsencrypt-prod
+spec:
+acme:
+# The ACME server URL
+server: https://acme-v02.api.letsencrypt.org/directory
+# Email address used for ACME registration
+email: roc@imroc.io
+# Name of a secret used to store the ACME account private key
+privateKeySecretRef:
+name: letsencrypt-prod
+# ACME DNS-01 provider configurations
+dns01:
+# Here we define a list of DNS-01 providers that can solve DNS challenges
+providers:
+  - name: cf-dns
+    cloudflare:
+      email: roc@imroc.io
+      # A secretKeyRef to a cloudflare api key
+      apiKeySecretRef:
+        name: cloudflare-apikey
+        key: apikey
+EOF
+```
 
 * `metadata.name`: 是我们创建的签发机构的名称，后面我们创建证书的时候会引用它
 * `acme.email`: 是你自己的邮箱，证书快过期的时候会有邮件提醒，不过 cert-manager 会利用 acme 协议自动给我们重新颁发证书来续期
