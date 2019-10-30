@@ -94,7 +94,7 @@ k8s 有先进的设计理念，也包含了大量概念，并提供了非常丰�
 * [本地 DNS 缓存](/best-practice/node-local-dns.md)
 * [泛域名动态转发 Service](/best-practice/wildcard-domain-forward.md)
 * [集群权限控制](/best-practice/permission/README.md)
-  * [利用 CertificateSigningRequest 创建用户](/best-practice/permission/create-user-using-csr-api.md)
+  * [利用 CSR API 创建用户](/best-practice/permission/create-user-using-csr-api.md)
   * [控制用户权限](/best-practice/permission/user.md)
   * [控制应用权限](/best-practice/permission/app.md)
 * 有状态服务部署

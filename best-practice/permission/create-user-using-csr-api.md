@@ -1,4 +1,4 @@
-# 利用 CertificateSigningRequest 创建用户
+# 利用 CSR API 创建用户
 
 k8s 支持 CSR API，通过创建 `CertificateSigningRequest` 资源就可以发起 CSR 请求，管理员审批通过之后 `kube-controller-manager` 就会为我们签发证书，确保 `kube-controller-manager` 配了根证书密钥对:
 
