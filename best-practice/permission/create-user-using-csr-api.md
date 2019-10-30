@@ -67,6 +67,10 @@ EOF
 管理员审批 CSR 请求:
 
 ``` bash
+# 查看 csr
+# kubectl get csr
+
+# 审批 csr
 kubectl certificate approve ${USERNAME}
 ```
 
