@@ -19,21 +19,17 @@ kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 直接执行 `kubectl apply` 来安装:
 
 ```bash
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.10.0/cert-manager.yaml
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml
 ```
 
-使用 `kubectl v1.12` 及其以下的版本需要加上 `--validate=false`，否则会报错\(参考 issue [\#69590](https://github.com/kubernetes/kubernetes/issues/69590)\):
-
-```text
-error: error validating "https://github.com/jetstack/cert-manager/releases/download/v0.10.0/cert-manager.yaml": error validating data: ValidationError(MutatingWebhookConfiguration.webhooks[0].clientConfig): missing required field "caBundle" in io.k8s.api.admissionregistration.v1beta1.WebhookClientConfig; if you choose to ignore these errors, turn validation off with --validate=false
-```
+> 使用 `kubectl v1.15` 及其以下的版本需要加上 `--validate=false`，否则会报错。
 
 ## 使用 Helm 安装
 
 安装 CRD:
 
 ```bash
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.10/deploy/manifests/00-crds.yaml
+kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml
 ```
 
 添加 repo:
@@ -49,7 +45,7 @@ helm repo update
 helm install \
   --name cert-manager \
   --namespace cert-manager \
-  --version v0.10.0 \
+  --version v0.11.0 \
   jetstack/cert-manager
 ```
 
@@ -57,14 +53,11 @@ helm install \
 
 检查 cert-manager 相关的 pod 是否启动成功:
 
-```bash
+``` bash
 $ kubectl get pods --namespace cert-manager
 
 NAME                                       READY   STATUS    RESTARTS   AGE
-cert-manager-5c6866597-zw7kh               1/1     Running   0          2m
-cert-manager-cainjector-577f6d9fd7-tr77l   1/1     Running   0          2m
-cert-manager-webhook-787858fcdb-nlzsq      1/1     Running   0          2m
+cert-manager-cainjector-74bb68d67c-4vplr   1/1     Running   0          101s
+cert-manager-f7f8bf74d-j4hcz               1/1     Running   0          101s
+cert-manager-webhook-665df569b5-5p6x8      1/1     Running   0          101s
 ```
-
-安装有问题可以参考官方的 [troubleshooting guide](https://docs.cert-manager.io/en/latest/getting-started/troubleshooting.html)
-

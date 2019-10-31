@@ -30,30 +30,28 @@ kubectl -n cert-manager create secret generic cloudflare-apikey --from-literal=a
 
 ```bash
 cat <<EOF | kubectl apply -f -
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
-name: letsencrypt-prod
+  name: letsencrypt-prod
 spec:
-acme:
-# The ACME server URL
-server: https://acme-v02.api.letsencrypt.org/directory
-# Email address used for ACME registration
-email: roc@imroc.io
-# Name of a secret used to store the ACME account private key
-privateKeySecretRef:
-name: letsencrypt-prod
-# ACME DNS-01 provider configurations
-dns01:
-# Here we define a list of DNS-01 providers that can solve DNS challenges
-providers:
-  - name: cf-dns
-    cloudflare:
-      email: roc@imroc.io
-      # A secretKeyRef to a cloudflare api key
-      apiKeySecretRef:
-        name: cloudflare-apikey
-        key: apikey
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: roc@imroc.io
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    solvers:
+    - selector: {} # An empty 'selector' means that this solver matches all domains
+      dns01: # ACME DNS-01 solver configurations
+        cloudflare:
+          email: roc@imroc.io
+          # A secretKeyRef to a cloudflare api key
+          apiKeySecretRef:
+            name: cloudflare-apikey
+            key: apikey
 EOF
 ```
 
@@ -63,7 +61,7 @@ EOF
 * `acme.privateKeySecretRef` 指示此签发机构的私钥将要存储到哪个 Secret 中，在 cert-manager 所在命名空间
 * `acme.http01`: 这里指示签发机构支持使用 HTTP-01 的方式进行 acme 协议
 * `acme.dns01`: 配置 DNS-01 校验方式所需的参数，最重要的是 API Key \(引用提前创建好的 Secret\)，不同 DNS 提供商配置不一样，具体参考官方API文档
-* 更多字段参考 API 文档: [https://docs.cert-manager.io/en/latest/reference/api-docs/index.html\#clusterissuer-v1alpha1](https://docs.cert-manager.io/en/latest/reference/api-docs/index.html#clusterissuer-v1alpha1)
+* 更多字段参考 API 文档: [https://docs.cert-manager.io/en/latest/reference/api-docs/index.html\#clusterissuer-v1alpha1](https://docs.cert-manager.io/en/latest/reference/api-docs/index.html#clusterissuer-v1alpha2)
 
 ### 创建证书 \(Certificate\)
 
@@ -104,7 +102,7 @@ dashboard   dashboard.imroc.io   150.109.28.133   80      19s
 
 ```bash
 cat <<EOF | kubectl apply -f -
-apiVersion: certmanager.k8s.io/v1alpha1
+apiVersion: cert-manager.io/v1alpha2
 kind: Certificate
 metadata:
   name: dashboard-imroc-io
@@ -116,19 +114,14 @@ spec:
     kind: ClusterIssuer
   dnsNames:
   - dashboard.imroc.io
-  acme:
-    config:
-    - http01:
-        ingress: dashboard
-      domains:
-      - dashboard.imroc.io
 EOF
 ```
 
 * `secretName`: 指示证书最终存到哪个 Secret 中
 * `issuerRef.kind`: 值为 ClusterIssuer 说明签发机构不在本 namespace 下，而是在全局
 * `issuerRef.name`: 我们创建的签发机构的名称 \(ClusterIssuer.metadata.name\)
-* `dnsNames`: 指示该证书的可以用于哪些域名
+* `commonName`: 对应证书的 common name 字段
+* `dnsNames`: 对应证书的 Subject Alternative Names (SANs) 字段
 * `acme.config.http01.ingress`: 使用 HTTP-01 方式校验该域名和机器时，指定后端服务所在 ingress 名称，cert-manager 会尝试修改该 ingress 规则，增加临时路径进行 ACME 协议的 HTTP-01 方式校验。如果你使用的 ingress controller 是所有 ingress 都用同一个入口 IP，比如 nginx ingress，这时你可以不用提前创建 ingress，只需要指定 `ingressClass` 就可以，cert-manager 会自动创建 ingress 包含 HTTP-01 临时校验路径，并指定 `kubernetes.io/ingress.class` 这个 annotation，然后你的 ingress controller 会自动根据该 ingress 更新转发规则，从而实现 ACME 协议的 HTTP-01 方式校验。
 * `acme.config.http01.domains`: 指示该证书的可以用于哪些域名
 * 更多字段参考 API 文档: [https://docs.cert-manager.io/en/latest/reference/api-docs/index.html\#certificate-v1alpha1](https://docs.cert-manager.io/en/latest/reference/api-docs/index.html#certificate-v1alpha1)
