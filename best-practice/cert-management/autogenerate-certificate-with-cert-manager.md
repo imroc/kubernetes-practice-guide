@@ -16,24 +16,28 @@ HTTP-01 的校验原理是给你域名指向的 HTTP 服务增加一个临时 lo
 
 DNS-01 的校验原理是利用 DNS 提供商的 API Key 拿到你的 DNS 控制权限， 在 Let’s Encrypt 为 ACME 客户端提供令牌后，ACME 客户端 \(cert-manager\) 将创建从该令牌和您的帐户密钥派生的 TXT 记录，并将该记录放在 `_acme-challenge.<YOUR_DOMAIN>`。 然后 Let’s Encrypt 将向 DNS 系统查询该记录，如果找到匹配项，就可以颁发证书。此方法不需要你的服务使用 Ingress，并且支持泛域名证书。
 
-### 创建颁发机构 \(ClusterIssuer/Issuer\)
+### 创建 Issuer/ClusterIssuer
 
-我们需要先创建一个签发机构，cert-manager 给我们提供了 Issuer 和 ClusterIssuer 这两种用于创建签发机构的自定义资源对象，他们唯一区别就是 Issuer 只能用来签发自己所在 namespace 下的证书，ClusterIssuer 可以签发任意 namespace 下的证书，这里以 ClusterIssuer 为例，HTTP-01 和 DNS-01 校验都支持，假设域名是用 `cloudflare` 管理的，先登录 `cloudflare` 拿到 API Key，然后创建一个 Secret:
+我们需要先创建一个用于签发证书的 Issuer 或 ClusterIssuer，它们唯一区别就是 Issuer 只能用来签发自己所在 namespace 下的证书，ClusterIssuer 可以签发任意 namespace 下的证书，除了名称不同之外，两者所有字段完全一致，下面给出一些示例，简单起见，我们仅以 ClusterIssuer 为例。
+
+#### 创建使用 DNS-01 校验的 ClusterIssuer
+
+假设域名是用 `cloudflare` 管理的，先登录 `cloudflare` 拿到 API Key，然后创建一个 Secret:
 
 ```bash
 kubectl -n cert-manager create secret generic cloudflare-apikey --from-literal=apikey=213807bd0fb1ca59bba24a58eac90492e6287
 ```
 
-* 由于 `ClusterIssuer` 是 NonNamespaced 类型的资源，不在任何命名空间，它需要引用 Secret，而 Secret 必须存在某个命名空间下，所以就规定 `ClusterIssuer` 引用的 Secret 要与 cert-manager 在同一个命名空间下。
+> 由于 `ClusterIssuer` 是 NonNamespaced 类型的资源，不在任何命名空间，它需要引用 Secret，而 Secret 必须存在某个命名空间下，所以就规定 `ClusterIssuer` 引用的 Secret 要与 cert-manager 在同一个命名空间下。
 
-下面来创建 `ClusterIssuer`:
+创建 DNS-01 方式校验的 `ClusterIssuer`:
 
 ```bash
 cat <<EOF | kubectl apply -f -
 apiVersion: cert-manager.io/v1alpha2
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-prod
+  name: letsencrypt-dns01
 spec:
   acme:
     # The ACME server URL
@@ -42,7 +46,7 @@ spec:
     email: roc@imroc.io
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: letsencrypt-prod
+      name: letsencrypt-dns01
     solvers:
     - selector: {} # An empty 'selector' means that this solver matches all domains
       dns01: # ACME DNS-01 solver configurations
@@ -59,46 +63,81 @@ EOF
 * `acme.email`: 是你自己的邮箱，证书快过期的时候会有邮件提醒，不过 cert-manager 会利用 acme 协议自动给我们重新颁发证书来续期
 * `acme.server`: 是 acme 协议的服务端，我们这里用 Let’s Encrypt，这个地址就写死成这样就行
 * `acme.privateKeySecretRef` 指示此签发机构的私钥将要存储到哪个 Secret 中，在 cert-manager 所在命名空间
-* `acme.http01`: 这里指示签发机构支持使用 HTTP-01 的方式进行 acme 协议
-* `acme.dns01`: 配置 DNS-01 校验方式所需的参数，最重要的是 API Key \(引用提前创建好的 Secret\)，不同 DNS 提供商配置不一样，具体参考官方API文档
-* 更多字段参考 API 文档: [https://docs.cert-manager.io/en/latest/reference/api-docs/index.html\#clusterissuer-v1alpha1](https://docs.cert-manager.io/en/latest/reference/api-docs/index.html#clusterissuer-v1alpha2)
+* `solvers.dns01`: 配置 DNS-01 校验方式所需的参数，最重要的是 API Key \(引用提前创建好的 Secret\)，不同 DNS 提供商配置不一样，具体参考官方API文档
+* 更多字段参考 API 文档: https://docs.cert-manager.io/en/latest/reference/api-docs/index.html\#clusterissuer-v1alpha2
 
-### 创建证书 \(Certificate\)
+#### 创建使用 HTTP-01 校验的 `ClusterIssuer`
 
-有了签发机构，接下来我们就可以生成免费证书了，cert-manager 给我们提供了 Certificate 这个用于生成证书的自定义资源对象，它必须局限在某一个 namespace 下，证书最终会在这个 namespace 下以 Secret 的资源对象存储，假如我想在 dashboard 这个 namespace 下生成免费证书（这个 namespace 已存在\)，创建一个 Certificate 资源来为我们自动生成证书，以 kubernetes dashboard 为例，分别示范下 HTTP-01 和 DNS-01 两种校验方式生成证书。
+使用 HTTP-01 方式校验，ACME 服务端 (Let's Encrypt) 会向客户端 (cert-manager) 提供令牌，客户端会在 web server 上特定路径上放置一个文件，该文件包含令牌以及帐户密钥的指纹。ACME 服务端会请求该路径并校验文件内容，校验成功后就会签发免费证书，更多细节参考: https://letsencrypt.org/zh-cn/docs/challenge-types/
 
-#### HTTP-01 方式
+有个问题，ACME 服务端通过什么地址去访问 ACME 客户端的 web server 校验域名？答案是通过将被签发的证书中的域名来访问。这个机制带来的问题是:
 
-提前为服务创建好 Ingress:
+1. 不能签发泛域名证书，因为如果是泛域名，没有具体域名，ACME 服务端就不能知道该用什么地址访问 web server 去校验文件。
+2. 域名需要提前在 DNS 提供商配置好，这样 ACME 服务端通过域名请求时解析到正确 IP 才能访问成功，也就是需要提前知道你的 web server 的 IP 是什么。
+
+cert-manager 作为 ACME 客户端，它将这个要被 ACME 服务端校验的文件通过 Ingress 来暴露，我们需要提前知道 Ingress 对外的 IP 地址是多少，这样才好配置域名。
+
+一些云厂商自带的 ingress controller 会给每个 Ingress 都创建一个外部地址 (通常对应一个负载均衡器)，这个时候我们需要提前创建好一个 Ingress，拿到外部 IP 并配置域名到此 IP，ACME 客户端 (cert-manager) 修改此 Ingress 的 rules，临时增加一个路径指向 cert-manager 提供的文件，ACME 服务端请求这个域名+指定路径，根据 Ingress 规则转发会返回 cert-manger 提供的这个文件，最终 ACME 服务端 (Let's Encrypt) 校验该文件，通过后签发免费证书。
+
+指定 Ingress 的创建 `ClusterIssuer` 的示例:
 
 ```bash
 cat <<EOF | kubectl apply -f -
-apiVersion: extensions/v1beta1
-kind: Ingress
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
 metadata:
-  name: dashboard
-  namespace: kubernetes-dashboard
+  name: letsencrypt-http01
 spec:
-  rules:
-  - host: dashboard.imroc.io
-    http:
-      paths:
-      - backend:
-          serviceName: dashboard
-          servicePort: 80
-        path: /
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: roc@imroc.io
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-http01
+    solvers:
+    - selector: {} # An empty 'selector' means that this solver matches all domains
+      http01: # ACME HTTP-01 solver configurations
+        ingress:
+          name: challenge
 EOF
 ```
 
-检查 Ingress:
+* `solvers.http01`: 配置 HTTP-01 校验方式所需的参数，`ingress.name` 指定提前创建好的 ingress 名称
+
+有些自己安装的 ingress controller，所有具有相同 ingress class 的 ingress 都共用一个流量入口，通常是用 LoadBalancer 类型的 Service 暴露 ingress controller，这些具有相同 ingress class 的 ingress 的外部 IP 都是这个 Service 的外部 IP。这种情况我们创建 `ClusterIssuer` 时可以指定 ingress class，校验证书时，cert-manager 会直接创建新的 Ingress 资源并指定 `kubernetes.io/ingress.class` 这个 annotation。
+
+指定 ingress class 的创建 `ClusterIssuer` 的示例:
 
 ```bash
-$ kubectl -n kube-system get ingress
-NAME        HOSTS                ADDRESS          PORTS   AGE
-dashboard   dashboard.imroc.io   150.109.28.133   80      19s
+cat <<EOF | kubectl apply -f -
+apiVersion: cert-manager.io/v1alpha2
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-http01
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: roc@imroc.io
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-http01
+    solvers:
+    - selector: {} # An empty 'selector' means that this solver matches all domains
+      http01: # ACME HTTP-01 solver configurations
+        ingress:
+          class: nginx
+EOF
 ```
 
-配置 DNS，将域名指向 Ingress 的 IP，然后创建 Certificate:
+* `solvers.http01`: 配置 HTTP-01 校验方式所需的参数，`ingress.class` 指定 ingress class 名称
+
+### 创建证书 \(Certificate\)
+
+有了 Issuer/ClusterIssuer，接下来我们就可以生成免费证书了，cert-manager 给我们提供了 Certificate 这个用于生成证书的自定义资源对象，它必须局限在某一个 namespace 下，证书最终会在这个 namespace 下以 Secret 的资源对象存储，假如我想在 dashboard 这个 namespace 下生成免费证书（这个 namespace 已存在\)，创建一个 Certificate 资源来为我们自动生成证书，示例:
 
 ```bash
 cat <<EOF | kubectl apply -f -
@@ -110,7 +149,7 @@ metadata:
 spec:
   secretName: dashboard-imroc-io-tls
   issuerRef:
-    name: letsencrypt-prod
+    name: letsencrypt-dns01
     kind: ClusterIssuer
   dnsNames:
   - dashboard.imroc.io
@@ -118,38 +157,10 @@ EOF
 ```
 
 * `secretName`: 指示证书最终存到哪个 Secret 中
-* `issuerRef.kind`: 值为 ClusterIssuer 说明签发机构不在本 namespace 下，而是在全局
-* `issuerRef.name`: 我们创建的签发机构的名称 \(ClusterIssuer.metadata.name\)
+* `issuerRef.kind`: ClusterIssuer 或 Issuer，ClusterIssuer 可以被任意 namespace 的 Certificate 引用，Issuer 只能被当前 namespace 的 Certificate 引用。
+* `issuerRef.name`: 引用我们创建的 Issuer/ClusterIssuer 的名称
 * `commonName`: 对应证书的 common name 字段
 * `dnsNames`: 对应证书的 Subject Alternative Names (SANs) 字段
-* `acme.config.http01.ingress`: 使用 HTTP-01 方式校验该域名和机器时，指定后端服务所在 ingress 名称，cert-manager 会尝试修改该 ingress 规则，增加临时路径进行 ACME 协议的 HTTP-01 方式校验。如果你使用的 ingress controller 是所有 ingress 都用同一个入口 IP，比如 nginx ingress，这时你可以不用提前创建 ingress，只需要指定 `ingressClass` 就可以，cert-manager 会自动创建 ingress 包含 HTTP-01 临时校验路径，并指定 `kubernetes.io/ingress.class` 这个 annotation，然后你的 ingress controller 会自动根据该 ingress 更新转发规则，从而实现 ACME 协议的 HTTP-01 方式校验。
-* `acme.config.http01.domains`: 指示该证书的可以用于哪些域名
-* 更多字段参考 API 文档: [https://docs.cert-manager.io/en/latest/reference/api-docs/index.html\#certificate-v1alpha1](https://docs.cert-manager.io/en/latest/reference/api-docs/index.html#certificate-v1alpha1)
-
-#### DNS-01 方式
-
-```bash
-cat <<EOF | kubectl apply -f -
-apiVersion: certmanager.k8s.io/v1alpha1
-kind: Certificate
-metadata:
-  name: dashboard-imroc-io
-  namespace: kubernetes-dashboard
-spec:
-  secretName: kubernetes-dashboard-certs
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
-  dnsNames:
-  - dashboard.imroc.io
-  acme:
-    config:
-    - dns01:
-        provider: cf-dns
-      domains:
-      - dashboard.imroc.io
-EOF
-```
 
 #### 检查结果
 
@@ -199,4 +210,3 @@ type: kubernetes.io/tls
 * `tls.key` 是证书密钥
 
 将 secret 挂载到需要证书的应用，通常应用也要配置下证书路径。
-
