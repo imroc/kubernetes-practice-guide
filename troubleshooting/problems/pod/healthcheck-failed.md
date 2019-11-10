@@ -30,3 +30,9 @@ cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常�
 ```
 
 连接异常，从而健康检查失败。发生这种情况的原因可能在一个节点上启动了多个使用 `hostNetwork` 监听相同宿主机端口的 Pod，只会有一个 Pod 监听成功，但监听失败的 Pod 的业务逻辑允许了监听失败，并没有退出，Pod 又配了健康检查，kubelet 就会给 Pod 发送健康检查探测报文，但 Pod 由于没有监听所以就会健康检查失败。
+
+## SYN backlog 设置过小
+
+SYN backlog 大小即 SYN 队列大小，如果短时间内新建连接比较多，而 SYN backlog 设置太小，就会导致新建连接失败，通过 `netstat -s | grep TCPBacklogDrop` 可以看到有多少是因为 backlog 满了导致丢弃的新连接。
+
+如果确认是 backlog 满了导致的丢包，建议调高 backlog 的值，内核参数为 `net.ipv4.tcp_max_syn_backlog`。
