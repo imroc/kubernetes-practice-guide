@@ -30,6 +30,8 @@
     * [安装 nginx ingress controller](/plan/ingress/nginx/install-nginx-ingress.md)
   * [Traefik Ingress](/plan/ingress/traefik/README.md)
     * [安装 traefik ingress controller](/plan/ingress/traefik/install-traefik-ingress.md)
+* [Metrics 方案](/plan/metrics/README.md)
+  * [安装 metrics server](/plan/metrics/install-metrics-server.md)
 
 ## 最佳实践 <a id="best-practice"></a>
 

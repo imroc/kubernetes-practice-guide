@@ -85,8 +85,8 @@ k8s 拥有惊人的扩展能力，针对不同环境和场景可以使用不同�
 * LoadBalancer 方案
   * MetalLB
   * Porter
-* metrics 方案
-  * metrics-server
+* Metrics 方案
+  * [安装 metrics server](/plan/metrics/install-metrics-server.md)
 
 ### 最佳实践
 

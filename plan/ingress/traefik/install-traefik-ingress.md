@@ -23,6 +23,6 @@ helm install stable/traefik \
 
 ## 参考资料
 
-* Github 仓库: https://github.com/containous/traefik
-* helm hub: https://hub.helm.sh/charts/stable/traefik
+* Github 主页: https://github.com/containous/traefik
+* helm hub 主页: https://hub.helm.sh/charts/stable/traefik
 * 官方文档: https://docs.traefik.io

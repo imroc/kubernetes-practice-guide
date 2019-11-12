@@ -78,6 +78,6 @@ nginx-nginx-ingress-controller   LoadBalancer   172.16.255.194   119.28.123.174 
 
 ## 参考资料
 
-* Github 仓库: https://github.com/kubernetes/ingress-nginx
-* helm hub: https://hub.helm.sh/charts/nginx/nginx-ingress
+* Github 主页: https://github.com/kubernetes/ingress-nginx
+* helm hub 主页: https://hub.helm.sh/charts/nginx/nginx-ingress
 * 官方文档: https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/
