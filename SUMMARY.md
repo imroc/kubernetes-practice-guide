@@ -28,6 +28,8 @@
 * [Ingress 方案](/plan/ingress/README.md)
   * [Nginx Ingress](/plan/ingress/nginx/README.md)
     * [安装 nginx ingress controller](/plan/ingress/nginx/install-nginx-ingress.md)
+  * [Traefik Ingress](/plan/ingress/traefik/README.md)
+    * [安装 traefik ingress controller](/plan/ingress/traefik/install-traefik-ingress.md)
 
 ## 最佳实践 <a id="best-practice"></a>
 

@@ -17,8 +17,8 @@ helm install stable/nginx-ingress \
   --set controller.publishService.enabled=true \
 ```
 
-* `controller.publishService.enabled`: 这个置为 true 主要是为了让 ingress 的外部地址正确显示 (显示为负载均衡器的地址)，因为如果不配置这个，默认情况下会将 ingress controller 所有实例的节点 ip 写到 ingress 的 address 里
 * `controller.ingressClass`: 创建的 ingress 中包含 `kubernetes.io/ingress.class` 这个 annotation 并且值与这里配置的一致，这个 nginx ingress controller 才会处理 (生成转发规则)
+* `controller.publishService.enabled`: 这个置为 true 主要是为了让 ingress 的外部地址正确显示 (显示为负载均衡器的地址)，因为如果不配置这个，默认情况下会将 ingress controller 所有实例的节点 ip 写到 ingress 的 address 里
 
 安装完成后如何获取负载均衡器的 IP 地址？查看 nginx ingress controller 的 service 的 `EXTERNAL-IP` 就可以:
 
@@ -38,7 +38,7 @@ nginx-nginx-ingress-controller   LoadBalancer   172.16.255.194   119.28.123.174 
 
 1. 导出默认的 `values.yaml`:
   ``` bash
-  helm inspect values stable/nginx-ingress --version 1.24.7 > values.yaml
+  helm inspect values stable/nginx-ingress > values.yaml
   ```
 2. 修改 `values.yaml` 中的配置
 3. 执行 helm install 的时候去掉 `--set` 的方式设置的变量，替换为使用 `-f values.yaml`

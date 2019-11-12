@@ -73,7 +73,8 @@ k8s 拥有惊人的扩展能力，针对不同环境和场景可以使用不同�
 * Ingress 方案
   * Nginx Ingress
     * [安装 nginx ingress controller](/plan/ingress/nginx/install-nginx-ingress.md)
-  * Traefik
+  * Traefik Ingress
+    * [安装 traefik ingress controller](/plan/ingress/traefik/install-traefik-ingress.md)
   * Contour
   * Ambassador
   * Kong
