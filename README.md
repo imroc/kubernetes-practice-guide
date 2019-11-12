@@ -71,7 +71,8 @@ k8s 拥有惊人的扩展能力，针对不同环境和场景可以使用不同�
   * Rook
   * OpenEBS
 * Ingress 方案
-  * Nginx
+  * Nginx Ingress
+    * [安装 nginx ingress controller](/plan/ingress/nginx/install-nginx-ingress.md)
   * Traefik
   * Contour
   * Ambassador

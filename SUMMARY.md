@@ -25,6 +25,9 @@
 * [运行时方案](/plan/runtime/README.md)
   * [Containerd](/plan/runtime/containerd/README.md)
     * [安装 containerd](/plan/runtime/containerd/install-containerd.md)
+* [Ingress 方案](/plan/ingress/README.md)
+  * [Nginx Ingress](/plan/ingress/nginx/README.md)
+    * [安装 nginx ingress controller](/plan/ingress/nginx/install-nginx-ingress.md)
 
 ## 最佳实践 <a id="best-practice"></a>
 
