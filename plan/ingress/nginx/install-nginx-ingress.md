@@ -20,6 +20,14 @@ helm install stable/nginx-ingress \
 * `controller.publishService.enabled`: 这个置为 true 主要是为了让 ingress 的外部地址正确显示 (显示为负载均衡器的地址)，因为如果不配置这个，默认情况下会将 ingress controller 所有实例的节点 ip 写到 ingress 的 address 里
 * `controller.ingressClass`: 创建的 ingress 中包含 `kubernetes.io/ingress.class` 这个 annotation 并且值与这里配置的一致，这个 nginx ingress controller 才会处理 (生成转发规则)
 
+安装完成后如何获取负载均衡器的 IP 地址？查看 nginx ingress controller 的 service 的 `EXTERNAL-IP` 就可以:
+
+``` bash
+$ kubectl -n kube-system get service nginx-nginx-ingress-controller
+NAME                             TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)                      AGE
+nginx-nginx-ingress-controller   LoadBalancer   172.16.255.194   119.28.123.174   80:32348/TCP,443:32704/TCP   10m
+```
+
 如果需要新的流量入口，可以按照同样的方法用 helm 安装新的 release，注意要设置不同的 `controller.ingressClass`，将希望用新流量入口暴露的 ingress 的 `kubernetes.io/ingress.class` annotation 设置成这里的值就可以。
 
 如果转发性能跟不上，可以增加 controller 的副本，设置 `controller.replicaCount` 的值，或者启用 HPA 自动伸缩，将 `controller.autoscaling.enabled` 置为 true，更多细节控制请参考官方文档。
