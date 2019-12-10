@@ -2,7 +2,7 @@
 
 参考官方文档:
 
-- https://www.elastic.co/cn/elasticsearch-kubernetes
+- https://www.elastic.co/guide/en/cloud-on-k8s/current/k8s-quickstart.html
 - https://www.elastic.co/cn/blog/introducing-elastic-cloud-on-kubernetes-the-elasticsearch-operator-and-beyond
 
 ## 安装 elastic-operator
@@ -10,7 +10,7 @@
 一键安装:
 
 ``` bash
-kubectl apply -f https://download.elastic.co/downloads/eck/0.9.0/all-in-one.yaml
+kubectl apply -f https://download.elastic.co/downloads/eck/1.0.0-beta1/all-in-one.yaml
 ```
 
 ## 部署 Elasticsearch
@@ -25,19 +25,28 @@ kubectl create ns monitoring
 
 ``` bash
 cat <<EOF | kubectl apply -f -
-apiVersion: elasticsearch.k8s.elastic.co/v1alpha1
+apiVersion: elasticsearch.k8s.elastic.co/v1beta1
 kind: Elasticsearch
 metadata:
   name: es
   namespace: monitoring
 spec:
-  version: 7.2.0
-  nodes:
-  - nodeCount: 1
+  version: 7.5.0
+  nodeSets:
+  - name: master
+    count: 1
     config:
       node.master: true
       node.data: true
       node.ingest: true
+      node.store.allow_mmap: false
+  - name: worker
+    count: 3
+    config:
+      node.master: false
+      node.data: true
+      node.ingest: true
+      node.store.allow_mmap: false
 EOF
 ```
 
@@ -45,19 +54,28 @@ EOF
 
 ``` bash
 cat <<EOF | kubectl apply -f -
-apiVersion: elasticsearch.k8s.elastic.co/v1alpha1
+apiVersion: elasticsearch.k8s.elastic.co/v1beta1
 kind: Elasticsearch
 metadata:
   name: es
   namespace: monitoring
 spec:
-  version: 7.2.0
-  nodes:
-  - nodeCount: 1
+  version: 7.5.0
+  nodeSets:
+  - name: master
+    count: 1
     config:
       node.master: true
       node.data: true
       node.ingest: true
+      node.store.allow_mmap: false
+  - name: worker
+    count: 3
+    config:
+      node.master: false
+      node.data: true
+      node.ingest: true
+      node.store.allow_mmap: false
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data

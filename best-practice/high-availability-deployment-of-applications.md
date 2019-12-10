@@ -10,8 +10,7 @@ k8s 的设计就是假设节点是不可靠的，节点越多，发生软硬件�
 affinity:
  podAntiAffinity:
    requiredDuringSchedulingIgnoredDuringExecution:
-   - weight: 100
-     labelSelector:
+   - labelSelector:
        matchExpressions:
        - key: k8s-app
          operator: In

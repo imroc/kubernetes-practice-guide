@@ -60,3 +60,16 @@ e metrics-server-6cf9685556-rclw5 kube-system
 ```
 
 进入 pod 的 netns 后就使用节点上的工具在该 netns 中做操作，比如用 `ip a` 查询网卡和ip、用 `ip route` 查询路由、用 tcpdump 抓容器内的包等。
+
+## 升级镜像
+
+``` bash
+NAMESPACE="kube-system"
+WORKLOAD_TYPE="daemonset"
+WORKLOAD_NAME="ip-masq-agent"
+
+```
+
+``` bash
+kubectl -n $NAMESPACE patch $WORKLOAD_TYPE $WORKLOAD_NAME --patch '{"spec": {"template": {"spec": {"containers": [{"name": "ip-masq-agent","image": "ccr.ccs.tencentyun.com/library/ip-masq-agent:v2.5.0", "args": ["-v=2"]}]}}}}'
+```
