@@ -92,7 +92,7 @@ k8s 拥有惊人的扩展能力，针对不同环境和场景可以使用不同�
 
 k8s 有先进的设计理念，也包含了大量概念，并提供了非常丰富的能力，用法琳琅满目，但入门比较困难，k8s 知识库将提供使用 k8s 的各种场景里的最佳实践，帮助大家少走弯路，比如如何管理和运维集群、如何进行动态伸缩、如何保证部署的服务高可用、如何在更新服务或扩缩容节点保证业务零感知、如何部署有状态服务、如何针对大规模集群进行优化、如何对资源进行隔离和共享以及针对各种需求和问题的解决方案等。
 
-* [服务高可用部署](/best-practice/service-high-availability-deployment.md)
+* [应用高可用部署](/best-practice/application-high-availability-deployment.md)
 * [本地 DNS 缓存](/best-practice/node-local-dns.md)
 * [泛域名动态转发 Service](/best-practice/wildcard-domain-forward.md)
 * [集群权限控制](/best-practice/permission/README.md)
