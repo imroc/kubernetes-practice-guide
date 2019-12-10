@@ -35,7 +35,7 @@
 
 ## 最佳实践 <a id="best-practice"></a>
 
-* [应用高可用部署](/best-practice/application-high-availability-deployment.md)
+* [应用高可用部署](/best-practice/high-availability-deployment-of-applications.md)
 * [本地 DNS 缓存](/best-practice/node-local-dns.md)
 * [泛域名动态转发 Service](/best-practice/wildcard-domain-forward.md)
 * [集群权限控制](/best-practice/permission/README.md)
