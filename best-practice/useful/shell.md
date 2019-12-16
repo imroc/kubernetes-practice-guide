@@ -67,9 +67,10 @@ e metrics-server-6cf9685556-rclw5 kube-system
 NAMESPACE="kube-system"
 WORKLOAD_TYPE="daemonset"
 WORKLOAD_NAME="ip-masq-agent"
-
+CONTAINER_NAME="ip-masq-agent"
+IMAGE="ccr.ccs.tencentyun.com/library/ip-masq-agent:v2.5.0"
 ```
 
 ``` bash
-kubectl -n $NAMESPACE patch $WORKLOAD_TYPE $WORKLOAD_NAME --patch '{"spec": {"template": {"spec": {"containers": [{"name": "ip-masq-agent","image": "ccr.ccs.tencentyun.com/library/ip-masq-agent:v2.5.0", "args": ["-v=2"]}]}}}}'
+kubectl -n $NAMESPACE patch $WORKLOAD_TYPE $WORKLOAD_NAME --patch '{"spec": {"template": {"spec": {"containers": [{"name": "$CONTAINER_NAME","image": "$IMAGE" }]}}}}'
 ```

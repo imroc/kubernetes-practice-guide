@@ -18,7 +18,7 @@ $ arp -an | wc -l
 查看 arp gc 阀值:
 
 ``` bash
-$ systectl -a | grep gc_thresh
+$ sysctl -a | grep gc_thresh
 net.ipv4.neigh.default.gc_thresh1 = 128
 net.ipv4.neigh.default.gc_thresh2 = 512
 net.ipv4.neigh.default.gc_thresh3 = 1024
