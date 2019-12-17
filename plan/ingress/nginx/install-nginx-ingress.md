@@ -43,7 +43,7 @@ nginx-nginx-ingress-controller   LoadBalancer   172.16.255.194   119.28.123.174 
 2. 修改 `values.yaml` 中的配置
 3. 执行 helm install 的时候去掉 `--set` 的方式设置的变量，替换为使用 `-f values.yaml`
 
-有时可能更新 nginx ingress 的部署，滚动更新时可能造成部分连接异常，可以参考服务平滑更新最佳实践 [使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断](/best-practice/service-ha.md#smooth-update-using-prestophook-and-readinessprobe)，nginx ingress 默认加了 readinessProbe，但 preStop 没有加，我们可以修改 `values.yaml` 中 `controller.lifecycle`，加上 preStop，示例:
+有时可能更新 nginx ingress 的部署，滚动更新时可能造成部分连接异常，可以参考服务平滑更新最佳实践 [使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断](/best-practice/high-availability-deployment-of-applications.md#smooth-update-using-prestophook-and-readinessprobe)，nginx ingress 默认加了 readinessProbe，但 preStop 没有加，我们可以修改 `values.yaml` 中 `controller.lifecycle`，加上 preStop，示例:
 
 ``` yaml
   lifecycle:
@@ -52,7 +52,7 @@ nginx-nginx-ingress-controller   LoadBalancer   172.16.255.194   119.28.123.174 
         command: ["/bin/bash", "-c", "sleep 30"]
 ```
 
-还可以 [使用反亲和性避免单点故障](/best-practice/service-ha.md#use-antiaffinity-to-avoid-single-points-of-failure)，修改 `controller.affinity` 字段示例:
+还可以 [使用反亲和性避免单点故障](/best-practice/high-availability-deployment-of-applications.md#use-antiaffinity-to-avoid-single-points-of-failure)，修改 `controller.affinity` 字段示例:
 
 ``` yaml
   affinity:
