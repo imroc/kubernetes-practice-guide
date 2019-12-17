@@ -9,7 +9,6 @@
 ## 使用 helm 安装
 
 ``` bash
-
 helm install stable/nginx-ingress \
   --name nginx \
   --namespace kube-system \
@@ -46,34 +45,34 @@ nginx-nginx-ingress-controller   LoadBalancer   172.16.255.194   119.28.123.174 
 有时可能更新 nginx ingress 的部署，滚动更新时可能造成部分连接异常，可以参考服务平滑更新最佳实践 [使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断](/best-practice/high-availability-deployment-of-applications.md#smooth-update-using-prestophook-and-readinessprobe)，nginx ingress 默认加了 readinessProbe，但 preStop 没有加，我们可以修改 `values.yaml` 中 `controller.lifecycle`，加上 preStop，示例:
 
 ``` yaml
-  lifecycle:
-    preStop:
-      exec:
-        command: ["/bin/bash", "-c", "sleep 30"]
+lifecycle:
+  preStop:
+    exec:
+      command: ["/bin/bash", "-c", "sleep 30"]
 ```
 
 还可以 [使用反亲和性避免单点故障](/best-practice/high-availability-deployment-of-applications.md#use-antiaffinity-to-avoid-single-points-of-failure)，修改 `controller.affinity` 字段示例:
 
 ``` yaml
-  affinity:
-   podAntiAffinity:
-     requiredDuringSchedulingIgnoredDuringExecution:
-     - weight: 100
-       labelSelector:
-         matchExpressions:
-         - key: app
-           operator: In
-           values:
-           - nginx-ingress
-         - key: component
-           operator: In
-           values:
-           - controller
-         - key: release
-           operator: In
-           values:
-           - nginx
-       topologyKey: kubernetes.io/hostname
+affinity:
+ podAntiAffinity:
+   requiredDuringSchedulingIgnoredDuringExecution:
+   - weight: 100
+     labelSelector:
+       matchExpressions:
+       - key: app
+         operator: In
+         values:
+         - nginx-ingress
+       - key: component
+         operator: In
+         values:
+         - controller
+       - key: release
+         operator: In
+         values:
+         - nginx
+     topologyKey: kubernetes.io/hostname
 ```
 
 ## 参考资料
