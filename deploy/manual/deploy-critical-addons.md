@@ -8,7 +8,7 @@ kube-proxy 会请求 apiserver 获取 Service 及其 Endpoint，将 Service 的 
 
 ## 部署网络插件
 
-参考 [部署 Flannel](/plugins/network/flannel/deploy.md)
+参考 [部署 Flannel](/plan/network/flannel/deploy.md)
 
 ## 部署集群 DNS
 
