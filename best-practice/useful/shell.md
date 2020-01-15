@@ -3,7 +3,7 @@
 ## 获取集群所有节点占用的 podCIDR
 
 ``` bash
-kubectl get node -o jsonpath='{range .items[*]}{@.spec.podCIDR}{"\n"}{end}'
+kubectl get nodes --output=jsonpath='{range .items[*]}{.status.addresses[?(@.type=="InternalIP")].address} {.spec.podCIDR} {"\n"}{end}'
 ```
 
 示例输出:
