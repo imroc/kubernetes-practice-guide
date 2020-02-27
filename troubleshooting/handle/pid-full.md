@@ -8,9 +8,15 @@
 cat /proc/sys/kernel/pid_max
 ```
 
-也检查下当前用户是否还有 `ulimit` 限制最大进程数。
+也检查下线程数限制：
 
-然后要确认当前实际 PID 数量，检查当前用户的 PID 数量:
+``` bash
+cat /proc/sys/kernel/threads-max
+```
+
+再检查下当前用户是否还有 `ulimit` 限制最大进程数。
+
+确认当前实际 PID 数量，检查当前用户的 PID 数量:
 
 ``` bash
 ps -eLf | wc -l
@@ -20,16 +26,18 @@ ps -eLf | wc -l
 
 ## 如何解决
 
-临时调大：
+临时调大 PID 和线程数限制：
 
 ``` bash
 echo 65535 > /proc/sys/kernel/pid_max
+echo 65535 > /proc/sys/kernel/threads-max
 ```
 
-永久调大:
+永久调大 PID 和线程数限制:
 
 ``` bash
 echo "kernel.pid_max=65535 " >> /etc/sysctl.conf && sysctl -p
+echo "kernel.threads-max=65535 " >> /etc/sysctl.conf && sysctl -p
 ```
 
 k8s 1.14 支持了限制 Pod 的进程数量: https://kubernetes.io/blog/2019/04/15/process-id-limiting-for-stability-improvements-in-kubernetes-1.14/
