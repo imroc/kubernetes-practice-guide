@@ -254,9 +254,11 @@ k8s 在各个领域都发挥了巨大作用，我们会将 k8s 在这些领域�
 * AI
   * nvidia-docker
   * Kubeflow
-* 大数据
-  * Spark on K8S
-  * Hadoop on K8S
+* [大数据](/big-data/README.md)
+  * [Flink on Kubernetes](/big-data/flink/README.md)
+  * Hbase on Kubernetes
+  * Spark on Kubernetes
+  * Hadoop on Kubernetes
 
 ### 开发指南
 
