@@ -1,48 +1,22 @@
-BOOK_NAME := kubernetes-practice-guide
-BOOK_OUTPUT := _book
+# It's necessary to set this because some environments don't link sh -> bash.
+SHELL          := /bin/bash
 
-.PHONY: build
-build:
-	gitbook build . $(BOOK_OUTPUT)
 
-.PHONY: serve
-serve:
-	gitbook serve . $(BOOK_OUTPUT)
+# .PHONY: all
+# linux: build_linux
 
-.PHONY: epub
-epub:
-	gitbook epub . $(BOOK_NAME).epub
+.PHONY: index
+index:
+	script/update-index.sh
+	
+.PHONY: index_zh
+index_zh:
+	script/update-index.sh zh
 
-.PHONY: pdf
-pdf:
-	gitbook pdf . $(BOOK_NAME).pdf
+.PHONY: index_en
+index_en:
+	script/update-index.sh en
 
-.PHONY: mobi
-mobi:
-	gitbook mobi . $(BOOK_NAME).mobi
-
-.PHONY: install
-install:
-	npm install gitbook-cli -g
-	gitbook install
-
-.PHONY: clean
-clean:
-	rm -rf $(BOOK_OUTPUT)
-
-.PHONY: spell
-spell:
-	go get github.com/client9/misspell/cmd/misspell
-	git ls-files | xargs misspell -error -o stderr	
-
-.PHONY: help
-help:
-	@echo "Help for make"
-	@echo "make          - Build the book"
-	@echo "make build    - Build the book"
-	@echo "make serve    - Serving the book on localhost:4000"
-	@echo "make install  - Install gitbook and plugins"
-	@echo "make epub     - Build epub book"
-	@echo "make pdf      - Build pdf book"
-	@echo "make spell    - Check splling"
-	@echo "make clean    - Remove generated files"
+.PHONY: update
+update:
+	script/deploy.sh

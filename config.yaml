@@ -1,0 +1,52 @@
+baseURL: "https://k8s.imroc.io/"
+languageCode: zh
+defaultContentLanguage: zh
+title: "Kubernetes 实践指南"
+theme: "hugo-theme-learn"
+metaDataFormat: "yaml"
+defaultContentLanguageInSubdir: false
+
+params:
+  editURL: "https://github.com/imroc/kubernetes-practice-guide/edit/master/content/"
+  description: "Kubernetes 实践指南"
+  author: "roc"
+  showVisitedLinks: true
+  disableBreadcrumb: false
+  disableNextPrev: false
+  themeVariant: mine
+  ordersectionsby: weight
+
+outputs:
+  home: [ "HTML", "RSS", "JSON"]
+
+languages:
+  zh:
+    weight: 1
+    contentDir: content/zh
+    languageName: 简体中文
+    dateFormat: "2006-01-02"
+    reward: true
+    algolia:
+      index: "kubernetes-practice-guide-zh"
+      key: "5b4678e9995fe4211c4fa43ad2ffdab5"
+      appID: "B6Q6PSGUV5"
+    menu:
+    - shortcuts:
+        name: "<i class='fab fa-fw fa-github'></i> GitHub 仓库"
+        identifier: "ds"
+        url: "https://github.com/imroc/kubernetes-practice-guide"
+        weight: 10
+  en:
+    weight: 2
+    algolia:
+      index: "kubernetes-practice-guide-en"
+      key: "5b4678e9995fe4211c4fa43ad2ffdab5"
+      appID: "B6Q6PSGUV5"
+    contentDir: content/en
+    languageName: English
+    menu:
+    - shortcuts:
+        name: "<i class='fab fa-fw fa-github'></i> GitHub Repo"
+        identifier: "ds"
+        url: "https://github.com/imroc/kubernetes-practice-guide"
+        weight: 10
