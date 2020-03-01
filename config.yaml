@@ -7,7 +7,6 @@ metaDataFormat: "yaml"
 defaultContentLanguageInSubdir: false
 
 params:
-  editURL: "https://github.com/imroc/kubernetes-practice-guide/edit/master/content/"
   description: "Kubernetes 实践指南"
   author: "roc"
   showVisitedLinks: true
@@ -21,6 +20,7 @@ outputs:
 
 languages:
   zh:
+    editURL: "https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/"
     weight: 1
     contentDir: content/zh
     languageName: 简体中文
