@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>最佳实践 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/best-practice/</link>
+    <description>Recent content in 最佳实践 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/best-practice/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>大规模集群优化</title>
+      <link>https://k8s.imroc.io/best-practice/big-cluster/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/best-practice/big-cluster/</guid>
+      <description>Kubernetes 自 v1.6 以来，官方就宣称单集群最大支持 5000 个节点。不过这只是理论上，在具体实践中从 0 到 5000，还是有很长的路要走，需要见招拆招。
+官方标准如下：
+ 不超过 5000 个节点 不超过 150000 个 pod 不超过 300000 个容器 每个节点不超过 100 个 pod  内核参数调优 # max-file 表示系统级别的能够打开的文件句柄的数量， 一般如果遇到文件句柄达到上限时，会碰到 # &amp;#34;Too many open files&amp;#34; 或者 Socket/File: Can’t open so many files 等错误 fs.file-max=1000000 # 配置 arp cache 大小 # 存在于 ARP 高速缓存中的最少层数，如果少于这个数，垃圾收集器将不会运行。缺省值是 128 net.ipv4.neigh.default.gc_thresh1=1024 # 保存在 ARP 高速缓存中的最多的记录软限制。垃圾收集器在开始收集前，允许记录数超过这个数字 5 秒。缺省值是 512 net.ipv4.neigh.default.gc_thresh2=4096 # 保存在 ARP 高速缓存中的最多记录的硬限制，一旦高速缓存中的数目高于此，垃圾收集器将马上运行。缺省值是 1024 net.ipv4.neigh.default.gc_thresh3=8192 # 以上三个参数，当内核维护的 arp 表过于庞大时候，可以考虑优化 # 允许的最大跟踪连接条目，是在内核内存中 netfilter 可以同时处理的“任务”（连接跟踪条目） net.</description>
+    </item>
+    
+    <item>
+      <title>本地 DNS 缓存</title>
+      <link>https://k8s.imroc.io/best-practice/node-local-dns/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/best-practice/node-local-dns/</guid>
+      <description>为什么需要本地 DNS 缓存   减轻集群 DNS 解析压力，提高 DNS 性能
+  避免 netfilter 做 DNAT 导致 conntrack 冲突引发 DNS 5 秒延时
+ 镜像底层库 DNS 解析行为默认使用 UDP 在同一个 socket 并发 A 和 AAAA 记录请求，由于 UDP 无状态，两个请求可能会并发创建 conntrack 表项，如果最终 DNAT 成同一个集群 DNS 的 Pod IP 就会导致 conntrack 冲突，由于 conntrack 的创建和插入是不加锁的，最终后面插入的 conntrack 表项就会被丢弃，从而请求超时，默认 5s 后重试，造成现象就是 DNS 5 秒延时; 底层库是 glibc 的容器镜像可以通过配 resolv.conf 参数来控制 DNS 解析行为，不用 TCP 或者避免相同五元组并发(使用串行解析 A 和 AAAA 避免并发或者使用不同 socket 发请求避免相同源端口)，但像基于 alpine 镜像的容器由于底层库是 musl libc，不支持这些 resolv.</description>
+    </item>
+    
+    <item>
+      <title>泛域名转发</title>
+      <link>https://k8s.imroc.io/best-practice/wildcard-domain-forward/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/best-practice/wildcard-domain-forward/</guid>
+      <description>需求 集群对外暴露了一个公网IP作为流量入口(可以是 Ingress 或 Service)，DNS 解析配置了一个泛域名指向该IP（比如 *.test.imroc.io），现希望根据请求中不同 Host 转发到不同的后端 Service。比如 a.test.imroc.io 的请求被转发到 my-svc-a，b.test.imroc.io 的请求转发到 my-svc-b。当前 K8S 的 Ingress 并不原生支持这种泛域名转发规则，本文将给出一个解决方案来实现泛域名转发。
+简单做法 先说一种简单的方法，这也是大多数人的第一反应：配置 Ingress 规则
+假如泛域名有两个不同 Host 分别转发到不同 Service，Ingress 类似这样写:
+apiVersion: extensions/v1beta1 kind: Ingress metadata: name: my-ingress spec: rules: - host: a.test.imroc.io http: paths: - backend: serviceName: my-svc-a servicePort: 80 path: / - host: b.test.imroc.io http: paths: - backend: serviceName: my-svc-b servicePort: 80 path: / 但是！如果 Host 非常多会怎样？（比如200+）
+ 每次新增 Host 都要改 Ingress 规则，太麻烦 单个 Ingress 上面的规则越来越多，更改规则对 LB 的压力变大，可能会导致偶尔访问不了  正确姿势 我们可以约定请求中泛域名 Host 通配符的 * 号匹配到的字符跟 Service 的名字相关联（可以是相等，或者 Service 统一在前面加个前缀，比如 a.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>处理实践 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/troubleshooting/handle/</link>
+    <description>Recent content in 处理实践 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/troubleshooting/handle/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>arp_cache 溢出</title>
+      <link>https://k8s.imroc.io/troubleshooting/handle/arp_cache-overflow/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/handle/arp_cache-overflow/</guid>
+      <description>如何判断 arp_cache 溢出？ 内核日志会有有下面的报错:
+arp_cache: neighbor table overflow! 查看当前 arp 记录数:
+$ arp -an | wc -l 1335 查看 arp gc 阀值:
+$ sysctl -a | grep gc_thresh net.ipv4.neigh.default.gc_thresh1 = 128 net.ipv4.neigh.default.gc_thresh2 = 512 net.ipv4.neigh.default.gc_thresh3 = 1024 net.ipv6.neigh.default.gc_thresh1 = 128 net.ipv6.neigh.default.gc_thresh2 = 512 net.ipv6.neigh.default.gc_thresh3 = 1024 当前 arp 记录数接近 gc_thresh3 比较容易 overflow，因为当 arp 记录达到 gc_thresh3 时会强制触发 gc 清理，当这时又有数据包要发送，并且根据目的 IP 在 arp cache 中没找到 mac 地址，这时会判断当前 arp cache 记录数加 1 是否大于 gc_thresh3，如果没有大于就会 时就会报错: arp_cache: neighbor table overflow!</description>
+    </item>
+    
+    <item>
+      <title>inotify watch 耗尽</title>
+      <link>https://k8s.imroc.io/troubleshooting/handle/runnig-out-of-inotify-watches/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/handle/runnig-out-of-inotify-watches/</guid>
+      <description>每个 linux 进程可以持有多个 fd，每个 inotify 类型的 fd 可以 watch 多个目录，每个用户下所有进程 inotify 类型的 fd 可以 watch 的总目录数有个最大限制，这个限制可以通过内核参数配置: fs.inotify.max_user_watches
+查看最大 inotify watch 数:
+$ cat /proc/sys/fs/inotify/max_user_watches 8192 使用下面的脚本查看当前有 inotify watch 类型 fd 的进程以及每个 fd watch 的目录数量，降序输出，带总数统计:
+#!/usr/bin/env bash # # Copyright 2019 (c) roc # # This script shows processes holding the inotify fd, alone with HOW MANY directories each inotify fd watches(0 will be ignored). total=0 result=&amp;#34;EXE PID FD-INFO INOTIFY-WATCHES\n&amp;#34; while read pid fd; do \  exe=&amp;#34;$(readlink -f /proc/$pid/exe || echo n/a)&amp;#34;; \  fdinfo=&amp;#34;/proc/$pid/fdinfo/$fd&amp;#34; ; \  count=&amp;#34;$(grep -c inotify &amp;#34;$fdinfo&amp;#34; || true)&amp;#34;; \  if [ $((count)) !</description>
+    </item>
+    
+    <item>
+      <title>PID 耗尽</title>
+      <link>https://k8s.imroc.io/troubleshooting/handle/pid-full/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/handle/pid-full/</guid>
+      <description>如何判断 PID 耗尽 首先要确认当前的 PID 限制，检查全局 PID 最大限制:
+cat /proc/sys/kernel/pid_max 也检查下线程数限制：
+cat /proc/sys/kernel/threads-max 再检查下当前用户是否还有 ulimit 限制最大进程数。
+确认当前实际 PID 数量，检查当前用户的 PID 数量:
+ps -eLf | wc -l 如果发现实际 PID 数量接近最大限制说明 PID 就可能会爆满导致经常有进程无法启动，低版本内核可能报错: Cannot allocate memory，这个报错信息不准确，在内核 4.1 以后改进了: https://github.com/torvalds/linux/commit/35f71bc0a09a45924bed268d8ccd0d3407bc476f
+如何解决 临时调大 PID 和线程数限制：
+echo 65535 &amp;gt; /proc/sys/kernel/pid_max echo 65535 &amp;gt; /proc/sys/kernel/threads-max 永久调大 PID 和线程数限制:
+echo &amp;#34;kernel.pid_max=65535 &amp;#34; &amp;gt;&amp;gt; /etc/sysctl.conf &amp;amp;&amp;amp; sysctl -p echo &amp;#34;kernel.threads-max=65535 &amp;#34; &amp;gt;&amp;gt; /etc/sysctl.conf &amp;amp;&amp;amp; sysctl -p k8s 1.14 支持了限制 Pod 的进程数量: https://kubernetes.</description>
+    </item>
+    
+    <item>
+      <title>内存碎片化</title>
+      <link>https://k8s.imroc.io/troubleshooting/handle/memory-fragmentation/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/handle/memory-fragmentation/</guid>
+      <description>判断是否内存碎片化严重 内存页分配失败，内核日志报类似下面的错：
+mysqld: page allocation failure. order:4, mode:0x10c0d0  mysqld 是被分配的内存的程序 order 表示需要分配连续页的数量(2^order)，这里 4 表示 2^4=16 个连续的页 mode 是内存分配模式的标识，定义在内核源码文件 include/linux/gfp.h 中，通常是多个标识相与运算的结果，不同版本内核可能不一样，比如在新版内核中 GFP_KERNEL 是 __GFP_RECLAIM | __GFP_IO | __GFP_FS 的运算结果，而 __GFP_RECLAIM 又是 ___GFP_DIRECT_RECLAIM|___GFP_KSWAPD_RECLAIM 的运算结果  当 order 为 0 时，说明系统以及完全没有可用内存了，order 值比较大时，才说明内存碎片化了，无法分配连续的大页内存。
+内存碎片化造成的问题 容器启动失败 K8S 会为每个 pod 创建 netns 来隔离 network namespace，内核初始化 netns 时会为其创建 nf_conntrack 表的 cache，需要申请大页内存，如果此时系统内存已经碎片化，无法分配到足够的大页内存内核就会报错(v2.6.33 - v4.6):
+runc:[1:CHILD]: page allocation failure: order:6, mode:0x10c0d0 Pod 状态将会一直在 ContainerCreating，dockerd 启动容器失败，日志报错:
+Jan 23 14:15:31 dc05 dockerd: time=&amp;#34;2019-01-23T14:15:31.</description>
+    </item>
+    
+    <item>
+      <title>磁盘爆满</title>
+      <link>https://k8s.imroc.io/troubleshooting/handle/disk-full/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/handle/disk-full/</guid>
+      <description>什么情况下磁盘可能会爆满 ？ kubelet 有 gc 和驱逐机制，通过 --image-gc-high-threshold, --image-gc-low-threshold, --eviction-hard, --eviction-soft, --eviction-minimum-reclaim 等参数控制 kubelet 的 gc 和驱逐策略来释放磁盘空间，如果配置正确的情况下，磁盘一般不会爆满。
+通常导致爆满的原因可能是配置不正确或者节点上有其它非 K8S 管理的进程在不断写数据到磁盘占用大量空间导致磁盘爆满。
+磁盘爆满会有什么影响 ？ 影响 K8S 运行我们主要关注 kubelet 和容器运行时这两个最关键的组件，它们所使用的目录通常不一样，kubelet 一般不会单独挂盘，直接使用系统磁盘，因为通常占用空间不会很大，容器运行时单独挂盘的场景比较多，当磁盘爆满的时候我们也要看 kubelet 和 容器运行时使用的目录是否在这个磁盘，通过 df 命令可以查看磁盘挂载点。
+容器运行时使用的目录所在磁盘爆满 如果容器运行时使用的目录所在磁盘空间爆满，可能会造成容器运行时无响应，比如 docker，执行 docker 相关的命令一直 hang 住， kubelet 日志也可以看到 PLEG unhealthy，因为 CRI 调用 timeout，当然也就无法创建或销毁容器，通常表现是 Pod 一直 ContainerCreating 或 一直 Terminating。
+docker 默认使用的目录主要有:
+ /var/run/docker: 用于存储容器运行状态，通过 dockerd 的 --exec-root 参数指定。 /var/lib/docker: 用于持久化容器相关的数据，比如容器镜像、容器可写层数据、容器标准日志输出、通过 docker 创建的 volume 等  Pod 启动可能报类似下面的事件:</description>
+    </item>
+    
+    <item>
+      <title>高负载</title>
+      <link>https://k8s.imroc.io/troubleshooting/handle/high-load/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/handle/high-load/</guid>
+      <description>TODO 优化
+节点高负载会导致进程无法获得足够的 cpu 时间片来运行，通常表现为网络 timeout，健康检查失败，服务不可用。
+过多 IO 等待 有时候即便 cpu ‘us’ (user) 不高但 cpu ‘id’ (idle) 很高的情况节点负载也很高，这是为什么呢？通常是文件 IO 性能达到瓶颈导致 IO WAIT 过多，从而使得节点整体负载升高，影响其它进程的性能。
+使用 top 命令看下当前负载：
+top - 19:42:06 up 23:59, 2 users, load average: 34.64, 35.80, 35.76 Tasks: 679 total, 1 running, 678 sleeping, 0 stopped, 0 zombie Cpu(s): 15.6%us, 1.7%sy, 0.0%ni, 74.7%id, 7.9%wa, 0.0%hi, 0.1%si, 0.0%st Mem: 32865032k total, 30989168k used, 1875864k free, 370748k buffers Swap: 8388604k total, 5440k used, 8383164k free, 7982424k cached PID USER PR NI VIRT RES SHR S %CPU %MEM TIME+ COMMAND 9783 mysql 20 0 17.</description>
+    </item>
+    
+  </channel>
+</rss>

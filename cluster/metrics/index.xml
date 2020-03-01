@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Metrics 方案 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/cluster/metrics/</link>
+    <description>Recent content in Metrics 方案 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/cluster/metrics/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>安装 metrics server</title>
+      <link>https://k8s.imroc.io/cluster/metrics/install-metrics-server/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/cluster/metrics/install-metrics-server/</guid>
+      <description>官方 yaml 安装 下载:
+git clone --depth 1 https://github.com/kubernetes-sigs/metrics-server.git cd metrics-server 修改 deploy/1.8+/metrics-server-deployment.yaml，在 args 里增加 --kubelet-insecure-tls (防止 metrics server 访问 kubelet 采集指标时报证书问题 x509: certificate signed by unknown authority):
+containers: - name: metrics-server image: k8s.gcr.io/metrics-server-amd64:v0.3.6 args: - --cert-dir=/tmp - --secure-port=4443 - --kubelet-insecure-tls # 这里是新增的一行 安装:
+kubectl apply -f deploy/1.8+/ 参考资料  Github 主页: https://github.com/kubernetes-sigs/metrics-server  </description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,29 @@
+[
+{
+	"uri": "https://k8s.imroc.io/en/categories/",
+	"title": "Categories",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "https://k8s.imroc.io/en/",
+	"title": "Kubernetes Practice Guide",
+	"tags": [],
+	"description": "",
+	"content": "TODO\n"
+},
+{
+	"uri": "https://k8s.imroc.io/en/tags/",
+	"title": "Tags",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "https://k8s.imroc.io/en/troubleshooting/",
+	"title": "Troubleshooting Guide",
+	"tags": [],
+	"description": "",
+	"content": "TODO  "
+}]

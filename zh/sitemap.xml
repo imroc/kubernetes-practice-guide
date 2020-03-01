@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+  xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/deploy/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/manual/prepare/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/configuration-management/helm/install-helm/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/manual/bootstrapping-etcd/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/manual/bootstrapping-master/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://k8s.imroc.io/en/troubleshooting/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://k8s.imroc.io/troubleshooting/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/manual/bootstrapping-worker-nodes/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/manual/deploy-critical-addons/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/domains/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/dev/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/handle/arp_cache-overflow/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/errors/arp_cache-neighbor-table-overflow/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/errors/cannot-allocate-memory/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/categories/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://k8s.imroc.io/en/categories/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://k8s.imroc.io/categories/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/summary/cgroup-leaking/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/summary/conntrack-conflict/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/runtime/containerd/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/cluster/daemonset-not-scheduled/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/dns-lookup-5s-delay/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/dns-resolution-abnormal/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/network/dns/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/network/flannel/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/domains/big-data/flink-on-kubernetes/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/dev/golang-build/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/configuration-management/helm/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/ingress/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/handle/runnig-out-of-inotify-watches/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/others/job-cannot-delete/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/schemaerror-when-using-kubectl-apply-or-edit/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/others/kubectl-exec-or-logs-failed/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/useful/efficient-kubectl/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://k8s.imroc.io/en/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://k8s.imroc.io/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/network/lb-healthcheck-failed/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/low-cps-from-lb-to-nodeport/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/metrics/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/ingress/nginx/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/errors/no-space-left-on-device/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/cluster/node-all-gone/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/handle/pid-full/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/slow-terminating/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/keep-containercreating-or-waiting/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/keep-error/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imageinspecterror/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imagepullbackoff/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/keep-pending/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/keep-terminating/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/keep-unkown/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/healthcheck-failed/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/livenesprobe-failed-occasionally/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/keep-crashloopbackoff/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/network/service-unrecheable/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/network/service-cannot-resolve/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/tags/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://k8s.imroc.io/en/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://k8s.imroc.io/tags/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/summary/tcp_tw_recycle-causes-packet-loss/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/ingress/traefik/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/addons/kube-proxy/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/cert-management/autogenerate-certificate-with-cert-manager/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/kubeadm/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/deploy/smooth-update-using-prestophook-and-readinessprobe/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/trick/use-systemtap-to-locate-problems/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/deploy/use-antiaffinity-to-avoid-single-points-of-failure/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/others/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/handle/memory-fragmentation/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/others/kernel-solft-lockup/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/trick/analysis-exitcode/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/permission/create-user-using-csr-api/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/handle/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/domains/big-data/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/big-cluster/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/cert-management/install-cert-manger/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/runtime/containerd/install-containerd/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/appendix/install-kubectl/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/metrics/install-metrics-server/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/ingress/nginx/install-nginx-ingress/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/ingress/traefik/install-traefik-ingress/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/useful/yaml/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/useful/shell/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/useful/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/trick/capture-packets-in-container/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/pod/container-proccess-exit-by-itself/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/network/understanding/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/manual/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/trick/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/permission/app/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/permission/user/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/node-local-dns/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/wildcard-domain-forward/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/handle/disk-full/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/kubernetes-overflow-and-drop/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/errors/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/network/low-throughput/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/network/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/network/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/deploy/scale-keepalive-service/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/no-route-to-host/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/cross-vpc-connect-nodeport-timeout/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/summary/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/runtime/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/addons/coredns/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/cluster/network/flannel/deploy/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/addons/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/deploy/appendix/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/problems/cluster/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/permission/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/cert-management/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/configuration-management/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/cases/eviction-leads-to-service-disruption/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/handle/high-load/</loc>
+  </url>
+  
+</urlset>

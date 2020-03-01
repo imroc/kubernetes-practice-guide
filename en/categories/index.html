@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.65.3" />
+    <meta name="description" content="Kubernetes 实践指南">
+<meta name="author" content="roc">
+
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+
+    <title>Categories :: Kubernetes 实践指南</title>
+
+    
+    <link href="/css/nucleus.css?1583058065" rel="stylesheet">
+    <link href="/css/fontawesome-all.min.css?1583058065" rel="stylesheet">
+    <link href="/css/hybrid.css?1583058065" rel="stylesheet">
+    <link href="/css/featherlight.min.css?1583058065" rel="stylesheet">
+    <link href="/css/perfect-scrollbar.min.css?1583058065" rel="stylesheet">
+    <link href="/css/auto-complete.css?1583058065" rel="stylesheet">
+    <link href="/css/atom-one-dark-reasonable.css?1583058065" rel="stylesheet">
+    <link href="/css/theme.css?1583058065" rel="stylesheet">
+    <link href="/css/hugo-theme.css?1583058065" rel="stylesheet">
+    
+      <link href="/css/theme-mine.css?1583058065" rel="stylesheet">
+    
+
+    <script src="/js/jquery-3.3.1.min.js?1583058065"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="/en/categories/">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <a id="logo" href="https://k8s.imroc.io/" style="display:block">
+  <div style="width:100%; height:100%;" >
+    <img style="width: 50px; height:50px;"
+      src="https://blobs.gitbook.com/spaces%2F-LpD0AbLSTB3uW-I8VBQ%2Favatar.png?generation=1569029096804026&alt=media"
+      /><div style="height:100%; margin-bottom:3px; font-weight: bold;">Kubernetes 实践指南</div>
+  </div>
+</a>
+
+    </div>
+    
+        
+<div class="aa-input-container" id="aa-input-container">
+    <input type="search" id="aa-search-input" class="aa-input-search" placeholder="Search..."
+        name="search" autocomplete="off" />
+    <svg class="aa-input-icon" viewBox="654 -372 1664 1664">
+        <path
+            d="M1806,332c0-123.3-43.8-228.8-131.5-316.5C1586.8-72.2,1481.3-116,1358-116s-228.8,43.8-316.5,131.5  C953.8,103.2,910,208.7,910,332s43.8,228.8,131.5,316.5C1129.2,736.2,1234.7,780,1358,780s228.8-43.8,316.5-131.5  C1762.2,560.8,1806,455.3,1806,332z M2318,1164c0,34.7-12.7,64.7-38,90s-55.3,38-90,38c-36,0-66-12.7-90-38l-343-342  c-119.3,82.7-252.3,124-399,124c-95.3,0-186.5-18.5-273.5-55.5s-162-87-225-150s-113-138-150-225S654,427.3,654,332  s18.5-186.5,55.5-273.5s87-162,150-225s138-113,225-150S1262.7-372,1358-372s186.5,18.5,273.5,55.5s162,87,225,150s113,138,150,225  S2062,236.7,2062,332c0,146.7-41.3,279.7-124,399l343,343C2305.7,1098.7,2318,1128.7,2318,1164z" />
+    </svg>
+</div>
+
+
+<script type="text/javascript" src="/js/lunr.min.js?1583058065"></script>
+<script type="text/javascript" src="/js/auto-complete.js?1583058065"></script>
+<script type="text/javascript">
+    
+        var baseurl = "https:\/\/k8s.imroc.io\/\/en";
+    
+</script>
+
+<script src="https://res.cloudinary.com/jimmysong/raw/upload/rootsongjc-hugo/autocomplete.min.js"></script>
+<script src="https://res.cloudinary.com/jimmysong/raw/upload/rootsongjc-hugo/algoliasearch.min.js"></script>
+
+
+<script>
+    var client = algoliasearch("B6Q6PSGUV5", "5b4678e9995fe4211c4fa43ad2ffdab5");
+    var index = client.initIndex("kubernetes-practice-guide-en");
+    
+    autocomplete('#aa-search-input', {
+        hint: false
+    }, {
+        source: autocomplete.sources.hits(index, {
+            hitsPerPage: 10
+        }),
+        
+        displayKey: 'name',
+        
+        templates: {
+            
+            suggestion: function (suggestion) {
+                return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
+                    .value + '</a>';
+            }
+        }
+    });
+</script>
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/en/troubleshooting/" title="Troubleshooting Guide" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/en/troubleshooting/">
+          Troubleshooting Guide
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+        <li>
+          <a class="padding">
+            <i class="fas fa-language fa-fw"></i>
+          <div class="select-style">
+            <select id="select-language" onchange="location = this.value;">
+          
+          
+          
+              
+              
+                  
+                    
+                    
+                      <option id="zh" value="https://k8s.imroc.io/categories/">简体中文</option>
+                    
+                  
+              
+                  
+              
+          
+              
+              
+                  
+              
+                  
+                    
+                    
+                      <option id="en" value="https://k8s.imroc.io/en/categories/" selected>English</option>
+                    
+                  
+              
+          
+        </select>
+        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          width="255px" height="255px" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255;" xml:space="preserve">
+          <g>
+            <g id="arrow-drop-down">
+              <polygon points="0,63.75 127.5,191.25 255,63.75 		" />
+            </g>
+          </g>
+        </svg>
+        </div>
+        </a>
+        </li>
+      
+      
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> Clear History</a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <center>
+
+    
+    <a class="github-button" href="https://github.com/imroc/kubernetes-practice-guide" data-icon="octicon-star"
+        data-show-count="true" aria-label="Star imroc/kubernetes-practice-guide on GitHub">Star</a>
+
+    
+    <a class="github-button" href="https://github.com/imroc/kubernetes-practice-guide/fork"
+        data-icon="octicon-repo-forked" data-show-count="true"
+        aria-label="Fork imroc/kubernetes-practice-guide on GitHub">Fork</a>
+
+</center>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            <a href='/en/'>Kubernetes Practice Guide</a> > Categories
+          
+         
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              Categories
+            </h1>
+          
+
+        
+
+
+
+
+
+
+<ul>
+	
+</ul>
+
+
+<footer class=" footline" >
+	
+</footer>
+
+        
+        </div> 
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+	 
+	 
+		
+		
+			<a class="nav nav-next" href="/en/troubleshooting/" title="Troubleshooting Guide" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="/js/clipboard.min.js?1583058065"></script>
+    <script src="/js/perfect-scrollbar.min.js?1583058065"></script>
+    <script src="/js/perfect-scrollbar.jquery.min.js?1583058065"></script>
+    <script src="/js/jquery.sticky.js?1583058065"></script>
+    <script src="/js/featherlight.min.js?1583058065"></script>
+    <script src="/js/highlight.pack.js?1583058065"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/js/modernizr.custom-3.6.0.js?1583058065"></script>
+    <script src="/js/learn.js?1583058065"></script>
+    <script src="/js/hugo-learn.js?1583058065"></script>
+
+    <link href="/mermaid/mermaid.css?1583058065" rel="stylesheet" />
+    <script src="/mermaid/mermaid.js?1583058065"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    
+
+  </body>
+</html>

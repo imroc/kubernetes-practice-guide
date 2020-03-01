@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>手工部署 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/deploy/manual/</link>
+    <description>Recent content in 手工部署 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/deploy/manual/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>部署前的准备工作</title>
+      <link>https://k8s.imroc.io/deploy/manual/prepare/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/deploy/manual/prepare/</guid>
+      <description>准备节点 操作系统 使用 Linux 发行版，本教程主要以 Ubuntu 18.04 为例
+Master 节点 部署 K8S 控制面组件，推荐三台以上数量的机器
+ETCD 节点 部署 ETCD，可以跟 Master 节点用相同的机器，也可以用单独的机器，推荐三台以上数量的机器
+Worker 节点 实际运行工作负载的节点，Master 节点也可以作为 Worker 节点，可以通过 kubelet 参数 --kube-reserved 多预留一些资源给系统组件。
+通常会给 Master 节点打标签，让关键的 Pod 跑在 Master 节点上，比如集群 DNS 服务。
+准备客户端工具 我们需要用 cfssl 和 kubectl 来为各个组件生成证书和 kubeconfig，所以先将这两个工具在某个机器下载安装好。
+安装 cfssl  curl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl curl -L https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -o cfssljson curl -L https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -o cfssl-certinfo chmod +x cfssl cfssljson cfssl-certinfo sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/ 安装 kubectl wget -q --show-progress --https-only --timestamping \  https://storage.</description>
+    </item>
+    
+    <item>
+      <title>部署 ETCD</title>
+      <link>https://k8s.imroc.io/deploy/manual/bootstrapping-etcd/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/deploy/manual/bootstrapping-etcd/</guid>
+      <description>为 ETCD 签发证书 这里证书可以只创建一次，所有 etcd 实例都公用这里创建的证书:
+cat &amp;gt; etcd-csr.json &amp;lt;&amp;lt;EOF { &amp;#34;CN&amp;#34;: &amp;#34;etcd&amp;#34;, &amp;#34;hosts&amp;#34;: [ &amp;#34;127.0.0.1&amp;#34;, &amp;#34;10.200.16.79&amp;#34;, &amp;#34;10.200.17.6&amp;#34;, &amp;#34;10.200.16.70&amp;#34; ], &amp;#34;key&amp;#34;: { &amp;#34;algo&amp;#34;: &amp;#34;rsa&amp;#34;, &amp;#34;size&amp;#34;: 2048 }, &amp;#34;names&amp;#34;: [ { &amp;#34;C&amp;#34;: &amp;#34;CN&amp;#34;, &amp;#34;ST&amp;#34;: &amp;#34;SiChuan&amp;#34;, &amp;#34;L&amp;#34;: &amp;#34;Chengdu&amp;#34;, &amp;#34;O&amp;#34;: &amp;#34;etcd&amp;#34;, &amp;#34;OU&amp;#34;: &amp;#34;etcd&amp;#34; } ] } EOF cfssl gencert \  -ca=ca.pem \  -ca-key=ca-key.pem \  -config=ca-config.json \  -profile=kubernetes \  etcd-csr.json | cfssljson -bare etcd  hosts 需要包含 etcd 每个实例所在节点的内网 IP</description>
+    </item>
+    
+    <item>
+      <title>部署 Master</title>
+      <link>https://k8s.imroc.io/deploy/manual/bootstrapping-master/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/deploy/manual/bootstrapping-master/</guid>
+      <description>准备证书  Master 节点的准备证书操作只需要做一次，将生成的证书拷到每个 Master 节点上以复用。
+前提条件:
+ 签发证书需要用到 生成 CA 证书 时创建的 CA 证书及其密钥文件，确保它们在当前目录 确保 cfssl 在当前环境已安装，安装方法参考 这里  为 kube-apiserver 签发证书  kube-apiserver 是 k8s 的访问核心，所有 K8S 组件和用户 kubectl 操作都会请求 kube-apiserver，通常启用 tls 证书认证，证书里面需要包含 kube-apiserver 可能被访问的地址，这样 client 校验 kube-apiserver 证书时才会通过，集群内的 Pod 一般通过 kube-apiserver 的 Service 名称访问，可能的 Service 名称有:
+ kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster kubernetes.default.svc.cluster.local  通过集群外也可能访问 kube-apiserver，比如使用 kubectl，或者部署在集群外的服务会连 kube-apiserver (比如部署在集群外的 Promethues 采集集群指标做监控)，这里列一下通过集群外连 kube-apiserver 有哪些可能地址:
+ 127.0.0.1: 在 Master 所在机器通过 127.</description>
+    </item>
+    
+    <item>
+      <title>部署 Worker 节点</title>
+      <link>https://k8s.imroc.io/deploy/manual/bootstrapping-worker-nodes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/deploy/manual/bootstrapping-worker-nodes/</guid>
+      <description>Worker 节点主要安装 kubelet 来管理、运行工作负载 (Master 节点也可以部署为特殊 Worker 节点来部署关键服务)
+安装依赖 sudo apt-get update sudo apt-get -y install socat conntrack ipset 禁用 Swap 默认情况下，如果开启了 swap，kubelet 会启动失败，k8s 节点推荐禁用 swap。
+验证一下是否开启:
+sudo swapon --show 如果输出不是空的说明开启了 swap，使用下面的命令禁用 swap:
+sudo swapoff -a 为了防止开机自动挂载 swap 分区，可以注释 /etc/fstab 中相应的条目:
+sudo sed -i &amp;#39;/ swap / s/^\(.*\)$/#\1/g&amp;#39; /etc/fstab 关闭 SELinux 关闭 SELinux，否则后续 K8S 挂载目录时可能报错 Permission denied：
+sudo setenforce 0 修改配置文件，永久生效:
+sudo sed -i &amp;#34;s/SELINUX=enforcing/SELINUX=disabled/g&amp;#34; /etc/selinux/config 准备目录 sudo mkdir -p \  /etc/cni/net.</description>
+    </item>
+    
+    <item>
+      <title>部署关键组件</title>
+      <link>https://k8s.imroc.io/deploy/manual/deploy-critical-addons/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/deploy/manual/deploy-critical-addons/</guid>
+      <description>部署 kube-proxy kube-proxy 会请求 apiserver 获取 Service 及其 Endpoint，将 Service 的 ClUSTER IP 与对应 Endpoint 的 Pod IP 映射关系转换成 iptables 或 ipvs 规则写到节点上，实现 Service 转发。
+部署方法参考 以 Daemonset 方式部署 kube-proxy
+部署网络插件 参考 部署 Flannel
+部署集群 DNS 集群 DNS 是 Kubernetes 的核心功能之一，被许多服务所依赖，用于解析集群内 Pod 的 DNS 请求，包括:
+ 解析 service 名称成对应的 CLUSTER IP 解析 headless service 名称成对应 Pod IP (选取一个 endpoint 的 Pod IP 返回) 解析外部域名(代理 Pod 请求上游 DNS)  可以通过部署 kube-dns 或 CoreDNS 作为集群的必备扩展来提供命名服务，推荐使用 CoreDNS，效率更高，资源占用率更小，部署方法参考 部署 CoreDNS</description>
+    </item>
+    
+  </channel>
+</rss>

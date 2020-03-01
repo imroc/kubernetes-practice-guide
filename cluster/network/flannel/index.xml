@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Flannel on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/cluster/network/flannel/</link>
+    <description>Recent content in Flannel on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/cluster/network/flannel/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>部署 Flannel</title>
+      <link>https://k8s.imroc.io/cluster/network/flannel/deploy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/cluster/network/flannel/deploy/</guid>
+      <description>记集群网段为 CLUSTER_CIDR:
+CLUSTER_CIDR=10.10.0.0/16 创建 flannel 资源文件:
+cat &amp;lt;&amp;lt;EOF | sudo tee kube-flannel.yml apiVersion: policy/v1beta1 kind: PodSecurityPolicy metadata: name: psp.flannel.unprivileged annotations: seccomp.security.alpha.kubernetes.io/allowedProfileNames: docker/default seccomp.security.alpha.kubernetes.io/defaultProfileName: docker/default apparmor.security.beta.kubernetes.io/allowedProfileNames: runtime/default apparmor.security.beta.kubernetes.io/defaultProfileName: runtime/default spec: privileged: false volumes: - configMap - secret - emptyDir - hostPath allowedHostPaths: - pathPrefix: &amp;#34;/etc/cni/net.d&amp;#34; - pathPrefix: &amp;#34;/etc/kube-flannel&amp;#34; - pathPrefix: &amp;#34;/run/flannel&amp;#34; readOnlyRootFilesystem: false # Users and groups runAsUser: rule: RunAsAny supplementalGroups: rule: RunAsAny fsGroup: rule: RunAsAny # Privilege Escalation allowPrivilegeEscalation: false defaultAllowPrivilegeEscalation: false # Capabilities allowedCapabilities: [&amp;#39;NET_ADMIN&amp;#39;] defaultAddCapabilities: [] requiredDropCapabilities: [] # Host namespaces hostPID: false hostIPC: false hostNetwork: true hostPorts: - min: 0 max: 65535 # SELinux seLinux: # SELinux is unsed in CaaSP rule: &amp;#39;RunAsAny&amp;#39; --- kind: ClusterRole apiVersion: rbac.</description>
+    </item>
+    
+  </channel>
+</rss>

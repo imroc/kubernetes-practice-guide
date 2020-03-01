@@ -1,0 +1,5656 @@
+<!DOCTYPE html>
+<html lang="zh" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.65.3" />
+    <meta name="description" content="Kubernetes 实践指南">
+<meta name="author" content="roc">
+
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+
+    <title>部署 Master :: Kubernetes 实践指南</title>
+
+    
+    <link href="/css/nucleus.css?1583058065" rel="stylesheet">
+    <link href="/css/fontawesome-all.min.css?1583058065" rel="stylesheet">
+    <link href="/css/hybrid.css?1583058065" rel="stylesheet">
+    <link href="/css/featherlight.min.css?1583058065" rel="stylesheet">
+    <link href="/css/perfect-scrollbar.min.css?1583058065" rel="stylesheet">
+    <link href="/css/auto-complete.css?1583058065" rel="stylesheet">
+    <link href="/css/atom-one-dark-reasonable.css?1583058065" rel="stylesheet">
+    <link href="/css/theme.css?1583058065" rel="stylesheet">
+    <link href="/css/hugo-theme.css?1583058065" rel="stylesheet">
+    
+      <link href="/css/theme-mine.css?1583058065" rel="stylesheet">
+    
+
+    <script src="/js/jquery-3.3.1.min.js?1583058065"></script>
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="/deploy/manual/bootstrapping-master/">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <a id="logo" href="https://k8s.imroc.io/" style="display:block">
+  <div style="width:100%; height:100%;" >
+    <img style="width: 50px; height:50px;"
+      src="https://blobs.gitbook.com/spaces%2F-LpD0AbLSTB3uW-I8VBQ%2Favatar.png?generation=1569029096804026&alt=media"
+      /><div style="height:100%; margin-bottom:3px; font-weight: bold;">Kubernetes 实践指南</div>
+  </div>
+</a>
+
+    </div>
+    
+        
+<div class="aa-input-container" id="aa-input-container">
+    <input type="search" id="aa-search-input" class="aa-input-search" placeholder="搜索..."
+        name="search" autocomplete="off" />
+    <svg class="aa-input-icon" viewBox="654 -372 1664 1664">
+        <path
+            d="M1806,332c0-123.3-43.8-228.8-131.5-316.5C1586.8-72.2,1481.3-116,1358-116s-228.8,43.8-316.5,131.5  C953.8,103.2,910,208.7,910,332s43.8,228.8,131.5,316.5C1129.2,736.2,1234.7,780,1358,780s228.8-43.8,316.5-131.5  C1762.2,560.8,1806,455.3,1806,332z M2318,1164c0,34.7-12.7,64.7-38,90s-55.3,38-90,38c-36,0-66-12.7-90-38l-343-342  c-119.3,82.7-252.3,124-399,124c-95.3,0-186.5-18.5-273.5-55.5s-162-87-225-150s-113-138-150-225S654,427.3,654,332  s18.5-186.5,55.5-273.5s87-162,150-225s138-113,225-150S1262.7-372,1358-372s186.5,18.5,273.5,55.5s162,87,225,150s113,138,150,225  S2062,236.7,2062,332c0,146.7-41.3,279.7-124,399l343,343C2305.7,1098.7,2318,1128.7,2318,1164z" />
+    </svg>
+</div>
+
+
+<script type="text/javascript" src="/js/lunr.min.js?1583058065"></script>
+<script type="text/javascript" src="/js/auto-complete.js?1583058065"></script>
+<script type="text/javascript">
+    
+        var baseurl = "https:\/\/k8s.imroc.io\/";
+    
+</script>
+
+<script src="https://res.cloudinary.com/jimmysong/raw/upload/rootsongjc-hugo/autocomplete.min.js"></script>
+<script src="https://res.cloudinary.com/jimmysong/raw/upload/rootsongjc-hugo/algoliasearch.min.js"></script>
+
+
+<script>
+    var client = algoliasearch("B6Q6PSGUV5", "5b4678e9995fe4211c4fa43ad2ffdab5");
+    var index = client.initIndex("kubernetes-practice-guide-zh");
+    
+    autocomplete('#aa-search-input', {
+        hint: false
+    }, {
+        source: autocomplete.sources.hits(index, {
+            hitsPerPage: 10
+        }),
+        
+        displayKey: 'name',
+        
+        templates: {
+            
+            suggestion: function (suggestion) {
+                return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
+                    .value + '</a>';
+            }
+        }
+    });
+</script>
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/deploy/" title="部署指南" class="dd-item 
+        parent
+        
+        
+        ">
+      <a href="/deploy/">
+          部署指南
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/deploy/kubeadm/" title="使用 kubeadm 部署集群" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/deploy/kubeadm/">
+          使用 kubeadm 部署集群
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/deploy/manual/" title="手工部署" class="dd-item 
+        parent
+        
+        
+        ">
+      <a href="/deploy/manual/">
+          手工部署
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/prepare/" title="部署前的准备工作" class="dd-item ">
+        <a href="/deploy/manual/prepare/">
+        部署前的准备工作
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/bootstrapping-etcd/" title="部署 ETCD" class="dd-item ">
+        <a href="/deploy/manual/bootstrapping-etcd/">
+        部署 ETCD
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/bootstrapping-master/" title="部署 Master" class="dd-item active">
+        <a href="/deploy/manual/bootstrapping-master/">
+        部署 Master
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/bootstrapping-worker-nodes/" title="部署 Worker 节点" class="dd-item ">
+        <a href="/deploy/manual/bootstrapping-worker-nodes/">
+        部署 Worker 节点
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/deploy-critical-addons/" title="部署关键组件" class="dd-item ">
+        <a href="/deploy/manual/deploy-critical-addons/">
+        部署关键组件
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/deploy/addons/" title="部署附加组件" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/deploy/addons/">
+          部署附加组件
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/addons/kube-proxy/" title="以 Daemonset 方式部署 kube-proxy" class="dd-item ">
+        <a href="/deploy/addons/kube-proxy/">
+        以 Daemonset 方式部署 kube-proxy
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/addons/coredns/" title="部署 CoreDNS" class="dd-item ">
+        <a href="/deploy/addons/coredns/">
+        部署 CoreDNS
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/deploy/appendix/" title="附录" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/deploy/appendix/">
+          附录
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/appendix/install-kubectl/" title="安装 kubectl" class="dd-item ">
+        <a href="/deploy/appendix/install-kubectl/">
+        安装 kubectl
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/best-practice/" title="最佳实践" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/best-practice/">
+          最佳实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/best-practice/deploy/" title="应用部署最佳实践" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/best-practice/deploy/">
+          应用部署最佳实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/" title="使用 PodDisruptionBudget 避免驱逐导致服务不可用" class="dd-item ">
+        <a href="/best-practice/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/">
+        使用 PodDisruptionBudget 避免驱逐导致服务不可用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/deploy/smooth-update-using-prestophook-and-readinessprobe/" title="使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断" class="dd-item ">
+        <a href="/best-practice/deploy/smooth-update-using-prestophook-and-readinessprobe/">
+        使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/deploy/use-antiaffinity-to-avoid-single-points-of-failure/" title="使用反亲和性避免单点故障" class="dd-item ">
+        <a href="/best-practice/deploy/use-antiaffinity-to-avoid-single-points-of-failure/">
+        使用反亲和性避免单点故障
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/deploy/scale-keepalive-service/" title="解决长连接服务扩容失效" class="dd-item ">
+        <a href="/best-practice/deploy/scale-keepalive-service/">
+        解决长连接服务扩容失效
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/big-cluster/" title="大规模集群优化" class="dd-item ">
+        <a href="/best-practice/big-cluster/">
+        大规模集群优化
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/best-practice/useful/" title="实用工具和技巧" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/best-practice/useful/">
+          实用工具和技巧
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/useful/efficient-kubectl/" title="kubectl 高效技巧" class="dd-item ">
+        <a href="/best-practice/useful/efficient-kubectl/">
+        kubectl 高效技巧
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/useful/yaml/" title="实用 yaml 片段" class="dd-item ">
+        <a href="/best-practice/useful/yaml/">
+        实用 yaml 片段
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/useful/shell/" title="实用命令与脚本" class="dd-item ">
+        <a href="/best-practice/useful/shell/">
+        实用命令与脚本
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/node-local-dns/" title="本地 DNS 缓存" class="dd-item ">
+        <a href="/best-practice/node-local-dns/">
+        本地 DNS 缓存
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/wildcard-domain-forward/" title="泛域名转发" class="dd-item ">
+        <a href="/best-practice/wildcard-domain-forward/">
+        泛域名转发
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/best-practice/permission/" title="集群权限控制" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/best-practice/permission/">
+          集群权限控制
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/permission/create-user-using-csr-api/" title="利用 CSR API 创建用户" class="dd-item ">
+        <a href="/best-practice/permission/create-user-using-csr-api/">
+        利用 CSR API 创建用户
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/permission/app/" title="控制应用权限" class="dd-item ">
+        <a href="/best-practice/permission/app/">
+        控制应用权限
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/permission/user/" title="控制用户权限" class="dd-item ">
+        <a href="/best-practice/permission/user/">
+        控制用户权限
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/best-practice/cert-management/" title="集群证书管理" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/best-practice/cert-management/">
+          集群证书管理
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/cert-management/autogenerate-certificate-with-cert-manager/" title="使用 cert-manager 自动生成证书" class="dd-item ">
+        <a href="/best-practice/cert-management/autogenerate-certificate-with-cert-manager/">
+        使用 cert-manager 自动生成证书
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/cert-management/install-cert-manger/" title="安装 cert-manager" class="dd-item ">
+        <a href="/best-practice/cert-management/install-cert-manger/">
+        安装 cert-manager
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/best-practice/configuration-management/" title="集群配置管理" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/best-practice/configuration-management/">
+          集群配置管理
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/best-practice/configuration-management/helm/" title="Helm" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/best-practice/configuration-management/helm/">
+          Helm
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3/" title="Helm V2 迁移到 V3" class="dd-item ">
+        <a href="/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3/">
+        Helm V2 迁移到 V3
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/configuration-management/helm/install-helm/" title="安装 Helm" class="dd-item ">
+        <a href="/best-practice/configuration-management/helm/install-helm/">
+        安装 Helm
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/cluster/" title="集群方案" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/cluster/">
+          集群方案
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/cluster/ingress/" title="Ingress 方案" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/cluster/ingress/">
+          Ingress 方案
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/cluster/ingress/nginx/" title="Nginx Ingress" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/cluster/ingress/nginx/">
+          Nginx Ingress
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/cluster/ingress/nginx/install-nginx-ingress/" title="安装 nginx ingress controller" class="dd-item ">
+        <a href="/cluster/ingress/nginx/install-nginx-ingress/">
+        安装 nginx ingress controller
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/cluster/ingress/traefik/" title="Traefik Ingress" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/cluster/ingress/traefik/">
+          Traefik Ingress
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/cluster/ingress/traefik/install-traefik-ingress/" title="安装 traefik ingress controller" class="dd-item ">
+        <a href="/cluster/ingress/traefik/install-traefik-ingress/">
+        安装 traefik ingress controller
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/cluster/metrics/" title="Metrics 方案" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/cluster/metrics/">
+          Metrics 方案
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/cluster/metrics/install-metrics-server/" title="安装 metrics server" class="dd-item ">
+        <a href="/cluster/metrics/install-metrics-server/">
+        安装 metrics server
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/cluster/network/" title="网络方案" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/cluster/network/">
+          网络方案
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/cluster/network/flannel/" title="Flannel" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/cluster/network/flannel/">
+          Flannel
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/cluster/network/flannel/deploy/" title="部署 Flannel" class="dd-item ">
+        <a href="/cluster/network/flannel/deploy/">
+        部署 Flannel
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/cluster/network/understanding/" title="彻底理解集群网络" class="dd-item ">
+        <a href="/cluster/network/understanding/">
+        彻底理解集群网络
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/cluster/runtime/" title="运行时方案" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/cluster/runtime/">
+          运行时方案
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/cluster/runtime/containerd/" title="Containerd" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/cluster/runtime/containerd/">
+          Containerd
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/cluster/runtime/containerd/install-containerd/" title="安装 containerd" class="dd-item ">
+        <a href="/cluster/runtime/containerd/install-containerd/">
+        安装 containerd
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/" title="排错指南" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/">
+          排错指南
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/handle/" title="处理实践" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/handle/">
+          处理实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/arp_cache-overflow/" title="arp_cache 溢出" class="dd-item ">
+        <a href="/troubleshooting/handle/arp_cache-overflow/">
+        arp_cache 溢出
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/runnig-out-of-inotify-watches/" title="inotify watch 耗尽" class="dd-item ">
+        <a href="/troubleshooting/handle/runnig-out-of-inotify-watches/">
+        inotify watch 耗尽
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/pid-full/" title="PID 耗尽" class="dd-item ">
+        <a href="/troubleshooting/handle/pid-full/">
+        PID 耗尽
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/memory-fragmentation/" title="内存碎片化" class="dd-item ">
+        <a href="/troubleshooting/handle/memory-fragmentation/">
+        内存碎片化
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/disk-full/" title="磁盘爆满" class="dd-item ">
+        <a href="/troubleshooting/handle/disk-full/">
+        磁盘爆满
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/high-load/" title="高负载" class="dd-item ">
+        <a href="/troubleshooting/handle/high-load/">
+        高负载
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/trick/" title="排错技巧" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/trick/">
+          排错技巧
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/trick/use-systemtap-to-locate-problems/" title="使用 Systemtap 定位疑难杂症" class="dd-item ">
+        <a href="/troubleshooting/trick/use-systemtap-to-locate-problems/">
+        使用 Systemtap 定位疑难杂症
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/trick/analysis-exitcode/" title="分析 ExitCode 定位 Pod 异常退出原因" class="dd-item ">
+        <a href="/troubleshooting/trick/analysis-exitcode/">
+        分析 ExitCode 定位 Pod 异常退出原因
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/trick/capture-packets-in-container/" title="容器内抓包定位网络问题" class="dd-item ">
+        <a href="/troubleshooting/trick/capture-packets-in-container/">
+        容器内抓包定位网络问题
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/cases/" title="案例分享" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/cases/">
+          案例分享
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed/" title="ARP 缓存爆满导致健康检查失败" class="dd-item ">
+        <a href="/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed/">
+        ARP 缓存爆满导致健康检查失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/dns-lookup-5s-delay/" title="DNS 5 秒延时" class="dd-item ">
+        <a href="/troubleshooting/cases/dns-lookup-5s-delay/">
+        DNS 5 秒延时
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/dns-resolution-abnormal/" title="DNS 解析异常" class="dd-item ">
+        <a href="/troubleshooting/cases/dns-resolution-abnormal/">
+        DNS 解析异常
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/schemaerror-when-using-kubectl-apply-or-edit/" title="kubectl edit 或者 apply 报 SchemaError" class="dd-item ">
+        <a href="/troubleshooting/cases/schemaerror-when-using-kubectl-apply-or-edit/">
+        kubectl edit 或者 apply 报 SchemaError
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/low-cps-from-lb-to-nodeport/" title="LB 压测 NodePort CPS 低" class="dd-item ">
+        <a href="/troubleshooting/cases/low-cps-from-lb-to-nodeport/">
+        LB 压测 NodePort CPS 低
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/livenesprobe-failed-occasionally/" title="Pod 偶尔存活检查失败" class="dd-item ">
+        <a href="/troubleshooting/cases/livenesprobe-failed-occasionally/">
+        Pod 偶尔存活检查失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/" title="Pod 访问另一个集群的 apiserver 有延时" class="dd-item ">
+        <a href="/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/">
+        Pod 访问另一个集群的 apiserver 有延时
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/kubernetes-overflow-and-drop/" title="神秘的溢出与丢包" class="dd-item ">
+        <a href="/troubleshooting/cases/kubernetes-overflow-and-drop/">
+        神秘的溢出与丢包
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/" title="访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时" class="dd-item ">
+        <a href="/troubleshooting/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/">
+        访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/no-route-to-host/" title="诡异的 No route to host" class="dd-item ">
+        <a href="/troubleshooting/cases/no-route-to-host/">
+        诡异的 No route to host
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/cross-vpc-connect-nodeport-timeout/" title="跨 VPC 访问 NodePort 经常超时" class="dd-item ">
+        <a href="/troubleshooting/cases/cross-vpc-connect-nodeport-timeout/">
+        跨 VPC 访问 NodePort 经常超时
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/cases/eviction-leads-to-service-disruption/" title="驱逐导致服务中断" class="dd-item ">
+        <a href="/troubleshooting/cases/eviction-leads-to-service-disruption/">
+        驱逐导致服务中断
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/summary/" title="踩坑总结" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/summary/">
+          踩坑总结
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/summary/cgroup-leaking/" title="cgroup 泄露" class="dd-item ">
+        <a href="/troubleshooting/summary/cgroup-leaking/">
+        cgroup 泄露
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/summary/conntrack-conflict/" title="conntrack 冲突导致丢包" class="dd-item ">
+        <a href="/troubleshooting/summary/conntrack-conflict/">
+        conntrack 冲突导致丢包
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/summary/tcp_tw_recycle-causes-packet-loss/" title="tcp tw recycle 引发丢包" class="dd-item ">
+        <a href="/troubleshooting/summary/tcp_tw_recycle-causes-packet-loss/">
+        tcp tw recycle 引发丢包
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/" title="使用 oom-guard 在用户态处理 cgroup OOM" class="dd-item ">
+        <a href="/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/">
+        使用 oom-guard 在用户态处理 cgroup OOM
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/problems/" title="问题排查" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/problems/">
+          问题排查
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/problems/pod/" title="Pod 排错" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/problems/pod/">
+          Pod 排错
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/slow-terminating/" title="Pod Terminating 慢" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/slow-terminating/">
+        Pod Terminating 慢
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/keep-containercreating-or-waiting/" title="Pod 一直处于 ContainerCreating 或 Waiting 状态" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/keep-containercreating-or-waiting/">
+        Pod 一直处于 ContainerCreating 或 Waiting 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/keep-error/" title="Pod 一直处于 Error 状态" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/keep-error/">
+        Pod 一直处于 Error 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/keep-imageinspecterror/" title="Pod 一直处于 ImageInspectError 状态" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/keep-imageinspecterror/">
+        Pod 一直处于 ImageInspectError 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/keep-imagepullbackoff/" title="Pod 一直处于 ImagePullBackOff 状态" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/keep-imagepullbackoff/">
+        Pod 一直处于 ImagePullBackOff 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/keep-pending/" title="Pod 一直处于 Pending 状态" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/keep-pending/">
+        Pod 一直处于 Pending 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/keep-terminating/" title="Pod 一直处于 Terminating 状态" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/keep-terminating/">
+        Pod 一直处于 Terminating 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/keep-unkown/" title="Pod 一直处于 Unknown 状态" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/keep-unkown/">
+        Pod 一直处于 Unknown 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/healthcheck-failed/" title="Pod 健康检查失败" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/healthcheck-failed/">
+        Pod 健康检查失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/keep-crashloopbackoff/" title="Pod 处于 CrashLoopBackOff 状态" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/keep-crashloopbackoff/">
+        Pod 处于 CrashLoopBackOff 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/pod/container-proccess-exit-by-itself/" title="容器进程主动退出" class="dd-item ">
+        <a href="/troubleshooting/problems/pod/container-proccess-exit-by-itself/">
+        容器进程主动退出
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/problems/others/" title="其它排错" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/problems/others/">
+          其它排错
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/others/job-cannot-delete/" title="Job 无法被删除" class="dd-item ">
+        <a href="/troubleshooting/problems/others/job-cannot-delete/">
+        Job 无法被删除
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/others/kubectl-exec-or-logs-failed/" title="kubectl 执行 exec 或 logs 失败" class="dd-item ">
+        <a href="/troubleshooting/problems/others/kubectl-exec-or-logs-failed/">
+        kubectl 执行 exec 或 logs 失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/others/kernel-solft-lockup/" title="内核软死锁" class="dd-item ">
+        <a href="/troubleshooting/problems/others/kernel-solft-lockup/">
+        内核软死锁
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/problems/errors/" title="经典报错" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/problems/errors/">
+          经典报错
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/errors/arp_cache-neighbor-table-overflow/" title="arp_cache: neighbor table overflow!" class="dd-item ">
+        <a href="/troubleshooting/problems/errors/arp_cache-neighbor-table-overflow/">
+        arp_cache: neighbor table overflow!
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/errors/cannot-allocate-memory/" title="Cannot allocate memory" class="dd-item ">
+        <a href="/troubleshooting/problems/errors/cannot-allocate-memory/">
+        Cannot allocate memory
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/errors/no-space-left-on-device/" title="no space left on device" class="dd-item ">
+        <a href="/troubleshooting/problems/errors/no-space-left-on-device/">
+        no space left on device
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/problems/network/" title="网络排错" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/problems/network/">
+          网络排错
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/network/dns/" title="DNS 解析异常" class="dd-item ">
+        <a href="/troubleshooting/problems/network/dns/">
+        DNS 解析异常
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/network/lb-healthcheck-failed/" title="LB 健康检查失败" class="dd-item ">
+        <a href="/troubleshooting/problems/network/lb-healthcheck-failed/">
+        LB 健康检查失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/network/service-unrecheable/" title="Service 不通" class="dd-item ">
+        <a href="/troubleshooting/problems/network/service-unrecheable/">
+        Service 不通
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/network/service-cannot-resolve/" title="Service 无法解析" class="dd-item ">
+        <a href="/troubleshooting/problems/network/service-cannot-resolve/">
+        Service 无法解析
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/network/low-throughput/" title="网络性能差" class="dd-item ">
+        <a href="/troubleshooting/problems/network/low-throughput/">
+        网络性能差
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/problems/cluster/" title="集群排错" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/problems/cluster/">
+          集群排错
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/cluster/daemonset-not-scheduled/" title="Daemonset 没有被调度" class="dd-item ">
+        <a href="/troubleshooting/problems/cluster/daemonset-not-scheduled/">
+        Daemonset 没有被调度
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/problems/cluster/node-all-gone/" title="Node 全部消失" class="dd-item ">
+        <a href="/troubleshooting/problems/cluster/node-all-gone/">
+        Node 全部消失
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/domains/" title="领域应用" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/domains/">
+          领域应用
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/domains/big-data/" title="大数据" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/domains/big-data/">
+          大数据
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/domains/big-data/flink-on-kubernetes/" title="Flink on Kubernetes" class="dd-item ">
+        <a href="/domains/big-data/flink-on-kubernetes/">
+        Flink on Kubernetes
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/dev/" title="开发指南" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/dev/">
+          开发指南
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/dev/golang-build/" title="Go 语言编译原理与优化" class="dd-item ">
+        <a href="/dev/golang-build/">
+        Go 语言编译原理与优化
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+        <li>
+          <a class="padding">
+            <i class="fas fa-language fa-fw"></i>
+          <div class="select-style">
+            <select id="select-language" onchange="location = this.value;">
+          
+          
+          
+              
+              
+                  
+                    
+                    
+                      <option id="zh" value="https://k8s.imroc.io/deploy/manual/bootstrapping-master/" selected>简体中文</option>
+                    
+                  
+              
+                  
+              
+          
+        </select>
+        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          width="255px" height="255px" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255;" xml:space="preserve">
+          <g>
+            <g id="arrow-drop-down">
+              <polygon points="0,63.75 127.5,191.25 255,63.75 		" />
+            </g>
+          </g>
+        </svg>
+        </div>
+        </a>
+        </li>
+      
+      
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> 清理历史记录</a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <center>
+
+    
+    <a class="github-button" href="https://github.com/imroc/kubernetes-practice-guide" data-icon="octicon-star"
+        data-show-count="true" aria-label="Star imroc/kubernetes-practice-guide on GitHub">Star</a>
+
+    
+    <a class="github-button" href="https://github.com/imroc/kubernetes-practice-guide/fork"
+        data-icon="octicon-repo-forked" data-show-count="true"
+        aria-label="Fork imroc/kubernetes-practice-guide on GitHub">Fork</a>
+
+</center>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/deploy/manual/bootstrapping-master.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">编辑当前页</span>
+                    </a>
+                  </div>
+                  
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/deploy/'>部署指南</a> > <a href='/deploy/manual/'>手工部署</a> > 部署 Master
+          
+         
+          
+         
+          
+         
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#准备证书-a-idprepare-certsa">准备证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></a>
+      <ul>
+        <li><a href="#为-kube-apiserver-签发证书-a-idsign-certs-for-kube-apiservera">为 kube-apiserver 签发证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+        <li><a href="#为-kube-controller-manager-签发证书-a-idsign-certs-for-kube-controller-managera">为 kube-controller-manager 签发证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+        <li><a href="#为-kube-scheduler-签发证书-a-idsign-certs-for-kube-schedulera">为 kube-scheduler 签发证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+        <li><a href="#签发-service-account-密钥对-a-idsign-certs-for-serviceaccounta">签发 Service Account 密钥对 <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+        <li><a href="#为管理员签发证书-a-idsign-certs-for-admina">为管理员签发证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+      </ul>
+    </li>
+    <li><a href="#准备-kubeconfig-a-idprepare-kubeconfiga">准备 kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></a>
+      <ul>
+        <li><a href="#确定-apiserver-访问入口">确定 apiserver 访问入口</a></li>
+        <li><a href="#为-kube-controller-manager-创建-kubeconfig-a-idcreate-kubeconfig-for-kube-controller-managera">为 kube-controller-manager 创建 kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+        <li><a href="#为-kube-scheduler-创建-kubeconfig-a-idcreate-kubeconfig-for-kube-schedulera">为 kube-scheduler 创建 kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+        <li><a href="#为管理员创建-kubeconfig-a-idcreate-kubeconfig-for-admina">为管理员创建 kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+      </ul>
+    </li>
+    <li><a href="#下载安装控制面组件">下载安装控制面组件</a></li>
+    <li><a href="#配置控制面组件-a-idconfigure-control-planea">配置控制面组件 <!-- raw HTML omitted --><!-- raw HTML omitted --></a>
+      <ul>
+        <li><a href="#配置-kube-apiserver-a-idconfigure-kube-apiservera">配置 kube-apiserver <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+        <li><a href="#配置-kube-controller-manager-a-idconfigure-kube-controller-managera">配置 kube-controller-manager <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+        <li><a href="#配置-kube-scheduler-a-idconfigure-kube-schedulera">配置 kube-scheduler <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+      </ul>
+    </li>
+    <li><a href="#启动">启动</a></li>
+    <li><a href="#rbac-授权-kube-apiserver-访问-kubelet">RBAC 授权 kube-apiserver 访问 kubelet</a></li>
+    <li><a href="#rbac-授权-kubelet-创建-csr-与自动签发和更新证书-a-idauthorize-kubelet-create-csr-and-auto-approvala">RBAC 授权 kubelet 创建 CSR 与自动签发和更新证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+    <li><a href="#创建-bootstrap-token-与-bootstrap-kubeconfig-a-idcreate-bootstrap-token-and-bootstrap-kubeconfiga">创建 Bootstrap Token 与 bootstrap-kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              部署 Master
+            </h1>
+          
+
+        
+
+
+
+<h2 id="准备证书-a-idprepare-certsa">准备证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></h2>
+<p>Master 节点的准备证书操作只需要做一次，将生成的证书拷到每个 Master 节点上以复用。</p>
+<p>前提条件:</p>
+<ul>
+<li>签发证书需要用到 <a href="prepare.md#generate-ca-cert">生成 CA 证书</a> 时创建的 CA 证书及其密钥文件，确保它们在当前目录</li>
+<li>确保 cfssl 在当前环境已安装，安装方法参考 <a href="prepare.md#install-cfssl">这里</a></li>
+</ul>
+<h3 id="为-kube-apiserver-签发证书-a-idsign-certs-for-kube-apiservera">为 kube-apiserver 签发证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<p>kube-apiserver 是 k8s 的访问核心，所有 K8S 组件和用户 kubectl 操作都会请求 kube-apiserver，通常启用 tls 证书认证，证书里面需要包含 kube-apiserver 可能被访问的地址，这样 client 校验 kube-apiserver 证书时才会通过，集群内的 Pod 一般通过 kube-apiserver 的 Service 名称访问，可能的 Service 名称有:</p>
+<ul>
+<li><code>kubernetes</code></li>
+<li><code>kubernetes.default</code></li>
+<li><code>kubernetes.default.svc</code></li>
+<li><code>kubernetes.default.svc.cluster</code></li>
+<li><code>kubernetes.default.svc.cluster.local</code></li>
+</ul>
+<p>通过集群外也可能访问 kube-apiserver，比如使用 kubectl，或者部署在集群外的服务会连 kube-apiserver (比如部署在集群外的 Promethues 采集集群指标做监控)，这里列一下通过集群外连 kube-apiserver 有哪些可能地址:</p>
+<ul>
+<li><code>127.0.0.1</code>: 在 Master 所在机器通过 127.0.0.1 访问本机 kube-apiserver</li>
+<li>Service CIDR 的第一个 IP，比如 flanneld 以 daemonset 部署在每个节点，使用 hostNetwork 而不是集群网络，这时无法通过 service 名称访问 apiserver，因为使用 hostNetwork 无法解析 service 名称 (使用的 DNS 不是集群 DNS)，它会使用 apiserver 内部的 CLUSTER IP 去请求 apiserver。 kube-controller-manager 的 <code>--service-cluster-ip-range</code> 启动参数是 <code>10.32.0.0/16</code>，那么第一个 IP 就是 <code>10.32.0.1</code></li>
+<li>自定义域名: 配了 DNS，通过域名访问 kube-apiserver，也要将域名写入证书</li>
+<li>LB IP: 如果 Master 节点前面挂了一个负载均衡器，外界可以通过 LB IP 来访问 kube-apiserver</li>
+<li>Master 节点 IP: 如果没有 Master 负载均衡器，管理员在节点上执行 kubectl 通常使用 Master 节点 IP 访问 kube-apiserver</li>
+</ul>
+<p>准备 CSR 文件:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; apiserver-csr.json <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">{
+</span><span style="color:#e6db74">    &#34;CN&#34;: &#34;kubernetes&#34;,
+</span><span style="color:#e6db74">    &#34;hosts&#34;: [
+</span><span style="color:#e6db74">      &#34;127.0.0.1&#34;,
+</span><span style="color:#e6db74">      &#34;10.32.0.1&#34;,
+</span><span style="color:#e6db74">      &#34;10.200.16.79&#34;,
+</span><span style="color:#e6db74">      &#34;kubernetes&#34;,
+</span><span style="color:#e6db74">      &#34;kubernetes.default&#34;,
+</span><span style="color:#e6db74">      &#34;kubernetes.default.svc&#34;,
+</span><span style="color:#e6db74">      &#34;kubernetes.default.svc.cluster&#34;,
+</span><span style="color:#e6db74">      &#34;kubernetes.default.svc.cluster.local&#34;
+</span><span style="color:#e6db74">    ],
+</span><span style="color:#e6db74">    &#34;key&#34;: {
+</span><span style="color:#e6db74">        &#34;algo&#34;: &#34;rsa&#34;,
+</span><span style="color:#e6db74">        &#34;size&#34;: 2048
+</span><span style="color:#e6db74">    },
+</span><span style="color:#e6db74">    &#34;names&#34;: [
+</span><span style="color:#e6db74">        {
+</span><span style="color:#e6db74">            &#34;C&#34;: &#34;CN&#34;,
+</span><span style="color:#e6db74">            &#34;ST&#34;: &#34;SiChuan&#34;,
+</span><span style="color:#e6db74">            &#34;L&#34;: &#34;Chengdu&#34;,
+</span><span style="color:#e6db74">            &#34;O&#34;: &#34;Kubernetes&#34;,
+</span><span style="color:#e6db74">            &#34;OU&#34;: &#34;Kube API Server&#34;
+</span><span style="color:#e6db74">        }
+</span><span style="color:#e6db74">    ]
+</span><span style="color:#e6db74">}
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><blockquote>
+<p>hosts 这里只准备了必要的，根据需求可增加，通常 Master 节点 IP 也都要加进去，你可以执行了上面的命令后再编辑一下 <code>apiserver-csr.json</code>，将需要 hosts 都加进去。</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cfssl gencert <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca<span style="color:#f92672">=</span>ca.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca-key<span style="color:#f92672">=</span>ca-key.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -config<span style="color:#f92672">=</span>ca-config.json <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -profile<span style="color:#f92672">=</span>kubernetes <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  apiserver-csr.json | cfssljson -bare apiserver
+</code></pre></div><p>会生成下面两个重要的文件:</p>
+<ul>
+<li><code>apiserver-key.pem</code>: kube-apiserver 证书密钥</li>
+<li><code>apiserver.pem</code>: kube-apiserver 证书</li>
+</ul>
+<h3 id="为-kube-controller-manager-签发证书-a-idsign-certs-for-kube-controller-managera">为 kube-controller-manager 签发证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; kube-controller-manager-csr.json <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">{
+</span><span style="color:#e6db74">  &#34;CN&#34;: &#34;system:kube-controller-manager&#34;,
+</span><span style="color:#e6db74">  &#34;key&#34;: {
+</span><span style="color:#e6db74">    &#34;algo&#34;: &#34;rsa&#34;,
+</span><span style="color:#e6db74">    &#34;size&#34;: 2048
+</span><span style="color:#e6db74">  },
+</span><span style="color:#e6db74">  &#34;names&#34;: [
+</span><span style="color:#e6db74">    {
+</span><span style="color:#e6db74">      &#34;C&#34;: &#34;CN&#34;,
+</span><span style="color:#e6db74">      &#34;ST&#34;: &#34;SiChuan&#34;,
+</span><span style="color:#e6db74">      &#34;L&#34;: &#34;Chengdu&#34;,
+</span><span style="color:#e6db74">      &#34;O&#34;: &#34;system:kube-controller-manager&#34;,
+</span><span style="color:#e6db74">      &#34;OU&#34;: &#34;Kube Controller Manager&#34;
+</span><span style="color:#e6db74">    }
+</span><span style="color:#e6db74">  ]
+</span><span style="color:#e6db74">}
+</span><span style="color:#e6db74">EOF</span>
+
+cfssl gencert <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca<span style="color:#f92672">=</span>ca.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca-key<span style="color:#f92672">=</span>ca-key.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -config<span style="color:#f92672">=</span>ca-config.json <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -profile<span style="color:#f92672">=</span>kubernetes <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  kube-controller-manager-csr.json | cfssljson -bare kube-controller-manager
+</code></pre></div><p>生成以下两个文件:</p>
+<ul>
+<li><code>kube-controller-manager-key.pem</code>: kube-controller-manager 证书密钥</li>
+<li><code>kube-controller-manager.pem</code>: kube-controller-manager 证书</li>
+</ul>
+<h3 id="为-kube-scheduler-签发证书-a-idsign-certs-for-kube-schedulera">为 kube-scheduler 签发证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; kube-scheduler-csr.json <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">{
+</span><span style="color:#e6db74">  &#34;CN&#34;: &#34;system:kube-scheduler&#34;,
+</span><span style="color:#e6db74">  &#34;key&#34;: {
+</span><span style="color:#e6db74">    &#34;algo&#34;: &#34;rsa&#34;,
+</span><span style="color:#e6db74">    &#34;size&#34;: 2048
+</span><span style="color:#e6db74">  },
+</span><span style="color:#e6db74">  &#34;names&#34;: [
+</span><span style="color:#e6db74">    {
+</span><span style="color:#e6db74">      &#34;C&#34;: &#34;CN&#34;,
+</span><span style="color:#e6db74">      &#34;ST&#34;: &#34;SiChuan&#34;,
+</span><span style="color:#e6db74">      &#34;L&#34;: &#34;Chengdu&#34;,
+</span><span style="color:#e6db74">      &#34;O&#34;: &#34;system:kube-scheduler&#34;,
+</span><span style="color:#e6db74">      &#34;OU&#34;: &#34;Kube Scheduler&#34;
+</span><span style="color:#e6db74">    }
+</span><span style="color:#e6db74">  ]
+</span><span style="color:#e6db74">}
+</span><span style="color:#e6db74">EOF</span>
+
+cfssl gencert <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca<span style="color:#f92672">=</span>ca.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca-key<span style="color:#f92672">=</span>ca-key.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -config<span style="color:#f92672">=</span>ca-config.json <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -profile<span style="color:#f92672">=</span>kubernetes <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  kube-scheduler-csr.json | cfssljson -bare kube-scheduler
+
+</code></pre></div><p>生成以下两个文件:</p>
+<ul>
+<li><code>kube-scheduler-key.pem</code>: kube-scheduler 证书密钥</li>
+<li><code>kube-scheduler.pem</code>: kube-scheduler 证书公钥</li>
+</ul>
+<h3 id="签发-service-account-密钥对-a-idsign-certs-for-serviceaccounta">签发 Service Account 密钥对 <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<p><code>kube-controller-manager</code> 会使用此密钥对来给 service account 签发 token，更多详情参考官方文档: <a href="https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/">https://kubernetes.io/docs/reference/access-authn-authz/service-accounts-admin/</a></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; service-account-csr.json <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">{
+</span><span style="color:#e6db74">  &#34;CN&#34;: &#34;service-accounts&#34;,
+</span><span style="color:#e6db74">  &#34;key&#34;: {
+</span><span style="color:#e6db74">    &#34;algo&#34;: &#34;rsa&#34;,
+</span><span style="color:#e6db74">    &#34;size&#34;: 2048
+</span><span style="color:#e6db74">  },
+</span><span style="color:#e6db74">  &#34;names&#34;: [
+</span><span style="color:#e6db74">    {
+</span><span style="color:#e6db74">      &#34;C&#34;: &#34;CN&#34;,
+</span><span style="color:#e6db74">      &#34;ST&#34;: &#34;SiChuan&#34;,
+</span><span style="color:#e6db74">      &#34;L&#34;: &#34;Chengdu&#34;,
+</span><span style="color:#e6db74">      &#34;O&#34;: &#34;Kubernetes&#34;,
+</span><span style="color:#e6db74">      &#34;OU&#34;: &#34;Service Account&#34;
+</span><span style="color:#e6db74">    }
+</span><span style="color:#e6db74">  ]
+</span><span style="color:#e6db74">}
+</span><span style="color:#e6db74">EOF</span>
+
+cfssl gencert <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca<span style="color:#f92672">=</span>ca.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca-key<span style="color:#f92672">=</span>ca-key.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -config<span style="color:#f92672">=</span>ca-config.json <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -profile<span style="color:#f92672">=</span>kubernetes <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  service-account-csr.json | cfssljson -bare service-account
+</code></pre></div><p>生成以下两个文件:</p>
+<ul>
+<li><code>service-account-key.pem</code>: service account 证书公钥</li>
+<li><code>service-account.pem</code>: service account 证书私钥</li>
+</ul>
+<h3 id="为管理员签发证书-a-idsign-certs-for-admina">为管理员签发证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<p>为最高权限管理员证书:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; admin-csr.json <span style="color:#e6db74">&lt;&lt;EOF
+</span><span style="color:#e6db74">{
+</span><span style="color:#e6db74">  &#34;CN&#34;: &#34;admin&#34;,
+</span><span style="color:#e6db74">  &#34;key&#34;: {
+</span><span style="color:#e6db74">    &#34;algo&#34;: &#34;rsa&#34;,
+</span><span style="color:#e6db74">    &#34;size&#34;: 2048
+</span><span style="color:#e6db74">  },
+</span><span style="color:#e6db74">  &#34;names&#34;: [
+</span><span style="color:#e6db74">    {
+</span><span style="color:#e6db74">      &#34;C&#34;: &#34;CN&#34;,
+</span><span style="color:#e6db74">      &#34;ST&#34;: &#34;SiChuan&#34;,
+</span><span style="color:#e6db74">      &#34;L&#34;: &#34;Chengdu&#34;,
+</span><span style="color:#e6db74">      &#34;O&#34;: &#34;system:masters&#34;,
+</span><span style="color:#e6db74">      &#34;OU&#34;: &#34;System&#34;
+</span><span style="color:#e6db74">    }
+</span><span style="color:#e6db74">  ]
+</span><span style="color:#e6db74">}
+</span><span style="color:#e6db74">EOF</span>
+
+cfssl gencert <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca<span style="color:#f92672">=</span>ca.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -ca-key<span style="color:#f92672">=</span>ca-key.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -config<span style="color:#f92672">=</span>ca-config.json <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  -profile<span style="color:#f92672">=</span>kubernetes <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  admin-csr.json | cfssljson -bare admin
+</code></pre></div><p>生成一下两个文件:</p>
+<ul>
+<li><code>admin-key.pem</code>: 管理员证书密钥</li>
+<li><code>admin.pem</code>: 管理员证书</li>
+</ul>
+<p>给用户签发证书后，用户访问 kube-apiserver 的请求就带上此证书，kube-apiserver 校验成功后表示认证成功，但还需要授权才允许访问，kube-apiserver 会提取证书中字段 <code>CN</code> 作为用户名，这里用户名叫 <code>admin</code>，但这只是个名称标识，它有什么权限呢？<code>admin</code> 是预置最高权限的用户名吗？不是的！不过 kube-apiserver 确实预置了一个最高权限的 <code>ClusterRole</code>，叫做 <code>cluster-admin</code>，还有个预置的 <code>ClusterRoleBinding</code> 将 <code>cluster-admin</code> 这个 <code>ClusterRole</code> 与 <code>system:masters</code> 这个用户组关联起来了，所以说我们给用户签发证书只要在 <code>system:masters</code> 这个用户组就拥有了最高权限。</p>
+<p>以此类推，我们签发证书时也可以将用户设置到其它用户组，然后为其创建 RBAC 规则来细粒度的控制权限，减少安全隐患。</p>
+<p>更多 K8S 预置的 Role 与 RoleBinding 请参考: <a href="https://kubernetes.io/docs/reference/access-authn-authz/rbac/#default-roles-and-role-bindings">https://kubernetes.io/docs/reference/access-authn-authz/rbac/#default-roles-and-role-bindings</a></p>
+<h2 id="准备-kubeconfig-a-idprepare-kubeconfiga">准备 kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></h2>
+<p>部署 Master 的准备 kubeconfig 操作只需要做一次，将生成的 kubeconfig 拷到每个 Master 节点上以复用。</p>
+<p><code>kubeconfig</code> 主要是各组件以及用户访问 apiserver 的必要配置，包含 apiserver 地址、client 证书与 CA 证书等信息。下面介绍为各个组件生成 <code>kubeconfig</code> 的方法。</p>
+<p>前提条件:</p>
+<ul>
+<li>我们使用 <code>kubectl</code> 来辅助生成 kubeconfig，确保 kubectl 已安装。</li>
+<li>生成 kubeconfig 会用到之前<a href="#prepare-certs">准备证书</a>时创建的证书与密钥，确保这些生成的文件在当前目录。</li>
+</ul>
+<h3 id="确定-apiserver-访问入口">确定 apiserver 访问入口</h3>
+<p>所有组件都会去连 apiserver，所以首先需要确定你的 apiserver 访问入口的地址:</p>
+<ul>
+<li>如果所有 master 组件都部署在一个节点，它们可以通过 127.0.0.1 这个 IP访问 apiserver。</li>
+<li>如果 master 有多个节点，但 apiserver 只有一个实例，可以直接写 apiserver 所在机器的内网 IP 访问地址。</li>
+<li>如果做了高可用，有多个 apiserver 实例，前面挂了负载均衡器，就可以写负载均衡器的访问地址。</li>
+<li>入口地址的域名或IP必须是在之前 <a href="#sign-certs-for-kube-apiserver">为 kube-apiserver 签发证书</a> 的 hosts 列表里。</li>
+</ul>
+<p>这里我们用 <code>APISERVER</code> 这个变量表示 apiserver 的访问地址，其它组件都需要配置这个地址，根据自身情况改下这个变量的值:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">APISERVER<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://10.200.16.79:6443&#34;</span>
+</code></pre></div><h3 id="为-kube-controller-manager-创建-kubeconfig-a-idcreate-kubeconfig-for-kube-controller-managera">为 kube-controller-manager 创建 kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">APISERVER<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://10.200.16.79:6443&#34;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl config set-cluster roc <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --certificate-authority<span style="color:#f92672">=</span>ca.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --embed-certs<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --server<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>APISERVER<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --kubeconfig<span style="color:#f92672">=</span>kube-controller-manager.kubeconfig
+
+kubectl config set-credentials system:kube-controller-manager <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --client-certificate<span style="color:#f92672">=</span>kube-controller-manager.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --client-key<span style="color:#f92672">=</span>kube-controller-manager-key.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --embed-certs<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --kubeconfig<span style="color:#f92672">=</span>kube-controller-manager.kubeconfig
+
+kubectl config set-context default <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --cluster<span style="color:#f92672">=</span>roc <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --user<span style="color:#f92672">=</span>system:kube-controller-manager <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --kubeconfig<span style="color:#f92672">=</span>kube-controller-manager.kubeconfig
+
+kubectl config use-context default --kubeconfig<span style="color:#f92672">=</span>kube-controller-manager.kubeconfig
+</code></pre></div><p>生成文件:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">kube-controller-manager.kubeconfig
+</code></pre></div><h3 id="为-kube-scheduler-创建-kubeconfig-a-idcreate-kubeconfig-for-kube-schedulera">为 kube-scheduler 创建 kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">APISERVER<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://10.200.16.79:6443&#34;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl config set-cluster roc <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --certificate-authority<span style="color:#f92672">=</span>ca.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --embed-certs<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --server<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>APISERVER<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --kubeconfig<span style="color:#f92672">=</span>kube-scheduler.kubeconfig
+
+kubectl config set-credentials system:kube-scheduler <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --client-certificate<span style="color:#f92672">=</span>kube-scheduler.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --client-key<span style="color:#f92672">=</span>kube-scheduler-key.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --embed-certs<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --kubeconfig<span style="color:#f92672">=</span>kube-scheduler.kubeconfig
+
+kubectl config set-context default <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --cluster<span style="color:#f92672">=</span>roc <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --user<span style="color:#f92672">=</span>system:kube-scheduler <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --kubeconfig<span style="color:#f92672">=</span>kube-scheduler.kubeconfig
+
+kubectl config use-context default --kubeconfig<span style="color:#f92672">=</span>kube-scheduler.kubeconfig
+</code></pre></div><p>生成文件:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">kube-scheduler.kubeconfig
+</code></pre></div><h3 id="为管理员创建-kubeconfig-a-idcreate-kubeconfig-for-admina">为管理员创建 kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<p>这里为管理员生成 kubeconfig，方便使用 kubectl 来管理集群:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">APISERVER<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://10.200.16.79:6443&#34;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl config set-cluster roc <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --certificate-authority<span style="color:#f92672">=</span>ca.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --embed-certs<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --server<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>APISERVER<span style="color:#e6db74">}</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --kubeconfig<span style="color:#f92672">=</span>admin.kubeconfig
+
+kubectl config set-credentials admin <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --client-certificate<span style="color:#f92672">=</span>admin.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --client-key<span style="color:#f92672">=</span>admin-key.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --embed-certs<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --kubeconfig<span style="color:#f92672">=</span>admin.kubeconfig
+
+kubectl config set-context default <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --cluster<span style="color:#f92672">=</span>roc <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --user<span style="color:#f92672">=</span>admin <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --kubeconfig<span style="color:#f92672">=</span>admin.kubeconfig
+
+kubectl config use-context default --kubeconfig<span style="color:#f92672">=</span>admin.kubeconfig
+</code></pre></div><p>生成文件:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">admin.kubeconfig
+</code></pre></div><p>将 <code>admin.kubeconfig</code> 放到需要执行 kubectl 的机器的 <code>~/.kube/config</code> 这个目录，这是 kubectl 读取 kubeconfig 的默认路径，执行 kubectl 时就不需要指定 kubeconfig 路径了:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mv admin.kubeconfig ~/.kube/config
+</code></pre></div><h2 id="下载安装控制面组件">下载安装控制面组件</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget -q --show-progress --https-only --timestamping <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-apiserver <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-controller-manager <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kube-scheduler
+
+chmod +x kube-apiserver kube-controller-manager kube-scheduler
+mv kube-apiserver kube-controller-manager kube-scheduler /usr/local/bin/
+</code></pre></div><h2 id="配置控制面组件-a-idconfigure-control-planea">配置控制面组件 <!-- raw HTML omitted --><!-- raw HTML omitted --></h2>
+<p>准备配置相关目录:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo mkdir -p /etc/kubernetes/config
+sudo mkdir -p /var/lib/kubernetes
+</code></pre></div><p>确定集群的集群网段 (Pod IP 占用网段)和 serivce 网段 (service 的 cluster ip 占用网段)，它们可以没有交集。</p>
+<p>记集群网段为 CLUSTER_CIDR:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">CLUSTER_CIDR<span style="color:#f92672">=</span>10.10.0.0/16
+</code></pre></div><p>记 service 网段为 SERVICE_CIDR:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">SERVICE_CIDR<span style="color:#f92672">=</span>10.32.0.0/16
+</code></pre></div><h3 id="配置-kube-apiserver-a-idconfigure-kube-apiservera">配置 kube-apiserver <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<p>放入证书文件:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo cp ca.pem ca-key.pem apiserver-key.pem apiserver.pem <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  service-account-key.pem service-account.pem /var/lib/kubernetes/
+</code></pre></div><p>记所有 ETCD 实例的访问地址为 <code>ETCD_SERVERS</code> (替换 IP 为所有 ETCD 节点内网 IP):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ETCD_SERVERS<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://10.200.16.79:2379,https://10.200.17.6:2379,https://10.200.16.70:2379&#34;</span>
+</code></pre></div><p>记当前节点内网 IP 为 INTERNAL_IP:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">INTERNAL_IP<span style="color:#f92672">=</span>10.200.16.79
+</code></pre></div><p>配置 systemd:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | sudo tee /etc/systemd/system/kube-apiserver.service
+</span><span style="color:#e6db74">[Unit]
+</span><span style="color:#e6db74">Description=Kubernetes API Server
+</span><span style="color:#e6db74">Documentation=https://github.com/kubernetes/kubernetes
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">[Service]
+</span><span style="color:#e6db74">ExecStart=/usr/local/bin/kube-apiserver \\
+</span><span style="color:#e6db74">  --enable-bootstrap-token-auth=true \\
+</span><span style="color:#e6db74">  --advertise-address=${INTERNAL_IP} \\
+</span><span style="color:#e6db74">  --allow-privileged=true \\
+</span><span style="color:#e6db74">  --apiserver-count=3 \\
+</span><span style="color:#e6db74">  --audit-log-maxage=30 \\
+</span><span style="color:#e6db74">  --audit-log-maxbackup=3 \\
+</span><span style="color:#e6db74">  --audit-log-maxsize=100 \\
+</span><span style="color:#e6db74">  --audit-log-path=/var/log/audit.log \\
+</span><span style="color:#e6db74">  --authorization-mode=Node,RBAC \\
+</span><span style="color:#e6db74">  --bind-address=0.0.0.0 \\
+</span><span style="color:#e6db74">  --client-ca-file=/var/lib/kubernetes/ca.pem \\
+</span><span style="color:#e6db74">  --enable-admission-plugins=NamespaceLifecycle,NodeRestriction,LimitRanger,ServiceAccount,DefaultStorageClass,ResourceQuota \\
+</span><span style="color:#e6db74">  --etcd-cafile=/var/lib/kubernetes/ca.pem \\
+</span><span style="color:#e6db74">  --etcd-certfile=/var/lib/kubernetes/apiserver.pem \\
+</span><span style="color:#e6db74">  --etcd-keyfile=/var/lib/kubernetes/apiserver-key.pem \\
+</span><span style="color:#e6db74">  --etcd-servers=${ETCD_SERVERS} \\
+</span><span style="color:#e6db74">  --event-ttl=1h \\
+</span><span style="color:#e6db74">  --kubelet-certificate-authority=/var/lib/kubernetes/ca.pem \\
+</span><span style="color:#e6db74">  --kubelet-client-certificate=/var/lib/kubernetes/apiserver.pem \\
+</span><span style="color:#e6db74">  --kubelet-client-key=/var/lib/kubernetes/apiserver-key.pem \\
+</span><span style="color:#e6db74">  --kubelet-https=true \\
+</span><span style="color:#e6db74">  --runtime-config=api/all \\
+</span><span style="color:#e6db74">  --service-account-key-file=/var/lib/kubernetes/service-account.pem \\
+</span><span style="color:#e6db74">  --service-cluster-ip-range=${SERVICE_CIDR} \\
+</span><span style="color:#e6db74">  --service-node-port-range=30000-32767 \\
+</span><span style="color:#e6db74">  --tls-cert-file=/var/lib/kubernetes/apiserver.pem \\
+</span><span style="color:#e6db74">  --tls-private-key-file=/var/lib/kubernetes/apiserver-key.pem \\
+</span><span style="color:#e6db74">  --v=2
+</span><span style="color:#e6db74">Restart=on-failure
+</span><span style="color:#e6db74">RestartSec=5
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">[Install]
+</span><span style="color:#e6db74">WantedBy=multi-user.target
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><ul>
+<li><code>--enable-bootstrap-token-auth=true</code> 启用 bootstrap token 方式为 kubelet 签发证书</li>
+</ul>
+<h3 id="配置-kube-controller-manager-a-idconfigure-kube-controller-managera">配置 kube-controller-manager <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<p>放入 kubeconfig:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo cp kube-controller-manager.kubeconfig /var/lib/kubernetes/
+</code></pre></div><p>准备 systemd 配置 <code>kube-controller-manager.service</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">CLUSTER_CIDR<span style="color:#f92672">=</span>10.10.0.0/16
+SERVICE_CIDR<span style="color:#f92672">=</span>10.32.0.0/16
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | sudo tee /etc/systemd/system/kube-controller-manager.service
+</span><span style="color:#e6db74">[Unit]
+</span><span style="color:#e6db74">Description=Kubernetes Controller Manager
+</span><span style="color:#e6db74">Documentation=https://github.com/kubernetes/kubernetes
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">[Service]
+</span><span style="color:#e6db74">ExecStart=/usr/local/bin/kube-controller-manager \\
+</span><span style="color:#e6db74">  --address=0.0.0.0 \\
+</span><span style="color:#e6db74">  --cluster-cidr=${CLUSTER_CIDR} \\
+</span><span style="color:#e6db74">  --allocate-node-cidrs \\
+</span><span style="color:#e6db74">  --cluster-name=kubernetes \\
+</span><span style="color:#e6db74">  --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem \\
+</span><span style="color:#e6db74">  --cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem \\
+</span><span style="color:#e6db74">  --kubeconfig=/var/lib/kubernetes/kube-controller-manager.kubeconfig \\
+</span><span style="color:#e6db74">  --leader-elect=true \\
+</span><span style="color:#e6db74">  --root-ca-file=/var/lib/kubernetes/ca.pem \\
+</span><span style="color:#e6db74">  --service-account-private-key-file=/var/lib/kubernetes/service-account-key.pem \\
+</span><span style="color:#e6db74">  --service-cluster-ip-range=${SERVICE_CIDR} \\
+</span><span style="color:#e6db74">  --use-service-account-credentials=true \\
+</span><span style="color:#e6db74">  --v=2
+</span><span style="color:#e6db74">Restart=on-failure
+</span><span style="color:#e6db74">RestartSec=5
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">[Install]
+</span><span style="color:#e6db74">WantedBy=multi-user.target
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><blockquote>
+<p>所有 kube-controller-manager 实例都使用相同的 systemd service 文件，可以直接将这里创建好的拷贝给其它 Master 节点</p>
+</blockquote>
+<h3 id="配置-kube-scheduler-a-idconfigure-kube-schedulera">配置 kube-scheduler <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
+<p>放入 kubeconfig:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo cp kube-scheduler.kubeconfig /var/lib/kubernetes/
+</code></pre></div><p>准备启动配置文件 <code>kube-scheduler.yaml</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | sudo tee /etc/kubernetes/config/kube-scheduler.yaml
+</span><span style="color:#e6db74">apiVersion: kubescheduler.config.k8s.io/v1alpha1
+</span><span style="color:#e6db74">kind: KubeSchedulerConfiguration
+</span><span style="color:#e6db74">clientConnection:
+</span><span style="color:#e6db74">  kubeconfig: &#34;/var/lib/kubernetes/kube-scheduler.kubeconfig&#34;
+</span><span style="color:#e6db74">leaderElection:
+</span><span style="color:#e6db74">  leaderElect: true
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><p>准备 systemd 配置 <code>kube-scheduler.service</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | sudo tee /etc/systemd/system/kube-scheduler.service
+</span><span style="color:#e6db74">[Unit]
+</span><span style="color:#e6db74">Description=Kubernetes Scheduler
+</span><span style="color:#e6db74">Documentation=https://github.com/kubernetes/kubernetes
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">[Service]
+</span><span style="color:#e6db74">ExecStart=/usr/local/bin/kube-scheduler \\
+</span><span style="color:#e6db74">  --config=/etc/kubernetes/config/kube-scheduler.yaml \\
+</span><span style="color:#e6db74">  --v=2
+</span><span style="color:#e6db74">Restart=on-failure
+</span><span style="color:#e6db74">RestartSec=5
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">[Install]
+</span><span style="color:#e6db74">WantedBy=multi-user.target
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><h2 id="启动">启动</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sudo systemctl daemon-reload
+sudo systemctl enable kube-apiserver kube-controller-manager kube-scheduler
+sudo systemctl start kube-apiserver kube-controller-manager kube-scheduler
+</code></pre></div><h2 id="rbac-授权-kube-apiserver-访问-kubelet">RBAC 授权 kube-apiserver 访问 kubelet</h2>
+<p>kube-apiserver 有些情况也会访问 kubelet，比如获取 metrics、查看容器日志或登录容器，这是 kubelet 作为 server， kube-apiserver 作为 client，kubelet 监听的 https，kube-apiserver 经过证书认证访问 kubelet，但还需要经过授权才能成功调用接口，我们通过创建 RBAC 规则授权 kube-apiserver 访问 kubelet:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span><span style="color:#e6db74">apiVersion: rbac.authorization.k8s.io/v1beta1
+</span><span style="color:#e6db74">kind: ClusterRole
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  annotations:
+</span><span style="color:#e6db74">    rbac.authorization.kubernetes.io/autoupdate: &#34;true&#34;
+</span><span style="color:#e6db74">  labels:
+</span><span style="color:#e6db74">    kubernetes.io/bootstrapping: rbac-defaults
+</span><span style="color:#e6db74">  name: system:kube-apiserver-to-kubelet
+</span><span style="color:#e6db74">rules:
+</span><span style="color:#e6db74">  - apiGroups:
+</span><span style="color:#e6db74">      - &#34;&#34;
+</span><span style="color:#e6db74">    resources:
+</span><span style="color:#e6db74">      - nodes/proxy
+</span><span style="color:#e6db74">      - nodes/stats
+</span><span style="color:#e6db74">      - nodes/log
+</span><span style="color:#e6db74">      - nodes/spec
+</span><span style="color:#e6db74">      - nodes/metrics
+</span><span style="color:#e6db74">    verbs:
+</span><span style="color:#e6db74">      - &#34;*&#34;
+</span><span style="color:#e6db74">EOF</span>
+
+cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span><span style="color:#e6db74">apiVersion: rbac.authorization.k8s.io/v1beta1
+</span><span style="color:#e6db74">kind: ClusterRoleBinding
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: system:kube-apiserver
+</span><span style="color:#e6db74">  namespace: &#34;&#34;
+</span><span style="color:#e6db74">roleRef:
+</span><span style="color:#e6db74">  apiGroup: rbac.authorization.k8s.io
+</span><span style="color:#e6db74">  kind: ClusterRole
+</span><span style="color:#e6db74">  name: system:kube-apiserver-to-kubelet
+</span><span style="color:#e6db74">subjects:
+</span><span style="color:#e6db74">  - apiGroup: rbac.authorization.k8s.io
+</span><span style="color:#e6db74">    kind: User
+</span><span style="color:#e6db74">    name: kubernetes
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><h2 id="rbac-授权-kubelet-创建-csr-与自动签发和更新证书-a-idauthorize-kubelet-create-csr-and-auto-approvala">RBAC 授权 kubelet 创建 CSR 与自动签发和更新证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></h2>
+<p>节点 kubelet 通过 Bootstrap Token 调用 apiserver CSR API 请求签发证书，kubelet 通过 bootstrap token 认证后会在 <code>system:bootstrappers</code> 用户组里，我们还需要给它授权调用 CSR API，为这个用户组绑定预定义的 <code>system:node-bootstrapper</code> 这个 ClusterRole 就可以:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span><span style="color:#e6db74"># enable bootstrapping nodes to create CSR
+</span><span style="color:#e6db74">apiVersion: rbac.authorization.k8s.io/v1
+</span><span style="color:#e6db74">kind: ClusterRoleBinding
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: create-csrs-for-bootstrapping
+</span><span style="color:#e6db74">subjects:
+</span><span style="color:#e6db74">- kind: Group
+</span><span style="color:#e6db74">  name: system:bootstrappers
+</span><span style="color:#e6db74">  apiGroup: rbac.authorization.k8s.io
+</span><span style="color:#e6db74">roleRef:
+</span><span style="color:#e6db74">  kind: ClusterRole
+</span><span style="color:#e6db74">  name: system:node-bootstrapper
+</span><span style="color:#e6db74">  apiGroup: rbac.authorization.k8s.io
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><blockquote>
+<p>这里的 CSR API 主要用于 kubelet 发起 client 和 server 证书签发请求</p>
+</blockquote>
+<p>给 kubelet 授权自动审批通过 client 证书的 CSR 请求权限以实现自动创建新的 client 证书 (之前没创建过 client 证书，通过 bootstrap token 认证后在 <code>system:bootstrappers</code> 用户组里):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span><span style="color:#e6db74"># Approve all CSRs for the group &#34;system:bootstrappers&#34;
+</span><span style="color:#e6db74">apiVersion: rbac.authorization.k8s.io/v1
+</span><span style="color:#e6db74">kind: ClusterRoleBinding
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: auto-approve-csrs-for-group
+</span><span style="color:#e6db74">subjects:
+</span><span style="color:#e6db74">- kind: Group
+</span><span style="color:#e6db74">  name: system:bootstrappers
+</span><span style="color:#e6db74">  apiGroup: rbac.authorization.k8s.io
+</span><span style="color:#e6db74">roleRef:
+</span><span style="color:#e6db74">  kind: ClusterRole
+</span><span style="color:#e6db74">  name: system:certificates.k8s.io:certificatesigningrequests:nodeclient
+</span><span style="color:#e6db74">  apiGroup: rbac.authorization.k8s.io
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><p>给已启动过的 kubelet 授权自动审批通过 server 证书的 CSR 请求权限以实现自动轮转 client 证书 (之前创建过证书，在证书还未过期前通过证书认证后在 <code>system:nodes</code> 用户组里):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span><span style="color:#e6db74"># Approve renewal CSRs for the group &#34;system:nodes&#34;
+</span><span style="color:#e6db74">apiVersion: rbac.authorization.k8s.io/v1
+</span><span style="color:#e6db74">kind: ClusterRoleBinding
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: auto-approve-renewals-for-nodes
+</span><span style="color:#e6db74">subjects:
+</span><span style="color:#e6db74">- kind: Group
+</span><span style="color:#e6db74">  name: system:nodes
+</span><span style="color:#e6db74">  apiGroup: rbac.authorization.k8s.io
+</span><span style="color:#e6db74">roleRef:
+</span><span style="color:#e6db74">  kind: ClusterRole
+</span><span style="color:#e6db74">  name: system:certificates.k8s.io:certificatesigningrequests:selfnodeclient
+</span><span style="color:#e6db74">  apiGroup: rbac.authorization.k8s.io
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><blockquote>
+<p>注意上面两个授权都只是针对于 client 证书签发的自动审批权限，server 证书目前不支持自动审批，需要管理员通过 <code>kubectl certificate approve &lt;csr name&gt;</code> 来人工审批或者自己写外部 controller 来实现自动审批 (kubelet 访问 apiserver 使用 client 证书, apiserver 主动访问 kubelet 时才会用到 server 证书，通常用于获取 metrics 的场景)</p>
+</blockquote>
+<h2 id="创建-bootstrap-token-与-bootstrap-kubeconfig-a-idcreate-bootstrap-token-and-bootstrap-kubeconfiga">创建 Bootstrap Token 与 bootstrap-kubeconfig <!-- raw HTML omitted --><!-- raw HTML omitted --></h2>
+<p>bootstrap token 用于 kubelet 自动请求签发证书，以 Secret 形式存储，不需要事先给 apiserver 配置静态 token，这样也易于管理。</p>
+<p>创建了 bootstrap token 后我们利用它使用它来创建 bootstrap-kubeconfig 以供后面部署 Worker 节点用 (kubelet 使用 bootstrap-kubeconfig 自动创建证书)，下面是创建方法:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">APISERVER<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://10.200.16.79:6443&#34;</span>
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># token id should match regex: [a-z0-9]{6}</span>
+TOKEN_ID<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>head -c <span style="color:#ae81ff">16</span> /dev/urandom | od -An -t x | tr -d <span style="color:#e6db74">&#39; &#39;</span> | head -c 6<span style="color:#66d9ef">)</span>
+<span style="color:#75715e"># token secret should match regex: [a-z0-9]{16}</span>
+TOKEN_SECRET<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>head -c <span style="color:#ae81ff">16</span> /dev/urandom | od -An -t x | tr -d <span style="color:#e6db74">&#39; &#39;</span> | head -c 16<span style="color:#66d9ef">)</span>
+
+cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span><span style="color:#e6db74">apiVersion: v1
+</span><span style="color:#e6db74">kind: Secret
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  # Name MUST be of form &#34;bootstrap-token-&lt;token id&gt;&#34;, 
+</span><span style="color:#e6db74">  name: bootstrap-token-${TOKEN_ID}
+</span><span style="color:#e6db74">  namespace: kube-system
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74"># Type MUST be &#39;bootstrap.kubernetes.io/token&#39;
+</span><span style="color:#e6db74">type: bootstrap.kubernetes.io/token
+</span><span style="color:#e6db74">stringData:
+</span><span style="color:#e6db74">  # Human readable description. Optional.
+</span><span style="color:#e6db74">  description: &#34;The default bootstrap token used for signing certificates&#34;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">  # Token ID and secret. Required.
+</span><span style="color:#e6db74">  token-id: &#34;${TOKEN_ID}&#34;
+</span><span style="color:#e6db74">  token-secret: &#34;${TOKEN_SECRET}&#34;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">  # Expiration. Optional.
+</span><span style="color:#e6db74">  # expiration: 2020-03-10T03:22:11Z
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">  # Allowed usages.
+</span><span style="color:#e6db74">  usage-bootstrap-authentication: &#34;true&#34;
+</span><span style="color:#e6db74">  usage-bootstrap-signing: &#34;true&#34;
+</span><span style="color:#e6db74">
+</span><span style="color:#e6db74">  # Extra groups to authenticate the token as. Must start with &#34;system:bootstrappers:&#34;
+</span><span style="color:#e6db74">  # auth-extra-groups: system:bootstrappers:worker,system:bootstrappers:ingress
+</span><span style="color:#e6db74">EOF</span>
+
+kubectl config --kubeconfig<span style="color:#f92672">=</span>bootstrap-kubeconfig set-cluster bootstrap --server<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;</span><span style="color:#e6db74">${</span>APISERVER<span style="color:#e6db74">}</span><span style="color:#e6db74">&#34;</span> --certificate-authority<span style="color:#f92672">=</span>ca.pem --embed-certs<span style="color:#f92672">=</span>true
+kubectl config --kubeconfig<span style="color:#f92672">=</span>bootstrap-kubeconfig set-credentials kubelet-bootstrap --token<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>TOKEN_ID<span style="color:#e6db74">}</span>.<span style="color:#e6db74">${</span>TOKEN_SECRET<span style="color:#e6db74">}</span>
+kubectl config --kubeconfig<span style="color:#f92672">=</span>bootstrap-kubeconfig set-context bootstrap --user<span style="color:#f92672">=</span>kubelet-bootstrap --cluster<span style="color:#f92672">=</span>bootstrap
+kubectl config --kubeconfig<span style="color:#f92672">=</span>bootstrap-kubeconfig use-context bootstrap
+</code></pre></div><blockquote>
+<p>bootstrap token 的 secret 格式参考: <a href="https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/#bootstrap-token-secret-format">https://kubernetes.io/docs/reference/access-authn-authz/bootstrap-tokens/#bootstrap-token-secret-format</a></p>
+</blockquote>
+<p>生成文件:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">bootstrap-kubeconfig
+</code></pre></div>
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div> 
+        
+
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="/deploy/manual/bootstrapping-etcd/" title="部署 ETCD"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="/deploy/manual/bootstrapping-worker-nodes/" title="部署 Worker 节点" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+    <script src="/js/clipboard.min.js?1583058065"></script>
+    <script src="/js/perfect-scrollbar.min.js?1583058065"></script>
+    <script src="/js/perfect-scrollbar.jquery.min.js?1583058065"></script>
+    <script src="/js/jquery.sticky.js?1583058065"></script>
+    <script src="/js/featherlight.min.js?1583058065"></script>
+    <script src="/js/highlight.pack.js?1583058065"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+    <script src="/js/modernizr.custom-3.6.0.js?1583058065"></script>
+    <script src="/js/learn.js?1583058065"></script>
+    <script src="/js/hugo-learn.js?1583058065"></script>
+
+    <link href="/mermaid/mermaid.css?1583058065" rel="stylesheet" />
+    <script src="/mermaid/mermaid.js?1583058065"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    
+
+  </body>
+</html>
+

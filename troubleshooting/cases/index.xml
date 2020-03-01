@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>案例分享 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/troubleshooting/cases/</link>
+    <description>Recent content in 案例分享 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/troubleshooting/cases/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ARP 缓存爆满导致健康检查失败</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed/</guid>
+      <description>案例 TKE 一用户某集群节点数 1200+，用户监控方案是 daemonset 部署 node-exporter 暴露节点监控指标，使用 hostNework 方式，statefulset 部署 promethues 且仅有一个实例，落在了一个节点上，promethues 请求所有节点 node-exporter 获取节点监控指标，也就是或扫描所有节点，导致 arp cache 需要存所有 node 的记录，而节点数 1200+，大于了 net.ipv4.neigh.default.gc_thresh3 的默认值 1024，这个值是个硬限制，arp cache记录数大于这个就会强制触发 gc，所以会造成频繁gc，当有数据包发送会查本地 arp，如果本地没找到 arp 记录就会判断当前 arp cache 记录数+1是否大于 gc_thresh3，如果没有就会广播 arp 查询 mac 地址，如果大于了就直接报 arp_cache: neighbor table overflow!，并且放弃 arp 请求，无法获取 mac 地址也就无法知道探测报文该往哪儿发(即便就在本机某个 veth pair)，kubelet 对本机 pod 做存活检查发 arp 查 mac 地址，在 arp cahce 找不到，由于这时 arp cache已经满了，刚要 gc 但还没做所以就只有报错丢包，导致存活检查失败重启 pod
+解决方案 调整部分节点内核参数，将 arp cache 的 gc 阀值调高 (/etc/sysctl.</description>
+    </item>
+    
+    <item>
+      <title>DNS 5 秒延时</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/dns-lookup-5s-delay/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/dns-lookup-5s-delay/</guid>
+      <description>延时现象 客户反馈从 pod 中访问服务时，总是有些请求的响应时延会达到5秒。正常的响应只需要毫秒级别的时延。
+抓包  通过 nsenter 进入 pod netns，使用节点上的 tcpdump 抓 pod 中的包 (抓包方法参考这里)，发现是有的 DNS 请求没有收到响应，超时 5 秒后，再次发送 DNS 请求才成功收到响应。 在 kube-dns pod 抓包，发现是有 DNS 请求没有到达 kube-dns pod，在中途被丢弃了。  为什么是 5 秒？ man resolv.conf 可以看到 glibc 的 resolver 的缺省超时时间是 5s:
+timeout:n Sets the amount of time the resolver will wait for a response from a remote name server before retrying the query via a different name server. Measured in seconds, the default is RES_TIMEOUT (currently 5, see &amp;lt;resolv.</description>
+    </item>
+    
+    <item>
+      <title>DNS 解析异常</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/dns-resolution-abnormal/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/dns-resolution-abnormal/</guid>
+      <description>现象: 有个用户反馈域名解析有时有问题，看报错是解析超时。
+第一反应当然是看 coredns 的 log:
+[ERROR] 2 loginspub.xxxxmobile-inc.net. A: unreachable backend: read udp 172.16.0.230:43742-&amp;gt;10.225.30.181:53: i/o timeout 这是上游 DNS 解析异常了，因为解析外部域名 coredns 默认会请求上游 DNS 来查询，这里的上游 DNS 默认是 coredns pod 所在宿主机的 resolv.conf 里面的 nameserver (coredns pod 的 dnsPolicy 为 &amp;ldquo;Default&amp;rdquo;，也就是会将宿主机里的 resolv.conf 里的 nameserver 加到容器里的 resolv.conf, coredns 默认配置 proxy . /etc/resolv.conf, 意思是非 service 域名会使用 coredns 容器中 resolv.conf 文件里的 nameserver 来解析)
+确认了下，超时的上游 DNS 10.225.30.181 并不是期望的 nameserver，VPC 默认 DNS 应该是 180 开头的。看了 coredns 所在节点的 resolv.conf，发现确实多出了这个非期望的 nameserver，跟用户确认了下，这个 DNS 不是用户自己加上去的，添加节点时这个 nameserver 本身就在 resolv.</description>
+    </item>
+    
+    <item>
+      <title>kubectl edit 或者 apply 报 SchemaError</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/schemaerror-when-using-kubectl-apply-or-edit/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/schemaerror-when-using-kubectl-apply-or-edit/</guid>
+      <description>问题现象 kubectl edit 或 apply 资源报如下错误:
+error: SchemaError(io.k8s.apimachinery.pkg.apis.meta.v1.APIGroup): invalid object doesn&#39;t have additional properties 集群版本：v1.10
+排查过程  使用 kubectl apply -f tmp.yaml --dry-run -v8 发现请求 /openapi/v2 这个 api 之后，kubectl在 validate 过程报错。 换成 kubectl 1.12 之后没有再报错。 kubectl get --raw &#39;/openapi/v2&#39; 发现返回的 json 内容与正常集群有差异，刚开始返回的 json title 为 Kubernetes metrics-server，正常的是 Kubernetes。 怀疑是 metrics-server 的问题，发现集群内确实安装了 k8s 官方的 metrics-server，询问得知之前是 0.3.1，后面升级为了 0.3.5。 将 metrics-server 回滚之后恢复正常。  原因分析 初步怀疑，新版本的 metrics-server 使用了新的 openapi-generator，生成的 openapi 格式和之前 k8s 版本生成的有差异。导致旧版本的 kubectl 在解析 openapi 的 schema 时发生异常，查看代码发现1.</description>
+    </item>
+    
+    <item>
+      <title>LB 压测 NodePort CPS 低</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/low-cps-from-lb-to-nodeport/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/low-cps-from-lb-to-nodeport/</guid>
+      <description>现象: LoadBalancer 类型的 Service，直接压测 NodePort CPS 比较高，但如果压测 LB CPS 就很低。
+环境说明: 用户使用的黑石TKE，不是公有云TKE，黑石的机器是物理机，LB的实现也跟公有云不一样，但 LoadBalancer 类型的 Service 的实现同样也是 LB 绑定各节点的 NodePort，报文发到 LB 后转到节点的 NodePort， 然后再路由到对应 pod，而测试在公有云 TKE 环境下没有这个问题。
+ client 抓包: 大量SYN重传。 server 抓包: 抓 NodePort 的包，发现当 client SYN 重传时 server 能收到 SYN 包但没有响应。  又是 SYN 收到但没响应，难道又是开启 tcp_tw_recycle 导致的？检查节点的内核参数发现并没有开启，除了这个原因，还会有什么情况能导致被丢弃？
+conntrack -S 看到 insert_failed 数量在不断增加，也就是 conntrack 在插入很多新连接的时候失败了，为什么会插入失败？什么情况下会插入失败？
+挖内核源码: netfilter conntrack 模块为每个连接创建 conntrack 表项时，表项的创建和最终插入之间还有一段逻辑，没有加锁，是一种乐观锁的过程。conntrack 表项并发刚创建时五元组不冲突的话可以创建成功，但中间经过 NAT 转换之后五元组就可能变成相同，第一个可以插入成功，后面的就会插入失败，因为已经有相同的表项存在。比如一个 SYN 已经做了 NAT 但是还没到最终插入的时候，另一个 SYN 也在做 NAT，因为之前那个 SYN 还没插入，这个 SYN 做 NAT 的时候就认为这个五元组没有被占用，那么它 NAT 之后的五元组就可能跟那个还没插入的包相同。</description>
+    </item>
+    
+    <item>
+      <title>Pod 偶尔存活检查失败</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/livenesprobe-failed-occasionally/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/livenesprobe-failed-occasionally/</guid>
+      <description>现象: Pod 偶尔会存活检查失败，导致 Pod 重启，业务偶尔连接异常。
+之前从未遇到这种情况，在自己测试环境尝试复现也没有成功，只有在用户这个环境才可以复现。这个用户环境流量较大，感觉跟连接数或并发量有关。
+用户反馈说在友商的环境里没这个问题。
+对比友商的内核参数发现有些区别，尝试将节点内核参数改成跟友商的一样，发现问题没有复现了。
+再对比分析下内核参数差异，最后发现是 backlog 太小导致的，节点的 net.ipv4.tcp_max_syn_backlog 默认是 1024，如果短时间内并发新建 TCP 连接太多，SYN 队列就可能溢出，导致部分新连接无法建立。
+解释一下:
+TCP 连接建立会经过三次握手，server 收到 SYN 后会将连接加入 SYN 队列，当收到最后一个 ACK 后连接建立，这时会将连接从 SYN 队列中移动到 ACCEPT 队列。在 SYN 队列中的连接都是没有建立完全的连接，处于半连接状态。如果 SYN 队列比较小，而短时间内并发新建的连接比较多，同时处于半连接状态的连接就多，SYN 队列就可能溢出，tcp_max_syn_backlog 可以控制 SYN 队列大小，用户节点的 backlog 大小默认是 1024，改成 8096 后就可以解决问题。</description>
+    </item>
+    
+    <item>
+      <title>Pod 访问另一个集群的 apiserver 有延时</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/</guid>
+      <description>现象：集群 a 的 Pod 内通过 kubectl 访问集群 b 的内网地址，偶尔出现延时的情况，但直接在宿主机上用同样的方法却没有这个问题。
+提炼环境和现象精髓:
+ 在 pod 内将另一个集群 apiserver 的 ip 写到了 hosts，因为 TKE apiserver 开启内网集群外内网访问创建的内网 LB 暂时没有支持自动绑内网 DNS 域名解析，所以集群外的内网访问 apiserver 需要加 hosts pod 内执行 kubectl 访问另一个集群偶尔延迟 5s，有时甚至10s  观察到 5s 延时，感觉跟之前 conntrack 的丢包导致 DNS 解析 5S 延时 有关，但是加了 hosts 呀，怎么还去解析域名？
+进入 pod netns 抓包: 执行 kubectl 时确实有 dns 解析，并且发生延时的时候 dns 请求没有响应然后做了重试。
+看起来延时应该就是之前已知 conntrack 丢包导致 dns 5s 超时重试导致的。但是为什么会去解析域名? 明明配了 hosts 啊，正常情况应该是优先查找 hosts，没找到才去请求 dns 呀，有什么配置可以控制查找顺序?</description>
+    </item>
+    
+    <item>
+      <title>神秘的溢出与丢包</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/kubernetes-overflow-and-drop/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/kubernetes-overflow-and-drop/</guid>
+      <description>&lt;h2 id=&#34;问题描述&#34;&gt;问题描述&lt;/h2&gt;
+&lt;p&gt;有用户反馈大量图片加载不出来。&lt;/p&gt;
+&lt;p&gt;图片下载走的 k8s ingress，这个 ingress 路径对应后端 service 是一个代理静态图片文件的 nginx deployment，这个 deployment 只有一个副本，静态文件存储在 nfs 上，nginx 通过挂载 nfs 来读取静态文件来提供图片下载服务，所以调用链是：client &amp;ndash;&amp;gt; k8s ingress &amp;ndash;&amp;gt; nginx &amp;ndash;&amp;gt; nfs。&lt;/p&gt;
+&lt;h2 id=&#34;猜测&#34;&gt;猜测&lt;/h2&gt;
+&lt;p&gt;猜测: ingress 图片下载路径对应的后端服务出问题了。&lt;/p&gt;
+&lt;p&gt;验证：在 k8s 集群直接 curl nginx 的 pod ip，发现不通，果然是后端服务的问题！&lt;/p&gt;
+&lt;h2 id=&#34;抓包&#34;&gt;抓包&lt;/h2&gt;
+&lt;p&gt;继续抓包测试观察，登上 nginx pod 所在节点，进入容器的 netns 中：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;&lt;span style=&#34;color:#75715e&#34;&gt;# 拿到 pod 中 nginx 的容器 id&lt;/span&gt;
+$ kubectl describe pod tcpbench-6484d4b457-847gl | grep -A10 &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;^Containers:&amp;#34;&lt;/span&gt; | grep -Eo &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;docker://.*$&amp;#39;&lt;/span&gt; | head -n &lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt; | sed &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;s/docker:\/\/\(.*\)$/\1/&amp;#39;&lt;/span&gt;
+49b4135534dae77ce5151c6c7db4d528f05b69b0c6f8b9dd037ec4e7043c113e
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 通过容器 id 拿到 nginx 进程 pid&lt;/span&gt;
+$ docker inspect -f &lt;span style=&#34;color:#f92672&#34;&gt;{{&lt;/span&gt;.State.Pid&lt;span style=&#34;color:#f92672&#34;&gt;}}&lt;/span&gt; 49b4135534dae77ce5151c6c7db4d528f05b69b0c6f8b9dd037ec4e7043c113e
+&lt;span style=&#34;color:#ae81ff&#34;&gt;3985&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 进入 nginx 进程所在的 netns&lt;/span&gt;
+$ nsenter -n -t &lt;span style=&#34;color:#ae81ff&#34;&gt;3985&lt;/span&gt;
+
+&lt;span style=&#34;color:#75715e&#34;&gt;# 查看容器 netns 中的网卡信息，确认下&lt;/span&gt;
+$ ip a
+1: lo: &amp;lt;LOOPBACK,UP,LOWER_UP&amp;gt; mtu &lt;span style=&#34;color:#ae81ff&#34;&gt;65536&lt;/span&gt; qdisc noqueue state UNKNOWN group default qlen &lt;span style=&#34;color:#ae81ff&#34;&gt;1000&lt;/span&gt;
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+3: eth0@if11: &amp;lt;BROADCAST,MULTICAST,UP,LOWER_UP&amp;gt; mtu &lt;span style=&#34;color:#ae81ff&#34;&gt;1500&lt;/span&gt; qdisc noqueue state UP group default
+    link/ether 56:04:c7:28:b0:3c brd ff:ff:ff:ff:ff:ff link-netnsid &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+    inet 172.26.0.8/26 scope global eth0
+       valid_lft forever preferred_lft forever
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;使用 tcpdump 指定端口 24568 抓容器 netns 中 eth0 网卡的包:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;tcpdump -i eth0 -nnnn -ttt port &lt;span style=&#34;color:#ae81ff&#34;&gt;24568&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;在其它节点准备使用 nc 指定源端口为 24568 向容器发包：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;nc -u &lt;span style=&#34;color:#ae81ff&#34;&gt;24568&lt;/span&gt; 172.16.1.21 &lt;span style=&#34;color:#ae81ff&#34;&gt;80&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;观察抓包结果：&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;00:00:00.000000 IP 10.0.0.3.24568 &amp;gt; 172.16.1.21.80: Flags &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;S&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, seq 416500297, win 29200, options &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mss 1424,sackOK,TS val &lt;span style=&#34;color:#ae81ff&#34;&gt;3000206334&lt;/span&gt; ecr 0,nop,wscale 9&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, length &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+00:00:01.032218 IP 10.0.0.3.24568 &amp;gt; 172.16.1.21.80: Flags &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;S&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, seq 416500297, win 29200, options &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mss 1424,sackOK,TS val &lt;span style=&#34;color:#ae81ff&#34;&gt;3000207366&lt;/span&gt; ecr 0,nop,wscale 9&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, length &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+00:00:02.011962 IP 10.0.0.3.24568 &amp;gt; 172.16.1.21.80: Flags &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;S&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, seq 416500297, win 29200, options &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mss 1424,sackOK,TS val &lt;span style=&#34;color:#ae81ff&#34;&gt;3000209378&lt;/span&gt; ecr 0,nop,wscale 9&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, length &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+00:00:04.127943 IP 10.0.0.3.24568 &amp;gt; 172.16.1.21.80: Flags &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;S&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, seq 416500297, win 29200, options &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mss 1424,sackOK,TS val &lt;span style=&#34;color:#ae81ff&#34;&gt;3000213506&lt;/span&gt; ecr 0,nop,wscale 9&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, length &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+00:00:08.192056 IP 10.0.0.3.24568 &amp;gt; 172.16.1.21.80: Flags &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;S&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, seq 416500297, win 29200, options &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mss 1424,sackOK,TS val &lt;span style=&#34;color:#ae81ff&#34;&gt;3000221698&lt;/span&gt; ecr 0,nop,wscale 9&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, length &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+00:00:16.127983 IP 10.0.0.3.24568 &amp;gt; 172.16.1.21.80: Flags &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;S&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, seq 416500297, win 29200, options &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mss 1424,sackOK,TS val &lt;span style=&#34;color:#ae81ff&#34;&gt;3000237826&lt;/span&gt; ecr 0,nop,wscale 9&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, length &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+00:00:33.791988 IP 10.0.0.3.24568 &amp;gt; 172.16.1.21.80: Flags &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;S&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, seq 416500297, win 29200, options &lt;span style=&#34;color:#f92672&#34;&gt;[&lt;/span&gt;mss 1424,sackOK,TS val &lt;span style=&#34;color:#ae81ff&#34;&gt;3000271618&lt;/span&gt; ecr 0,nop,wscale 9&lt;span style=&#34;color:#f92672&#34;&gt;]&lt;/span&gt;, length &lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;SYN 包到容器内网卡了，但容器没回 ACK，像是报文到达容器内的网卡后就被丢了。看样子跟防火墙应该也没什么关系，也检查了容器 netns 内的 iptables 规则，是空的，没问题。&lt;/p&gt;
+&lt;p&gt;排除是 iptables 规则问题，在容器 netns 中使用 &lt;code&gt;netstat -s&lt;/code&gt; 检查下是否有丢包统计:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-bash&#34; data-lang=&#34;bash&#34;&gt;$ netstat -s | grep -E &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;overflow|drop&amp;#39;&lt;/span&gt;
+    &lt;span style=&#34;color:#ae81ff&#34;&gt;12178939&lt;/span&gt; times the listen queue of a socket overflowed
+    &lt;span style=&#34;color:#ae81ff&#34;&gt;12247395&lt;/span&gt; SYNs to LISTEN sockets dropped
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;果然有丢包，为了理解这里的丢包统计，我深入研究了一下，下面插播一些相关知识。&lt;/p&gt;</description>
+    </item>
+    
+    <item>
+      <title>访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/</guid>
+      <description>现象：用户在 TKE 创建了公网 LoadBalancer 类型的 Service，externalTrafficPolicy 设为了 Local，访问这个 Service 对应的公网 LB 有时会超时。
+externalTrafficPolicy 为 Local 的 Service 用于在四层获取客户端真实源 IP，官方参考文档：Source IP for Services with Type=LoadBalancer
+TKE 的 LoadBalancer 类型 Service 实现是使用 CLB 绑定所有节点对应 Service 的 NodePort，CLB 不做 SNAT，报文转发到 NodePort 时源 IP 还是真实的客户端 IP，如果 NodePort 对应 Service 的 externalTrafficPolicy 不是 Local 的就会做 SNAT，到 pod 时就看不到客户端真实源 IP 了，但如果是 Local 的话就不做 SNAT，如果本机 node 有这个 Service 的 endpoint 就转到对应 pod，如果没有就直接丢掉，因为如果转到其它 node 上的 pod 就必须要做 SNAT，不然无法回包，而 SNAT 之后就无法获取真实源 IP 了。</description>
+    </item>
+    
+    <item>
+      <title>诡异的 No route to host</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/no-route-to-host/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/no-route-to-host/</guid>
+      <description>问题反馈 有用户反馈 Deployment 滚动更新的时候，业务日志偶尔会报 &amp;ldquo;No route to host&amp;rdquo; 的错误。
+分析 之前没遇到滚动更新会报 &amp;ldquo;No route to host&amp;rdquo; 的问题，我们先看下滚动更新导致连接异常有哪些常见的报错:
+  Connection reset by peer: 连接被重置。通常是连接建立过，但 server 端发现 client 发的包不对劲就返回 RST，应用层就报错连接被重置。比如在 server 滚动更新过程中，client 给 server 发的请求还没完全结束，或者本身是一个类似 grpc 的多路复用长连接，当 server 对应的旧 Pod 删除(没有做优雅结束，停止时没有关闭连接)，新 Pod 很快创建启动并且刚好有跟之前旧 Pod 一样的 IP，这时 kube-proxy 也没感知到这个 IP 其实已经被删除然后又被重建了，针对这个 IP 的规则就不会更新，旧的连接依然发往这个 IP，但旧 Pod 已经不在了，后面继续发包时依然转发给这个 Pod IP，最终会被转发到这个有相同 IP 的新 Pod 上，而新 Pod 收到此包时检查报文发现不对劲，就返回 RST 给 client 告知将连接重置。针对这种情况，建议应用自身处理好优雅结束：Pod 进入 Terminating 状态后会发送 SIGTERM 信号给业务进程，业务进程的代码需处理这个信号，在进程退出前关闭所有连接。</description>
+    </item>
+    
+    <item>
+      <title>跨 VPC 访问 NodePort 经常超时</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/cross-vpc-connect-nodeport-timeout/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/cross-vpc-connect-nodeport-timeout/</guid>
+      <description>现象: 从 VPC a 访问 VPC b 的 TKE 集群的某个节点的 NodePort，有时候正常，有时候会卡住直到超时。
+原因怎么查？
+当然是先抓包看看啦，抓 server 端 NodePort 的包，发现异常时 server 能收到 SYN，但没响应 ACK:
+反复执行 netstat -s | grep LISTEN 发现 SYN 被丢弃数量不断增加:
+分析：
+ 两个VPC之间使用对等连接打通的，CVM 之间通信应该就跟在一个内网一样可以互通。 为什么同一 VPC 下访问没问题，跨 VPC 有问题? 两者访问的区别是什么?  再仔细看下 client 所在环境，发现 client 是 VPC a 的 TKE 集群节点，捋一下:
+ client 在 VPC a 的 TKE 集群的节点 server 在 VPC b 的 TKE 集群的节点  因为 TKE 集群中有个叫 ip-masq-agent 的 daemonset，它会给 node 写 iptables 规则，默认 SNAT 目的 IP 是 VPC 之外的报文，所以 client 访问 server 会做 SNAT，也就是这里跨 VPC 相比同 VPC 访问 NodePort 多了一次 SNAT，如果是因为多了一次 SNAT 导致的这个问题，直觉告诉我这个应该跟内核参数有关，因为是 server 收到包没回包，所以应该是 server 所在 node 的内核参数问题，对比这个 node 和 普通 TKE node 的默认内核参数，发现这个 node net.</description>
+    </item>
+    
+    <item>
+      <title>驱逐导致服务中断</title>
+      <link>https://k8s.imroc.io/troubleshooting/cases/eviction-leads-to-service-disruption/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/cases/eviction-leads-to-service-disruption/</guid>
+      <description>TODO 优化
+案例 TKE 一客户的某个节点有问题，无法挂载nfs，通过新加节点，驱逐故障节点的 pod 来规避，但导致了业务 10min 服务不可用，排查发现其它节点 pod 很多集体出现了重启，主要是连不上 kube-dns 无法解析 service，业务调用不成功，从而对外表现为服务不可用。
+为什么会中断？驱逐的原理是先封锁节点，然后将旧的 node 上的 pod 删除，replicaset 控制器检测到 pod 减少，会重新创建一个 pod，调度到新的 node上，这个过程是先删除，再创建，并非是滚动更新，因此更新过程中，如果一个deployment的所有 pod 都在被驱逐的节点上，则可能导致该服务不可用。
+那为什么会影响其它 pod？分析kubelet日志，kube-dns 有两个副本，都在这个被驱逐的节点上，所以驱逐的时候 kube-dns 不通，影响了其它 pod 解析 service，导致服务集体不可用。
+那为什么会中断这么久？通常在新的节点应该很会快才是，通过进一步分析新节点的 kubelet 日志，发现 kube-dns 从拉镜像到容器启动之间花了很长时间，检查节点上的镜像发现有很多大镜像(1~2GB)，猜测是拉取镜像有并发限制，kube-dns 的镜像虽小，但在排队等大镜像下载完，检查 kubelet 启动参数，确实有 --registry-burst 这个参数控制镜像下载并发数限制。但最终发现其实应该是 --serialize-image-pulls 这个参数导致的，kubelet 启动参数没有指定该参数，而该参数默认值为 true，即默认串行下载镜像，不并发下载，所以导致镜像下载排队，是的 kube-dns 延迟了很长时间才启动。
+解决方案  避免服务单点故障，多副本，并加反亲和性 设置 preStop hook 与 readinessProbe，更新路由规则  </description>
+    </item>
+    
+  </channel>
+</rss>

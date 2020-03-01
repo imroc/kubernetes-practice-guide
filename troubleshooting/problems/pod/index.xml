@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Pod 排错 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/troubleshooting/problems/pod/</link>
+    <description>Recent content in Pod 排错 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/troubleshooting/problems/pod/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Pod Terminating 慢</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/slow-terminating/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/slow-terminating/</guid>
+      <description>进程通过 bash -c 启动导致 kill 信号无法透传给业务进程 TODO: 完善</description>
+    </item>
+    
+    <item>
+      <title>Pod 一直处于 ContainerCreating 或 Waiting 状态</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-containercreating-or-waiting/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-containercreating-or-waiting/</guid>
+      <description>Pod 配置错误  检查是否打包了正确的镜像 检查配置了正确的容器参数  挂载 Volume 失败 Volume 挂载失败也分许多种情况，先列下我这里目前已知的。
+Pod 漂移没有正常解挂之前的磁盘 在云尝试托管的 K8S 服务环境下，默认挂载的 Volume 一般是块存储类型的云硬盘，如果某个节点挂了，kubelet 无法正常运行或与 apiserver 通信，到达时间阀值后会触发驱逐，自动在其它节点上启动相同的副本 (Pod 漂移)，但是由于被驱逐的 Node 无法正常运行并不知道自己被驱逐了，也就没有正常执行解挂，cloud-controller-manager 也在等解挂成功后再调用云厂商的接口将磁盘真正从节点上解挂，通常会等到一个时间阀值后 cloud-controller-manager 会强制解挂云盘，然后再将其挂载到 Pod 最新所在节点上，这种情况下 ContainerCreating 的时间相对长一点，但一般最终是可以启动成功的，除非云厂商的 cloud-controller-manager 逻辑有 bug。
+命中 K8S 挂载 configmap/secret 的 subpath 的 bug 最近发现如果 Pod 挂载了 configmap 或 secret， 如果后面修改了 configmap 或 secret 的内容，Pod 里的容器又原地重启了(比如存活检查失败被 kill 然后重启拉起)，就会触发 K8S 的这个 bug，团队的小伙伴已提 PR: https://github.com/kubernetes/kubernetes/pull/82784
+如果是这种情况，容器会一直启动不成功，可以看到类似以下的报错:
+$ kubectl -n prod get pod -o yaml manage-5bd487cf9d-bqmvm .</description>
+    </item>
+    
+    <item>
+      <title>Pod 一直处于 Error 状态</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-error/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-error/</guid>
+      <description>TODO: 展开优化
+通常处于 Error 状态说明 Pod 启动过程中发生了错误。常见的原因包括：
+ 依赖的 ConfigMap、Secret 或者 PV 等不存在 请求的资源超过了管理员设置的限制，比如超过了 LimitRange 等 违反集群的安全策略，比如违反了 PodSecurityPolicy 等 容器无权操作集群内的资源，比如开启 RBAC 后，需要为 ServiceAccount 配置角色绑定  </description>
+    </item>
+    
+    <item>
+      <title>Pod 一直处于 ImageInspectError 状态</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imageinspecterror/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imageinspecterror/</guid>
+      <description>通常是镜像文件损坏了，可以尝试删除损坏的镜像重新拉取
+TODO: 完善</description>
+    </item>
+    
+    <item>
+      <title>Pod 一直处于 ImagePullBackOff 状态</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imagepullbackoff/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imagepullbackoff/</guid>
+      <description>http 类型 registry，地址未加入到 insecure-registry dockerd 默认从 https 类型的 registry 拉取镜像，如果使用 https 类型的 registry，则必须将它添加到 insecure-registry 参数中，然后重启或 reload dockerd 生效。
+https 自签发类型 resitry，没有给节点添加 ca 证书 如果 registry 是 https 类型，但证书是自签发的，dockerd 会校验 registry 的证书，校验成功才能正常使用镜像仓库，要想校验成功就需要将 registry 的 ca 证书放置到 /etc/docker/certs.d/&amp;lt;registry:port&amp;gt;/ca.crt 位置。
+私有镜像仓库认证失败 如果 registry 需要认证，但是 Pod 没有配置 imagePullSecret，配置的 Secret 不存在或者有误都会认证失败。
+镜像文件损坏 如果 push 的镜像文件损坏了，下载下来也用不了，需要重新 push 镜像文件。
+镜像拉取超时 如果节点上新起的 Pod 太多就会有许多可能会造成容器镜像下载排队，如果前面有许多大镜像需要下载很长时间，后面排队的 Pod 就会报拉取超时。
+kubelet 默认串行下载镜像:
+--serialize-image-pulls Pull images one at a time. We recommend *not* changing the default value on nodes that run docker daemon with version &amp;lt; 1.</description>
+    </item>
+    
+    <item>
+      <title>Pod 一直处于 Pending 状态</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-pending/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-pending/</guid>
+      <description>Pending 状态说明 Pod 还没有被调度到某个节点上，需要看下 Pod 事件进一步判断原因，比如:
+$ kubectl describe pod tikv-0 ... Events: Type Reason Age From Message ---- ------ ---- ---- ------- Warning FailedScheduling 3m (x106 over 33m) default-scheduler 0/4 nodes are available: 1 node(s) had no available volume zone, 2 Insufficient cpu, 3 Insufficient memory. 下面列举下可能原因和解决方法。
+节点资源不够 节点资源不够有以下几种情况:
+ CPU 负载过高 剩余可以被分配的内存不够 剩余可用 GPU 数量不够 (通常在机器学习场景，GPU 集群环境)  如果判断某个 Node 资源是否足够？ 通过 kubectl describe node &amp;lt;node-name&amp;gt; 查看 node 资源情况，关注以下信息：</description>
+    </item>
+    
+    <item>
+      <title>Pod 一直处于 Terminating 状态</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-terminating/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-terminating/</guid>
+      <description>磁盘爆满 如果 docker 的数据目录所在磁盘被写满，docker 无法正常运行，无法进行删除和创建操作，所以 kubelet 调用 docker 删除容器没反应，看 event 类似这样：
+Normal Killing 39s (x735 over 15h) kubelet, 10.179.80.31 Killing container with id docker://apigateway:Need to kill Pod 处理建议是参考本书 处理实践：磁盘爆满
+存在 &amp;ldquo;i&amp;rdquo; 文件属性 如果容器的镜像本身或者容器启动后写入的文件存在 &amp;ldquo;i&amp;rdquo; 文件属性，此文件就无法被修改删除，而删除 Pod 时会清理容器目录，但里面包含有不可删除的文件，就一直删不了，Pod 状态也将一直保持 Terminating，kubelet 报错:
+Sep 27 14:37:21 VM_0_7_centos kubelet[14109]: E0927 14:37:21.922965 14109 remote_runtime.go:250] RemoveContainer &amp;quot;19d837c77a3c294052a99ff9347c520bc8acb7b8b9a9dc9fab281fc09df38257&amp;quot; from runtime service failed: rpc error: code = Unknown desc = failed to remove container &amp;quot;19d837c77a3c294052a99ff9347c520bc8acb7b8b9a9dc9fab281fc09df38257&amp;quot;: Error response from daemon: container 19d837c77a3c294052a99ff9347c520bc8acb7b8b9a9dc9fab281fc09df38257: driver &amp;quot;overlay2&amp;quot; failed to remove root filesystem: remove /data/docker/overlay2/b1aea29c590aa9abda79f7cf3976422073fb3652757f0391db88534027546868/diff/usr/bin/bash: operation not permitted Sep 27 14:37:21 VM_0_7_centos kubelet[14109]: E0927 14:37:21.</description>
+    </item>
+    
+    <item>
+      <title>Pod 一直处于 Unknown 状态</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-unkown/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-unkown/</guid>
+      <description>TODO: 完善
+通常是节点失联，没有上报状态给 apiserver，到达阀值后 controller-manager 认为节点失联并将其状态置为 Unknown。
+可能原因:
+ 节点高负载导致无法上报 节点宕机 节点被关机 网络不通  </description>
+    </item>
+    
+    <item>
+      <title>Pod 健康检查失败</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/healthcheck-failed/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/healthcheck-failed/</guid>
+      <description>Kubernetes 健康检查包含就绪检查(readinessProbe)和存活检查(livenessProbe) pod 如果就绪检查失败会将此 pod ip 从 service 中摘除，通过 service 访问，流量将不会被转发给就绪检查失败的 pod pod 如果存活检查失败，kubelet 将会杀死容器并尝试重启  健康检查失败的可能原因有多种，除了业务程序BUG导致不能响应健康检查导致 unhealthy，还能有有其它原因，下面我们来逐个排查。
+健康检查配置不合理 initialDelaySeconds 太短，容器启动慢，导致容器还没完全启动就开始探测，如果 successThreshold 是默认值 1，检查失败一次就会被 kill，然后 pod 一直这样被 kill 重启。
+节点负载过高 cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常会 timeout，导致 kubelet 认为 pod 不健康。参考本书 处理实践: 高负载 一节。
+容器进程被木马进程杀死 参考本书 处理实践: 使用 systemtap 定位疑难杂症 进一步定位。
+容器内进程端口监听挂掉 使用 netstat -tunlp 检查端口监听是否还在，如果不在了，抓包可以看到会直接 reset 掉健康检查探测的连接:
+20:15:17.890996 IP 172.16.2.1.38074 &amp;gt; 172.16.2.23.8888: Flags [S], seq 96880261, win 14600, options [mss 1424,nop,nop,sackOK,nop,wscale 7], length 0 20:15:17.</description>
+    </item>
+    
+    <item>
+      <title>Pod 处于 CrashLoopBackOff 状态</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-crashloopbackoff/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-crashloopbackoff/</guid>
+      <description>Pod 如果处于 CrashLoopBackOff 状态说明之前是启动了，只是又异常退出了，只要 Pod 的 restartPolicy 不是 Never 就可能被重启拉起，此时 Pod 的 RestartCounts 通常是大于 0 的，可以先看下容器进程的退出状态码来缩小问题范围，参考本书 排错技巧: 分析 ExitCode 定位 Pod 异常退出原因
+容器进程主动退出 如果是容器进程主动退出，退出状态码一般在 0-128 之间，除了可能是业务程序 BUG，还有其它许多可能原因，参考: 容器进程主动退出
+系统 OOM 如果发生系统 OOM，可以看到 Pod 中容器退出状态码是 137，表示被 SIGKILL 信号杀死，同时内核会报错: Out of memory: Kill process ...。大概率是节点上部署了其它非 K8S 管理的进程消耗了比较多的内存，或者 kubelet 的 --kube-reserved 和 --system-reserved 配的比较小，没有预留足够的空间给其它非容器进程，节点上所有 Pod 的实际内存占用总量不会超过 /sys/fs/cgroup/memory/kubepods 这里 cgroup 的限制，这个限制等于 capacity - &amp;quot;kube-reserved&amp;quot; - &amp;quot;system-reserved&amp;quot;，如果预留空间设置合理，节点上其它非容器进程（kubelet, dockerd, kube-proxy, sshd 等) 内存占用没有超过 kubelet 配置的预留空间是不会发生系统 OOM 的，可以根据实际需求做合理的调整。</description>
+    </item>
+    
+    <item>
+      <title>容器进程主动退出</title>
+      <link>https://k8s.imroc.io/troubleshooting/problems/pod/container-proccess-exit-by-itself/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/container-proccess-exit-by-itself/</guid>
+      <description>容器进程如果是自己主动退出(不是被外界中断杀死)，退出状态码一般在 0-128 之间，根据约定，正常退出时状态码为 0，1-127 说明是程序发生异常，主动退出了，比如检测到启动的参数和条件不满足要求，或者运行过程中发生 panic 但没有捕获处理导致程序退出。除了可能是业务程序 BUG，还有其它许多可能原因，这里我们一一列举下。
+DNS 无法解析 可能程序依赖 集群 DNS 服务，比如启动时连接数据库，数据库使用 service 名称或外部域名都需要 DNS 解析，如果解析失败程序将报错并主动退出。解析失败的可能原因:
+ 集群网络有问题，Pod 连不上集群 DNS 服务 集群 DNS 服务挂了，无法响应解析请求 Service 或域名地址配置有误，本身是无法解析的地址  程序配置有误  配置文件格式错误，程序启动解析配置失败报错退出 配置内容不符合规范，比如配置中某个字段是必选但没有填写，配置校验不通过，程序报错主动退出  </description>
+    </item>
+    
+  </channel>
+</rss>

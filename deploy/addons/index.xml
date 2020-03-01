@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>部署附加组件 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/deploy/addons/</link>
+    <description>Recent content in 部署附加组件 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/deploy/addons/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>以 Daemonset 方式部署 kube-proxy</title>
+      <link>https://k8s.imroc.io/deploy/addons/kube-proxy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/deploy/addons/kube-proxy/</guid>
+      <description>kube-proxy 可以用二进制部署，也可以用 kubelet 的静态 Pod 部署，但最简单使用 DaemonSet 部署。直接使用 ServiceAccount 的 token 认证，不需要签发证书，也就不用担心证书过期问题。
+先在终端设置下面的变量:
+APISERVER=&amp;#34;https://10.200.16.79:6443&amp;#34; CLUSTER_CIDR=&amp;#34;10.10.0.0/16&amp;#34;  APISERVER 替换为 apiserver 对外暴露的访问地址。有同学想问为什么不直接用集群内的访问地址(kubernetes.default 或对应的 CLUSTER IP)，这是一个鸡生蛋还是蛋生鸡的问题，CLSUTER IP 本身就是由 kube-proxy 来生成 iptables 或 ipvs 规则转发 Service 对应 Endpoint 的 Pod IP，kube-proxy 刚启动还没有生成这些转发规则，生成规则的前提是 kube-proxy 需要访问 apiserver 获取 Service 与 Endpoint，而由于还没有转发规则，kube-proxy 访问 apiserver 的 CLUSTER IP 的请求无法被转发到 apiserver。 CLUSTER_CIDR 替换为集群 Pod IP 的 CIDR 范围，这个在部署 kube-controller-manager 时也设置过  为 kube-proxy 创建 RBAC 权限和配置文件:
+cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: v1 kind: ServiceAccount metadata: name: kube-proxy namespace: kube-system --- apiVersion: rbac.</description>
+    </item>
+    
+    <item>
+      <title>部署 CoreDNS</title>
+      <link>https://k8s.imroc.io/deploy/addons/coredns/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/deploy/addons/coredns/</guid>
+      <description>下载部署脚本 $ git clone https://github.com/coredns/deployment.git $ cd deployment/kubernetes $ ls CoreDNS-k8s_version.md FAQs.md README.md Scaling_CoreDNS.md Upgrading_CoreDNS.md coredns.yaml.sed corefile-tool deploy.sh migration rollback.sh 部署脚本用法 查看 help:
+$ ./deploy.sh -h usage: ./deploy.sh [ -r REVERSE-CIDR ] [ -i DNS-IP ] [ -d CLUSTER-DOMAIN ] [ -t YAML-TEMPLATE ] -r : Define a reverse zone for the given CIDR. You may specifcy this option more than once to add multiple reverse zones. If no reverse CIDRs are defined, then the default is to handle all reverse zones (i.</description>
+    </item>
+    
+  </channel>
+</rss>
