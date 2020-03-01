@@ -25,7 +25,7 @@
 	"title": "部署指南",
 	"tags": [],
 	"description": "",
-	"content": "  使用 kubeadm 部署集群     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      部署附加组件    Daemonset 没有被调度     Node 全部消失      附录    安装 kubectl      "
+	"content": "  使用 kubeadm 部署集群     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      部署附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    安装 kubectl      "
 },
 {
 	"uri": "https://k8s.imroc.io/best-practice/configuration-management/helm/install-helm/",
@@ -60,7 +60,7 @@
 	"title": "集群方案",
 	"tags": [],
 	"description": "",
-	"content": "  Ingress 方案    Nginx Ingress    安装 nginx ingress controller    Traefik Ingress    安装 traefik ingress controller     Metrics 方案    安装 metrics server      网络方案    Flannel    部署 Flannel    彻底理解集群网络      运行时方案    Containerd    安装 containerd     "
+	"content": "  Ingress 方案    Nginx Ingress    安装 nginx ingress controller    Traefik Ingress    Flannel   彻底理解集群网络     Metrics 方案    安装 metrics server      网络方案    Flannel    部署 Flannel    彻底理解集群网络      运行时方案    Containerd    安装 containerd     "
 },
 {
 	"uri": "https://k8s.imroc.io/troubleshooting/",
