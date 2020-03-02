@@ -8,9 +8,6 @@
     </svg>
 </div>
 
-{{ $assetBusting := not .Site.Params.disableAssetsBusting }}
-<script type="text/javascript" src="{{"js/lunr.min.js" | relURL}}{{ if $assetBusting }}?{{ now.Unix }}{{ end }}"></script>
-<script type="text/javascript" src="{{"js/auto-complete.js" | relURL}}{{ if $assetBusting }}?{{ now.Unix }}{{ end }}"></script>
 <script type="text/javascript">
     {{ if .Site.IsMultiLingual }}
         var baseurl = "{{.Site.BaseURL}}{{.Site.LanguagePrefix}}";
@@ -21,27 +18,3 @@
 
 <!-- <script src="https://res.cloudinary.com/jimmysong/raw/upload/rootsongjc-hugo/autocomplete.min.js"></script>
 <script src="https://res.cloudinary.com/jimmysong/raw/upload/rootsongjc-hugo/algoliasearch.min.js"></script> -->
-<!-- <script type="text/javascript" src="{{"js/search.js" | relURL}}{{ if $assetBusting }}?{{ now.Unix }}{{ end }}"></script> -->
-
-<script>
-    var client = algoliasearch("{{ .Site.Params.algolia.appID }}", "{{ .Site.Params.algolia.key }}");
-    var index = client.initIndex("{{ .Site.Params.algolia.index }}");
-    //initialize autocomplete on search input (ID selector must match)
-    autocomplete('#aa-search-input', {
-        hint: false
-    }, {
-        source: autocomplete.sources.hits(index, {
-            hitsPerPage: 10
-        }),
-        //value to be displayed in input control after user's suggestion selection
-        displayKey: 'name',
-        //hash of templates used when rendering dataset
-        templates: {
-            //'suggestion' templating function used to render a single suggestion
-            suggestion: function (suggestion) {
-                return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
-                    .value + '</a>';
-            }
-        }
-    });
-</script>

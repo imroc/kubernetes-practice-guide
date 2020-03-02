@@ -1,0 +1,25 @@
+
+<!-- Core JS -->
+{{- $algoliasearchjs := resources.Get "js/algoliasearch.min.js" -}}
+{{- $autocompletejs := resources.Get "js/autocomplete.min.js" -}}
+{{- $clipboardjs := resources.Get "js/clipboard.min.js" -}}
+{{- $featherlightjs := resources.Get "js/featherlight.min.js" -}}
+{{- $highlightjs := resources.Get "js/highlight.pack.js" -}}
+{{- $hugolearnjs := resources.Get "js/hugo-learn.js" -}}
+{{- $jqueryjs := resources.Get "js/01-jquery-3.3.1.min.js" -}}
+{{- $jquerystickyjs := resources.Get "js/jquery.sticky.js" -}}
+{{- $modernizrjs := resources.Get "js/modernizr.custom-3.6.0.js" -}}
+{{- $perfectscrollbarjqueryjs := resources.Get "js/perfect-scrollbar.jquery.min.js" -}}
+{{- $perfectscrollbarjs := resources.Get "js/perfect-scrollbar.min.js" -}}
+{{- $mermaidjs := resources.Get "js/mermaid.js" -}}
+
+
+{{- $indexScratch := newScratch -}}
+{{- $indexScratch.Add "jsassets" (slice $jqueryjs $algoliasearchjs $autocompletejs $clipboardjs $featherlightjs $highlightjs $hugolearnjs $jquerystickyjs $modernizrjs $perfectscrollbarjqueryjs $perfectscrollbarjs $mermaidjs) -}}
+
+<!-- Bundle js -->
+{{- $appjs := $indexScratch.Get "jsassets" | resources.Concat "js/bundle.js" | resources.Minify | resources.Fingerprint -}}
+{{- .Scratch.Set "appjs" $appjs.RelPermalink -}}
+{{- .Scratch.Set "appjsintegrity" $appjs.Data.Integrity -}}
+
+

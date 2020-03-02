@@ -1,0 +1,22 @@
+
+<!-- Theme CSS -->
+{{- $atomcss := resources.Get "css/atom-one-dark-reasonable.css" -}}
+{{- $featherlightcss := resources.Get "css/featherlight.min.css" -}}
+{{- $fontawesomecss := resources.Get "css/fontawesome-all.min.css" -}}
+{{- $hugothemecss := resources.Get "css/hugo-theme.css" -}}
+{{- $hybridcss := resources.Get "css/hybrid.css" -}}
+{{- $nucleuscss := resources.Get "css/nucleus.css" -}}
+{{- $perfectscrollbarcss := resources.Get "css/perfect-scrollbar.min.css" -}}
+{{- $themecss := resources.Get "css/theme.css" -}}
+{{- $thememinecss := resources.Get "css/theme-mine.css" -}}
+{{- $mermaidcss := resources.Get "css/mermaid.css" -}}
+
+
+{{- $indexScratch := newScratch -}}
+{{- $indexScratch.Add "cssassets" (slice $atomcss $featherlightcss $fontawesomecss $hugothemecss $hybridcss $nucleuscss $perfectscrollbarcss $themecss $thememinecss $mermaidcss) -}}
+
+<!-- Bundle css -->
+{{- $appcss := $indexScratch.Get "cssassets" | resources.Concat "css/bundle.css" | resources.Minify | resources.Fingerprint -}}
+{{- .Scratch.Set "appcss" $appcss.RelPermalink -}}
+{{- .Scratch.Set "appcssintegrity" $appcss.Data.Integrity -}}
+
