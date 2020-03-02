@@ -11,21 +11,9 @@
 
     <title>Categories :: Kubernetes 实践指南</title>
 
-    
-    <link href="/css/nucleus.css?1583138100" rel="stylesheet">
-    <link href="/css/fontawesome-all.min.css?1583138100" rel="stylesheet">
-    <link href="/css/hybrid.css?1583138100" rel="stylesheet">
-    <link href="/css/featherlight.min.css?1583138100" rel="stylesheet">
-    <link href="/css/perfect-scrollbar.min.css?1583138100" rel="stylesheet">
-    <link href="/css/auto-complete.css?1583138100" rel="stylesheet">
-    <link href="/css/atom-one-dark-reasonable.css?1583138100" rel="stylesheet">
-    <link href="/css/theme.css?1583138100" rel="stylesheet">
-    <link href="/css/hugo-theme.css?1583138100" rel="stylesheet">
-    
-      <link href="/css/theme-mine.css?1583138100" rel="stylesheet">
-    
 
-    <script src="/js/jquery-3.3.1.min.js?1583138100"></script>
+    
+<link rel="stylesheet" href='/css/bundle.min.cceb43cdf5b8c68b220c9be2d058712dcd5ca236125b2b03a3c1e00c839e2c9a.css' integrity='sha256-zOtDzfW4xosiDJvi0FhxLc1cojYSWysDo8HgDIOeLJo='>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -62,9 +50,6 @@
     </svg>
 </div>
 
-
-<script type="text/javascript" src="/js/lunr.min.js?1583138100"></script>
-<script type="text/javascript" src="/js/auto-complete.js?1583138100"></script>
 <script type="text/javascript">
     
         var baseurl = "https:\/\/k8s.imroc.io\/\/en";
@@ -72,30 +57,6 @@
 </script>
 
 
-
-
-<script>
-    var client = algoliasearch("B6Q6PSGUV5", "5b4678e9995fe4211c4fa43ad2ffdab5");
-    var index = client.initIndex("kubernetes-practice-guide-en");
-    
-    autocomplete('#aa-search-input', {
-        hint: false
-    }, {
-        source: autocomplete.sources.hits(index, {
-            hitsPerPage: 10
-        }),
-        
-        displayKey: 'name',
-        
-        templates: {
-            
-            suggestion: function (suggestion) {
-                return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
-                    .value + '</a>';
-            }
-        }
-    });
-</script>
     
   </div>
 
@@ -354,21 +315,34 @@
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/js/clipboard.min.js?1583138100"></script>
-    <script src="/js/perfect-scrollbar.min.js?1583138100"></script>
-    <script src="/js/perfect-scrollbar.jquery.min.js?1583138100"></script>
-    <script src="/js/jquery.sticky.js?1583138100"></script>
-    <script src="/js/featherlight.min.js?1583138100"></script>
-    <script src="/js/highlight.pack.js?1583138100"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/js/modernizr.custom-3.6.0.js?1583138100"></script>
-    <script src="/js/learn.js?1583138100"></script>
-    <script src="/js/hugo-learn.js?1583138100"></script>
-
-    <link href="/mermaid/mermaid.css?1583138100" rel="stylesheet" />
-    <script src="/mermaid/mermaid.js?1583138100"></script>
+    
+<script src='/js/bundle.min.2569877743934301f017dfac8c65620087e10822fabd878f7c071bf636287845.js' integrity='sha256-JWmHd0OTQwHwF9&#43;sjGViAIfhCCL6vYePfAcb9jYoeEU='></script>
     <script>
-        mermaid.initialize({ startOnLoad: true });
+        function init(){
+          var client = algoliasearch("B6Q6PSGUV5", "5b4678e9995fe4211c4fa43ad2ffdab5");
+          var index = client.initIndex("kubernetes-practice-guide-en");
+          
+          autocomplete('#aa-search-input', {
+              hint: false
+          }, {
+              source: autocomplete.sources.hits(index, {
+                  hitsPerPage: 10
+              }),
+              
+              displayKey: 'name',
+              
+              templates: {
+                  
+                  suggestion: function (suggestion) {
+                      return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
+                          .value + '</a>';
+                  }
+              }
+          });
+          hljs.initHighlightingOnLoad();
+          mermaid.initialize({ startOnLoad: true });
+        }
+        document.addEventListener('DOMContentLoaded', init);
     </script>
     
 
