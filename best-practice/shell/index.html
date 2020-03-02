@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>部署前的准备工作 :: Kubernetes 实践指南</title>
+    <title>实用命令与脚本 :: Kubernetes 实践指南</title>
 
     
     <link href="/css/nucleus.css?1583138100" rel="stylesheet">
@@ -35,7 +35,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/deploy/manual/prepare/">
+  <body class="" data-url="/best-practice/shell/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -111,7 +111,7 @@
   
     
     <li data-nav-id="/deploy/" title="部署指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -166,7 +166,7 @@
   
     
     <li data-nav-id="/deploy/manual/" title="手工部署" class="dd-item 
-        parent
+        
         
         
         ">
@@ -192,7 +192,7 @@
  
   
     
-      <li data-nav-id="/deploy/manual/prepare/" title="部署前的准备工作" class="dd-item active">
+      <li data-nav-id="/deploy/manual/prepare/" title="部署前的准备工作" class="dd-item ">
         <a href="/deploy/manual/prepare/">
         部署前的准备工作
         <i class="fas fa-check read-icon"></i>
@@ -433,7 +433,7 @@
   
     
     <li data-nav-id="/best-practice/" title="最佳实践" class="dd-item 
-        
+        parent
         
         
         ">
@@ -593,8 +593,8 @@
   
     
     <li data-nav-id="/best-practice/shell/" title="实用命令与脚本" class="dd-item 
-        
-        
+        parent
+        active
         
         ">
       <a href="/best-practice/shell/">
@@ -2999,7 +2999,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/deploy/manual/prepare/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/best-practice/shell/" selected>简体中文</option>
                     
                   
               
@@ -3061,7 +3061,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/deploy/manual/prepare.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/best-practice/shell/_index.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3092,13 +3092,7 @@
             
           
           
-            
-            
-          
-          
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/deploy/'>部署指南</a> > <a href='/deploy/manual/'>手工部署</a> > 部署前的准备工作
-          
-         
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/best-practice/'>最佳实践</a> > 实用命令与脚本
           
          
           
@@ -3111,25 +3105,7 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents">
-  <ul>
-    <li><a href="#准备节点">准备节点</a>
-      <ul>
-        <li><a href="#操作系统">操作系统</a></li>
-        <li><a href="#master-节点">Master 节点</a></li>
-        <li><a href="#etcd-节点">ETCD 节点</a></li>
-        <li><a href="#worker-节点">Worker 节点</a></li>
-      </ul>
-    </li>
-    <li><a href="#准备客户端工具">准备客户端工具</a>
-      <ul>
-        <li><a href="#安装-cfssl-a-idinstall-cfssla">安装 cfssl <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
-        <li><a href="#安装-kubectl">安装 kubectl</a></li>
-      </ul>
-    </li>
-    <li><a href="#生成-ca-证书-a-idgenerate-ca-certa">生成 CA 证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></a></li>
-  </ul>
-</nav>
+<nav id="TableOfContents"></nav>
     </div>
 </div>
 
@@ -3145,7 +3121,7 @@
           
             <h1>
               
-              部署前的准备工作
+              实用命令与脚本
             </h1>
           
 
@@ -3153,86 +3129,13 @@
 
 
 
-<h2 id="准备节点">准备节点</h2>
-<h3 id="操作系统">操作系统</h3>
-<p>使用 Linux 发行版，本教程主要以 Ubuntu 18.04 为例</p>
-<h3 id="master-节点">Master 节点</h3>
-<p>部署 K8S 控制面组件，推荐三台以上数量的机器</p>
-<h3 id="etcd-节点">ETCD 节点</h3>
-<p>部署 ETCD，可以跟 Master 节点用相同的机器，也可以用单独的机器，推荐三台以上数量的机器</p>
-<h3 id="worker-节点">Worker 节点</h3>
-<p>实际运行工作负载的节点，Master 节点也可以作为 Worker 节点，可以通过 kubelet 参数 <code>--kube-reserved</code> 多预留一些资源给系统组件。</p>
-<p>通常会给 Master 节点打标签，让关键的 Pod 跑在 Master 节点上，比如集群 DNS 服务。</p>
-<h2 id="准备客户端工具">准备客户端工具</h2>
-<p>我们需要用 <code>cfssl</code> 和 <code>kubectl</code> 来为各个组件生成证书和 kubeconfig，所以先将这两个工具在某个机器下载安装好。</p>
-<h3 id="安装-cfssl-a-idinstall-cfssla">安装 cfssl <!-- raw HTML omitted --><!-- raw HTML omitted --></h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl
-curl -L https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -o cfssljson
-curl -L https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -o cfssl-certinfo
 
-chmod +x cfssl cfssljson cfssl-certinfo
-sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/
-</code></pre></div><h3 id="安装-kubectl">安装 kubectl</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">wget -q --show-progress --https-only --timestamping <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  https://storage.googleapis.com/kubernetes-release/release/v1.16.1/bin/linux/amd64/kubectl
-
-chmod +x kubectl
-mv kubectl /usr/local/bin/
-</code></pre></div><h2 id="生成-ca-证书-a-idgenerate-ca-certa">生成 CA 证书 <!-- raw HTML omitted --><!-- raw HTML omitted --></h2>
-<p>由于各个组件都需要配置证书，并且依赖 CA 证书来签发证书，所以我们首先要生成好 CA 证书以及后续的签发配置文件:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat &gt; ca-csr.json <span style="color:#e6db74">&lt;&lt;EOF
-</span><span style="color:#e6db74">{
-</span><span style="color:#e6db74">  &#34;CN&#34;: &#34;Kubernetes&#34;,
-</span><span style="color:#e6db74">  &#34;key&#34;: {
-</span><span style="color:#e6db74">    &#34;algo&#34;: &#34;rsa&#34;,
-</span><span style="color:#e6db74">    &#34;size&#34;: 2048
-</span><span style="color:#e6db74">  },
-</span><span style="color:#e6db74">  &#34;names&#34;: [
-</span><span style="color:#e6db74">    {
-</span><span style="color:#e6db74">      &#34;C&#34;: &#34;CN&#34;,
-</span><span style="color:#e6db74">      &#34;ST&#34;: &#34;SiChuan&#34;,
-</span><span style="color:#e6db74">      &#34;L&#34;: &#34;ChengDu&#34;,
-</span><span style="color:#e6db74">      &#34;O&#34;: &#34;Kubernetes&#34;,
-</span><span style="color:#e6db74">      &#34;OU&#34;: &#34;CA&#34;
-</span><span style="color:#e6db74">    }
-</span><span style="color:#e6db74">  ]
-</span><span style="color:#e6db74">}
-</span><span style="color:#e6db74">EOF</span>
-
-cfssl gencert -initca ca-csr.json | cfssljson -bare ca
-
-cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
-</span><span style="color:#e6db74">{
-</span><span style="color:#e6db74">  &#34;signing&#34;: {
-</span><span style="color:#e6db74">    &#34;default&#34;: {
-</span><span style="color:#e6db74">      &#34;expiry&#34;: &#34;8760h&#34;
-</span><span style="color:#e6db74">    },
-</span><span style="color:#e6db74">    &#34;profiles&#34;: {
-</span><span style="color:#e6db74">      &#34;kubernetes&#34;: {
-</span><span style="color:#e6db74">        &#34;usages&#34;: [&#34;signing&#34;, &#34;key encipherment&#34;, &#34;server auth&#34;, &#34;client auth&#34;],
-</span><span style="color:#e6db74">        &#34;expiry&#34;: &#34;8760h&#34;
-</span><span style="color:#e6db74">      }
-</span><span style="color:#e6db74">    }
-</span><span style="color:#e6db74">  }
-</span><span style="color:#e6db74">}
-</span><span style="color:#e6db74">EOF</span>
-</code></pre></div><p>生成的文件中有下面三个后面会用到:</p>
-<ul>
-<li><code>ca-key.pem</code>: CA 证书密钥</li>
-<li><code>ca.pem</code>: CA 证书</li>
-<li><code>ca-config.json</code>: 证书签发配置</li>
-</ul>
-<p>csr 文件字段解释:</p>
-<ul>
-<li><code>CN</code>: <code>Common Name</code>，apiserver 从证书中提取该字段作为请求的用户名 (User Name)</li>
-<li><code>Organization</code>，apiserver 从证书中提取该字段作为请求用户所属的组 (Group)</li>
-</ul>
-<blockquote>
-<p>由于这里是 CA 证书，是签发其它证书的根证书，这个证书密钥不会分发出去作为 client 证书，所有组件使用的 client 证书都是由 CA 证书签发而来，所以 CA 证书的 CN 和 O 的名称并不重要，后续其它签发出来的证书的 CN 和 O 的名称才是有用的</p>
-</blockquote>
+	
 
 
-<footer class="footline">
+
+
+<footer class=" footline" >
 	
 </footer>
 
@@ -3267,6 +3170,8 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
             
                 
                     
+                        
+                        
                     
                 
                 
@@ -3282,40 +3187,6 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
             
             
                 
-                    
-                        
-                        
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
                     
                 
                 
@@ -3333,8 +3204,34 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
             
                 
                     
+                
+                
+
+                    
+                    
+                    
+
+                    
                         
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
                         
+            
+            
+                
                     
                 
                 
@@ -3486,6 +3383,7 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
             
                 
                     
+                    
                 
                 
 
@@ -3501,18 +3399,8 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
             
                 
                     
-                
-                
-
-                    
-                    
-                    
-
-                    
                         
-            
-            
-                
+                        
                     
                 
                 
@@ -3521,9 +3409,6 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
                     
                     
 
-                    
-            
-        
                     
                         
             
@@ -3573,6 +3458,22 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
             
         
                     
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
             
         
                     
@@ -3597,6 +3498,7 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
             
                 
                     
+                    
                 
                 
 
@@ -3609,6 +3511,9 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5204,10 +5109,10 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
 	 
 	 
 		
-			<a class="nav nav-prev" href="/deploy/manual/" title="手工部署"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/best-practice/big-cluster/" title="大规模集群优化"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/deploy/manual/bootstrapping-etcd/" title="部署 ETCD" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/best-practice/shell/node/" title="节点相关脚本" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
@@ -5237,4 +5142,3 @@ cat &gt; ca-config.json <span style="color:#e6db74">&lt;&lt;EOF
 
   </body>
 </html>
-

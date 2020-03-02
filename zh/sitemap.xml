@@ -383,6 +383,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/best-practice/shell/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/best-practice/useful/shell/</loc>
   </url>
   
@@ -452,6 +456,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/cluster/network/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/shell/node/</loc>
   </url>
   
   <url>

@@ -1,0 +1,15 @@
+[
+    {
+        "title": "Kubernetes Practice Guide",
+        "uri": "en",
+        "content": "TODO",
+        "objectID": "en"
+    },
+    {
+        "title": "Troubleshooting Guide",
+        "uri": "en/troubleshooting",
+        "content": "TODO     children depth 3",
+        "objectID": "en/troubleshooting",
+        "chapter": true
+    }
+]

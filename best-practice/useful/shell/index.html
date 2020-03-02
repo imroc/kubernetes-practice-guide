@@ -12,20 +12,20 @@
     <title>实用命令与脚本 :: Kubernetes 实践指南</title>
 
     
-    <link href="/css/nucleus.css?1583063209" rel="stylesheet">
-    <link href="/css/fontawesome-all.min.css?1583063209" rel="stylesheet">
-    <link href="/css/hybrid.css?1583063209" rel="stylesheet">
-    <link href="/css/featherlight.min.css?1583063209" rel="stylesheet">
-    <link href="/css/perfect-scrollbar.min.css?1583063209" rel="stylesheet">
-    <link href="/css/auto-complete.css?1583063209" rel="stylesheet">
-    <link href="/css/atom-one-dark-reasonable.css?1583063209" rel="stylesheet">
-    <link href="/css/theme.css?1583063209" rel="stylesheet">
-    <link href="/css/hugo-theme.css?1583063209" rel="stylesheet">
+    <link href="/css/nucleus.css?1583138100" rel="stylesheet">
+    <link href="/css/fontawesome-all.min.css?1583138100" rel="stylesheet">
+    <link href="/css/hybrid.css?1583138100" rel="stylesheet">
+    <link href="/css/featherlight.min.css?1583138100" rel="stylesheet">
+    <link href="/css/perfect-scrollbar.min.css?1583138100" rel="stylesheet">
+    <link href="/css/auto-complete.css?1583138100" rel="stylesheet">
+    <link href="/css/atom-one-dark-reasonable.css?1583138100" rel="stylesheet">
+    <link href="/css/theme.css?1583138100" rel="stylesheet">
+    <link href="/css/hugo-theme.css?1583138100" rel="stylesheet">
     
-      <link href="/css/theme-mine.css?1583063209" rel="stylesheet">
+      <link href="/css/theme-mine.css?1583138100" rel="stylesheet">
     
 
-    <script src="/js/jquery-3.3.1.min.js?1583063209"></script>
+    <script src="/js/jquery-3.3.1.min.js?1583138100"></script>
 
     <style>
       :root #header + #content > #left > #rlblock_left{
@@ -63,8 +63,8 @@
 </div>
 
 
-<script type="text/javascript" src="/js/lunr.min.js?1583063209"></script>
-<script type="text/javascript" src="/js/auto-complete.js?1583063209"></script>
+<script type="text/javascript" src="/js/lunr.min.js?1583138100"></script>
+<script type="text/javascript" src="/js/auto-complete.js?1583138100"></script>
 <script type="text/javascript">
     
         var baseurl = "https:\/\/k8s.imroc.io\/";
@@ -580,6 +580,61 @@
         </a>
     </li>
      
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/best-practice/shell/" title="实用命令与脚本" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/best-practice/shell/">
+          实用命令与脚本
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/best-practice/shell/node/" title="节点相关脚本" class="dd-item ">
+        <a href="/best-practice/shell/node/">
+        节点相关脚本
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
   
  
 
@@ -3058,8 +3113,6 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#获取集群所有节点占用的-podcidr">获取集群所有节点占用的 podCIDR</a></li>
-    <li><a href="#将节点信息输出成表格形式">将节点信息输出成表格形式</a></li>
     <li><a href="#不断尝试建立tcp连接测试网络连通性">不断尝试建立TCP连接测试网络连通性</a></li>
     <li><a href="#清理-evicted-的-pod">清理 Evicted 的 pod</a></li>
     <li><a href="#清理非-running-的-pod">清理非 Running 的 pod</a></li>
@@ -3091,25 +3144,7 @@
 
 
 
-<h2 id="获取集群所有节点占用的-podcidr">获取集群所有节点占用的 podCIDR</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get nodes --output<span style="color:#f92672">=</span>jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{range .items[*]}{.status.addresses[?(@.type==&#34;InternalIP&#34;)].address} {.spec.podCIDR} {&#34;\n&#34;}{end}&#39;</span>
-</code></pre></div><p>示例输出:</p>
-<pre><code>10.13.132.13 10.13.140.32/27
-10.13.132.14 10.13.140.64/27
-10.13.133.11 10.13.140.0/27
-10.13.133.12 10.13.140.96/27
-10.13.133.2 10.13.140.160/27
-10.13.133.4 10.13.140.128/27
-</code></pre><h2 id="将节点信息输出成表格形式">将节点信息输出成表格形式</h2>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get no -o<span style="color:#f92672">=</span>custom-columns<span style="color:#f92672">=</span>INTERNAL-IP:.metadata.name,EXTERNAL-IP:.status.addresses<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>.address,CIDR:.spec.podCIDR
-</code></pre></div><p>示例输出:</p>
-<pre><code>INTERNAL-IP     EXTERNAL-IP       CIDR
-10.100.12.194   152.136.146.157   10.101.64.64/27
-10.100.16.11    10.100.16.11      10.101.66.224/27
-10.100.16.24    10.100.16.24      10.101.64.32/27
-10.100.16.26    10.100.16.26      10.101.65.0/27
-10.100.16.37    10.100.16.37      10.101.64.0/27
-</code></pre><h2 id="不断尝试建立tcp连接测试网络连通性">不断尝试建立TCP连接测试网络连通性</h2>
+<h2 id="不断尝试建立tcp连接测试网络连通性">不断尝试建立TCP连接测试网络连通性</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#66d9ef">while</span> true; <span style="color:#66d9ef">do</span> echo <span style="color:#e6db74">&#34;&#34;</span> | telnet 10.0.0.3 443; sleep 0.1; <span style="color:#66d9ef">done</span>
 </code></pre></div><ul>
 <li><code>ctrl+c</code> 终止测试</li>
@@ -3517,6 +3552,38 @@ IMAGE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ccr.cc
                     
                     
 
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
                     
             
         
@@ -5122,19 +5189,19 @@ IMAGE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ccr.cc
     <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
-    <script src="/js/clipboard.min.js?1583063209"></script>
-    <script src="/js/perfect-scrollbar.min.js?1583063209"></script>
-    <script src="/js/perfect-scrollbar.jquery.min.js?1583063209"></script>
-    <script src="/js/jquery.sticky.js?1583063209"></script>
-    <script src="/js/featherlight.min.js?1583063209"></script>
-    <script src="/js/highlight.pack.js?1583063209"></script>
+    <script src="/js/clipboard.min.js?1583138100"></script>
+    <script src="/js/perfect-scrollbar.min.js?1583138100"></script>
+    <script src="/js/perfect-scrollbar.jquery.min.js?1583138100"></script>
+    <script src="/js/jquery.sticky.js?1583138100"></script>
+    <script src="/js/featherlight.min.js?1583138100"></script>
+    <script src="/js/highlight.pack.js?1583138100"></script>
     <script>hljs.initHighlightingOnLoad();</script>
-    <script src="/js/modernizr.custom-3.6.0.js?1583063209"></script>
-    <script src="/js/learn.js?1583063209"></script>
-    <script src="/js/hugo-learn.js?1583063209"></script>
+    <script src="/js/modernizr.custom-3.6.0.js?1583138100"></script>
+    <script src="/js/learn.js?1583138100"></script>
+    <script src="/js/hugo-learn.js?1583138100"></script>
 
-    <link href="/mermaid/mermaid.css?1583063209" rel="stylesheet" />
-    <script src="/mermaid/mermaid.js?1583063209"></script>
+    <link href="/mermaid/mermaid.css?1583138100" rel="stylesheet" />
+    <script src="/mermaid/mermaid.js?1583138100"></script>
     <script>
         mermaid.initialize({ startOnLoad: true });
     </script>
