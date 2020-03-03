@@ -195,7 +195,425 @@
 </span>
 
  
-<p>TODO</p>
+<h2 id="roadmap">Roadmap</h2>
+<p>本书正在起草初期，内容将包含大量 Kubernetes 实践干货，大量规划内容还正在路上，可以点击的表示是已经可以在左侧导航栏中找到的并预览的文章，但不代表已经完善，还会不断的补充和优化。</p>
+<h3 id="部署指南">部署指南</h3>
+<p>自建的 k8s 集群有很多种方式部署方式，k8s 知识库将列举手工二进制部署与各种辅助工具部署的方法，可以根据自己使用场景选择对应合适的部署方法。除此之外，还会包含大量的常用应用的部署方法，比如各种数据库和存储基础设施部署，不同的业务场景和解决方案都可能依赖这些应用，每种应用部署方法都可能被书内其它多处地方引用。</p>
+<ul>
+<li>部署方案选型</li>
+<li>单机部署</li>
+<li><a href="/deploy/manual/">手工部署</a>
+<ul>
+<li><a href="/deploy/manual/prepare/">部署前的准备工作</a></li>
+<li><a href="/deploy/manual/bootstrapping-etcd/">部署 ETCD</a></li>
+<li><a href="/deploy/manual/bootstrapping-master/">部署 Master</a></li>
+<li><a href="/deploy/manual/bootstrapping-worker-nodes/">部署 Worker 节点</a></li>
+<li><a href="/deploy/manual/deploy-critical-addons/">部署关键附加组件</a></li>
+</ul>
+</li>
+<li>使用 Kubeadm 部署集群</li>
+<li>使用 Minikube 部署测试集群</li>
+<li>使用 Bootkube 部署集群</li>
+<li>使用 Ansible 部署集群</li>
+<li><a href="/deploy/addons/">部署附加组件</a>
+<ul>
+<li><a href="/deploy/addons/coredns/">部署 CoreDNS</a></li>
+<li><a href="/deploy/addons/kube-proxy/">以 Daemonset 方式部署 kube-proxy</a></li>
+</ul>
+</li>
+<li>常见应用部署
+<ul>
+<li>ElasticSearch 与 Kibana
+<ul>
+<li><a href="/deploy/common/elasticsearch/install-elasticsearch-and-kibana-with-elastic-oparator/">使用 elastic-oparator 部署</a></li>
+</ul>
+</li>
+<li>ETCD</li>
+<li>Zookeeper</li>
+<li>Consul</li>
+<li>Kafka</li>
+<li>Redis</li>
+<li>TiKV</li>
+<li>MySQL</li>
+<li>TiDB</li>
+<li>PostgreSQL</li>
+<li>MongoDB</li>
+<li>Cassandra</li>
+<li>InfluxDB</li>
+<li>OpenTSDB</li>
+</ul>
+</li>
+</ul>
+<h3 id="集群方案">集群方案</h3>
+<p>k8s 拥有惊人的扩展能力，针对不同环境和场景可以使用不同的方案，涵盖网络、存储、运行时、Ingress、Metrics 等。k8s 知识库会帮助你彻底理清这些机制，并深入剖析各种方案的原理、用法与使用场景。</p>
+<ul>
+<li><a href="/cluster/network/">网络方案</a>
+<ul>
+<li>彻底理解集群网络</li>
+<li>Network Policy</li>
+<li>开源网络方案</li>
+<li><a href="/cluster/network/flannel/">Flannel</a>
+<ul>
+<li>Flannel 网络原理</li>
+<li><a href="/cluster/network/flannel/deploy/">部署 Flannel</a></li>
+</ul>
+</li>
+<li>Macvlan</li>
+<li>Calico</li>
+<li>Cilium</li>
+<li>Kube-router</li>
+<li>Kube-OVN</li>
+<li>OpenVSwitch</li>
+</ul>
+</li>
+<li><a href="/cluster/runtime/">运行时方案</a>
+<ul>
+<li>Docker
+<ul>
+<li>Docker 介绍</li>
+<li>Docker 安装</li>
+</ul>
+</li>
+<li><a href="/cluster/runtime/containerd/">Containerd</a>
+<ul>
+<li>containerd 介绍</li>
+<li><a href="/cluster/runtime/containerd/install-containerd/">安装 containerd</a></li>
+</ul>
+</li>
+<li>CRI-O
+<ul>
+<li>CRI-O 介绍</li>
+<li>CRI-O 安装</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>存储方案
+<ul>
+<li>Rook</li>
+<li>OpenEBS</li>
+</ul>
+</li>
+<li>Ingress 方案
+<ul>
+<li>Nginx Ingress
+<ul>
+<li><a href="/cluster/ingress/nginx/install-nginx-ingress/">安装 nginx ingress controller</a></li>
+</ul>
+</li>
+<li>Traefik Ingress
+<ul>
+<li><a href="/cluster/ingress/traefik/install-traefik-ingress/">安装 traefik ingress controller</a></li>
+</ul>
+</li>
+<li>Contour</li>
+<li>Ambassador</li>
+<li>Kong</li>
+<li>Gloo</li>
+<li>HAProxy</li>
+<li>Istio</li>
+<li>Skipper</li>
+</ul>
+</li>
+<li>LoadBalancer 方案
+<ul>
+<li>MetalLB</li>
+<li>Porter</li>
+</ul>
+</li>
+<li>Metrics 方案
+<ul>
+<li><a href="/cluster/metrics/install-metrics-server/">安装 metrics server</a></li>
+</ul>
+</li>
+</ul>
+<h3 id="最佳实践">最佳实践</h3>
+<p>k8s 有先进的设计理念，也包含了大量概念，并提供了非常丰富的能力，用法琳琅满目，但入门比较困难，k8s 知识库将提供使用 k8s 的各种场景里的最佳实践，帮助大家少走弯路，比如如何管理和运维集群、如何进行动态伸缩、如何保证部署的服务高可用、如何在更新服务或扩缩容节点保证业务零感知、如何部署有状态服务、如何针对大规模集群进行优化、如何对资源进行隔离和共享以及针对各种需求和问题的解决方案等。</p>
+<ul>
+<li><a href="/best-practice/deploy/">应用部署最佳实践</a></li>
+<li><a href="/best-practice/node-local-dns/">本地 DNS 缓存</a></li>
+<li><a href="/best-practice/wildcard-domain-forward/">泛域名动态转发 Service</a></li>
+<li><a href="/best-practice/permission/">集群权限控制</a>
+<ul>
+<li><a href="/best-practice/permission/create-user-using-csr-api/">利用 CSR API 创建用户</a></li>
+<li><a href="/best-practice/permission/user/">控制用户权限</a></li>
+<li><a href="/best-practice/permission/app/">控制应用权限</a></li>
+</ul>
+</li>
+<li>有状态服务部署</li>
+<li><a href="/best-practice/useful/">实用工具和技巧</a>
+<ul>
+<li><a href="/best-practice/useful/efficient-kubectl/">kubectl 高效技巧</a></li>
+<li><a href="/best-practice/useful/yaml/">实用 yaml 片段</a></li>
+<li><a href="/best-practice/useful/shell/">实用命令与脚本</a></li>
+</ul>
+</li>
+<li>集群证书管理
+<ul>
+<li><a href="/best-practice/cert-management/install-cert-manger/">安装 cert-manager</a></li>
+<li><a href="/best-practice/cert-management/autogenerate-certificate-with-cert-manager/">使用 cert-manager 自动生成证书</a></li>
+</ul>
+</li>
+<li>集群配置管理
+<ul>
+<li>Helm
+<ul>
+<li><a href="/best-practice/configuration-management/helm/install-helm/">安装 Helm</a></li>
+<li><a href="/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3/">Helm V2 迁移到 V3</a></li>
+<li>使用 Helm 部署与管理应用</li>
+<li>开发 Helm Charts</li>
+</ul>
+</li>
+<li>Kustomize
+<ul>
+<li>Kustomize 基础入门</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="/best-practice/big-cluster/">大规模集群优化</a></li>
+<li>弹性伸缩
+<ul>
+<li>使用 HPA 对 Pod 水平伸缩</li>
+<li>使用 VPA 对 Pod 垂直伸缩</li>
+<li>使用 Cluster Autoscaler 对节点水平伸缩</li>
+</ul>
+</li>
+<li>资源分配与限制</li>
+<li>Master 高可用</li>
+<li>资源隔离与共享
+<ul>
+<li>利用 kata-container 隔离容器资源</li>
+<li>利用 gVisor 隔离容器资源</li>
+<li>利用 lvm 和 xfs 实现容器磁盘隔离</li>
+<li>利用 lxcfs 隔离 proc 提升容器资源可见性</li>
+<li>共享存储</li>
+<li>共享内存</li>
+</ul>
+</li>
+<li>Pod 原地重启</li>
+<li>集群升级</li>
+<li>固定 IP</li>
+<li>备份与恢复</li>
+<li>ETCD 性能优化</li>
+<li>内核参数优化</li>
+<li>CPU 亲和性</li>
+<li>使用大页内存</li>
+<li>离在线混合部署</li>
+<li>集群监控
+<ul>
+<li>Prometheus</li>
+<li>Grafana</li>
+</ul>
+</li>
+<li>日志搜集
+<ul>
+<li>EFK/ELK</li>
+</ul>
+</li>
+<li>集群安全
+<ul>
+<li>使用 PodSecurityPolicy 配置全局 Pod 安全策略</li>
+<li>集群审计</li>
+</ul>
+</li>
+<li>集群可视化管理
+<ul>
+<li>Kubernetes Dashboard</li>
+<li>KubSphere</li>
+<li>Weave Scope</li>
+<li>Rancher</li>
+<li>Kui</li>
+<li>Kubebox</li>
+</ul>
+</li>
+<li>集群镜像管理
+<ul>
+<li>Harbor</li>
+<li>Dragonfly</li>
+<li>Kaniko</li>
+<li>kpack</li>
+</ul>
+</li>
+</ul>
+<h3 id="排错指南">排错指南</h3>
+<p>正是 k8s 功能如此丰富强大，迭代速度如此之快，其复杂性和不确定性也非常之大。知识库会总结出各种问题的排查思路与可能原因，还有对应解决方案的最佳实践，也分享一些踩坑案例与排错技巧，与排错技巧，让大家少走弯路。</p>
+<ul>
+<li><a href="/troubleshooting/problems/">问题排查</a>
+<ul>
+<li><a href="/troubleshooting/problems/pod/">Pod 排错</a>
+<ul>
+<li><a href="/troubleshooting/problems/pod/keep-pending/">Pod 一直处于 Pending 状态</a></li>
+<li><a href="/troubleshooting/problems/pod/keep-containercreating-or-waiting/">Pod 一直处于 ContainerCreating 或 Waiting 状态</a></li>
+<li><a href="/troubleshooting/problems/pod/keep-crashloopbackoff/">Pod 一直处于 CrashLoopBackOff 状态</a></li>
+<li><a href="/troubleshooting/problems/pod/keep-terminating/">Pod 一直处于 Terminating 状态</a></li>
+<li><a href="/troubleshooting/problems/pod/keep-unkown/">Pod 一直处于 Unknown 状态</a></li>
+<li><a href="/troubleshooting/problems/pod/keep-error/">Pod 一直处于 Error 状态</a></li>
+<li><a href="/troubleshooting/problems/pod/keep-imagepullbackoff/">Pod 一直处于 ImagePullBackOff 状态</a></li>
+<li><a href="/troubleshooting/problems/pod/keep-imageinspecterror/">Pod 一直处于 ImageInspectError 状态</a></li>
+<li><a href="/troubleshooting/problems/pod/healthcheck-failed/">Pod 健康检查失败</a></li>
+<li><a href="/troubleshooting/problems/pod/container-proccess-exit-by-itself/">容器进程主动退出</a></li>
+</ul>
+</li>
+<li>网络排错
+<ul>
+<li><a href="/troubleshooting/problems/network/lb-healthcheck-failed/">LB 健康检查失败</a></li>
+<li><a href="/troubleshooting/problems/network/dns/">DNS 解析异常</a></li>
+<li><a href="/troubleshooting/problems/network/service-unrecheable/">Service 不通</a></li>
+<li><a href="/troubleshooting/problems/network/low-throughput/">网络性能差</a></li>
+</ul>
+</li>
+<li>集群排错
+<ul>
+<li><a href="/troubleshooting/problems/cluster/node-all-gone/">Node 全部消失</a></li>
+<li><a href="/troubleshooting/problems/cluster/daemonset-not-scheduled/">Daemonset 没有被调度</a></li>
+<li>Apiserver 响应慢</li>
+<li>ETCD 频繁选主</li>
+<li>Node 异常</li>
+</ul>
+</li>
+<li>经典报错
+<ul>
+<li><a href="/troubleshooting/problems/errors/no-space-left-on-device/">no space left on device</a></li>
+<li><a href="/troubleshooting/problems/errors/arp_cache-neighbor-table-overflow/">arp_cache: neighbor table overflow!</a></li>
+<li><a href="/troubleshooting/problems/errors/cannot-allocate-memory/">Cannot allocate memory</a></li>
+</ul>
+</li>
+<li>其它排错
+<ul>
+<li><a href="/troubleshooting/problems/others/job-cannot-delete/">Job 无法被删除</a></li>
+<li><a href="/troubleshooting/problems/others/kubectl-exec-or-logs-failed/">kubectl 执行 exec 或 logs 失败</a></li>
+<li><a href="/troubleshooting/problems/others/kernel-solft-lockup/">内核软死锁</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>处理实践
+<ul>
+<li><a href="/troubleshooting/handle/high-load/">高负载</a></li>
+<li><a href="/troubleshooting/handle/memory-fragmentation/">内存碎片化</a></li>
+<li><a href="/troubleshooting/handle/disk-full/">磁盘爆满</a></li>
+<li><a href="/troubleshooting/handle/runnig-out-of-inotify-watches/">inotify watch 耗尽</a></li>
+<li><a href="/troubleshooting/handle/pid-full/">PID 耗尽</a></li>
+<li><a href="/troubleshooting/handle/arp_cache-overflow/">arp_cache 溢出</a></li>
+</ul>
+</li>
+<li>踩坑总结
+<ul>
+<li><a href="/troubleshooting/summary/cgroup-leaking/">cgroup 泄露</a></li>
+<li><a href="/troubleshooting/summary/tcp_tw_recycle-causes-packet-loss/">tcp_tw_recycle 引发丢包</a></li>
+<li><a href="/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/">使用 oom-guard 在用户态处理 cgroup OOM</a></li>
+<li>conntrack 冲突导致丢包</li>
+</ul>
+</li>
+<li>案例分享
+<ul>
+<li><a href="/troubleshooting/cases/eviction-leads-to-service-disruption/">驱逐导致服务中断</a></li>
+<li><a href="/troubleshooting/cases/dns-lookup-5s-delay/">DNS 5 秒延时</a></li>
+<li><a href="/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed/">arp_cache 溢出导致健康检查失败</a></li>
+<li><a href="/troubleshooting/cases/cross-vpc-connect-nodeport-timeout/">跨 VPC 访问 NodePort 经常超时</a></li>
+<li><a href="/troubleshooting/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/">访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时</a></li>
+<li><a href="/troubleshooting/cases/livenesprobe-failed-occasionally/">Pod 偶尔存活检查失败</a></li>
+<li><a href="/troubleshooting/cases/dns-resolution-abnormal/">DNS 解析异常</a></li>
+<li><a href="/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/">Pod 访问另一个集群的 apiserver 有延时</a></li>
+<li><a href="/troubleshooting/cases/low-cps-from-lb-to-nodeport/">LB 压测 NodePort CPS 低</a></li>
+<li><a href="/troubleshooting/cases/schemaerror-when-using-kubectl-apply-or-edit/">kubectl edit 或者 apply 报 SchemaError</a></li>
+<li><a href="/troubleshooting/cases/no-route-to-host/">诡异的 No route to host</a></li>
+<li><a href="/troubleshooting/cases/kubernetes-overflow-and-drop/">神秘的溢出与丢包</a></li>
+</ul>
+</li>
+<li>排错技巧
+<ul>
+<li><a href="/troubleshooting/trick/analysis-exitcode/">分析 ExitCode 定位 Pod 异常退出原因</a></li>
+<li><a href="/troubleshooting/trick/capture-packets-in-container/">容器内抓包定位网络问题</a></li>
+<li><a href="/troubleshooting/trick/use-systemtap-to-locate-problems/">使用 Systemtap 定位疑难杂症</a></li>
+<li>使用 kubectl-debug 帮助定位问题</li>
+<li>分析 Docker 磁盘占用</li>
+</ul>
+</li>
+</ul>
+<h3 id="领域应用">领域应用</h3>
+<p>k8s 在各个领域都发挥了巨大作用，我们会将 k8s 在这些领域的应用汇总，给出各种场景化应用的指南，比如近年来如火如荼的 DevOps 领域，其中 CI/CD 的应用更是大家迫切期望想要的。还有 AI，大数据，微服务架构，Service Mesh，Serverless 等。</p>
+<ul>
+<li>微服务架构
+<ul>
+<li>服务发现</li>
+<li>服务治理</li>
+<li>分布式追踪
+<ul>
+<li>Jaeger</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Service Mesh
+<ul>
+<li>Istio</li>
+<li>Maesh</li>
+<li>Kuma</li>
+</ul>
+</li>
+<li>Serverless
+<ul>
+<li>Knative</li>
+<li>Kubeless</li>
+<li>Fission</li>
+</ul>
+</li>
+<li>DevOps
+<ul>
+<li>Jenkins X</li>
+<li>Tekton</li>
+<li>Argo</li>
+<li>GoCD</li>
+<li>Argo</li>
+<li>GitLab CI</li>
+<li>Drone</li>
+</ul>
+</li>
+<li>AI
+<ul>
+<li>nvidia-docker</li>
+<li>Kubeflow</li>
+</ul>
+</li>
+<li><a href="/domains/big-data/">大数据</a>
+<ul>
+<li><a href="/domains/big-data/flink-on-kubernetes/">Flink on Kubernetes</a></li>
+<li>Hbase on Kubernetes</li>
+<li>Spark on Kubernetes</li>
+<li>Hadoop on Kubernetes</li>
+</ul>
+</li>
+</ul>
+<h3 id="开发指南">开发指南</h3>
+<p>k8s 开放了很多扩展能力，基于这些扩展机制可以开发出各种功能的应用，比如集群管理应用、部署有状态服务的应用（Operator）等，知识库将介绍如何开发这些应用。</p>
+<ul>
+<li>开发环境搭建</li>
+<li><a href="/dev/golang-build/">Go 语言编译原理与优化</a></li>
+<li>Operator
+<ul>
+<li>Operator 概述</li>
+<li>operator-sdk</li>
+<li>kubebuilder</li>
+</ul>
+</li>
+<li>client-go</li>
+<li>社区贡献</li>
+</ul>
+<h2 id="在线阅读">在线阅读</h2>
+<p>本书将支持中英文两个语言版本，通常文章会先用中文起草并更新，等待其内容较为成熟完善，更新不再频繁的时候才会翻译成英文，点击左上角切换语言。</p>
+<ul>
+<li>中文: <a href="https://k8s.imroc.io">https://k8s.imroc.io</a></li>
+<li>English: <a href="https://k8s.imroc.io/v/en">https://k8s.imroc.io/v/en</a></li>
+</ul>
+<h2 id="项目源码">项目源码</h2>
+<p>项目源码存放于 Github 上: <a href="https://github.com/imroc/kubernetes-practice-guide">https://github.com/imroc/kubernetes-practice-guide</a></p>
+<h2 id="贡献">贡献</h2>
+<p>欢迎参与贡献和完善内容，贡献方法参考 <a href="https://github.com/imroc/kubernetes-practice-guide/blob/master/CONTRIBUTING/">CONTRIBUTING</a></p>
+<h2 id="license">License</h2>
+<p><img src="https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png" alt=""></p>
+<p><a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">署名-非商业性使用-相同方式共享 4.0 (CC BY-NC-SA 4.0)</a></p>
 	
   
         
@@ -264,34 +682,8 @@
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
     
-<script src='/js/bundle.min.2569877743934301f017dfac8c65620087e10822fabd878f7c071bf636287845.js' integrity='sha256-JWmHd0OTQwHwF9&#43;sjGViAIfhCCL6vYePfAcb9jYoeEU='></script>
-    <script>
-        function init(){
-          var client = algoliasearch("B6Q6PSGUV5", "5b4678e9995fe4211c4fa43ad2ffdab5");
-          var index = client.initIndex("kubernetes-practice-guide-en");
-          
-          autocomplete('#aa-search-input', {
-              hint: false
-          }, {
-              source: autocomplete.sources.hits(index, {
-                  hitsPerPage: 10
-              }),
-              
-              displayKey: 'name',
-              
-              templates: {
-                  
-                  suggestion: function (suggestion) {
-                      return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
-                          .value + '</a>';
-                  }
-              }
-          });
-          hljs.initHighlightingOnLoad();
-          mermaid.initialize({ startOnLoad: true });
-        }
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+<script src='/js/bundle.min.dca945587ca33c0071cebfa608a28a2e6485345acaaa1e4144bf395c244694ba.js' integrity='sha256-3KlFWHyjPABxzr&#43;mCKKKLmSFNFrKqh5BRL85XCRGlLo='></script>
+    <script src="https://k8s.imroc.io/js/learn.js"></script>
     
 
   </body>

@@ -5078,34 +5078,8 @@
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
     
-<script src='/js/bundle.min.2569877743934301f017dfac8c65620087e10822fabd878f7c071bf636287845.js' integrity='sha256-JWmHd0OTQwHwF9&#43;sjGViAIfhCCL6vYePfAcb9jYoeEU='></script>
-    <script>
-        function init(){
-          var client = algoliasearch("B6Q6PSGUV5", "5b4678e9995fe4211c4fa43ad2ffdab5");
-          var index = client.initIndex("kubernetes-practice-guide-zh");
-          
-          autocomplete('#aa-search-input', {
-              hint: false
-          }, {
-              source: autocomplete.sources.hits(index, {
-                  hitsPerPage: 10
-              }),
-              
-              displayKey: 'name',
-              
-              templates: {
-                  
-                  suggestion: function (suggestion) {
-                      return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
-                          .value + '</a>';
-                  }
-              }
-          });
-          hljs.initHighlightingOnLoad();
-          mermaid.initialize({ startOnLoad: true });
-        }
-        document.addEventListener('DOMContentLoaded', init);
-    </script>
+<script src='/js/bundle.min.dca945587ca33c0071cebfa608a28a2e6485345acaaa1e4144bf395c244694ba.js' integrity='sha256-3KlFWHyjPABxzr&#43;mCKKKLmSFNFrKqh5BRL85XCRGlLo='></script>
+    <script src="https://k8s.imroc.io/js/learn.js"></script>
     
 
   </body>

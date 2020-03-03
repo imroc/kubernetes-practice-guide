@@ -60,7 +60,7 @@
 	"title": "集群方案",
 	"tags": [],
 	"description": "",
-	"content": "  Ingress 方案    Nginx Ingress     Traefik Ingress    安装 traefik ingress controller     Metrics 方案    安装 metrics server      网络方案    Flannel    部署 Flannel    彻底理解集群网络      运行时方案    Containerd    安装 containerd     "
+	"content": "  Ingress 方案    Nginx Ingress    安装 nginx ingress controller    Traefik Ingress    安装 traefik ingress controller     Metrics 方案    安装 metrics server      网络方案    Flannel    部署 Flannel    彻底理解集群网络      运行时方案    Containerd    安装 containerd     "
 },
 {
 	"uri": "https://k8s.imroc.io/troubleshooting/",
