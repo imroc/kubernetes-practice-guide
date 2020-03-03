@@ -100,6 +100,7 @@ jQuery(document).ready(function() {
         return false;
     });
 
+    console.log("add click")
     jQuery('[data-sidebar-toggle]').on('click', function() {
         jQuery(document.body).toggleClass('sidebar-hidden');
         sidebarStatus = (jQuery(document.body).hasClass('sidebar-hidden') ? 'closed' : 'open');
