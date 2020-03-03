@@ -257,6 +257,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/best-practice/useful/shell/pod/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/</loc>
   </url>
   
@@ -383,10 +387,6 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/best-practice/shell/</loc>
-  </url>
-  
-  <url>
     <loc>https://k8s.imroc.io/best-practice/useful/shell/</loc>
   </url>
   
@@ -459,7 +459,11 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/best-practice/shell/node/</loc>
+    <loc>https://k8s.imroc.io/best-practice/useful/shell/network/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/useful/shell/node/</loc>
   </url>
   
   <url>

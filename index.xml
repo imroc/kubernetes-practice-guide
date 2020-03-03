@@ -490,6 +490,15 @@ TCP 连接建立会经过三次握手，server 收到 SYN 后会将连接加入 
     </item>
     
     <item>
+      <title>Pod 相关脚本</title>
+      <link>https://k8s.imroc.io/best-practice/useful/shell/pod/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/best-practice/useful/shell/pod/</guid>
+      <description>清理 Evicted 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4==&amp;#34;Evicted&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 清理非 Running 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4!=&amp;#34;Running&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 升级镜像 NAMESPACE=&amp;#34;kube-system&amp;#34; WORKLOAD_TYPE=&amp;#34;daemonset&amp;#34; WORKLOAD_NAME=&amp;#34;ip-masq-agent&amp;#34; CONTAINER_NAME=&amp;#34;ip-masq-agent&amp;#34; IMAGE=&amp;#34;ccr.ccs.tencentyun.com/library/ip-masq-agent:v2.5.0&amp;#34; kubectl -n $NAMESPACE patch $WORKLOAD_TYPE $WORKLOAD_NAME --patch &amp;#39;{&amp;#34;spec&amp;#34;: {&amp;#34;template&amp;#34;: {&amp;#34;spec&amp;#34;: {&amp;#34;containers&amp;#34;: [{&amp;#34;name&amp;#34;: &amp;#34;$CONTAINER_NAME&amp;#34;,&amp;#34;image&amp;#34;: &amp;#34;$IMAGE&amp;#34; }]}}}}&amp;#39; </description>
+    </item>
+    
+    <item>
       <title>Pod 访问另一个集群的 apiserver 有延时</title>
       <link>https://k8s.imroc.io/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -763,16 +772,6 @@ kubectl apply -f deploy/1.8+/ 参考资料  Github 主页: https://github.com/ku
     </item>
     
     <item>
-      <title>实用命令与脚本</title>
-      <link>https://k8s.imroc.io/best-practice/useful/shell/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/useful/shell/</guid>
-      <description>不断尝试建立TCP连接测试网络连通性 while true; do echo &amp;#34;&amp;#34; | telnet 10.0.0.3 443; sleep 0.1; done  ctrl+c 终止测试 替换 10.0.0.3 与 443 为需要测试的 IP/域名 和端口  清理 Evicted 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4==&amp;#34;Evicted&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 清理非 Running 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4!=&amp;#34;Running&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 进入容器 netns 粘贴脚本到命令行:
-function e() { set -eu ns=${2-&amp;#34;default&amp;#34;} pod=`kubectl -n $ns describe pod $1 | grep -A10 &amp;#34;^Containers:&amp;#34; | grep -Eo &amp;#39;docker://.</description>
-    </item>
-    
-    <item>
       <title>容器内抓包定位网络问题</title>
       <link>https://k8s.imroc.io/troubleshooting/trick/capture-packets-in-container/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -936,11 +935,22 @@ sysctl net.ipv4.vs.conn_reuse_mode=0 参考 issue: https://github.com/kubernetes
     </item>
     
     <item>
-      <title>节点相关脚本</title>
-      <link>https://k8s.imroc.io/best-practice/shell/node/</link>
+      <title>网络调试相关脚本</title>
+      <link>https://k8s.imroc.io/best-practice/useful/shell/network/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/shell/node/</guid>
+      <guid>https://k8s.imroc.io/best-practice/useful/shell/network/</guid>
+      <description>进入容器 netns 粘贴脚本到命令行:
+function e() { set -eu ns=${2-&amp;#34;default&amp;#34;} pod=`kubectl -n $ns describe pod $1 | grep -A10 &amp;#34;^Containers:&amp;#34; | grep -Eo &amp;#39;docker://.*$&amp;#39; | head -n 1 | sed &amp;#39;s/docker:\/\/\(.*\)$/\1/&amp;#39;` pid=`docker inspect -f {{.State.Pid}} $pod` echo &amp;#34;entering pod netns for $ns/$1&amp;#34; cmd=&amp;#34;nsenter -n --target $pid&amp;#34; echo $cmd $cmd } 进入在当前节点上运行的某个 pod 的 netns:
+# 进入 kube-system 命名空间下名为 metrics-server-6cf9685556-rclw5 的 pod 所在的 netns e metrics-server-6cf9685556-rclw5 kube-system 进入 pod 的 netns 后就使用节点上的工具在该 netns 中做操作，比如用 ip a 查询网卡和ip、用 ip route 查询路由、用 tcpdump 抓容器内的包等。</description>
+    </item>
+    
+    <item>
+      <title>节点相关脚本</title>
+      <link>https://k8s.imroc.io/best-practice/useful/shell/node/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/best-practice/useful/shell/node/</guid>
       <description>表格输出各节点占用的 podCIDR kubectl get no -o=custom-columns=INTERNAL-IP:.metadata.name,EXTERNAL-IP:.status.addresses[1].address,CIDR:.spec.podCIDR 示例输出:
 INTERNAL-IP EXTERNAL-IP CIDR 10.100.12.194 152.136.146.157 10.101.64.64/27 10.100.16.11 10.100.16.11 10.101.66.224/27 10.100.16.24 10.100.16.24 10.101.64.32/27 10.100.16.26 10.100.16.26 10.101.65.0/27 10.100.16.37 10.100.16.37 10.101.64.0/27 表格输出各节点总可用资源 (Allocatable) kubectl get no -o=custom-columns=&amp;#34;NODE:.metadata.name,ALLOCATABLE CPU:.status.allocatable.cpu,ALLOCATABLE MEMORY:.status.allocatable.memory&amp;#34; 示例输出：
 NODE ALLOCATABLE CPU ALLOCATABLE MEMORY 10.0.0.2 3920m 7051692Ki 10.0.0.3 3920m 7051816Ki 输出各节点已分配资源的情况 所有种类的资源已分配情况概览：

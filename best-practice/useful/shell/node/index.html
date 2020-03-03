@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>使用 oom-guard 在用户态处理 cgroup OOM :: Kubernetes 实践指南</title>
+    <title>节点相关脚本 :: Kubernetes 实践指南</title>
 
 
     
@@ -23,7 +23,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/">
+  <body class="" data-url="/best-practice/useful/shell/node/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -394,7 +394,7 @@
   
     
     <li data-nav-id="/best-practice/" title="最佳实践" class="dd-item 
-        
+        parent
         
         
         ">
@@ -554,7 +554,7 @@
   
     
     <li data-nav-id="/best-practice/useful/" title="实用工具和技巧" class="dd-item 
-        
+        parent
         
         
         ">
@@ -621,7 +621,7 @@
   
     
     <li data-nav-id="/best-practice/useful/shell/" title="实用命令与脚本" class="dd-item 
-        
+        parent
         
         
         ">
@@ -685,7 +685,7 @@
  
   
     
-      <li data-nav-id="/best-practice/useful/shell/node/" title="节点相关脚本" class="dd-item ">
+      <li data-nav-id="/best-practice/useful/shell/node/" title="节点相关脚本" class="dd-item active">
         <a href="/best-practice/useful/shell/node/">
         节点相关脚本
         <i class="fas fa-check read-icon"></i>
@@ -1491,7 +1491,7 @@
   
     
     <li data-nav-id="/troubleshooting/" title="排错指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -2027,7 +2027,7 @@
   
     
     <li data-nav-id="/troubleshooting/summary/" title="踩坑总结" class="dd-item 
-        parent
+        
         
         
         ">
@@ -2110,7 +2110,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/" title="使用 oom-guard 在用户态处理 cgroup OOM" class="dd-item active">
+      <li data-nav-id="/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/" title="使用 oom-guard 在用户态处理 cgroup OOM" class="dd-item ">
         <a href="/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/">
         使用 oom-guard 在用户态处理 cgroup OOM
         <i class="fas fa-check read-icon"></i>
@@ -2981,7 +2981,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/best-practice/useful/shell/node/" selected>简体中文</option>
                     
                   
               
@@ -3043,7 +3043,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/best-practice/useful/shell/node.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3078,7 +3078,13 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/summary/'>踩坑总结</a> > 使用 oom-guard 在用户态处理 cgroup OOM
+            
+            
+          
+          
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/best-practice/'>最佳实践</a> > <a href='/best-practice/useful/'>实用工具和技巧</a> > <a href='/best-practice/useful/shell/'>实用命令与脚本</a> > 节点相关脚本
+          
+         
           
          
           
@@ -3095,23 +3101,10 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#背景">背景</a></li>
-    <li><a href="#原理">原理</a>
-      <ul>
-        <li><a href="#threshold-notify">threshold notify</a></li>
-        <li><a href="#达到阈值后的处理策略">达到阈值后的处理策略</a></li>
-        <li><a href="#事件上报">事件上报</a></li>
-      </ul>
-    </li>
-    <li><a href="#使用方法">使用方法</a>
-      <ul>
-        <li><a href="#部署">部署</a></li>
-        <li><a href="#查看-oom-guard-日志">查看 oom-guard 日志</a></li>
-        <li><a href="#查看-oom-相关事件">查看 oom 相关事件</a></li>
-        <li><a href="#卸载">卸载</a></li>
-      </ul>
-    </li>
-    <li><a href="#关于开源">关于开源</a></li>
+    <li><a href="#表格输出各节点占用的-podcidr">表格输出各节点占用的 podCIDR</a></li>
+    <li><a href="#表格输出各节点总可用资源-allocatable">表格输出各节点总可用资源 (Allocatable)</a></li>
+    <li><a href="#输出各节点已分配资源的情况">输出各节点已分配资源的情况</a></li>
+    <li><a href="#线程数排名统计">线程数排名统计</a></li>
   </ul>
 </nav>
     </div>
@@ -3129,7 +3122,7 @@
           
             <h1>
               
-              使用 oom-guard 在用户态处理 cgroup OOM
+              节点相关脚本
             </h1>
           
 
@@ -3137,168 +3130,62 @@
 
 
 
-<h2 id="背景">背景</h2>
-<p>由于 linux 内核对 cgroup OOM 的处理，存在很多 bug，经常有由于频繁 cgroup OOM 导致节点故障(卡死， 重启， 进程异常但无法杀死)，于是 TKE 团队开发了 <code>oom-guard</code>，在用户态处理 cgroup OOM 规避了内核 bug。</p>
-<h2 id="原理">原理</h2>
-<p>核心思想是在发生内核 cgroup OOM kill 之前，在用户空间杀掉超限的容器， 减少走到内核 cgroup 内存回收失败后的代码分支从而触发各种内核故障的机会。</p>
-<h3 id="threshold-notify">threshold notify</h3>
-<p>参考文档: <a href="https://lwn.net/Articles/529927/">https://lwn.net/Articles/529927/</a></p>
-<p><code>oom-guard</code> 会给 memory cgroup 设置 threshold notify， 接受内核的通知。</p>
-<p>以一个例子来说明阀值计算通知原理: 一个 pod 设置的 memory limit 是 1000M， <code>oom-guard</code> 会根据配置参数计算出 margin:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">margin = 1000M * margin_ratio = 20M // 缺省margin_ratio是0.02
-</code></pre></div><p>margin 最小不小于 mim_margin(缺省1M)， 最大不大于 max_margin(缺省为30M)。如果超出范围，则取 mim_margin 或 max_margin。计算 threshold = limit - margin ，也就是 1000M - 20M = 980M，把 980M 作为阈值设置给内核。当这个 pod 的内存使用量达到 980M 时， <code>oom-guard</code> 会收到内核的通知。</p>
-<p>在触发阈值之前，<code>oom-gurad</code> 会先通过 <code>memory.force_empty</code> 触发相关 cgroup 的内存回收。 另外，如果触发阈值时，相关 cgroup 的 memory.stat 显示还有较多 cache， 则不会触发后续处理策略，这样当 cgroup 内存达到 limit 时，会内核会触发内存回收。 这个策略也会造成部分容器内存增长太快时，还是会触发内核 cgroup OOM</p>
-<h3 id="达到阈值后的处理策略">达到阈值后的处理策略</h3>
-<p>通过 <code>--policy</code> 参数来控制处理策略。目前有三个策略， 缺省策略是 process。</p>
-<ul>
-<li><code>process</code>: 采用跟内核cgroup OOM killer相同的策略，在该cgroup内部，选择一个 oom_score 得分最高的进程杀掉。 通过 oom-guard 发送 SIGKILL 来杀掉进程</li>
-<li><code>container</code>: 在该cgroup下选择一个 docker 容器，杀掉整个容器</li>
-<li><code>noop</code>: 只记录日志，并不采取任何措施</li>
+<h2 id="表格输出各节点占用的-podcidr">表格输出各节点占用的 podCIDR</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get no -o<span style="color:#f92672">=</span>custom-columns<span style="color:#f92672">=</span>INTERNAL-IP:.metadata.name,EXTERNAL-IP:.status.addresses<span style="color:#f92672">[</span>1<span style="color:#f92672">]</span>.address,CIDR:.spec.podCIDR
+</code></pre></div><p>示例输出:</p>
+<pre><code>INTERNAL-IP     EXTERNAL-IP       CIDR
+10.100.12.194   152.136.146.157   10.101.64.64/27
+10.100.16.11    10.100.16.11      10.101.66.224/27
+10.100.16.24    10.100.16.24      10.101.64.32/27
+10.100.16.26    10.100.16.26      10.101.65.0/27
+10.100.16.37    10.100.16.37      10.101.64.0/27
+</code></pre><h2 id="表格输出各节点总可用资源-allocatable">表格输出各节点总可用资源 (Allocatable)</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get no -o<span style="color:#f92672">=</span>custom-columns<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;NODE:.metadata.name,ALLOCATABLE CPU:.status.allocatable.cpu,ALLOCATABLE MEMORY:.status.allocatable.memory&#34;</span>
+</code></pre></div><p>示例输出：</p>
+<pre><code>NODE       ALLOCATABLE CPU   ALLOCATABLE MEMORY
+10.0.0.2   3920m             7051692Ki
+10.0.0.3   3920m             7051816Ki
+</code></pre><h2 id="输出各节点已分配资源的情况">输出各节点已分配资源的情况</h2>
+<p>所有种类的资源已分配情况概览：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get nodes --no-headers | awk <span style="color:#e6db74">&#39;{print $1}&#39;</span> | xargs -I <span style="color:#f92672">{}</span> sh -c <span style="color:#e6db74">&#34;echo {} ; kubectl describe node {} | grep Allocated -A 5 | grep -ve Event -ve Allocated -ve percent -ve --;&#34;</span>
+</code></pre></div><p>示例输出:</p>
+<pre><code>10.0.0.2
+  Resource           Requests          Limits
+  cpu                3040m (77%)       19800m (505%)
+  memory             4843402752 (67%)  15054901888 (208%)
+10.0.0.3
+  Resource           Requests   Limits
+  cpu                300m (7%)  1 (25%)
+  memory             250M (3%)  2G (27%)
+</code></pre><p>表格输出 cpu 已分配情况:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get nodes --no-headers | awk <span style="color:#e6db74">&#39;{print $1}&#39;</span> | xargs -I <span style="color:#f92672">{}</span> sh -c <span style="color:#e6db74">&#39;echo -n &#34;{}\t&#34; ; kubectl describe node {} | grep Allocated -A 5 | grep -ve Event -ve Allocated -ve percent -ve -- | grep cpu | awk &#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;{print $2$3}&#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;;&#39;</span>
+</code></pre></div><p>示例输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">10.0.0.2	3040m<span style="color:#f92672">(</span>77%<span style="color:#f92672">)</span>
+10.0.0.3	300m<span style="color:#f92672">(</span>7%<span style="color:#f92672">)</span>
+</code></pre></div><p>表格输出 memory 已分配情况:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get nodes --no-headers | awk <span style="color:#e6db74">&#39;{print $1}&#39;</span> | xargs -I <span style="color:#f92672">{}</span> sh -c <span style="color:#e6db74">&#39;echo -n &#34;{}\t&#34; ; kubectl describe node {} | grep Allocated -A 5 | grep -ve Event -ve Allocated -ve percent -ve -- | grep memory | awk &#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;{print $2$3}&#39;</span><span style="color:#ae81ff">\&#39;</span><span style="color:#e6db74">&#39;;&#39;</span>
+</code></pre></div><p>示例输出：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">10.0.0.2	4843402752<span style="color:#f92672">(</span>67%<span style="color:#f92672">)</span>
+10.0.0.3	250M<span style="color:#f92672">(</span>3%<span style="color:#f92672">)</span>
+</code></pre></div><h2 id="线程数排名统计">线程数排名统计</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">printf <span style="color:#e6db74">&#34;    NUM  PID\t\tCOMMAND\n&#34;</span> <span style="color:#f92672">&amp;&amp;</span> ps -eLf | awk <span style="color:#e6db74">&#39;{$1=null;$3=null;$4=null;$5=null;$6=null;$7=null;$8=null;$9=null;print}&#39;</span> | sort |uniq -c |sort -rn | head -10
+</code></pre></div><p>示例输出:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">    NUM  PID		COMMAND
+    <span style="color:#ae81ff">594</span>  <span style="color:#ae81ff">14418</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Xms2048M -Xmx2048M -Xss256k -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">33</span> -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+PrintGCDateStamps -verbosegc -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -Xloggc:/home/log/gather-server/gather-server-gac.log -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.path<span style="color:#f92672">=</span>/home/log/gather-server -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/gather-server -jar /home/app/gather-server.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span>
+    <span style="color:#ae81ff">449</span>  <span style="color:#ae81ff">7088</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Dspring.cloud.config.token<span style="color:#f92672">=</span>nLfe-bQ0CcGnNZ_Q4Pt9KTizgRghZrGUVVqaDZYHU3R-Y_-U6k7jkm8RrBn7LPJD -Xms4256M -Xmx4256M -Xss256k -XX:+PrintFlagsFinal -XX:+UseG1GC -XX:+UseStringDeduplication -XX:MaxGCPauseMillis<span style="color:#f92672">=</span><span style="color:#ae81ff">200</span> -XX:MetaspaceSize<span style="color:#f92672">=</span>128M -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -verbosegc -XX:+PrintGCDateStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles<span style="color:#f92672">=</span><span style="color:#ae81ff">15</span> -XX:GCLogFileSize<span style="color:#f92672">=</span>50M -XX:AutoBoxCacheMax<span style="color:#f92672">=</span><span style="color:#ae81ff">520</span> -Xloggc:/home/log/oauth-server/oauth-server-gac.log -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">12</span> -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.config<span style="color:#f92672">=</span>classpath:log4j2-spring-prod.xml -Dlogging.path<span style="color:#f92672">=</span>/home/log/oauth-server -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/oauth-server -jar /home/app/oauth-server.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span> --zuul.server.netty.threads.worker<span style="color:#f92672">=</span><span style="color:#ae81ff">14</span> --zuul.server.netty.socket.epoll<span style="color:#f92672">=</span>true
+    <span style="color:#ae81ff">394</span>  <span style="color:#ae81ff">516</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Xms2048M -Xmx2048M -Xss1024k -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">43</span> -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+PrintGCDateStamps -verbosegc -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -Xloggc:/home/log/asset-server/asset-server-gac.log -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.path<span style="color:#f92672">=</span>/home/log/asset-server -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/asset-server -jar /home/app/asset-server.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span>
+    <span style="color:#ae81ff">305</span>  <span style="color:#ae81ff">14668</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Xms1024M -Xmx1024M -Xss256k -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">3</span> -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+PrintGCDateStamps -verbosegc -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -Xloggc:/home/log/talent-adapter-distribute/talent-adapter-distribute-gac.log -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.path<span style="color:#f92672">=</span>/home/log/talent-adapter-distribute -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/talent-adapter-distribute -jar /home/app/talent-adapter-distribute.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span>
+    <span style="color:#ae81ff">250</span>  <span style="color:#ae81ff">3979</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Xms2048M -Xmx2048M -Xss256k -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">20</span> -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+PrintGCDateStamps -verbosegc -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -Xloggc:/home/log/uc-facade-server/uc-facade-server-gac.log -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.path<span style="color:#f92672">=</span>/home/log/uc-facade-server -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/uc-facade-server -jar /home/app/uc-facade-server.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span>
+    <span style="color:#ae81ff">246</span>  <span style="color:#ae81ff">12468</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Xms2048M -Xmx2048M -Xss256k -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">7</span> -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+PrintGCDateStamps -verbosegc -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -Xloggc:/home/log/talent-user-server/talent-user-server-gac.log -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.path<span style="color:#f92672">=</span>/home/log/talent-user-server -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/talent-user-server -jar /home/app/talent-user-server.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span>
+    <span style="color:#ae81ff">242</span>  <span style="color:#ae81ff">19401</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Xms1024M -Xmx1024M -Xss256k -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">25</span> -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+PrintGCDateStamps -verbosegc -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -Xloggc:/home/log/job-admin-server/job-admin-server-gac.log -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.path<span style="color:#f92672">=</span>/home/log/job-admin-server -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/job-admin-server -jar /home/app/job-admin-server.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span>
+    <span style="color:#ae81ff">213</span>  <span style="color:#ae81ff">539</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Xms512M -Xmx3072M -Xss256k -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">1</span> -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+PrintGCDateStamps -verbosegc -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -Xloggc:/home/log/family-aplus-web/family-aplus-web-gac.log -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.path<span style="color:#f92672">=</span>/home/log/family-aplus-web -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/family-aplus-web -jar /home/app/family-aplus-web.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span>
+    <span style="color:#ae81ff">187</span>  <span style="color:#ae81ff">9357</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Xms2048M -Xmx2048M -Xss256k -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">2</span> -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+PrintGCDateStamps -verbosegc -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -Xloggc:/home/log/orion-panel-server/orion-panel-server-gac.log -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.path<span style="color:#f92672">=</span>/home/log/orion-panel-server -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/orion-panel-server -jar /home/app/orion-panel-server.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span>
+    <span style="color:#ae81ff">181</span>  <span style="color:#ae81ff">14267</span>        java -server -Dspring.profiles.active<span style="color:#f92672">=</span>production -Xms1024M -Xmx1024M -Xss256k -Dinfo.app.version<span style="color:#f92672">=</span><span style="color:#ae81ff">6</span> -XX:+UseG1GC -XX:+UseStringDeduplication -XX:+PrintGCDateStamps -verbosegc -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.ssl<span style="color:#f92672">=</span>false -Dcom.sun.management.jmxremote.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10011</span> -Xloggc:/home/log/talent-mission-server/talent-mission-server-gac.log -Ddefault.client.encoding<span style="color:#f92672">=</span>UTF-8 -Dfile.encoding<span style="color:#f92672">=</span>UTF-8 -Dlogging.path<span style="color:#f92672">=</span>/home/log/talent-mission-server -Dserver.tomcat.accesslog.directory<span style="color:#f92672">=</span>/home/log/talent-mission-server -jar /home/app/talent-mission-server.jar --server.port<span style="color:#f92672">=</span><span style="color:#ae81ff">8080</span> --management.port<span style="color:#f92672">=</span><span style="color:#ae81ff">10086</span>
+</code></pre></div><ul>
+<li>第一列表示线程数</li>
+<li>第二列表示进程 PID</li>
+<li>第三列是进程启动命令</li>
 </ul>
-<h3 id="事件上报">事件上报</h3>
-<p>通过 webhook reporter 上报 k8s event，便于分析统计，使用<code>kubectl get event</code> 可以看到:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">LAST SEEN   FIRST SEEN   COUNT     NAME                            KIND      SUBOBJECT                  TYPE      REASON                   SOURCE                    MESSAGE
-14s         14s          1         172.21.16.23.158b732d352bcc31   Node                                 Warning   OomGuardKillContainer    oom-guard, 172.21.16.23   {&#34;hostname&#34;:&#34;172.21.16.23&#34;,&#34;timestamp&#34;:&#34;2019-03-13T07:12:14.561650646Z&#34;,&#34;oomcgroup&#34;:&#34;/sys/fs/cgroup/memory/kubepods/burstable/pod3d6329e5-455f-11e9-a7e5-06925242d7ea/223d4795cc3b33e28e702f72e0497e1153c4a809de6b4363f27acc12a6781cdb&#34;,&#34;proccgroup&#34;:&#34;/sys/fs/cgroup/memory/kubepods/burstable/pod3d6329e5-455f-11e9-a7e5-06925242d7ea/223d4795cc3b33e28e702f72e0497e1153c4a809de6b4363f27acc12a6781cdb&#34;,&#34;threshold&#34;:205520896,&#34;usage&#34;:206483456,&#34;killed&#34;:&#34;16481(fakeOOM) &#34;,&#34;stats&#34;:&#34;cache 20480|rss 205938688|rss_huge 199229440|mapped_file 0|dirty 0|writeback 0|pgpgin 1842|pgpgout 104|pgfault 2059|pgmajfault 0|inactive_anon 8192|active_anon 203816960|inactive_file 0|active_file 0|unevictable 0|hierarchical_memory_limit 209715200|total_cache 20480|total_rss 205938688|total_rss_huge 199229440|total_mapped_file 0|total_dirty 0|total_writeback 0|total_pgpgin 1842|total_pgpgout 104|total_pgfault 2059|total_pgmajfault 0|total_inactive_anon 8192|total_active_anon 203816960|total_inactive_file 0|total_active_file 0|total_unevictable 0|&#34;,&#34;policy&#34;:&#34;Container&#34;}
-</code></pre></div><h2 id="使用方法">使用方法</h2>
-<h3 id="部署">部署</h3>
-<p>保存部署 yaml: <code>oom-guard.yaml</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: ServiceAccount
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: oomguard
-  <span style="color:#66d9ef">namespace</span>: kube-system
----
-<span style="color:#66d9ef">apiVersion</span>: rbac.authorization.k8s.io/v1
-<span style="color:#66d9ef">kind</span>: ClusterRoleBinding
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: system:oomguard
-<span style="color:#66d9ef">roleRef</span>:
-  <span style="color:#66d9ef">apiGroup</span>: rbac.authorization.k8s.io
-  <span style="color:#66d9ef">kind</span>: ClusterRole
-  <span style="color:#66d9ef">name</span>: cluster-admin
-<span style="color:#66d9ef">subjects</span>:
-  - <span style="color:#66d9ef">kind</span>: ServiceAccount
-    <span style="color:#66d9ef">name</span>: oomguard
-    <span style="color:#66d9ef">namespace</span>: kube-system
----
-<span style="color:#66d9ef">apiVersion</span>: apps/v1
-<span style="color:#66d9ef">kind</span>: DaemonSet
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: oom-guard
-  <span style="color:#66d9ef">namespace</span>: kube-system
-  <span style="color:#66d9ef">labels</span>:
-    <span style="color:#66d9ef">app</span>: oom-guard
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">matchLabels</span>:
-      <span style="color:#66d9ef">app</span>: oom-guard
-  <span style="color:#66d9ef">template</span>:
-    <span style="color:#66d9ef">metadata</span>:
-      <span style="color:#66d9ef">annotations</span>:
-        <span style="color:#66d9ef">scheduler.alpha.kubernetes.io/critical-pod</span>: <span style="color:#e6db74">&#34;&#34;</span>
-      <span style="color:#66d9ef">labels</span>:
-        <span style="color:#66d9ef">app</span>: oom-guard
-    <span style="color:#66d9ef">spec</span>:
-      <span style="color:#66d9ef">serviceAccountName</span>: oomguard
-      <span style="color:#66d9ef">hostPID</span>: <span style="color:#66d9ef">true</span>
-      <span style="color:#66d9ef">hostNetwork</span>: <span style="color:#66d9ef">true</span>
-      <span style="color:#66d9ef">dnsPolicy</span>: ClusterFirst
-      <span style="color:#66d9ef">containers</span>:
-      - <span style="color:#66d9ef">name</span>: k8s-event-writer
-        <span style="color:#66d9ef">image</span>: ccr.ccs.tencentyun.com/paas/k8s-event-writer:v1<span style="color:#ae81ff">.6</span>
-        <span style="color:#66d9ef">resources</span>:
-          <span style="color:#66d9ef">limits</span>:
-            <span style="color:#66d9ef">cpu</span>: 10m
-            <span style="color:#66d9ef">memory</span>: 60Mi
-          <span style="color:#66d9ef">requests</span>:
-            <span style="color:#66d9ef">cpu</span>: 10m
-            <span style="color:#66d9ef">memory</span>: 30Mi
-        <span style="color:#66d9ef">args</span>:
-        - --logtostderr
-        - --unix-socket=<span style="color:#66d9ef">true</span>
-        <span style="color:#66d9ef">env</span>:
-          - <span style="color:#66d9ef">name</span>: NODE_NAME
-            <span style="color:#66d9ef">valueFrom</span>:
-              <span style="color:#66d9ef">fieldRef</span>:
-                <span style="color:#66d9ef">fieldPath</span>: status.hostIP
-        <span style="color:#66d9ef">volumeMounts</span>:
-        - <span style="color:#66d9ef">name</span>: unix
-          <span style="color:#66d9ef">mountPath</span>: /unix
-      - <span style="color:#66d9ef">name</span>: oomguard
-        <span style="color:#66d9ef">image</span>: ccr.ccs.tencentyun.com/paas/oomguard:nosoft-v2
-        <span style="color:#66d9ef">imagePullPolicy</span>: Always
-        <span style="color:#66d9ef">securityContext</span>:
-          <span style="color:#66d9ef">privileged</span>: <span style="color:#66d9ef">true</span>
-        <span style="color:#66d9ef">resources</span>:
-          <span style="color:#66d9ef">limits</span>:
-            <span style="color:#66d9ef">cpu</span>: 10m
-            <span style="color:#66d9ef">memory</span>: 60Mi
-          <span style="color:#66d9ef">requests</span>:
-            <span style="color:#66d9ef">cpu</span>: 10m
-            <span style="color:#66d9ef">memory</span>: 30Mi
-        <span style="color:#66d9ef">volumeMounts</span>:
-        - <span style="color:#66d9ef">name</span>: cgroupdir
-          <span style="color:#66d9ef">mountPath</span>: /sys/fs/cgroup/memory
-        - <span style="color:#66d9ef">name</span>: unix
-          <span style="color:#66d9ef">mountPath</span>: /unix
-        - <span style="color:#66d9ef">name</span>: kmsg
-          <span style="color:#66d9ef">mountPath</span>: /dev/kmsg
-          <span style="color:#66d9ef">readOnly</span>: <span style="color:#66d9ef">true</span>
-        <span style="color:#66d9ef">command</span>: [<span style="color:#e6db74">&#34;/oom-guard&#34;</span>]
-        <span style="color:#66d9ef">args</span>: 
-        - --v=<span style="color:#ae81ff">2</span>
-        - --logtostderr
-        - --root=/sys/fs/cgroup/memory
-        - --walkIntervalSeconds=<span style="color:#ae81ff">277</span>
-        - --inotifyResetSeconds=<span style="color:#ae81ff">701</span>
-        - --port=<span style="color:#ae81ff">0</span>
-        - --margin-ratio=<span style="color:#ae81ff">0.02</span>
-        - --min-margin=<span style="color:#ae81ff">1</span>
-        - --max-margin=<span style="color:#ae81ff">30</span>
-        - --guard-ms=<span style="color:#ae81ff">50</span>
-        - --policy=container
-        - --openSoftLimit=<span style="color:#66d9ef">false</span>
-        - --webhook-url=http://localhost/message
-        <span style="color:#66d9ef">env</span>:
-          - <span style="color:#66d9ef">name</span>: NODE_NAME
-            <span style="color:#66d9ef">valueFrom</span>:
-              <span style="color:#66d9ef">fieldRef</span>:
-                <span style="color:#66d9ef">fieldPath</span>: status.hostIP
-      <span style="color:#66d9ef">volumes</span>:
-      - <span style="color:#66d9ef">name</span>: cgroupdir
-        <span style="color:#66d9ef">hostPath</span>:
-          <span style="color:#66d9ef">path</span>: /sys/fs/cgroup/memory
-      - <span style="color:#66d9ef">name</span>: unix
-        <span style="color:#66d9ef">emptyDir</span>: {}
-      - <span style="color:#66d9ef">name</span>: kmsg
-        <span style="color:#66d9ef">hostPath</span>:
-          <span style="color:#66d9ef">path</span>: /dev/kmsg
-</code></pre></div><p>一键部署:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f oom-guard.yaml
-</code></pre></div><p>检查是否部署成功：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl -n kube-system get ds oom-guard
-NAME        DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-oom-guard   <span style="color:#ae81ff">2</span>         <span style="color:#ae81ff">2</span>         <span style="color:#ae81ff">2</span>         <span style="color:#ae81ff">2</span>            <span style="color:#ae81ff">2</span>           &lt;none&gt;          6m
-</code></pre></div><p>其中 <strong>AVAILABLE</strong> 数量跟节点数一致，说明所有节点都已经成功运行了 <code>oom-guard</code>。</p>
-<h3 id="查看-oom-guard-日志">查看 oom-guard 日志</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n kube-system logs oom-guard-xxxxx oomguard
-</code></pre></div><h3 id="查看-oom-相关事件">查看 oom 相关事件</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get events |grep CgroupOOM
-kubectl get events |grep SystemOOM
-kubectl get events |grep OomGuardKillContainer
-kubectl get events |grep OomGuardKillProcess
-</code></pre></div><h3 id="卸载">卸载</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete -f oom-guard.yaml
-</code></pre></div><p>这个操作可能有点慢，如果一直不返回 (有节点 NotReady 时可能会卡住)，<code>ctrl+C</code> 终止，然后执行下面的脚本:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#66d9ef">for</span> pod in <span style="color:#e6db74">`</span>kubectl get pod -n kube-system | grep oom-guard | awk <span style="color:#e6db74">&#39;{print $1}&#39;</span><span style="color:#e6db74">`</span>
-<span style="color:#66d9ef">do</span>
- kubectl delete pod $pod -n kube-system --grace-period<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> --force
-<span style="color:#66d9ef">done</span>
-</code></pre></div><p>检查删除操作是否成功</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n kube-system get ds oom-guard
-</code></pre></div><p>提示 <code>...not found</code> 就说明删除成功了</p>
-<h2 id="关于开源">关于开源</h2>
-<p>当前 <code>oom-gaurd</code> 暂未开源，正在做大量生产试验，后面大量反馈效果统计比较好的时候会考虑开源出来。</p>
 
 
 <footer class="footline">
@@ -3549,6 +3436,7 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
+                    
                 
                 
 
@@ -3563,6 +3451,9 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -3659,6 +3550,7 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
+                    
                     
                 
                 
@@ -3674,6 +3566,9 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -3707,6 +3602,7 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
+                    
                 
                 
 
@@ -3719,6 +3615,9 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -3752,6 +3651,7 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
+                    
                 
                 
 
@@ -3773,6 +3673,9 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -4234,7 +4137,6 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
-                    
                     
                 
                 
@@ -4251,9 +4153,6 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
-                        
-                        
-                    
                 
                 
 
@@ -4637,7 +4536,6 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
-                    
                     
                 
                 
@@ -4652,9 +4550,6 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
-                        
-                        
-                    
                 
                 
 
@@ -4703,7 +4598,6 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
-                    
                 
                 
 
@@ -4722,9 +4616,6 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -5297,10 +5188,10 @@ kubectl get events |grep OomGuardKillProcess
 	 
 	 
 		
-			<a class="nav nav-prev" href="/troubleshooting/summary/tcp_tw_recycle-causes-packet-loss/" title="tcp tw recycle 引发丢包"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/best-practice/useful/shell/network/" title="网络调试相关脚本"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/troubleshooting/problems/" title="问题排查" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/best-practice/node-local-dns/" title="本地 DNS 缓存" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

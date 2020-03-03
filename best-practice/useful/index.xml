@@ -30,15 +30,5 @@ function k() { cmdline=`HISTTIMEFORMAT=&amp;#34;&amp;#34; history | awk &amp;#39
       <description>最简单的 nginx 测试服务 apiVersion: apps/v1 kind: Deployment metadata: name: nginx spec: replicas: 1 selector: matchLabels: app: nginx template: metadata: labels: app: nginx spec: containers: - name: nginx image: nginx --- apiVersion: v1 kind: Service metadata: name: nginx labels: app: nginx spec: type: ClusterIP ports: - port: 80 protocol: TCP name: http selector: app: nginx </description>
     </item>
     
-    <item>
-      <title>实用命令与脚本</title>
-      <link>https://k8s.imroc.io/best-practice/useful/shell/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/useful/shell/</guid>
-      <description>不断尝试建立TCP连接测试网络连通性 while true; do echo &amp;#34;&amp;#34; | telnet 10.0.0.3 443; sleep 0.1; done  ctrl+c 终止测试 替换 10.0.0.3 与 443 为需要测试的 IP/域名 和端口  清理 Evicted 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4==&amp;#34;Evicted&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 清理非 Running 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4!=&amp;#34;Running&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 进入容器 netns 粘贴脚本到命令行:
-function e() { set -eu ns=${2-&amp;#34;default&amp;#34;} pod=`kubectl -n $ns describe pod $1 | grep -A10 &amp;#34;^Containers:&amp;#34; | grep -Eo &amp;#39;docker://.</description>
-    </item>
-    
   </channel>
 </rss>
