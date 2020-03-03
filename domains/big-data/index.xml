@@ -20,9 +20,8 @@
 Flink 主要由两个部分组件构成：JobManager 和 TaskManager。如何理解这两个组件的作用？JobManager 负责资源申请和任务分发，TaskManager 负责任务的执行。跟 k8s 本身类比，JobManager 相当于 Master，TaskManager 相当于 Worker；跟 Spark 类比，JobManager 相当于 Driver，TaskManager 相当于 Executor。
 与 Kubernetes 集成 在 flink 1.10 之前，在 k8s 上运行 flink 任务都是需要事先指定 TaskManager 的个数以及CPU和内存的，存在一个问题：大多数情况下，你在任务启动前根本无法精确的预估这个任务需要多少个TaskManager，如果指定多了，会导致资源浪费，指定少了，会导致任务调度不起来。本质原因是在 Kubernetes 上运行的 Flink 任务并没有直接向 Kubernetes 集群去申请资源。
 在 2020-02-11 发布了 flink 1.10，该版本完成了与 k8s 集成的第一阶段，实现了向 k8s 动态申请资源，就像跟 yarn 或 mesos 集成那样。
-确定部署的 namespace:
-NAMESPACE=flink 确保 namespace 已创建:
-kubectl create ns ${NAMESPACE} 创建 RBAC:</description>
+确定 flink 部署的 namespace，这里我选 &amp;ldquo;flink&amp;rdquo;，确保 namespace 已创建:
+kubectl create ns flink 创建 RBAC (创建 ServiceAccount 绑定 flink 需要的对 k8s 集群操作的权限):</description>
     </item>
     
   </channel>

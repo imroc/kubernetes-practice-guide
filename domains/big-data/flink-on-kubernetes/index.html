@@ -3129,18 +3129,34 @@
 <h2 id="与-kubernetes-集成">与 Kubernetes 集成</h2>
 <p>在 flink 1.10 之前，在 k8s 上运行 flink 任务都是需要事先指定 TaskManager 的个数以及CPU和内存的，存在一个问题：大多数情况下，你在任务启动前根本无法精确的预估这个任务需要多少个TaskManager，如果指定多了，会导致资源浪费，指定少了，会导致任务调度不起来。本质原因是在 Kubernetes 上运行的 Flink 任务并没有直接向 Kubernetes 集群去申请资源。</p>
 <p>在 2020-02-11 发布了 flink 1.10，该版本完成了与 k8s 集成的第一阶段，实现了向 k8s 动态申请资源，就像跟 yarn 或 mesos 集成那样。</p>
-<p>确定部署的 namespace:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">NAMESPACE<span style="color:#f92672">=</span>flink
-</code></pre></div><p>确保 namespace 已创建:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create ns <span style="color:#e6db74">${</span>NAMESPACE<span style="color:#e6db74">}</span>
-</code></pre></div><p>创建 RBAC:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create serviceaccount flink -n <span style="color:#e6db74">${</span>NAMESPACE<span style="color:#e6db74">}</span>
-kubectl create clusterrolebinding flink-role-binding-flink --clusterrole<span style="color:#f92672">=</span>edit --serviceaccount<span style="color:#f92672">=</span><span style="color:#e6db74">${</span>NAMESPACE<span style="color:#e6db74">}</span>:flink
-</code></pre></div><p>利用 job 运行启动 flink (自动请求 apiserver 创建 flink master 相关的资源):</p>
+<p>确定 flink 部署的 namespace，这里我选 &ldquo;flink&rdquo;，确保 namespace 已创建:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create ns flink
+</code></pre></div><p>创建 RBAC (创建 ServiceAccount 绑定 flink 需要的对 k8s 集群操作的权限):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
+<span style="color:#66d9ef">kind</span>: ServiceAccount
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: flink
+  <span style="color:#66d9ef">namespace</span>: flink
+
+---
+
+<span style="color:#66d9ef">apiVersion</span>: rbac.authorization.k8s.io/v1
+<span style="color:#66d9ef">kind</span>: ClusterRoleBinding
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: flink-role-binding
+<span style="color:#66d9ef">roleRef</span>:
+  <span style="color:#66d9ef">apiGroup</span>: rbac.authorization.k8s.io
+  <span style="color:#66d9ef">kind</span>: ClusterRole
+  <span style="color:#66d9ef">name</span>: edit
+<span style="color:#66d9ef">subjects</span>:
+- <span style="color:#66d9ef">kind</span>: ServiceAccount
+  <span style="color:#66d9ef">name</span>: flink
+  <span style="color:#66d9ef">namespace</span>: flink
+</code></pre></div><p>利用 job 运行启动 flink 的引导程序 (请求 k8s 创建 jobmanager 相关的资源: service, deployment, configmap):</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: batch/v1
 <span style="color:#66d9ef">kind</span>: Job
 <span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: start-flink
+  <span style="color:#66d9ef">name</span>: boot-flink
   <span style="color:#66d9ef">namespace</span>: flink
 <span style="color:#66d9ef">spec</span>:
   <span style="color:#66d9ef">template</span>:
@@ -3153,12 +3169,29 @@ kubectl create clusterrolebinding flink-role-binding-flink --clusterrole<span st
         <span style="color:#66d9ef">workingDir</span>: /opt/flink
         <span style="color:#66d9ef">command</span>: [<span style="color:#e6db74">&#34;bash&#34;</span>, <span style="color:#e6db74">&#34;-c&#34;</span>, <span style="color:#e6db74">&#34;$FLINK_HOME/bin/kubernetes-session.sh \
 </span><span style="color:#e6db74">          -Dkubernetes.cluster-id=roc \
+</span><span style="color:#e6db74">          -Dkubernetes.jobmanager.service-account=flink \
 </span><span style="color:#e6db74">          -Dtaskmanager.memory.process.size=1024m \
 </span><span style="color:#e6db74">          -Dkubernetes.taskmanager.cpu=1 \
 </span><span style="color:#e6db74">          -Dtaskmanager.numberOfTaskSlots=1 \
 </span><span style="color:#e6db74">          -Dkubernetes.container.image=flink:1.10 \
 </span><span style="color:#e6db74">          -Dkubernetes.namespace=flink&#34;</span>]
-</code></pre></div><p>TODO</p>
+</code></pre></div><ul>
+<li><code>kubernetes.cluster-id</code>: 指定 flink 集群的名称，后续自动创建的 k8s 资源会带上这个作为前缀或后缀</li>
+<li><code>kubernetes.namespace</code>: 指定 flink 相关的资源创建在哪个命名空间，这里我们用 <code>flink</code> 命名空间</li>
+<li><code>kubernetes.jobmanager.service-account</code>: 指定我们刚刚为 flink 创建的 ServiceAccount</li>
+<li><code>kubernetes.container.image</code>: 指定 flink 需要用的镜像，这里我们部署的 1.10 版本，所以镜像用 <code>flink:1.10</code></li>
+</ul>
+<p>部署完成后，我们可以看到有刚刚运行完成的 job 的 pod 和被这个 job 拉起的 flink jobmanager 的 pod，前缀与配置 <code>kubernetes.cluster-id</code> 相同:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl -n flink get pod
+NAME                  READY   STATUS      RESTARTS   AGE
+roc-cf9f6b5df-csk9z   1/1     Running     <span style="color:#ae81ff">0</span>          84m
+boot-flink-nc2qx      0/1     Completed   <span style="color:#ae81ff">0</span>          84m
+</code></pre></div><p>还有 jobmanager 的 service:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl -n flink get svc
+NAME       TYPE           CLUSTER-IP       EXTERNAL-IP      PORT<span style="color:#f92672">(</span>S<span style="color:#f92672">)</span>                      AGE
+roc        ClusterIP      172.16.255.152   &lt;none&gt;           8081/TCP,6123/TCP,6124/TCP   88m
+roc-rest   LoadBalancer   172.16.255.11    150.109.27.251   8081:31240/TCP               88m
+</code></pre></div><p>访问 http://150.109.27.251:8081 即可进入此 flink 集群的 ui 界面。</p>
 <h2 id="参考资料">参考资料</h2>
 <ul>
 <li>Active Kubernetes integration phase 2 - Advanced Features: <a href="https://issues.apache.org/jira/browse/FLINK-14460">https://issues.apache.org/jira/browse/FLINK-14460</a></li>
