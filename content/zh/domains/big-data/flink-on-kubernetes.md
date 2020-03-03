@@ -14,32 +14,44 @@ Flink 主要由两个部分组件构成：JobManager 和 TaskManager。如何理
 
 在 2020-02-11 发布了 flink 1.10，该版本完成了与 k8s 集成的第一阶段，实现了向 k8s 动态申请资源，就像跟 yarn 或 mesos 集成那样。
 
-确定部署的 namespace:
+确定 flink 部署的 namespace，这里我选 "flink"，确保 namespace 已创建:
 
 ``` bash
-NAMESPACE=flink
+kubectl create ns flink
 ```
 
-确保 namespace 已创建:
+创建 RBAC (创建 ServiceAccount 绑定 flink 需要的对 k8s 集群操作的权限):
 
-``` bash
-kubectl create ns ${NAMESPACE}
+``` yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: flink
+  namespace: flink
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: flink-role-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: edit
+subjects:
+- kind: ServiceAccount
+  name: flink
+  namespace: flink
 ```
 
-创建 RBAC:
-
-``` bash
-kubectl create serviceaccount flink -n ${NAMESPACE}
-kubectl create clusterrolebinding flink-role-binding-flink --clusterrole=edit --serviceaccount=${NAMESPACE}:flink
-```
-
-利用 job 运行启动 flink (自动请求 apiserver 创建 flink master 相关的资源):
+利用 job 运行启动 flink 的引导程序 (请求 k8s 创建 jobmanager 相关的资源: service, deployment, configmap):
 
 ``` yaml
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: start-flink
+  name: boot-flink
   namespace: flink
 spec:
   template:
@@ -52,6 +64,7 @@ spec:
         workingDir: /opt/flink
         command: ["bash", "-c", "$FLINK_HOME/bin/kubernetes-session.sh \
           -Dkubernetes.cluster-id=roc \
+          -Dkubernetes.jobmanager.service-account=flink \
           -Dtaskmanager.memory.process.size=1024m \
           -Dkubernetes.taskmanager.cpu=1 \
           -Dtaskmanager.numberOfTaskSlots=1 \
@@ -59,7 +72,30 @@ spec:
           -Dkubernetes.namespace=flink"]
 ```
 
-TODO
+* `kubernetes.cluster-id`: 指定 flink 集群的名称，后续自动创建的 k8s 资源会带上这个作为前缀或后缀
+* `kubernetes.namespace`: 指定 flink 相关的资源创建在哪个命名空间，这里我们用 `flink` 命名空间
+* `kubernetes.jobmanager.service-account`: 指定我们刚刚为 flink 创建的 ServiceAccount
+* `kubernetes.container.image`: 指定 flink 需要用的镜像，这里我们部署的 1.10 版本，所以镜像用 `flink:1.10`
+
+部署完成后，我们可以看到有刚刚运行完成的 job 的 pod 和被这个 job 拉起的 flink jobmanager 的 pod，前缀与配置 `kubernetes.cluster-id` 相同:
+
+``` bash
+$ kubectl -n flink get pod
+NAME                  READY   STATUS      RESTARTS   AGE
+roc-cf9f6b5df-csk9z   1/1     Running     0          84m
+boot-flink-nc2qx      0/1     Completed   0          84m
+```
+
+还有 jobmanager 的 service:
+
+``` bash
+$ kubectl -n flink get svc
+NAME       TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)                      AGE
+roc        ClusterIP      172.16.255.152   <none>           8081/TCP,6123/TCP,6124/TCP   88m
+roc-rest   LoadBalancer   172.16.255.11    150.109.27.251   8081:31240/TCP               88m
+```
+
+访问 http://150.109.27.251:8081 即可进入此 flink 集群的 ui 界面。
 
 ## 参考资料
 
