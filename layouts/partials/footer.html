@@ -62,9 +62,16 @@
       window.algoliaKey='{{ .Site.Params.algolia.key }}';
       window.algoliaIndex='{{ .Site.Params.algolia.index }}';
     </script>
+
+    {{ if .Site.Params.cdn  }}
+    <script src='https://res.cloudinary.com/imroc/raw/upload/v1583287838/kubernetes-practice-guide/js/bundle.min.js'>
+    </script>
+    {{ else }}
     <!-- JS from hugo pipes -->
     {{- partial "js-assets.html" . -}}
     <script src='{{ .Scratch.Get "appjs" }}' integrity='{{ .Scratch.Get "appjsintegrity" }}'></script>
+    {{ end }}
+
     {{ partial "custom-footer.html" . }}
   </body>
 </html>

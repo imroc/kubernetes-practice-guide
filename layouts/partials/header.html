@@ -8,10 +8,14 @@
     {{ partial "favicon.html" . }}
     <title>{{ .Title }} :: {{ .Site.Title }}</title>
 
-
+    {{ if .Site.Params.cdn  }}
+    <link rel="stylesheet"
+      href='https://res.cloudinary.com/imroc/raw/upload/v1583288592/kubernetes-practice-guide/css/bundle.min.css'>
+    {{ else }}
     <!-- CSS from hugo pipes -->
     {{- partial "css-assets.html" . -}}
     <link rel="stylesheet" href='{{ .Scratch.Get "appcss" }}' integrity='{{ .Scratch.Get "appcssintegrity" }}'>
+    {{ end }}
 
     <style>
       :root #header + #content > #left > #rlblock_left{
