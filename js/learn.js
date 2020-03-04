@@ -358,6 +358,59 @@ jQuery(document).ready(function () {
         $(document).ready($.proxy(anchorScrolls, 'init'));
     })(window.document, window.history, window.location);
 
+    // Add link button for every
+    var text, clip = new ClipboardJS('.anchor');
+    $("h1~h2,h1~h3,h1~h4,h1~h5,h1~h6").append(function (index, html) {
+        var element = $(this);
+        var url = encodeURI(document.location.origin + document.location.pathname);
+        var link = url + "#" + element[0].id;
+        return " <span class='anchor' data-clipboard-text='" + link + "'>" +
+            "<i class='fas fa-link fa-lg'></i>" +
+            "</span>";
+    });
+
+    $(".anchor").on('mouseleave', function (e) {
+        $(this).attr('aria-label', null).removeClass('tooltipped tooltipped-s tooltipped-w');
+    });
+
+    clip.on('success', function (e) {
+        e.clearSelection();
+        $(e.trigger).attr('aria-label', 'Link copied to clipboard!').addClass('tooltipped tooltipped-s');
+    });
+    $('code.language-mermaid').each(function (index, element) {
+        var content = $(element).html().replace(/&amp;/g, '&');
+        $(element).parent().replaceWith('<div class="mermaid" align="center">' + content + '</div>');
+    });
+
+    var client = algoliasearch(window.algoliaAppID, window.algoliaKey);
+    var index = client.initIndex(window.algoliaIndex);
+
+    //initialize autocomplete on search input (ID selector must match)
+    autocomplete('#aa-search-input', {
+        hint: false
+    }, {
+        source: autocomplete.sources.hits(index, {
+            hitsPerPage: 10
+        }),
+        //value to be displayed in input control after user's suggestion selection
+        displayKey: 'name',
+        //hash of templates used when rendering dataset
+        templates: {
+            //'suggestion' templating function used to render a single suggestion
+            suggestion: function (suggestion) {
+                return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
+                    .value + '</a>';
+            }
+        }
+    });
+    hljs.initHighlightingOnLoad();
+    mermaid.initialize({ startOnLoad: true });
+    
+    // Stick the top to the top of the screen when  scrolling
+    $("#top-bar").sticky({
+        topSpacing: 0,
+        zIndex: 1000
+    });
 });
 
 jQuery(window).on('load', function () {
@@ -542,65 +595,3 @@ images.each(function (index) {
         }
     }
 });
-
-// Stick the top to the top of the screen when  scrolling
-$(document).ready(function () {
-    $("#top-bar").sticky({
-        topSpacing: 0,
-        zIndex: 1000
-    });
-});
-
-
-jQuery(document).ready(function () {
-    // Add link button for every
-    var text, clip = new ClipboardJS('.anchor');
-    $("h1~h2,h1~h3,h1~h4,h1~h5,h1~h6").append(function (index, html) {
-        var element = $(this);
-        var url = encodeURI(document.location.origin + document.location.pathname);
-        var link = url + "#" + element[0].id;
-        return " <span class='anchor' data-clipboard-text='" + link + "'>" +
-            "<i class='fas fa-link fa-lg'></i>" +
-            "</span>";
-    });
-
-    $(".anchor").on('mouseleave', function (e) {
-        $(this).attr('aria-label', null).removeClass('tooltipped tooltipped-s tooltipped-w');
-    });
-
-    clip.on('success', function (e) {
-        e.clearSelection();
-        $(e.trigger).attr('aria-label', 'Link copied to clipboard!').addClass('tooltipped tooltipped-s');
-    });
-    $('code.language-mermaid').each(function (index, element) {
-        var content = $(element).html().replace(/&amp;/g, '&');
-        $(element).parent().replaceWith('<div class="mermaid" align="center">' + content + '</div>');
-    });
-});
-
-function init(){
-  var client = algoliasearch("{{ .Site.Params.algolia.appID }}", "{{ .Site.Params.algolia.key }}");
-  var index = client.initIndex("{{ .Site.Params.algolia.index }}");
-  //initialize autocomplete on search input (ID selector must match)
-  autocomplete('#aa-search-input', {
-      hint: false
-  }, {
-      source: autocomplete.sources.hits(index, {
-          hitsPerPage: 10
-      }),
-      //value to be displayed in input control after user's suggestion selection
-      displayKey: 'name',
-      //hash of templates used when rendering dataset
-      templates: {
-          //'suggestion' templating function used to render a single suggestion
-          suggestion: function (suggestion) {
-              return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
-                  .value + '</a>';
-          }
-      }
-  });
-  hljs.initHighlightingOnLoad();
-  mermaid.initialize({ startOnLoad: true });
-}
-
-jQuery(document).ready(init)

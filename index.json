@@ -39,7 +39,7 @@
 	"title": "最佳实践",
 	"tags": [],
 	"description": "",
-	"content": "  应用部署最佳实践    使用 PodDisruptionBudget 避免驱逐导致服务不可用     使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断     使用反亲和性避免单点故障     解决长连接服务扩容失效      大规模集群优化     实用工具和技巧    kubectl 高效技巧     实用 yaml 片段     实用命令与脚本    Pod 相关脚本   网络调试相关脚本   节点相关脚本     本地 DNS 缓存     泛域名转发     集群权限控制    利用 CSR API 创建用户     控制应用权限     控制用户权限      集群证书管理    使用 cert-manager 自动生成证书     安装 cert-manager      集群配置管理     "
+	"content": "  应用部署最佳实践    使用 PodDisruptionBudget 避免驱逐导致服务不可用     使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断     使用反亲和性避免单点故障     解决长连接服务扩容失效      大规模集群优化     实用工具和技巧    kubectl 高效技巧     实用 yaml 片段     实用命令与脚本    Pod 相关脚本   网络调试相关脚本   节点相关脚本     本地 DNS 缓存     泛域名转发     集群权限控制    利用 CSR API 创建用户     控制应用权限     控制用户权限      集群证书管理    使用 cert-manager 自动生成证书     安装 cert-manager      集群配置管理    Helm    Helm V2 迁移到 V3   安装 Helm     "
 },
 {
 	"uri": "https://k8s.imroc.io/deploy/manual/bootstrapping-etcd/",
@@ -60,14 +60,14 @@
 	"title": "集群方案",
 	"tags": [],
 	"description": "",
-	"content": "  Ingress 方案    Nginx Ingress    安装 nginx ingress controller    Traefik Ingress    安装 traefik ingress controller     Metrics 方案    安装 metrics server      网络方案     运行时方案    Containerd    安装 containerd     "
+	"content": "  Ingress 方案    Nginx Ingress    安装 nginx ingress controller    Traefik Ingress    安装 traefik ingress controller     Metrics 方案    安装 metrics server      网络方案    Flannel    部署 Flannel    彻底理解集群网络      运行时方案    Containerd    安装 containerd     "
 },
 {
 	"uri": "https://k8s.imroc.io/troubleshooting/",
 	"title": "排错指南",
 	"tags": [],
 	"description": "",
-	"content": "  处理实践    arp_cache 溢出     inotify watch 耗尽     PID 耗尽     内存碎片化     磁盘爆满     高负载      排错技巧    使用 Systemtap 定位疑难杂症     分析 ExitCode 定位 Pod 异常退出原因     容器内抓包定位网络问题      案例分享    ARP 缓存爆满导致健康检查失败     DNS 5 秒延时     DNS 解析异常     kubectl edit 或者 apply 报 SchemaError     LB 压测 NodePort CPS 低     Pod 偶尔存活检查失败     Pod 访问另一个集群的 apiserver 有延时     神秘的溢出与丢包     访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时     诡异的 No route to host     跨 VPC 访问 NodePort 经常超时     驱逐导致服务中断      踩坑总结    cgroup 泄露     conntrack 冲突导致丢包     tcp tw recycle 引发丢包     使用 oom-guard 在用户态处理 cgroup OOM      问题排查    Pod 排错    部署前的准备工作   部署 ETCD   部署 Master   部署 Worker 节点   部署关键组件    其它排错    Job 无法被删除   kubectl 执行 exec 或 logs 失败   内核软死锁    经典报错    arp_cache: neighbor table overflow!   Cannot allocate memory   no space left on device    网络排错    DNS 解析异常   LB 健康检查失败   Service 不通   Service 无法解析   网络性能差    集群排错    Daemonset 没有被调度   Node 全部消失     "
+	"content": "  处理实践    arp_cache 溢出     inotify watch 耗尽     PID 耗尽     内存碎片化     磁盘爆满     高负载      排错技巧    使用 Systemtap 定位疑难杂症     分析 ExitCode 定位 Pod 异常退出原因     容器内抓包定位网络问题      案例分享    ARP 缓存爆满导致健康检查失败     DNS 5 秒延时     DNS 解析异常     kubectl edit 或者 apply 报 SchemaError     LB 压测 NodePort CPS 低     Pod 偶尔存活检查失败     Pod 访问另一个集群的 apiserver 有延时     神秘的溢出与丢包     访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时     诡异的 No route to host     跨 VPC 访问 NodePort 经常超时     驱逐导致服务中断      踩坑总结    cgroup 泄露     conntrack 冲突导致丢包     tcp tw recycle 引发丢包     使用 oom-guard 在用户态处理 cgroup OOM      问题排查    Pod 排错    Pod Terminating 慢   Pod 一直处于 ContainerCreating 或 Waiting 状态   Pod 一直处于 Error 状态   Pod 一直处于 ImageInspectError 状态   Pod 一直处于 ImagePullBackOff 状态   Pod 一直处于 Pending 状态   Pod 一直处于 Terminating 状态   Pod 一直处于 Unknown 状态   Pod 健康检查失败   Pod 处于 CrashLoopBackOff 状态   容器进程主动退出    其它排错    Job 无法被删除   kubectl 执行 exec 或 logs 失败   内核软死锁    经典报错    arp_cache: neighbor table overflow!   Cannot allocate memory   no space left on device    网络排错    DNS 解析异常   LB 健康检查失败   Service 不通   Service 无法解析   网络性能差    集群排错    Daemonset 没有被调度   Node 全部消失     "
 },
 {
 	"uri": "https://k8s.imroc.io/deploy/manual/bootstrapping-worker-nodes/",
@@ -809,7 +809,7 @@
 	"title": "问题排查",
 	"tags": [],
 	"description": "",
-	"content": "  Pod 排错    以 Daemonset 方式部署 kube-proxy   部署 CoreDNS    其它排错    Job 无法被删除   kubectl 执行 exec 或 logs 失败   内核软死锁    经典报错    arp_cache: neighbor table overflow!   Cannot allocate memory   no space left on device    网络排错    DNS 解析异常   LB 健康检查失败   Service 不通   Service 无法解析   网络性能差    集群排错    Daemonset 没有被调度   Node 全部消失    "
+	"content": "  Pod 排错    Pod Terminating 慢   Pod 一直处于 ContainerCreating 或 Waiting 状态   Pod 一直处于 Error 状态   Pod 一直处于 ImageInspectError 状态   Pod 一直处于 ImagePullBackOff 状态   Pod 一直处于 Pending 状态   Pod 一直处于 Terminating 状态   Pod 一直处于 Unknown 状态   Pod 健康检查失败   Pod 处于 CrashLoopBackOff 状态   容器进程主动退出    其它排错    Job 无法被删除   kubectl 执行 exec 或 logs 失败   内核软死锁    经典报错     网络排错    DNS 解析异常   LB 健康检查失败   Service 不通   Service 无法解析   网络性能差    集群排错    Daemonset 没有被调度   Node 全部消失    "
 },
 {
 	"uri": "https://k8s.imroc.io/deploy/appendix/",
