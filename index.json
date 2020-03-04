@@ -25,7 +25,7 @@
 	"title": "部署指南",
 	"tags": [],
 	"description": "",
-	"content": "  使用 kubeadm 部署集群     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      部署附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    安装 kubectl      "
+	"content": "  使用 kubeadm 部署集群     手工部署    ARP 缓存爆满导致健康检查失败     DNS 5 秒延时     DNS 解析异常     kubectl edit 或者 apply 报 SchemaError     LB 压测 NodePort CPS 低     Pod 偶尔存活检查失败     Pod 访问另一个集群的 apiserver 有延时     神秘的溢出与丢包     访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时     诡异的 No route to host     跨 VPC 访问 NodePort 经常超时     驱逐导致服务中断      部署附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    安装 kubectl      "
 },
 {
 	"uri": "https://k8s.imroc.io/best-practice/configuration-management/helm/install-helm/",
@@ -88,7 +88,7 @@
 	"title": "领域应用",
 	"tags": [],
 	"description": "",
-	"content": "  大数据    Flink on Kubernetes      "
+	"content": "  大数据    Flannel    部署 Flannel    彻底理解集群网络      "
 },
 {
 	"uri": "https://k8s.imroc.io/dev/",
