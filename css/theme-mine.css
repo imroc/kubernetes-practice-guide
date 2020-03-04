@@ -126,3 +126,7 @@ body {
   color: #000 !important;
   background-color: rgb(246, 248, 250);
 }
+
+.float-left{
+    float: left;
+}
