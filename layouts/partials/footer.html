@@ -2,7 +2,9 @@
             </div> <!-- end chapter-->
         {{ end }}
         </div> 
-        {{ partial "custom-comments.html" . }}
+        {{ if and (.Site.Params.gitcomment) }}
+          {{ partial "gitalk.html" . }}
+        {{ end }}
       </div>
 
     <div id="navigation">
