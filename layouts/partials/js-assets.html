@@ -12,10 +12,11 @@
 {{- $perfectscrollbarjs := resources.Get "js/03-perfect-scrollbar.min.js" -}}
 {{- $mermaidjs := resources.Get "js/09-mermaid.js" -}}
 {{- $learnjs := resources.Get "js/12-learn.js" -}}
+{{- $rewardjs := resources.Get "js/13-reward.js" -}}
 
 
 {{- $indexScratch := newScratch -}}
-{{- $indexScratch.Add "jsassets" (slice $jqueryjs $algoliasearchjs $autocompletejs $clipboardjs $featherlightjs $highlightjs $jquerystickyjs $modernizrjs $perfectscrollbarjqueryjs $perfectscrollbarjs $mermaidjs $learnjs) -}}
+{{- $indexScratch.Add "jsassets" (slice $jqueryjs $algoliasearchjs $autocompletejs $clipboardjs $featherlightjs $highlightjs $jquerystickyjs $modernizrjs $perfectscrollbarjqueryjs $perfectscrollbarjs $mermaidjs $learnjs $rewardjs) -}}
 
 <!-- Bundle js -->
 {{- $appjs := $indexScratch.Get "jsassets" | resources.Concat "js/bundle.js" | resources.Minify | resources.Fingerprint -}}

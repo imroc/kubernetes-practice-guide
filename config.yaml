@@ -28,6 +28,7 @@ languages:
   zh:
     editURL: "https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/"
     weight: 1
+    reward: true
     contentDir: content/zh
     languageName: 简体中文
     dateFormat: "2006-01-02"

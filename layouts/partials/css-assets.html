@@ -10,10 +10,11 @@
 {{- $themecss := resources.Get "css/theme.css" -}}
 {{- $thememinecss := resources.Get "css/theme-mine.css" -}}
 {{- $mermaidcss := resources.Get "css/mermaid.css" -}}
+{{- $rewardcss := resources.Get "css/reward.css" -}}
 
 
 {{- $indexScratch := newScratch -}}
-{{- $indexScratch.Add "cssassets" (slice $atomcss $featherlightcss $fontawesomecss $hugothemecss $hybridcss $nucleuscss $perfectscrollbarcss $themecss $thememinecss $mermaidcss) -}}
+{{- $indexScratch.Add "cssassets" (slice $atomcss $featherlightcss $fontawesomecss $hugothemecss $hybridcss $nucleuscss $perfectscrollbarcss $themecss $thememinecss $mermaidcss $rewardcss) -}}
 
 <!-- Bundle css -->
 {{- $appcss := $indexScratch.Get "cssassets" | resources.Concat "css/bundle.css" | resources.Minify | resources.Fingerprint -}}
