@@ -71,7 +71,6 @@
     {{- partial "js-assets.html" . -}}
     <script src='{{ .Scratch.Get "appjs" }}' integrity='{{ .Scratch.Get "appjsintegrity" }}'></script>
     {{ end }}
-
     {{ partial "custom-footer.html" . }}
   </body>
 </html>
