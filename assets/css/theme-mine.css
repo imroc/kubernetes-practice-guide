@@ -122,7 +122,10 @@ h1 {
 }
 
 body {
-  /* color: rgb(27, 31, 35); */
   color: #000 !important;
   background-color: rgb(246, 248, 250);
+}
+
+.no-margin {
+    margin: 0px !important;
 }
