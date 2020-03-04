@@ -1,7 +1,7 @@
 
 <!-- Core JS -->
-{{- $algoliasearchjs := resources.Get "js/12-algoliasearch.min.js" -}}
-{{- $autocompletejs := resources.Get "js/13-autocomplete.min.js" -}}
+{{- $algoliasearchjs := resources.Get "js/10-algoliasearch.min.js" -}}
+{{- $autocompletejs := resources.Get "js/11-autocomplete.min.js" -}}
 {{- $clipboardjs := resources.Get "js/02-clipboard.min.js" -}}
 {{- $featherlightjs := resources.Get "js/06-featherlight.min.js" -}}
 {{- $highlightjs := resources.Get "js/07-highlight.pack.js" -}}
@@ -10,11 +10,12 @@
 {{- $modernizrjs := resources.Get "js/08-modernizr.custom-3.6.0.js" -}}
 {{- $perfectscrollbarjqueryjs := resources.Get "js/04-perfect-scrollbar.jquery.min.js" -}}
 {{- $perfectscrollbarjs := resources.Get "js/03-perfect-scrollbar.min.js" -}}
-{{- $mermaidjs := resources.Get "js/11-mermaid.js" -}}
+{{- $mermaidjs := resources.Get "js/09-mermaid.js" -}}
+{{- $learnjs := resources.Get "js/12-learn.js" -}}
 
 
 {{- $indexScratch := newScratch -}}
-{{- $indexScratch.Add "jsassets" (slice $jqueryjs $algoliasearchjs $autocompletejs $clipboardjs $featherlightjs $highlightjs $jquerystickyjs $modernizrjs $perfectscrollbarjqueryjs $perfectscrollbarjs $mermaidjs) -}}
+{{- $indexScratch.Add "jsassets" (slice $jqueryjs $algoliasearchjs $autocompletejs $clipboardjs $featherlightjs $highlightjs $jquerystickyjs $modernizrjs $perfectscrollbarjqueryjs $perfectscrollbarjs $mermaidjs $learnjs) -}}
 
 <!-- Bundle js -->
 {{- $appjs := $indexScratch.Get "jsassets" | resources.Concat "js/bundle.js" | resources.Minify | resources.Fingerprint -}}
