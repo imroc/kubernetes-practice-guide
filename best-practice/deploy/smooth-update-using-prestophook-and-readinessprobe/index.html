@@ -3197,7 +3197,32 @@
         
         </div> 
         
+          
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  
+  
+    
+  
+  console.log("id:937dc004403f49a2206d8704955e393c")
+  var gitalk = new Gitalk({
+      clientID: '6e0166abfd4b13fb3f6e',
+      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
+      repo: 'kubernetes-practice-guide',
+      owner: 'imroc',
+      admin: 'imroc',
+      labels: ['Gitalk'],
+      title: '使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断',
+      createIssueManually: false,
+      id: '937dc004403f49a2206d8704955e393c',
+      distractionFreeMode: true
+  });
+  gitalk.render('gitalk-container');
+</script>
 
+        
       </div>
 
     <div id="navigation">
@@ -5211,31 +5236,4 @@
 
   </body>
 </html>
-
-
-
-  
-<div id="gitalk-container"></div>
-<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-<script>
-  
-  
-    
-  
-  console.log("id:937dc004403f49a2206d8704955e393c")
-  var gitalk = new Gitalk({
-      clientID: '6e0166abfd4b13fb3f6e',
-      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
-      repo: 'kubernetes-practice-guide',
-      owner: 'imroc',
-      admin: 'imroc',
-      labels: ['Gitalk'],
-      title: '使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断',
-      createIssueManually: false,
-      id: '937dc004403f49a2206d8704955e393c',
-      distractionFreeMode: true
-  });
-  gitalk.render('gitalk-container');
-</script>
 

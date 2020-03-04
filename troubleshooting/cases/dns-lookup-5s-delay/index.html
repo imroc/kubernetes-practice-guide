@@ -3274,7 +3274,30 @@ single-request (since glibc 2.10)
         
         </div> 
         
+          
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  
+  
+  console.log("id:dns-lookup-5s-delay-zh")
+  var gitalk = new Gitalk({
+      clientID: '6e0166abfd4b13fb3f6e',
+      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
+      repo: 'kubernetes-practice-guide',
+      owner: 'imroc',
+      admin: 'imroc',
+      labels: ['Gitalk'],
+      title: 'DNS 5 秒延时',
+      createIssueManually: false,
+      id: 'dns-lookup-5s-delay-zh',
+      distractionFreeMode: true
+  });
+  gitalk.render('gitalk-container');
+</script>
 
+        
       </div>
 
     <div id="navigation">
@@ -5291,29 +5314,4 @@ single-request (since glibc 2.10)
 
   </body>
 </html>
-
-
-
-  
-<div id="gitalk-container"></div>
-<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-<script>
-  
-  
-  console.log("id:dns-lookup-5s-delay-zh")
-  var gitalk = new Gitalk({
-      clientID: '6e0166abfd4b13fb3f6e',
-      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
-      repo: 'kubernetes-practice-guide',
-      owner: 'imroc',
-      admin: 'imroc',
-      labels: ['Gitalk'],
-      title: 'DNS 5 秒延时',
-      createIssueManually: false,
-      id: 'dns-lookup-5s-delay-zh',
-      distractionFreeMode: true
-  });
-  gitalk.render('gitalk-container');
-</script>
 

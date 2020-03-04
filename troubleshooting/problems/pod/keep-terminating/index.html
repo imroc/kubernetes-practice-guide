@@ -3197,7 +3197,30 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
         
         </div> 
         
+          
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  
+  
+  console.log("id:keep-terminating-zh")
+  var gitalk = new Gitalk({
+      clientID: '6e0166abfd4b13fb3f6e',
+      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
+      repo: 'kubernetes-practice-guide',
+      owner: 'imroc',
+      admin: 'imroc',
+      labels: ['Gitalk'],
+      title: 'Pod 一直处于 Terminating 状态',
+      createIssueManually: false,
+      id: 'keep-terminating-zh',
+      distractionFreeMode: true
+  });
+  gitalk.render('gitalk-container');
+</script>
 
+        
       </div>
 
     <div id="navigation">
@@ -5215,29 +5238,4 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
 
   </body>
 </html>
-
-
-
-  
-<div id="gitalk-container"></div>
-<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-<script>
-  
-  
-  console.log("id:keep-terminating-zh")
-  var gitalk = new Gitalk({
-      clientID: '6e0166abfd4b13fb3f6e',
-      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
-      repo: 'kubernetes-practice-guide',
-      owner: 'imroc',
-      admin: 'imroc',
-      labels: ['Gitalk'],
-      title: 'Pod 一直处于 Terminating 状态',
-      createIssueManually: false,
-      id: 'keep-terminating-zh',
-      distractionFreeMode: true
-  });
-  gitalk.render('gitalk-container');
-</script>
 

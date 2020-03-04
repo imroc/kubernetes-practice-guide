@@ -3169,7 +3169,30 @@ $ telnet 172.16.14.217 <span style="color:#ae81ff">53</span>
         
         </div> 
         
+          
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  
+  
+  console.log("id:service-cannot-resolve-zh")
+  var gitalk = new Gitalk({
+      clientID: '6e0166abfd4b13fb3f6e',
+      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
+      repo: 'kubernetes-practice-guide',
+      owner: 'imroc',
+      admin: 'imroc',
+      labels: ['Gitalk'],
+      title: 'Service 无法解析',
+      createIssueManually: false,
+      id: 'service-cannot-resolve-zh',
+      distractionFreeMode: true
+  });
+  gitalk.render('gitalk-container');
+</script>
 
+        
       </div>
 
     <div id="navigation">
@@ -5190,29 +5213,4 @@ $ telnet 172.16.14.217 <span style="color:#ae81ff">53</span>
 
   </body>
 </html>
-
-
-
-  
-<div id="gitalk-container"></div>
-<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-<script>
-  
-  
-  console.log("id:service-cannot-resolve-zh")
-  var gitalk = new Gitalk({
-      clientID: '6e0166abfd4b13fb3f6e',
-      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
-      repo: 'kubernetes-practice-guide',
-      owner: 'imroc',
-      admin: 'imroc',
-      labels: ['Gitalk'],
-      title: 'Service 无法解析',
-      createIssueManually: false,
-      id: 'service-cannot-resolve-zh',
-      distractionFreeMode: true
-  });
-  gitalk.render('gitalk-container');
-</script>
 

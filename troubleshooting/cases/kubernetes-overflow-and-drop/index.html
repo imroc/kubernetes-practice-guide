@@ -3394,7 +3394,30 @@ LISTEN     <span style="color:#ae81ff">512</span>    <span style="color:#ae81ff"
         
         </div> 
         
+          
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  
+  
+  console.log("id:kubernetes-overflow-and-drop-zh")
+  var gitalk = new Gitalk({
+      clientID: '6e0166abfd4b13fb3f6e',
+      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
+      repo: 'kubernetes-practice-guide',
+      owner: 'imroc',
+      admin: 'imroc',
+      labels: ['Gitalk'],
+      title: '神秘的溢出与丢包',
+      createIssueManually: false,
+      id: 'kubernetes-overflow-and-drop-zh',
+      distractionFreeMode: true
+  });
+  gitalk.render('gitalk-container');
+</script>
 
+        
       </div>
 
     <div id="navigation">
@@ -5411,29 +5434,4 @@ LISTEN     <span style="color:#ae81ff">512</span>    <span style="color:#ae81ff"
 
   </body>
 </html>
-
-
-
-  
-<div id="gitalk-container"></div>
-<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
-<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
-<script>
-  
-  
-  console.log("id:kubernetes-overflow-and-drop-zh")
-  var gitalk = new Gitalk({
-      clientID: '6e0166abfd4b13fb3f6e',
-      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
-      repo: 'kubernetes-practice-guide',
-      owner: 'imroc',
-      admin: 'imroc',
-      labels: ['Gitalk'],
-      title: '神秘的溢出与丢包',
-      createIssueManually: false,
-      id: 'kubernetes-overflow-and-drop-zh',
-      distractionFreeMode: true
-  });
-  gitalk.render('gitalk-container');
-</script>
 
