@@ -292,6 +292,6 @@ k8s 开放了很多扩展能力，基于这些扩展机制可以开发出各种�
 
 ## License
 
-![](https://licensebuttons.net/l/by-nc-sa/4.0/88x31.png?classes=no-margin)
+![](https://res.cloudinary.com/imroc/image/upload/v1583293970/kubernetes-practice-guide/img/licensebutton.png?classes=no-margin)
 
 [署名-非商业性使用-相同方式共享 4.0 \(CC BY-NC-SA 4.0\)](https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh)
