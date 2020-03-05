@@ -40,7 +40,7 @@
 }
 body {
     background: #fff;
-    /* color: #777; */
+    color: #777;
 }
 body #chapter h1 {
     font-size: 3.5rem;
@@ -102,14 +102,14 @@ textarea:focus, input[type="email"]:focus, input[type="number"]:focus, input[typ
     box-shadow: inset 0 1px 3px rgba(0,0,0,.06),0 0 5px rgba(0,169,218,.7)
 }
 #header-wrapper {
+    background: #8451a1;
     color: #fff;
     text-align: center;
-    background:#24292e;
-    /* border-bottom: 4px solid #9c6fb6; */
+    border-bottom: 4px solid #9c6fb6;
     padding: 1rem;
 }
-#header div {
-    color: #fff;
+#header a {
+    display: inline-block;
 }
 #header #logo-svg {
     width: 8rem;
@@ -173,7 +173,7 @@ textarea:focus, input[type="email"]:focus, input[type="number"]:focus, input[typ
     }
 }
 #sidebar {
-    /* background-color: rgb(246, 248, 250); */
+    background-color: #322A38;
     position: fixed;
     top: 0;
     width: 300px;
@@ -183,11 +183,10 @@ textarea:focus, input[type="email"]:focus, input[type="number"]:focus, input[typ
     font-size: 15px;
 }
 #sidebar a {
-    color: #000;
+    color: #ccc;
 }
 #sidebar a:hover {
-    color: #0366d6;
-    /* color: #ccc; */
+    color: #e6e6e6;
 }
 #sidebar a.subtitle {
     color: rgba(204, 204, 204, 0.6);
@@ -277,15 +276,15 @@ textarea:focus, input[type="email"]:focus, input[type="number"]:focus, input[typ
     margin-top: 9px;
 }
 #sidebar ul.topics > li.parent, #sidebar ul.topics > li.active {
-    background: #fff;
+    background: #251f29;
     margin-left: -1rem;
     margin-right: -1rem;
     padding-left: 1rem;
     padding-right: 1rem;
 }
 #sidebar ul li.active > a {
-    background:#24292e;
-    color: #fff !important;
+    background: #fff;
+    color: #777 !important;
     margin-left: -1rem;
     margin-right: -1rem;
     padding-left: 1rem;
@@ -407,7 +406,6 @@ textarea:focus, input[type="email"]:focus, input[type="number"]:focus, input[typ
 #body .nav:hover {
     background: #F6F6F6;
 }
-
 #body .nav.nav-pref {
     left: 0;
 }
@@ -458,6 +456,7 @@ body {
 h2, h3, h4, h5, h6 {
     font-family: "Work Sans", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
     text-rendering: optimizeLegibility;
+    color: #5e5e5e;
     font-weight: 400;
     letter-spacing: -1px;
 }
@@ -465,6 +464,7 @@ h1 {
     font-family: "Novacento Sans Wide", "Helvetica", "Tahoma", "Geneva", "Arial", sans-serif;
     text-align: center;
     text-transform: uppercase;
+    color: #222;
     font-weight: 200;
 }
 blockquote {
