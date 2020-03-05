@@ -1054,7 +1054,7 @@ td {
     }
 }
 .copy-to-clipboard {
-    background-image: url(https://res.cloudinary.com/imroc/raw/upload/v1583305988/kubernetes-practice-guide/images/clippy.svg);
+    background-image: url(https://res.cloudinary.com/imroc/image/upload/v1583395328/kubernetes-practice-guide/images/clippy.svg);
     background-position: 50% 50%;
     background-size: 16px 16px;
     background-repeat: no-repeat;
