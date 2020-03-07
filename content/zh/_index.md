@@ -1,6 +1,5 @@
 ---
 title: "Kubernetes 实践指南"
-state: "Alpha"
 ---
 
 ## Roadmap
