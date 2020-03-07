@@ -1,7 +1,8 @@
 ---
 title: "Pod Terminating 慢"
+state: Alpha
 ---
 
-## 进程通过 bash -c 启动导致 kill 信号无法透传给业务进程
+## 可能原因
 
-TODO: 完善
+* 进程通过 bash -c 启动导致 kill 信号无法透传给业务进程
