@@ -7,6 +7,20 @@
         "state": "Alpha"
     },
     {
+        "title": "AI 与大数据",
+        "uri": "ai-and-big-data",
+        "content": "children",
+        "objectID": "ai-and-big-data",
+        "chapter": true,
+        "weight": 60
+    },
+    {
+        "title": "Flink on Kubernetes",
+        "uri": "ai-and-big-data/flink-on-kubernetes",
+        "content": "Flink    Flink                    Storm                                           exactly once                           Spark    Spark Streaming                                     exactly once                                      Flink                  exactly once                    Flink             JobManager   TaskManager              JobManager             TaskManager           k8s      JobManager     Master TaskManager     Worker   Spark    JobManager     Driver TaskManager     Executor    Kubernetes      flink 1 10      k8s     flink            TaskManager      CPU                                            TaskManager                                       Kubernetes      Flink          Kubernetes            2020 02 11     flink 1 10         k8s              k8s            yarn   mesos          flink     namespace       flink     namespace      kubectl create ns flink    RBAC     ServiceAccount    flink      k8s           apiVersion  v1 kind  ServiceAccount metadata  name  flink namespace  flink apiVersion  rbac authorization k8s io v1 kind  ClusterRoleBinding metadata  name  flink role binding roleRef  apiGroup  rbac authorization k8s io kind  ClusterRole name  edit subjects  kind  ServiceAccount name  flink namespace  flink    job      flink           k8s    jobmanager        service  deployment  configmap   apiVersion  batch v1 kind  Job metadata  name  boot flink namespace  flink spec  template  spec  serviceAccount  flink restartPolicy  OnFailure containers  name  start image  flink 1 10 workingDir   opt flink command    bash     c     FLINK_HOME bin kubernetes session sh    Dkubernetes cluster id roc    Dkubernetes jobmanager service account flink    Dtaskmanager memory process size 1024m    Dkubernetes taskmanager cpu 1    Dtaskmanager numberOfTaskSlots 1    Dkubernetes container image flink 1 10    Dkubernetes namespace flink   kubernetes cluster id     flink               k8s                kubernetes namespace     flink                      flink      kubernetes jobmanager service account          flink     ServiceAccount kubernetes container image     flink                1 10          flink 1 10                      job   pod      job     flink jobmanager   pod       kubernetes cluster id       kubectl  n flink pod NAME READY STATUS RESTARTS AGE roc cf9f6b5df csk9z 1 1 Running 0 84m boot flink nc2qx 0 1 Completed 0 84m    jobmanager   service    kubectl  n flink svc NAME TYPE CLUSTER IP EXTERNAL IP PORT S  AGE roc ClusterIP 172 16 255 152 8081 TCP 6123 TCP 6124 TCP 88m roc rest LoadBalancer 172 16 255 11 150 109 27 251 8081 31240 TCP 88m    http   150 109 27 251 8081       flink     ui          Active Kubernetes integration phase 2   Advanced Features  https   issues apache org jira browse FLINK 14460 Apache Flink 1 10 0 Release Announcement  https   flink apache org news 2020 02 11 release 1 10 0 html Native Kubernetes Setup Beta  flink kubernetes          https   ci apache org projects flink flink docs release 1 10 ops deployment native_kubernetes html",
+        "objectID": "ai-and-big-data/flink-on-kubernetes"
+    },
+    {
         "title": "避坑指南",
         "uri": "avoid",
         "content": "children depth 2",
@@ -171,20 +185,6 @@
         "uri": "best-practice/wildcard-domain-forward",
         "content": "IP            Ingress   Service   DNS              IP      test imroc io             Host          Service    a test imroc io         my svc a b test imroc io        my svc b    K8S   Ingress                                                                     Ingress               Host         Service Ingress        apiVersion  extensions v1beta1 kind  Ingress metadata  name  my ingress spec  rules  host  a test imroc io http  paths  backend  serviceName  my svc a servicePort  80 path    host  b test imroc io http  paths  backend  serviceName  my svc b servicePort  80 path          Host           200        Host     Ingress           Ingress                 LB                                     Host                 Service                 Service              a test imroc io     my svc a    Service                                                       Host                         Service                DNS                  Nginx Lua                             OpenResty            Nginx         lua                    nginx   proxypass            proxypass              lua     Host      nginx   proxy_pass               IP    dns                        dns        nginx conf     resolver             dns               go dnsmasq             dns       nginx   sidecar        pod      53    nginx conf                      yaml    proxy yaml  apiVersion  apps v1beta1 kind  Deployment metadata  labels  component  nginx name  proxy spec  replicas  1 selector  matchLabels  component  nginx template  metadata  labels  component  nginx spec  containers  name  nginx image   openresty openresty centos  ports  name  http containerPort  80 protocol  TCP volumeMounts  mountPath   usr local openresty nginx conf nginx conf name  config subPath  nginx conf name  dnsmasq image   janeczku go dnsmasq release 1 0 7  args    listen  127 0 0 1 53    default resolver   append search domains   hostsfile  etc hosts   verbose volumes  name  config configMap  name  configmap nginx apiVersion  v1 kind  ConfigMap metadata  labels  component  nginx name  configmap nginx data  nginx conf     worker_processes 1  error_log  error log  events   accept_mutex on  multi_accept on  use epoll  worker_connections 1024    http   include mime types  default_type application octet stream  logformat main   timelocal  remoteuser  remoteaddr  host  requesturi  requestmethod  http_cookie     status  bodybytessent   http_referer       httpuseragent    httpxforwarded_for      requesttime  upstreamresponsetime   upstreamcache_status    logformat browser   timeiso8601  cookiekmuid  remoteaddr  host  requesturi  request_method     status  bodybytessent   http_referer       httpuseragent    httpxforwarded_for      requesttime  upstreamresponsetime   upstreamcachestatus   httpxrequestedwith  httpxrealip  upstreamaddr  request_body   logformat client     timestamp    timeiso8601      timelocal    timelocal      remoteuser    remoteuser      httpxforwardedfor    httpxforwardedfor      host    server_addr      remoteaddr    remoteaddr      httpxrealip    httpxrealip      bodybytessent   bodybytessent     requesttime   requesttime     status   status     upstreamresponsetime    upstreamresponsetime      upstreamresponsestatus    upstream_status      request    request      httpreferer    httpreferer      httpuseragent    httpuseragent     access_log  access log main  sendfile on  keepalive_timeout 120s 100s  keepalive_requests 500  send_timeout 60000s  clientheaderbuffer_size 4k  proxyignoreclient_abort on  proxy_buffers 16 32k  proxybuffersize 64k  proxybusybuffers_size 64k  proxysendtimeout 60000  proxyreadtimeout 60000  proxyconnecttimeout 60000  proxycachevalid 200 304 2h  proxycachevalid 500 404 2s  proxycachekey  host requesturi cookieuser  proxycachemethods HEAD POST  proxy_redirect off  proxyhttpversion 1 1  proxysetheader Host  http_host  proxysetheader X Real IP  remote_addr  proxysetheader X Forwarded For  proxyaddxforwardedfor  proxysetheader X Forwarded Proto  scheme  proxysetheader X Frame Options SAMEORIGIN  server_tokens off  clientmaxbody_size 50G  addheader X Cache  upstreamcache_status  autoindex off  resolver 127 0 0 1 53 ipv6 off  server   listen 80  location     set  service     rewritebylua   local host   ngx var host local m   ngx re match host        test imroc io   m ngx var service    my svc      m 1  end    proxy_pass http    service                        Service   Ingress   Service       service yaml    apiVersion  v1 kind  Service metadata  labels  component  nginx name  service nginx spec  type  LoadBalancer ports  name  http port  80 targetPort  http selector  component  nginx   Ingress       ingress yaml    apiVersion  extensions v1beta1 kind  Ingress metadata  name  ingress nginx spec  rules  host     test imroc io  http  paths  backend  serviceName  service nginx servicePort  80 path",
         "objectID": "best-practice/wildcard-domain-forward"
-    },
-    {
-        "title": "大数据",
-        "uri": "big-data",
-        "content": "children",
-        "objectID": "big-data",
-        "chapter": true,
-        "weight": 60
-    },
-    {
-        "title": "Flink on Kubernetes",
-        "uri": "big-data/flink-on-kubernetes",
-        "content": "Flink    Flink                    Storm                                           exactly once                           Spark    Spark Streaming                                     exactly once                                      Flink                  exactly once                    Flink             JobManager   TaskManager              JobManager             TaskManager           k8s      JobManager     Master TaskManager     Worker   Spark    JobManager     Driver TaskManager     Executor    Kubernetes      flink 1 10      k8s     flink            TaskManager      CPU                                            TaskManager                                       Kubernetes      Flink          Kubernetes            2020 02 11     flink 1 10         k8s              k8s            yarn   mesos          flink     namespace       flink     namespace      kubectl create ns flink    RBAC     ServiceAccount    flink      k8s           apiVersion  v1 kind  ServiceAccount metadata  name  flink namespace  flink apiVersion  rbac authorization k8s io v1 kind  ClusterRoleBinding metadata  name  flink role binding roleRef  apiGroup  rbac authorization k8s io kind  ClusterRole name  edit subjects  kind  ServiceAccount name  flink namespace  flink    job      flink           k8s    jobmanager        service  deployment  configmap   apiVersion  batch v1 kind  Job metadata  name  boot flink namespace  flink spec  template  spec  serviceAccount  flink restartPolicy  OnFailure containers  name  start image  flink 1 10 workingDir   opt flink command    bash     c     FLINK_HOME bin kubernetes session sh    Dkubernetes cluster id roc    Dkubernetes jobmanager service account flink    Dtaskmanager memory process size 1024m    Dkubernetes taskmanager cpu 1    Dtaskmanager numberOfTaskSlots 1    Dkubernetes container image flink 1 10    Dkubernetes namespace flink   kubernetes cluster id     flink               k8s                kubernetes namespace     flink                      flink      kubernetes jobmanager service account          flink     ServiceAccount kubernetes container image     flink                1 10          flink 1 10                      job   pod      job     flink jobmanager   pod       kubernetes cluster id       kubectl  n flink pod NAME READY STATUS RESTARTS AGE roc cf9f6b5df csk9z 1 1 Running 0 84m boot flink nc2qx 0 1 Completed 0 84m    jobmanager   service    kubectl  n flink svc NAME TYPE CLUSTER IP EXTERNAL IP PORT S  AGE roc ClusterIP 172 16 255 152 8081 TCP 6123 TCP 6124 TCP 88m roc rest LoadBalancer 172 16 255 11 150 109 27 251 8081 31240 TCP 88m    http   150 109 27 251 8081       flink     ui          Active Kubernetes integration phase 2   Advanced Features  https   issues apache org jira browse FLINK 14460 Apache Flink 1 10 0 Release Announcement  https   flink apache org news 2020 02 11 release 1 10 0 html Native Kubernetes Setup Beta  flink kubernetes          https   ci apache org projects flink flink docs release 1 10 ops deployment native_kubernetes html",
-        "objectID": "big-data/flink-on-kubernetes"
     },
     {
         "title": "集群方案",
@@ -402,6 +402,22 @@
         "state": "Alpha"
     },
     {
+        "title": "日志搜集",
+        "uri": "log",
+        "content": "notice info                    notice",
+        "objectID": "log",
+        "chapter": true,
+        "weight": 44
+    },
+    {
+        "title": "监控告警",
+        "uri": "monitoring",
+        "content": "notice info                    notice",
+        "objectID": "monitoring",
+        "chapter": true,
+        "weight": 43
+    },
+    {
         "title": "集群优化",
         "uri": "optimization",
         "content": "kuernetes            https   www processon com view link 5e4662ade4b0d86ec4018e50        children depth 3",
@@ -511,6 +527,56 @@
         "uri": "security/user/create-user-using-csr-api",
         "content": "k8s    CSR API      CertificateSigningRequest         CSR              kube controller manager              kube controller manager             cluster signing cert file  var lib kubernetes ca pem   cluster signing key file  var lib kubernetes ca key pem          cfssl     key   csr            cfssl  curl  L https   pkg cfssl org R1 2 cfssl_linux amd64  o cfssl curl  L https   pkg cfssl org R1 2 cfssljson_linux amd64  o cfssljson curl  L https   pkg cfssl org R1 2 cfssl certinfo_linux amd64  o cfssl certinfo chmod  x cfssl cfssljson cfssl certinfo sudo mv cfssl cfssljson cfssl certinfo  usr local bin             USERNAME  roc      key   csr     cat   USERNAME  pem         roc pem                           roc pem roc key pem    kubeconfig    user kubectl config set credentials   USERNAME    embed certs true   client certificate   USERNAME  pem   client key   USERNAME  key pem       cluster             kubectl config set cluster   server    certificate authority     context    cluster   user kubectl config set context   cluster    user   USERNAME         context kubectl config use context              RBAC              RBAC             Manage TLS Certificates Cluster  https   kubernetes io docs tasks tls managing tls in a cluster",
         "objectID": "security/user/create-user-using-csr-api"
+    },
+    {
+        "title": "实用技巧",
+        "uri": "trick",
+        "content": "children",
+        "objectID": "trick",
+        "weight": 41
+    },
+    {
+        "title": "kubectl 高效技巧",
+        "uri": "trick/efficient-kubectl",
+        "content": "k             kubectl                                                                                                           shell    k       session    function k     cmdline HISTTIMEFORMAT    history   awk   2     kubectl        n        namespace    for i 2 i",
+        "objectID": "trick/efficient-kubectl"
+    },
+    {
+        "title": "实用命令与脚本",
+        "uri": "trick/shell",
+        "content": "children",
+        "objectID": "trick/shell"
+    },
+    {
+        "title": "网络调试相关脚本",
+        "uri": "trick/shell/network",
+        "content": "netns           function e     set  eu ns   2  default   pod kubectl  n  ns describe pod  1   grep  A10   Containers     grep  Eo  docker         head  n 1   sed  s docker             1   pid docker inspect  f    State Pid    pod echo  entering pod netns  ns  1  cmd  nsenter  n   target  pid  echo  cmd  cmd                 pod   netns     kube system         metrics server 6cf9685556 rclw5   pod     netns e metrics server 6cf9685556 rclw5 kube system    pod   netns              netns          ip      ip   ip route        tcpdump                TCP          true  echo      telnet 10 0 0 3 443  sleep 0 1  done ctrl c         10 0 0 3   443        IP",
+        "objectID": "trick/shell/network"
+    },
+    {
+        "title": "节点相关脚本",
+        "uri": "trick/shell/node",
+        "content": "podCIDR kubectl no  o custom columns INTERNAL IP  metadata name EXTERNAL IP  status addresses 1  address CIDR  spec podCIDR       INTERNAL IP EXTERNAL IP CIDR 10 100 12 194 152 136 146 157 10 101 64 64 27 10 100 16 11 10 100 16 11 10 101 66 224 27 10 100 16 24 10 100 16 24 10 101 64 32 27 10 100 16 26 10 100 16 26 10 101 65 0 27 10 100 16 37 10 100 16 37 10 101 64 0 27               Allocatable  kubectl no  o custom columns  NODE  metadata name ALLOCATABLE CPU  status allocatable cpu ALLOCATABLE MEMORY  status allocatable memory        NODE ALLOCATABLE CPU ALLOCATABLE MEMORY 10 0 0 2 3920m 7051692Ki 10 0 0 3 3920m 7051816Ki                               kubectl nodes   no headers   awk   print  1     xargs  I    sh  c  echo      kubectl describe node      grep Allocated  A 5   grep  ve Event  ve Allocated  ve percent  ve            10 0 0 2 Resource Requests Limits cpu 3040m  77   19800m  505   memory 4843402752  67   15054901888  208   10 0 0 3 Resource Requests Limits cpu 300m  7   1  25   memory 250M  3   2G  27        cpu        kubectl nodes   no headers   awk   print  1     xargs  I    sh  c  echo  n     t    kubectl describe node      grep Allocated  A 5   grep  ve Event  ve Allocated  ve percent  ve      grep cpu   awk      print  2 3              10 0 0 2 3040m 77   10 0 0 3 300m 7        memory        kubectl nodes   no headers   awk   print  1     xargs  I    sh  c  echo  n     t    kubectl describe node      grep Allocated  A 5   grep  ve Event  ve Allocated  ve percent  ve      grep memory   awk      print  2 3              10 0 0 2 4843402752 67   10 0 0 3 250M 3           printf   NUM PID t tCOMMAND n     ps  eLf   awk    1 null  3 null  4 null  5 null  6 null  7 null  8 null  9 null print     sort  uniq  c  sort  rn   head  10       NUM PID COMMAND 594 14418 java  server  Dspring profiles active production  Xms2048M  Xmx2048M  Xss256k  Dinfo app version 33  XX  UseG1GC  XX  UseStringDeduplication  XX  PrintGCDateStamps  verbosegc  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  Xloggc  home log gather server gather server gac log  Ddefault client encoding UTF 8  Dfile encoding UTF 8  Dlogging path  home log gather server  Dserver tomcat accesslog directory  home log gather server  jar  home app gather server jar   server port 8080   management port 10086 449 7088 java  server  Dspring profiles active production  Dspring cloud config token nLfe bQ0CcGnNZQ4Pt9KTizgRghZrGUVVqaDZYHU3R Y U6k7jkm8RrBn7LPJD  Xms4256M  Xmx4256M  Xss256k  XX  PrintFlagsFinal  XX  UseG1GC  XX  UseStringDeduplication  XX MaxGCPauseMillis 200  XX MetaspaceSize 128M  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  verbosegc  XX  PrintGCDateStamps  XX  UseGCLogFileRotation  XX NumberOfGCLogFiles 15  XX GCLogFileSize 50M  XX AutoBoxCacheMax 520  Xloggc  home log oauth server oauth server gac log  Dinfo app version 12  Ddefault client encoding UTF 8  Dfile encoding UTF 8  Dlogging config classpath log4j2 spring prod xml  Dlogging path  home log oauth server  Dserver tomcat accesslog directory  home log oauth server  jar  home app oauth server jar   server port 8080   management port 10086   zuul server netty threads worker 14   zuul server netty socket epoll true 394 516 java  server  Dspring profiles active production  Xms2048M  Xmx2048M  Xss1024k  Dinfo app version 43  XX  UseG1GC  XX  UseStringDeduplication  XX  PrintGCDateStamps  verbosegc  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  Xloggc  home log asset server asset server gac log  Ddefault client encoding UTF 8  Dfile encoding UTF 8  Dlogging path  home log asset server  Dserver tomcat accesslog directory  home log asset server  jar  home app asset server jar   server port 8080   management port 10086 305 14668 java  server  Dspring profiles active production  Xms1024M  Xmx1024M  Xss256k  Dinfo app version 3  XX  UseG1GC  XX  UseStringDeduplication  XX  PrintGCDateStamps  verbosegc  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  Xloggc  home log talent adapter distribute talent adapter distribute gac log  Ddefault client encoding UTF 8  Dfile encoding UTF 8  Dlogging path  home log talent adapter distribute  Dserver tomcat accesslog directory  home log talent adapter distribute  jar  home app talent adapter distribute jar   server port 8080   management port 10086 250 3979 java  server  Dspring profiles active production  Xms2048M  Xmx2048M  Xss256k  Dinfo app version 20  XX  UseG1GC  XX  UseStringDeduplication  XX  PrintGCDateStamps  verbosegc  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  Xloggc  home log ",
+        "objectID": "trick/shell/node"
+    },
+    {
+        "title": "Pod 相关脚本",
+        "uri": "trick/shell/pod",
+        "content": "Evicted   pod kubectl pod  o wide   all namespaces   awk   if  4   Evicted   cmd  kubectl  n   1  delete pod   2  system cmd         Running   pod kubectl pod  o wide   all namespaces   awk   if  4   Running   cmd  kubectl  n   1  delete pod   2  system cmd          NAMESPACE  kube system  WORKLOAD_TYPE  daemonset  WORKLOAD_NAME  ip masq agent  CONTAINER_NAME  ip masq agent  IMAGE  ccr ccs tencentyun com library ip masq agent v2 5 0  kubectl  n  NAMESPACE patch  WORKLOADTYPE  WORKLOADNAME   patch    spec     template     spec     containers      name     CONTAINER_NAME   image     IMAGE",
+        "objectID": "trick/shell/pod"
+    },
+    {
+        "title": "yaml 片段",
+        "uri": "trick/yaml",
+        "content": "",
+        "objectID": "trick/yaml",
+        "chapter": true
+    },
+    {
+        "title": "Deployment",
+        "uri": "trick/yaml/deployment",
+        "content": "nginx      apiVersion  apps v1 kind  Deployment metadata  name  nginx spec  replicas  1 selector  matchLabels  app  nginx template  metadata  labels  app  nginx spec  containers  name  nginx image  nginx apiVersion  v1 kind  Service metadata  name  nginx labels  app  nginx spec  type  ClusterIP ports  port  80 protocol  TCP name  http selector  app  nginx",
+        "objectID": "trick/yaml/deployment"
     },
     {
         "title": "排错指南",
@@ -754,8 +820,9 @@
     {
         "title": "Pod Terminating 慢",
         "uri": "troubleshooting/pod/slow-terminating",
-        "content": "bash  c      kill             TODO",
-        "objectID": "troubleshooting/pod/slow-terminating"
+        "content": "bash  c      kill",
+        "objectID": "troubleshooting/pod/slow-terminating",
+        "state": "Alpha"
     },
     {
         "title": "排错技巧",
@@ -782,55 +849,5 @@
         "uri": "troubleshooting/trick/use-systemtap-to-locate-problems",
         "content": "Ubuntu    systemtap  apt install  y systemtap    stap prep               stap prep Please install linux headers 4 4 0 104 generic need package linux image 4 4 0 104 generic dbgsym does not seem available Ubuntu  dbgsym packages typically separate repository Follow https   wiki ubuntu com DebuggingProgramCrash add repository apt install  y linux headers 4 4 0 104 generic      dbgsym                                 dbgsym           wiki  https   wiki ubuntu com Kernel Systemtap    sudo apt key adv   keyserver keyserver ubuntu com   recv keys C8CAB6595FDFF622 codename   lsb_release  c   awk   print  2    sudo tee  etc apt sources list d ddebs list systemd 0m0 080000000s   vGhyM0 19491m2 579563677s   sh 33473m38 074571885s   bash 33473m38 077072025s   bash 33473m38 081028267s   bash 33475m4 817798337s   pkill 33475m5 202486630s       task_ancestry                           vGhyM0",
         "objectID": "troubleshooting/trick/use-systemtap-to-locate-problems"
-    },
-    {
-        "title": "实用技巧",
-        "uri": "useful",
-        "content": "children",
-        "objectID": "useful",
-        "weight": 50
-    },
-    {
-        "title": "kubectl 高效技巧",
-        "uri": "useful/efficient-kubectl",
-        "content": "k             kubectl                                                                                                           shell    k       session    function k     cmdline HISTTIMEFORMAT    history   awk   2     kubectl        n        namespace    for i 2 i",
-        "objectID": "useful/efficient-kubectl"
-    },
-    {
-        "title": "实用命令与脚本",
-        "uri": "useful/shell",
-        "content": "children",
-        "objectID": "useful/shell"
-    },
-    {
-        "title": "网络调试相关脚本",
-        "uri": "useful/shell/network",
-        "content": "netns           function e     set  eu ns   2  default   pod kubectl  n  ns describe pod  1   grep  A10   Containers     grep  Eo  docker         head  n 1   sed  s docker             1   pid docker inspect  f    State Pid    pod echo  entering pod netns  ns  1  cmd  nsenter  n   target  pid  echo  cmd  cmd                 pod   netns     kube system         metrics server 6cf9685556 rclw5   pod     netns e metrics server 6cf9685556 rclw5 kube system    pod   netns              netns          ip      ip   ip route        tcpdump                TCP          true  echo      telnet 10 0 0 3 443  sleep 0 1  done ctrl c         10 0 0 3   443        IP",
-        "objectID": "useful/shell/network"
-    },
-    {
-        "title": "节点相关脚本",
-        "uri": "useful/shell/node",
-        "content": "podCIDR kubectl no  o custom columns INTERNAL IP  metadata name EXTERNAL IP  status addresses 1  address CIDR  spec podCIDR       INTERNAL IP EXTERNAL IP CIDR 10 100 12 194 152 136 146 157 10 101 64 64 27 10 100 16 11 10 100 16 11 10 101 66 224 27 10 100 16 24 10 100 16 24 10 101 64 32 27 10 100 16 26 10 100 16 26 10 101 65 0 27 10 100 16 37 10 100 16 37 10 101 64 0 27               Allocatable  kubectl no  o custom columns  NODE  metadata name ALLOCATABLE CPU  status allocatable cpu ALLOCATABLE MEMORY  status allocatable memory        NODE ALLOCATABLE CPU ALLOCATABLE MEMORY 10 0 0 2 3920m 7051692Ki 10 0 0 3 3920m 7051816Ki                               kubectl nodes   no headers   awk   print  1     xargs  I    sh  c  echo      kubectl describe node      grep Allocated  A 5   grep  ve Event  ve Allocated  ve percent  ve            10 0 0 2 Resource Requests Limits cpu 3040m  77   19800m  505   memory 4843402752  67   15054901888  208   10 0 0 3 Resource Requests Limits cpu 300m  7   1  25   memory 250M  3   2G  27        cpu        kubectl nodes   no headers   awk   print  1     xargs  I    sh  c  echo  n     t    kubectl describe node      grep Allocated  A 5   grep  ve Event  ve Allocated  ve percent  ve      grep cpu   awk      print  2 3              10 0 0 2 3040m 77   10 0 0 3 300m 7        memory        kubectl nodes   no headers   awk   print  1     xargs  I    sh  c  echo  n     t    kubectl describe node      grep Allocated  A 5   grep  ve Event  ve Allocated  ve percent  ve      grep memory   awk      print  2 3              10 0 0 2 4843402752 67   10 0 0 3 250M 3           printf   NUM PID t tCOMMAND n     ps  eLf   awk    1 null  3 null  4 null  5 null  6 null  7 null  8 null  9 null print     sort  uniq  c  sort  rn   head  10       NUM PID COMMAND 594 14418 java  server  Dspring profiles active production  Xms2048M  Xmx2048M  Xss256k  Dinfo app version 33  XX  UseG1GC  XX  UseStringDeduplication  XX  PrintGCDateStamps  verbosegc  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  Xloggc  home log gather server gather server gac log  Ddefault client encoding UTF 8  Dfile encoding UTF 8  Dlogging path  home log gather server  Dserver tomcat accesslog directory  home log gather server  jar  home app gather server jar   server port 8080   management port 10086 449 7088 java  server  Dspring profiles active production  Dspring cloud config token nLfe bQ0CcGnNZQ4Pt9KTizgRghZrGUVVqaDZYHU3R Y U6k7jkm8RrBn7LPJD  Xms4256M  Xmx4256M  Xss256k  XX  PrintFlagsFinal  XX  UseG1GC  XX  UseStringDeduplication  XX MaxGCPauseMillis 200  XX MetaspaceSize 128M  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  verbosegc  XX  PrintGCDateStamps  XX  UseGCLogFileRotation  XX NumberOfGCLogFiles 15  XX GCLogFileSize 50M  XX AutoBoxCacheMax 520  Xloggc  home log oauth server oauth server gac log  Dinfo app version 12  Ddefault client encoding UTF 8  Dfile encoding UTF 8  Dlogging config classpath log4j2 spring prod xml  Dlogging path  home log oauth server  Dserver tomcat accesslog directory  home log oauth server  jar  home app oauth server jar   server port 8080   management port 10086   zuul server netty threads worker 14   zuul server netty socket epoll true 394 516 java  server  Dspring profiles active production  Xms2048M  Xmx2048M  Xss1024k  Dinfo app version 43  XX  UseG1GC  XX  UseStringDeduplication  XX  PrintGCDateStamps  verbosegc  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  Xloggc  home log asset server asset server gac log  Ddefault client encoding UTF 8  Dfile encoding UTF 8  Dlogging path  home log asset server  Dserver tomcat accesslog directory  home log asset server  jar  home app asset server jar   server port 8080   management port 10086 305 14668 java  server  Dspring profiles active production  Xms1024M  Xmx1024M  Xss256k  Dinfo app version 3  XX  UseG1GC  XX  UseStringDeduplication  XX  PrintGCDateStamps  verbosegc  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  Xloggc  home log talent adapter distribute talent adapter distribute gac log  Ddefault client encoding UTF 8  Dfile encoding UTF 8  Dlogging path  home log talent adapter distribute  Dserver tomcat accesslog directory  home log talent adapter distribute  jar  home app talent adapter distribute jar   server port 8080   management port 10086 250 3979 java  server  Dspring profiles active production  Xms2048M  Xmx2048M  Xss256k  Dinfo app version 20  XX  UseG1GC  XX  UseStringDeduplication  XX  PrintGCDateStamps  verbosegc  Dcom sun management jmxremote  Dcom sun management jmxremote authenticate false  Dcom sun management jmxremote ssl false  Dcom sun management jmxremote port 10011  Xloggc  home log ",
-        "objectID": "useful/shell/node"
-    },
-    {
-        "title": "Pod 相关脚本",
-        "uri": "useful/shell/pod",
-        "content": "Evicted   pod kubectl pod  o wide   all namespaces   awk   if  4   Evicted   cmd  kubectl  n   1  delete pod   2  system cmd         Running   pod kubectl pod  o wide   all namespaces   awk   if  4   Running   cmd  kubectl  n   1  delete pod   2  system cmd          NAMESPACE  kube system  WORKLOAD_TYPE  daemonset  WORKLOAD_NAME  ip masq agent  CONTAINER_NAME  ip masq agent  IMAGE  ccr ccs tencentyun com library ip masq agent v2 5 0  kubectl  n  NAMESPACE patch  WORKLOADTYPE  WORKLOADNAME   patch    spec     template     spec     containers      name     CONTAINER_NAME   image     IMAGE",
-        "objectID": "useful/shell/pod"
-    },
-    {
-        "title": "yaml 片段",
-        "uri": "useful/yaml",
-        "content": "",
-        "objectID": "useful/yaml",
-        "chapter": true
-    },
-    {
-        "title": "Deployment",
-        "uri": "useful/yaml/deployment",
-        "content": "nginx      apiVersion  apps v1 kind  Deployment metadata  name  nginx spec  replicas  1 selector  matchLabels  app  nginx template  metadata  labels  app  nginx spec  containers  name  nginx image  nginx apiVersion  v1 kind  Service metadata  name  nginx labels  app  nginx spec  type  ClusterIP ports  port  80 protocol  TCP name  http selector  app  nginx",
-        "objectID": "useful/yaml/deployment"
     }
 ]
