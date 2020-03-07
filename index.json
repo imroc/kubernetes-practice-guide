@@ -130,7 +130,7 @@
 	"title": "排错指南",
 	"tags": [],
 	"description": "",
-	"content": "kuernetes 问题定位手册(脑图)：https://www.processon.com/view/link/5e4662ade4b0d86ec4018e50\n目录  排错技巧    arp_cache 溢出     inotify watch 耗尽     PID 耗尽     内存碎片化     磁盘爆满     高负载      处理实践    arp_cache 溢出     inotify watch 耗尽     PID 耗尽     内存碎片化     磁盘爆满     高负载      节点排错    arp_cache: neighbor table overflow! (arp缓存溢出)     Cannot allocate memory     no space left on device     Node NotReady     soft lockup (内核软死锁)      Pod 排错    Pod Terminating 慢     Pod 一直处于 ContainerCreating 或 Waiting 状态     Pod 一直处于 Error 状态     Pod 一直处于 ImageInspectError 状态     Pod 一直处于 ImagePullBackOff 状态     Pod 一直处于 Pending 状态     Pod 一直处于 Terminating 状态     Pod 一直处于 Unknown 状态     Pod 健康检查失败     Pod 处于 CrashLoopBackOff 状态     容器进程主动退出      网络排错    DNS 解析异常     LB 健康检查失败     Service 不通     Service 无法解析     网络性能差      其它排错    APIServer 响应慢     Daemonset 没有被调度     Job 无法被删除     kubectl 执行 exec 或 logs 失败     Node 全部消失      "
+	"content": "kuernetes 问题定位手册(脑图)：https://www.processon.com/view/link/5e4662ade4b0d86ec4018e50\n目录  排错技巧    使用 Systemtap 定位疑难杂症     分析 ExitCode 定位 Pod 异常退出原因     容器内抓包定位网络问题      处理实践    arp_cache 溢出     inotify watch 耗尽     PID 耗尽     内存碎片化     磁盘爆满     高负载      节点排错    arp_cache: neighbor table overflow! (arp缓存溢出)     Cannot allocate memory     no space left on device     Node NotReady     soft lockup (内核软死锁)      Pod 排错    Pod Terminating 慢     Pod 一直处于 ContainerCreating 或 Waiting 状态     Pod 一直处于 Error 状态     Pod 一直处于 ImageInspectError 状态     Pod 一直处于 ImagePullBackOff 状态     Pod 一直处于 Pending 状态     Pod 一直处于 Terminating 状态     Pod 一直处于 Unknown 状态     Pod 健康检查失败     Pod 处于 CrashLoopBackOff 状态     容器进程主动退出      网络排错    DNS 解析异常     LB 健康检查失败     Service 不通     Service 无法解析     网络性能差      其它排错    APIServer 响应慢     Daemonset 没有被调度     Job 无法被删除     kubectl 执行 exec 或 logs 失败     Node 全部消失      "
 },
 {
 	"uri": "https://k8s.imroc.io/troubleshooting/node/",
@@ -158,7 +158,7 @@
 	"title": "附加组件",
 	"tags": [],
 	"description": "",
-	"content": ""
+	"content": "目录  以 Daemonset 方式部署 kube-proxy   部署 CoreDNS   "
 },
 {
 	"uri": "https://k8s.imroc.io/optimization/",
@@ -186,14 +186,14 @@
 	"title": "监控告警",
 	"tags": [],
 	"description": "",
-	"content": " 干货还在路上\u0026hellip;\n "
+	"content": ""
 },
 {
 	"uri": "https://k8s.imroc.io/log/",
 	"title": "日志搜集",
 	"tags": [],
 	"description": "",
-	"content": " 干货还在路上\u0026hellip;\n "
+	"content": ""
 },
 {
 	"uri": "https://k8s.imroc.io/troubleshooting/network/",
