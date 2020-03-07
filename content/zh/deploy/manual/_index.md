@@ -1,7 +1,7 @@
 ---
 title: "手工部署"
-chapter: true
 weight: 20
+state: Beta
 ---
 
 ## 部署详情

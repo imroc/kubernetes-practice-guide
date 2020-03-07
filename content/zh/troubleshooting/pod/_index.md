@@ -1,6 +1,5 @@
 ---
 title: "Pod 排错"
-chapter: true
 weight: 40
 ---
 

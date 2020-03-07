@@ -1,6 +1,5 @@
 ---
 title: "集群安全"
-chapter: true
 weight: 40
 ---
 

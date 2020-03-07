@@ -1,6 +1,5 @@
 ---
 title: "集群优化"
-chapter: true
 weight: 40
 
 ---

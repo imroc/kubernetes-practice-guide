@@ -1,6 +1,5 @@
 ---
 title: "节点排错"
-chapter: true
 weight: 30
 ---
 
