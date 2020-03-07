@@ -2664,7 +2664,9 @@
 
 
 
-<div class="notices note" ><p>文档当前状态：Alpha </p></div>
+<div class="notices info">
+	<p>文档当前状态：Alpha </p>
+</div>
 
 
 <p>通常是 apiserver &ndash;&gt; kubelet:10250 之间的网络不通，10250 是 kubelet 提供接口的端口，<code>kubectl exec</code> 和 <code>kubectl logs</code> 的原理就是 apiserver 调 kubelet，kubelet 再调运行时 (比如 dockerd) 来实现的，所以要保证 kubelet 10250 端口对 apiserver 放通。检查防火墙、iptables 规则是否对 10250 端口或某些 IP 进行了拦截。</p>
