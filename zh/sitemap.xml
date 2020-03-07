@@ -113,7 +113,15 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/useful/</loc>
+    <loc>https://k8s.imroc.io/trick/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/monitoring/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/log/</loc>
   </url>
   
   <url>
@@ -121,7 +129,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/big-data/</loc>
+    <loc>https://k8s.imroc.io/ai-and-big-data/</loc>
   </url>
   
   <url>
@@ -183,7 +191,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/useful/yaml/deployment/</loc>
+    <loc>https://k8s.imroc.io/trick/yaml/deployment/</loc>
   </url>
   
   <url>
@@ -207,7 +215,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/big-data/flink-on-kubernetes/</loc>
+    <loc>https://k8s.imroc.io/ai-and-big-data/flink-on-kubernetes/</loc>
   </url>
   
   <url>
@@ -239,7 +247,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/useful/efficient-kubectl/</loc>
+    <loc>https://k8s.imroc.io/trick/efficient-kubectl/</loc>
   </url>
   
   <url>
@@ -337,7 +345,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/useful/shell/pod/</loc>
+    <loc>https://k8s.imroc.io/trick/shell/pod/</loc>
   </url>
   
   <url>
@@ -379,7 +387,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/useful/yaml/</loc>
+    <loc>https://k8s.imroc.io/trick/yaml/</loc>
   </url>
   
   <url>
@@ -451,7 +459,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/useful/shell/</loc>
+    <loc>https://k8s.imroc.io/trick/shell/</loc>
   </url>
   
   <url>
@@ -499,11 +507,11 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/useful/shell/network/</loc>
+    <loc>https://k8s.imroc.io/trick/shell/network/</loc>
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/useful/shell/node/</loc>
+    <loc>https://k8s.imroc.io/trick/shell/node/</loc>
   </url>
   
   <url>

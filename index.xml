@@ -234,10 +234,10 @@ PID 耗尽 如果登录 ssh 困难，并且登录成功后执行任意命名经�
     
     <item>
       <title>Deployment</title>
-      <link>https://k8s.imroc.io/useful/yaml/deployment/</link>
+      <link>https://k8s.imroc.io/trick/yaml/deployment/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/useful/yaml/deployment/</guid>
+      <guid>https://k8s.imroc.io/trick/yaml/deployment/</guid>
       <description>最简单的 nginx 测试服务 apiVersion: apps/v1 kind: Deployment metadata: name: nginx spec: replicas: 1 selector: matchLabels: app: nginx template: metadata: labels: app: nginx spec: containers: - name: nginx image: nginx --- apiVersion: v1 kind: Service metadata: name: nginx labels: app: nginx spec: type: ClusterIP ports: - port: 80 protocol: TCP name: http selector: app: nginx </description>
     </item>
     
@@ -294,10 +294,10 @@ sudo ionice -c2 -n0 -p $(pgrep etcd) 提高存储配额 默认 ETCD 空间配额
     
     <item>
       <title>Flink on Kubernetes</title>
-      <link>https://k8s.imroc.io/big-data/flink-on-kubernetes/</link>
+      <link>https://k8s.imroc.io/ai-and-big-data/flink-on-kubernetes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/big-data/flink-on-kubernetes/</guid>
+      <guid>https://k8s.imroc.io/ai-and-big-data/flink-on-kubernetes/</guid>
       <description>Flink 简介 Flink 是一款近年来流行的流式大数据处理框架。Storm 是流式处理框架的先锋，实时处理能做到低延迟，但很难实现高吞吐，也不能保证精确一致性(exactly-once)，即保证执行一次并且只能执行一次；后基于批处理框架 Spark 推出 Spark Streaming，将批处理数据分割的足够小，也实现了流失处理，并且可以做到高吞吐，能实现 exactly-once，但难以做到低时延，因为分割的任务之间需要有间隔时间，无法做到真实时；最后 Flink 诞生了，同时做到了低延迟、高吞吐、exactly-once，并且还支持丰富的时间类型和窗口计算。
 Flink 主要由两个部分组件构成：JobManager 和 TaskManager。如何理解这两个组件的作用？JobManager 负责资源申请和任务分发，TaskManager 负责任务的执行。跟 k8s 本身类比，JobManager 相当于 Master，TaskManager 相当于 Worker；跟 Spark 类比，JobManager 相当于 Driver，TaskManager 相当于 Executor。
 与 Kubernetes 集成 在 flink 1.10 之前，在 k8s 上运行 flink 任务都是需要事先指定 TaskManager 的个数以及CPU和内存的，存在一个问题：大多数情况下，你在任务启动前根本无法精确的预估这个任务需要多少个TaskManager，如果指定多了，会导致资源浪费，指定少了，会导致任务调度不起来。本质原因是在 Kubernetes 上运行的 Flink 任务并没有直接向 Kubernetes 集群去申请资源。
@@ -362,10 +362,10 @@ error: SchemaError(io.k8s.apimachinery.pkg.apis.meta.v1.APIGroup): invalid objec
     
     <item>
       <title>kubectl 高效技巧</title>
-      <link>https://k8s.imroc.io/useful/efficient-kubectl/</link>
+      <link>https://k8s.imroc.io/trick/efficient-kubectl/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/useful/efficient-kubectl/</guid>
+      <guid>https://k8s.imroc.io/trick/efficient-kubectl/</guid>
       <description>k 命令 是否有过因为使用 kubectl 经常需要重复输入命名空间而苦恼？是否觉得应该要有个记住命名空间的功能，自动记住上次使用的命名空间，不需要每次都输入？可惜没有这种功能，但是，本文会教你一个非常巧妙的方法完美帮你解决这个痛点。
 将如下脚本粘贴到当前shell(注册k命令到当前终端session):
 function k() { cmdline=`HISTTIMEFORMAT=&amp;#34;&amp;#34; history | awk &amp;#39;$2 == &amp;#34;kubectl&amp;#34; &amp;amp;&amp;amp; (/-n/ || /--namespace/) {for(i=2;i&amp;lt;=NF;i++)printf(&amp;#34;%s &amp;#34;,$i);print &amp;#34;&amp;#34;}&amp;#39; | tail -n 1` regs=(&amp;#39;\-n [\w\-\d]+&amp;#39; &amp;#39;\-n=[\w\-\d]+&amp;#39; &amp;#39;\-\-namespace [\w\-\d]+&amp;#39; &amp;#39;\-\-namespace=[\w\-\d]+&amp;#39;) for i in &amp;#34;${!regs[@]}&amp;#34;; do reg=${regs[i]} nsarg=`echo $cmdline | grep -o -P &amp;#34;$reg&amp;#34;` if [[ &amp;#34;$nsarg&amp;#34; == &amp;#34;&amp;#34; ]]; then continue fi cmd=&amp;#34;kubectl $nsarg$@&amp;#34; echo &amp;#34;$cmd&amp;#34; $cmd return done cmd=&amp;#34;kubectl $@&amp;#34; echo &amp;#34;$cmd&amp;#34; $cmd } mac 用户可以使用 dash 的 snippets 功能快速将上面的函数粘贴，使用 kk.</description>
@@ -590,10 +590,10 @@ TCP 连接建立会经过三次握手，server 收到 SYN 后会将连接加入 
     
     <item>
       <title>Pod 相关脚本</title>
-      <link>https://k8s.imroc.io/useful/shell/pod/</link>
+      <link>https://k8s.imroc.io/trick/shell/pod/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/useful/shell/pod/</guid>
+      <guid>https://k8s.imroc.io/trick/shell/pod/</guid>
       <description>清理 Evicted 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4==&amp;#34;Evicted&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 清理非 Running 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4!=&amp;#34;Running&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 升级镜像 NAMESPACE=&amp;#34;kube-system&amp;#34; WORKLOAD_TYPE=&amp;#34;daemonset&amp;#34; WORKLOAD_NAME=&amp;#34;ip-masq-agent&amp;#34; CONTAINER_NAME=&amp;#34;ip-masq-agent&amp;#34; IMAGE=&amp;#34;ccr.ccs.tencentyun.com/library/ip-masq-agent:v2.5.0&amp;#34; kubectl -n $NAMESPACE patch $WORKLOAD_TYPE $WORKLOAD_NAME --patch &amp;#39;{&amp;#34;spec&amp;#34;: {&amp;#34;template&amp;#34;: {&amp;#34;spec&amp;#34;: {&amp;#34;containers&amp;#34;: [{&amp;#34;name&amp;#34;: &amp;#34;$CONTAINER_NAME&amp;#34;,&amp;#34;image&amp;#34;: &amp;#34;$IMAGE&amp;#34; }]}}}}&amp;#39; </description>
     </item>
     
@@ -1005,10 +1005,10 @@ sysctl net.ipv4.vs.conn_reuse_mode=0 参考 issue: https://github.com/kubernetes
     
     <item>
       <title>网络调试相关脚本</title>
-      <link>https://k8s.imroc.io/useful/shell/network/</link>
+      <link>https://k8s.imroc.io/trick/shell/network/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/useful/shell/network/</guid>
+      <guid>https://k8s.imroc.io/trick/shell/network/</guid>
       <description>进入容器 netns 粘贴脚本到命令行:
 function e() { set -eu ns=${2-&amp;#34;default&amp;#34;} pod=`kubectl -n $ns describe pod $1 | grep -A10 &amp;#34;^Containers:&amp;#34; | grep -Eo &amp;#39;docker://.*$&amp;#39; | head -n 1 | sed &amp;#39;s/docker:\/\/\(.*\)$/\1/&amp;#39;` pid=`docker inspect -f {{.State.Pid}} $pod` echo &amp;#34;entering pod netns for $ns/$1&amp;#34; cmd=&amp;#34;nsenter -n --target $pid&amp;#34; echo $cmd $cmd } 进入在当前节点上运行的某个 pod 的 netns:
 # 进入 kube-system 命名空间下名为 metrics-server-6cf9685556-rclw5 的 pod 所在的 netns e metrics-server-6cf9685556-rclw5 kube-system 进入 pod 的 netns 后就使用节点上的工具在该 netns 中做操作，比如用 ip a 查询网卡和ip、用 ip route 查询路由、用 tcpdump 抓容器内的包等。</description>
@@ -1016,10 +1016,10 @@ function e() { set -eu ns=${2-&amp;#34;default&amp;#34;} pod=`kubectl -n $ns des
     
     <item>
       <title>节点相关脚本</title>
-      <link>https://k8s.imroc.io/useful/shell/node/</link>
+      <link>https://k8s.imroc.io/trick/shell/node/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/useful/shell/node/</guid>
+      <guid>https://k8s.imroc.io/trick/shell/node/</guid>
       <description>表格输出各节点占用的 podCIDR kubectl get no -o=custom-columns=INTERNAL-IP:.metadata.name,EXTERNAL-IP:.status.addresses[1].address,CIDR:.spec.podCIDR 示例输出:
 INTERNAL-IP EXTERNAL-IP CIDR 10.100.12.194 152.136.146.157 10.101.64.64/27 10.100.16.11 10.100.16.11 10.101.66.224/27 10.100.16.24 10.100.16.24 10.101.64.32/27 10.100.16.26 10.100.16.26 10.101.65.0/27 10.100.16.37 10.100.16.37 10.101.64.0/27 表格输出各节点总可用资源 (Allocatable) kubectl get no -o=custom-columns=&amp;#34;NODE:.metadata.name,ALLOCATABLE CPU:.status.allocatable.cpu,ALLOCATABLE MEMORY:.status.allocatable.memory&amp;#34; 示例输出：
 NODE ALLOCATABLE CPU ALLOCATABLE MEMORY 10.0.0.2 3920m 7051692Ki 10.0.0.3 3920m 7051816Ki 输出各节点已分配资源的情况 所有种类的资源已分配情况概览：
