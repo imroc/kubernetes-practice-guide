@@ -460,7 +460,7 @@ echo &amp;#34;kernel.pid_max=65535 &amp;#34; &amp;gt;&amp;gt; /etc/sysctl.conf &
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://k8s.imroc.io/troubleshooting/pod/slow-terminating/</guid>
-      <description>进程通过 bash -c 启动导致 kill 信号无法透传给业务进程 TODO: 完善</description>
+      <description>可能原因  进程通过 bash -c 启动导致 kill 信号无法透传给业务进程  </description>
     </item>
     
     <item>
