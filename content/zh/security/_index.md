@@ -1,6 +1,9 @@
 ---
-title: "集群部署"
+title: "集群安全"
 chapter: true
-weight: 10
+weight: 40
 ---
+
+## 目录
+
 {{% children depth=3 %}}

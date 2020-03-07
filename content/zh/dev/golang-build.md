@@ -1,5 +1,6 @@
 ---
 title: "Go 语言编译原理与优化"
+state: Alpha
 ---
 
 ## 编译阶段 (Compilation)

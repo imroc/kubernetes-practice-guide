@@ -1,7 +1,7 @@
 ---
-title: "排错指南"
+title: "集群优化"
 chapter: true
-weight: 20
+weight: 40
 
 ---
 

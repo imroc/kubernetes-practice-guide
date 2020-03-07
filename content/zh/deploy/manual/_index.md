@@ -1,5 +1,7 @@
 ---
 title: "手工部署"
+chapter: true
+weight: 20
 ---
 
 ## 部署详情
