@@ -1,7 +1,9 @@
 {{ partial "header.html" . }}
 
 {{ if isset .Params "state" }}
-<div class="notices note" ><p>文档当前状态：{{ .Params.state}} </p></div>
+<div class="notices info">
+	<p>文档当前状态：{{ .Params.state}} </p>
+</div>
 {{end}}
 
 {{ .Content }}
