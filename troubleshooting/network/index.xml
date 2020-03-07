@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>网络排错 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/troubleshooting/network/</link>
+    <description>Recent content in 网络排错 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/troubleshooting/network/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>DNS 解析异常</title>
+      <link>https://k8s.imroc.io/troubleshooting/network/dns/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/network/dns/</guid>
+      <description>5 秒延时 如果DNS查询经常延时5秒才返回，通常是遇到内核 conntrack 冲突导致的丢包，详见 案例分享: DNS 5秒延时
+解析超时 如果容器内报 DNS 解析超时，先检查下集群 DNS 服务 (kube-dns/coredns) 的 Pod 是否 Ready，如果不是，请参考本章其它小节定位原因。如果运行正常，再具体看下超时现象。
+解析外部域名超时 可能原因:
+ 上游 DNS 故障 上游 DNS 的 ACL 或防火墙拦截了报文  所有解析都超时 如果集群内某个 Pod 不管解析 Service 还是外部域名都失败，通常是 Pod 与集群 DNS 之间通信有问题。
+可能原因:
+ 节点防火墙没放开集群网段，导致如果 Pod 跟集群 DNS 的 Pod 不在同一个节点就无法通信，DNS 请求也就无法被收到  </description>
+    </item>
+    
+    <item>
+      <title>LB 健康检查失败</title>
+      <link>https://k8s.imroc.io/troubleshooting/network/lb-healthcheck-failed/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/network/lb-healthcheck-failed/</guid>
+      <description>可能原因:
+ 节点防火墙规则没放开 nodeport 区间端口 (默认 30000-32768) 检查iptables和云主机安全组 LB IP 绑到 kube-ipvs0 导致丢源 IP为 LB IP 的包: https://github.com/kubernetes/kubernetes/issues/79783  TODO: 完善</description>
+    </item>
+    
+    <item>
+      <title>Service 不通</title>
+      <link>https://k8s.imroc.io/troubleshooting/network/service-unrecheable/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/network/service-unrecheable/</guid>
+      <description>集群 dns 故障 TODO
+节点防火墙没放开集群容器网络 (iptables/安全组) TODO
+kube-proxy 没有工作，命中 netlink deadlock 的 bug  issue: https://github.com/kubernetes/kubernetes/issues/71071 1.14 版本已修复，修复的 PR: https://github.com/kubernetes/kubernetes/pull/72361  </description>
+    </item>
+    
+    <item>
+      <title>Service 无法解析</title>
+      <link>https://k8s.imroc.io/troubleshooting/network/service-cannot-resolve/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/network/service-cannot-resolve/</guid>
+      <description>集群 DNS 没有正常运行(kube-dns或CoreDNS) 检查集群 DNS 是否运行正常:
+ kubelet 启动参数 --cluster-dns 可以看到 dns 服务的 cluster ip:  $ ps -ef | grep kubelet ... /usr/bin/kubelet --cluster-dns=172.16.14.217 ...  找到 dns 的 service:  $ kubectl get svc -n kube-system | grep 172.16.14.217 kube-dns ClusterIP 172.16.14.217 &amp;lt;none&amp;gt; 53/TCP,53/UDP 47d  看是否存在 endpoint:  $ kubectl -n kube-system describe svc kube-dns | grep -i endpoints Endpoints: 172.16.0.156:53,172.16.0.167:53 Endpoints: 172.16.0.156:53,172.16.0.167:53  检查 endpoint 的 对应 pod 是否正常:  $ kubectl -n kube-system get pod -o wide | grep 172.</description>
+    </item>
+    
+    <item>
+      <title>网络性能差</title>
+      <link>https://k8s.imroc.io/troubleshooting/network/low-throughput/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/network/low-throughput/</guid>
+      <description>IPVS 模式吞吐性能低 内核参数关闭 conn_reuse_mode:
+sysctl net.ipv4.vs.conn_reuse_mode=0 参考 issue: https://github.com/kubernetes/kubernetes/issues/70747</description>
+    </item>
+    
+  </channel>
+</rss>

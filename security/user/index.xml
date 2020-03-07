@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>用户管理 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/security/user/</link>
+    <description>Recent content in 用户管理 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/security/user/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>利用 CSR API 创建用户</title>
+      <link>https://k8s.imroc.io/security/user/create-user-using-csr-api/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/security/user/create-user-using-csr-api/</guid>
+      <description>k8s 支持 CSR API，通过创建 CertificateSigningRequest 资源就可以发起 CSR 请求，管理员审批通过之后 kube-controller-manager 就会为我们签发证书，确保 kube-controller-manager 配了根证书密钥对:
+--cluster-signing-cert-file=/var/lib/kubernetes/ca.pem --cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem 创建步骤 我们用 cfssl 来创建 key 和 csr 文件，所以需要先安装 cfssl:
+curl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl curl -L https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -o cfssljson curl -L https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -o cfssl-certinfo chmod +x cfssl cfssljson cfssl-certinfo sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/ 指定要创建的用户名:
+USERNAME=&amp;#34;roc&amp;#34; 再创建 key 和 csr 文件:
+cat &amp;lt;&amp;lt;EOF | cfssl genkey - | cfssljson -bare ${USERNAME} { &amp;#34;CN&amp;#34;: &amp;#34;${USERNAME}&amp;#34;, &amp;#34;key&amp;#34;: { &amp;#34;algo&amp;#34;: &amp;#34;rsa&amp;#34;, &amp;#34;size&amp;#34;: 2048 } } EOF 生成以下文件:</description>
+    </item>
+    
+  </channel>
+</rss>

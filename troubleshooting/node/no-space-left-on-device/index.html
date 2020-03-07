@@ -1,0 +1,4575 @@
+<!DOCTYPE html>
+<html lang="zh" class="js csstransforms3d">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="Hugo 0.65.3" />
+    <meta name="description" content="Kubernetes 实践指南">
+<meta name="author" content="roc">
+
+    <link rel="icon" href="/images/favicon.png" type="image/png">
+
+    <title>no space left on device</title>
+
+    
+    <link rel="stylesheet"
+      href='https://res.cloudinary.com/imroc/raw/upload/v1583397431/kubernetes-practice-guide/css/bundle.min.c8a2096bb127ebeb7c0a33c436403eb0f8b2f7dbdbb4048628418642a04925f1.css'>
+    
+
+    <style>
+      :root #header + #content > #left > #rlblock_left{
+          display:none !important;
+      }
+      
+    </style>
+    
+  </head>
+  <body class="" data-url="/troubleshooting/node/no-space-left-on-device/">
+    <nav id="sidebar" class="showVisitedLinks">
+
+
+
+  <div id="header-wrapper">
+    <div id="header">
+      <a id="logo" href="https://k8s.imroc.io/" style="display:block">
+  <div style="width:100%; height:100%;" >
+    <img src="https://res.cloudinary.com/imroc/image/upload/c_scale,w_64/v1583293443/kubernetes-practice-guide/img/kubernetes.png" />
+    <div style="height:100%; margin-bottom:3px; font-weight: bold;">Kubernetes 实践指南</div>
+  </div>
+</a>
+
+    </div>
+    
+        
+<div class="aa-input-container" id="aa-input-container">
+    <input type="search" id="aa-search-input" class="aa-input-search" placeholder="搜索..."
+        name="search" autocomplete="off" />
+    <svg class="aa-input-icon" viewBox="654 -372 1664 1664">
+        <path
+            d="M1806,332c0-123.3-43.8-228.8-131.5-316.5C1586.8-72.2,1481.3-116,1358-116s-228.8,43.8-316.5,131.5  C953.8,103.2,910,208.7,910,332s43.8,228.8,131.5,316.5C1129.2,736.2,1234.7,780,1358,780s228.8-43.8,316.5-131.5  C1762.2,560.8,1806,455.3,1806,332z M2318,1164c0,34.7-12.7,64.7-38,90s-55.3,38-90,38c-36,0-66-12.7-90-38l-343-342  c-119.3,82.7-252.3,124-399,124c-95.3,0-186.5-18.5-273.5-55.5s-162-87-225-150s-113-138-150-225S654,427.3,654,332  s18.5-186.5,55.5-273.5s87-162,150-225s138-113,225-150S1262.7-372,1358-372s186.5,18.5,273.5,55.5s162,87,225,150s113,138,150,225  S2062,236.7,2062,332c0,146.7-41.3,279.7-124,399l343,343C2305.7,1098.7,2318,1128.7,2318,1164z" />
+    </svg>
+</div>
+
+<script type="text/javascript">
+    
+        var baseurl = "https:\/\/k8s.imroc.io\/";
+    
+</script>
+
+
+    
+  </div>
+
+    <div class="highlightable">
+    <ul class="topics">
+
+        
+          
+          
+
+
+ 
+  
+    
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/deploy/" title="集群部署" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/deploy/">
+          集群部署
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/selection/" title="方案选型" class="dd-item ">
+        <a href="/deploy/selection/">
+        方案选型
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/kubespray/" title="使用 kubespray 部署" class="dd-item ">
+        <a href="/deploy/kubespray/">
+        使用 kubespray 部署
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/deploy/manual/" title="手工部署" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/deploy/manual/">
+          手工部署
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/prepare/" title="部署前的准备工作" class="dd-item ">
+        <a href="/deploy/manual/prepare/">
+        部署前的准备工作
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/bootstrapping-etcd/" title="部署 ETCD" class="dd-item ">
+        <a href="/deploy/manual/bootstrapping-etcd/">
+        部署 ETCD
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/bootstrapping-master/" title="部署 Master" class="dd-item ">
+        <a href="/deploy/manual/bootstrapping-master/">
+        部署 Master
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/bootstrapping-worker-nodes/" title="部署 Worker 节点" class="dd-item ">
+        <a href="/deploy/manual/bootstrapping-worker-nodes/">
+        部署 Worker 节点
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/manual/deploy-critical-addons/" title="部署关键组件" class="dd-item ">
+        <a href="/deploy/manual/deploy-critical-addons/">
+        部署关键组件
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/deploy/addons/" title="附加组件" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/deploy/addons/">
+          附加组件
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/addons/kube-proxy/" title="以 Daemonset 方式部署 kube-proxy" class="dd-item ">
+        <a href="/deploy/addons/kube-proxy/">
+        以 Daemonset 方式部署 kube-proxy
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/addons/coredns/" title="部署 CoreDNS" class="dd-item ">
+        <a href="/deploy/addons/coredns/">
+        部署 CoreDNS
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/deploy/appendix/" title="附录" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/deploy/appendix/">
+          附录
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/deploy/appendix/install-kubectl/" title="安装 kubectl" class="dd-item ">
+        <a href="/deploy/appendix/install-kubectl/">
+        安装 kubectl
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/" title="排错指南" class="dd-item 
+        parent
+        
+        
+        ">
+      <a href="/troubleshooting/">
+          排错指南
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/trick/" title="排错技巧" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/trick/">
+          排错技巧
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/trick/use-systemtap-to-locate-problems/" title="使用 Systemtap 定位疑难杂症" class="dd-item ">
+        <a href="/troubleshooting/trick/use-systemtap-to-locate-problems/">
+        使用 Systemtap 定位疑难杂症
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/trick/analysis-exitcode/" title="分析 ExitCode 定位 Pod 异常退出原因" class="dd-item ">
+        <a href="/troubleshooting/trick/analysis-exitcode/">
+        分析 ExitCode 定位 Pod 异常退出原因
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/trick/capture-packets-in-container/" title="容器内抓包定位网络问题" class="dd-item ">
+        <a href="/troubleshooting/trick/capture-packets-in-container/">
+        容器内抓包定位网络问题
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/handle/" title="处理实践" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/handle/">
+          处理实践
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/arp_cache-overflow/" title="arp_cache 溢出" class="dd-item ">
+        <a href="/troubleshooting/handle/arp_cache-overflow/">
+        arp_cache 溢出
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/runnig-out-of-inotify-watches/" title="inotify watch 耗尽" class="dd-item ">
+        <a href="/troubleshooting/handle/runnig-out-of-inotify-watches/">
+        inotify watch 耗尽
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/pid-full/" title="PID 耗尽" class="dd-item ">
+        <a href="/troubleshooting/handle/pid-full/">
+        PID 耗尽
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/memory-fragmentation/" title="内存碎片化" class="dd-item ">
+        <a href="/troubleshooting/handle/memory-fragmentation/">
+        内存碎片化
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/disk-full/" title="磁盘爆满" class="dd-item ">
+        <a href="/troubleshooting/handle/disk-full/">
+        磁盘爆满
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/handle/high-load/" title="高负载" class="dd-item ">
+        <a href="/troubleshooting/handle/high-load/">
+        高负载
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/node/" title="节点排错" class="dd-item 
+        parent
+        
+        
+        ">
+      <a href="/troubleshooting/node/">
+          节点排错
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/node/arp_cache-neighbor-table-overflow/" title="arp_cache: neighbor table overflow! (arp缓存溢出)" class="dd-item ">
+        <a href="/troubleshooting/node/arp_cache-neighbor-table-overflow/">
+        arp_cache: neighbor table overflow! (arp缓存溢出)
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/node/cannot-allocate-memory/" title="Cannot allocate memory" class="dd-item ">
+        <a href="/troubleshooting/node/cannot-allocate-memory/">
+        Cannot allocate memory
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/node/no-space-left-on-device/" title="no space left on device" class="dd-item active">
+        <a href="/troubleshooting/node/no-space-left-on-device/">
+        no space left on device
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/node/not-ready/" title="Node NotReady" class="dd-item ">
+        <a href="/troubleshooting/node/not-ready/">
+        Node NotReady
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/node/kernel-solft-lockup/" title="soft lockup (内核软死锁)" class="dd-item ">
+        <a href="/troubleshooting/node/kernel-solft-lockup/">
+        soft lockup (内核软死锁)
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/pod/" title="Pod 排错" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/pod/">
+          Pod 排错
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/slow-terminating/" title="Pod Terminating 慢" class="dd-item ">
+        <a href="/troubleshooting/pod/slow-terminating/">
+        Pod Terminating 慢
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/keep-containercreating-or-waiting/" title="Pod 一直处于 ContainerCreating 或 Waiting 状态" class="dd-item ">
+        <a href="/troubleshooting/pod/keep-containercreating-or-waiting/">
+        Pod 一直处于 ContainerCreating 或 Waiting 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/keep-error/" title="Pod 一直处于 Error 状态" class="dd-item ">
+        <a href="/troubleshooting/pod/keep-error/">
+        Pod 一直处于 Error 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/keep-imageinspecterror/" title="Pod 一直处于 ImageInspectError 状态" class="dd-item ">
+        <a href="/troubleshooting/pod/keep-imageinspecterror/">
+        Pod 一直处于 ImageInspectError 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/keep-imagepullbackoff/" title="Pod 一直处于 ImagePullBackOff 状态" class="dd-item ">
+        <a href="/troubleshooting/pod/keep-imagepullbackoff/">
+        Pod 一直处于 ImagePullBackOff 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/keep-pending/" title="Pod 一直处于 Pending 状态" class="dd-item ">
+        <a href="/troubleshooting/pod/keep-pending/">
+        Pod 一直处于 Pending 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/keep-terminating/" title="Pod 一直处于 Terminating 状态" class="dd-item ">
+        <a href="/troubleshooting/pod/keep-terminating/">
+        Pod 一直处于 Terminating 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/keep-unkown/" title="Pod 一直处于 Unknown 状态" class="dd-item ">
+        <a href="/troubleshooting/pod/keep-unkown/">
+        Pod 一直处于 Unknown 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/healthcheck-failed/" title="Pod 健康检查失败" class="dd-item ">
+        <a href="/troubleshooting/pod/healthcheck-failed/">
+        Pod 健康检查失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/keep-crashloopbackoff/" title="Pod 处于 CrashLoopBackOff 状态" class="dd-item ">
+        <a href="/troubleshooting/pod/keep-crashloopbackoff/">
+        Pod 处于 CrashLoopBackOff 状态
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/pod/container-proccess-exit-by-itself/" title="容器进程主动退出" class="dd-item ">
+        <a href="/troubleshooting/pod/container-proccess-exit-by-itself/">
+        容器进程主动退出
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/network/" title="网络排错" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/network/">
+          网络排错
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/network/dns/" title="DNS 解析异常" class="dd-item ">
+        <a href="/troubleshooting/network/dns/">
+        DNS 解析异常
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/network/lb-healthcheck-failed/" title="LB 健康检查失败" class="dd-item ">
+        <a href="/troubleshooting/network/lb-healthcheck-failed/">
+        LB 健康检查失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/network/service-unrecheable/" title="Service 不通" class="dd-item ">
+        <a href="/troubleshooting/network/service-unrecheable/">
+        Service 不通
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/network/service-cannot-resolve/" title="Service 无法解析" class="dd-item ">
+        <a href="/troubleshooting/network/service-cannot-resolve/">
+        Service 无法解析
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/network/low-throughput/" title="网络性能差" class="dd-item ">
+        <a href="/troubleshooting/network/low-throughput/">
+        网络性能差
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/troubleshooting/others/" title="其它排错" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/troubleshooting/others/">
+          其它排错
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/others/slow-apiserver/" title="APIServer 响应慢" class="dd-item ">
+        <a href="/troubleshooting/others/slow-apiserver/">
+        APIServer 响应慢
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/others/daemonset-not-scheduled/" title="Daemonset 没有被调度" class="dd-item ">
+        <a href="/troubleshooting/others/daemonset-not-scheduled/">
+        Daemonset 没有被调度
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/others/job-cannot-delete/" title="Job 无法被删除" class="dd-item ">
+        <a href="/troubleshooting/others/job-cannot-delete/">
+        Job 无法被删除
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/others/kubectl-exec-or-logs-failed/" title="kubectl 执行 exec 或 logs 失败" class="dd-item ">
+        <a href="/troubleshooting/others/kubectl-exec-or-logs-failed/">
+        kubectl 执行 exec 或 logs 失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/others/node-all-gone/" title="Node 全部消失" class="dd-item ">
+        <a href="/troubleshooting/others/node-all-gone/">
+        Node 全部消失
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/avoid/" title="避坑指南" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/avoid/">
+          避坑指南
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cgroup-leaking/" title="cgroup 泄露" class="dd-item ">
+        <a href="/avoid/cgroup-leaking/">
+        cgroup 泄露
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/conntrack-conflict/" title="conntrack 冲突导致丢包" class="dd-item ">
+        <a href="/avoid/conntrack-conflict/">
+        conntrack 冲突导致丢包
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/tcp_tw_recycle-causes-packet-loss/" title="tcp tw recycle 引发丢包" class="dd-item ">
+        <a href="/avoid/tcp_tw_recycle-causes-packet-loss/">
+        tcp tw recycle 引发丢包
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/nodelocal-dns/" title="使用 NodeLocal DNS (缓存)" class="dd-item ">
+        <a href="/avoid/nodelocal-dns/">
+        使用 NodeLocal DNS (缓存)
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/handle-cgroup-oom-in-userspace-with-oom-guard/" title="使用 oom-guard 在用户态处理 cgroup OOM" class="dd-item ">
+        <a href="/avoid/handle-cgroup-oom-in-userspace-with-oom-guard/">
+        使用 oom-guard 在用户态处理 cgroup OOM
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/scale-keepalive-service/" title="解决长连接服务扩容失效" class="dd-item ">
+        <a href="/avoid/scale-keepalive-service/">
+        解决长连接服务扩容失效
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/avoid/cases/" title="踩坑分享" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/avoid/cases/">
+          踩坑分享
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/arp-cache-overflow-causes-healthcheck-failed/" title="ARP 缓存爆满导致健康检查失败" class="dd-item ">
+        <a href="/avoid/cases/arp-cache-overflow-causes-healthcheck-failed/">
+        ARP 缓存爆满导致健康检查失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/dns-lookup-5s-delay/" title="DNS 5 秒延时" class="dd-item ">
+        <a href="/avoid/cases/dns-lookup-5s-delay/">
+        DNS 5 秒延时
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/dns-resolution-abnormal/" title="DNS 解析异常" class="dd-item ">
+        <a href="/avoid/cases/dns-resolution-abnormal/">
+        DNS 解析异常
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/schemaerror-when-using-kubectl-apply-or-edit/" title="kubectl edit 或者 apply 报 SchemaError" class="dd-item ">
+        <a href="/avoid/cases/schemaerror-when-using-kubectl-apply-or-edit/">
+        kubectl edit 或者 apply 报 SchemaError
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/low-cps-from-lb-to-nodeport/" title="LB 压测 NodePort CPS 低" class="dd-item ">
+        <a href="/avoid/cases/low-cps-from-lb-to-nodeport/">
+        LB 压测 NodePort CPS 低
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/livenesprobe-failed-occasionally/" title="Pod 偶尔存活检查失败" class="dd-item ">
+        <a href="/avoid/cases/livenesprobe-failed-occasionally/">
+        Pod 偶尔存活检查失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/high-legacy-from-pod-to-another-apiserver/" title="Pod 访问另一个集群的 apiserver 有延时" class="dd-item ">
+        <a href="/avoid/cases/high-legacy-from-pod-to-another-apiserver/">
+        Pod 访问另一个集群的 apiserver 有延时
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/kubernetes-overflow-and-drop/" title="神秘的溢出与丢包" class="dd-item ">
+        <a href="/avoid/cases/kubernetes-overflow-and-drop/">
+        神秘的溢出与丢包
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/" title="访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时" class="dd-item ">
+        <a href="/avoid/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/">
+        访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/no-route-to-host/" title="诡异的 No route to host" class="dd-item ">
+        <a href="/avoid/cases/no-route-to-host/">
+        诡异的 No route to host
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/cross-vpc-connect-nodeport-timeout/" title="跨 VPC 访问 NodePort 经常超时" class="dd-item ">
+        <a href="/avoid/cases/cross-vpc-connect-nodeport-timeout/">
+        跨 VPC 访问 NodePort 经常超时
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/avoid/cases/eviction-leads-to-service-disruption/" title="驱逐导致服务中断" class="dd-item ">
+        <a href="/avoid/cases/eviction-leads-to-service-disruption/">
+        驱逐导致服务中断
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/optimization/" title="集群优化" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/optimization/">
+          集群优化
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/optimization/deploy/" title="应用部署优化" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/optimization/deploy/">
+          应用部署优化
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/optimization/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/" title="使用 PodDisruptionBudget 避免驱逐导致服务不可用" class="dd-item ">
+        <a href="/optimization/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/">
+        使用 PodDisruptionBudget 避免驱逐导致服务不可用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/optimization/deploy/smooth-update-using-prestophook-and-readinessprobe/" title="使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断" class="dd-item ">
+        <a href="/optimization/deploy/smooth-update-using-prestophook-and-readinessprobe/">
+        使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/optimization/deploy/use-antiaffinity-to-avoid-single-points-of-failure/" title="使用反亲和性避免单点故障" class="dd-item ">
+        <a href="/optimization/deploy/use-antiaffinity-to-avoid-single-points-of-failure/">
+        使用反亲和性避免单点故障
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/optimization/etcd/" title="ETCD 优化" class="dd-item ">
+        <a href="/optimization/etcd/">
+        ETCD 优化
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/optimization/master/" title="Master 优化" class="dd-item ">
+        <a href="/optimization/master/">
+        Master 优化
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/optimization/kernel/" title="内核参数优化" class="dd-item ">
+        <a href="/optimization/kernel/">
+        内核参数优化
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/security/" title="集群安全" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/security/">
+          集群安全
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/security/user/" title="用户管理" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/security/user/">
+          用户管理
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/security/user/create-user-using-csr-api/" title="利用 CSR API 创建用户" class="dd-item ">
+        <a href="/security/user/create-user-using-csr-api/">
+        利用 CSR API 创建用户
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/security/permission/" title="集群权限控制" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/security/permission/">
+          集群权限控制
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/security/permission/app/" title="控制应用权限" class="dd-item ">
+        <a href="/security/permission/app/">
+        控制应用权限
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/security/permission/user/" title="控制用户权限" class="dd-item ">
+        <a href="/security/permission/user/">
+        控制用户权限
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/security/cert/" title="集群证书管理" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/security/cert/">
+          集群证书管理
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/security/cert/install-cert-manger/" title="安装 cert-manager" class="dd-item ">
+        <a href="/security/cert/install-cert-manger/">
+        安装 cert-manager
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/security/cert/autogenerate-certificate-with-cert-manager/" title="使用 cert-manager 自动生成证书" class="dd-item ">
+        <a href="/security/cert/autogenerate-certificate-with-cert-manager/">
+        使用 cert-manager 自动生成证书
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/useful/" title="实用技巧" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/useful/">
+          实用技巧
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+            
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/useful/efficient-kubectl/" title="kubectl 高效技巧" class="dd-item ">
+        <a href="/useful/efficient-kubectl/">
+        kubectl 高效技巧
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/useful/yaml/" title="yaml 片段" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/useful/yaml/">
+          yaml 片段
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/useful/yaml/deployment/" title="Deployment" class="dd-item ">
+        <a href="/useful/yaml/deployment/">
+        Deployment
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+    <li data-nav-id="/useful/shell/" title="实用命令与脚本" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/useful/shell/">
+          实用命令与脚本
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/useful/shell/pod/" title="Pod 相关脚本" class="dd-item ">
+        <a href="/useful/shell/pod/">
+        Pod 相关脚本
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/useful/shell/network/" title="网络调试相关脚本" class="dd-item ">
+        <a href="/useful/shell/network/">
+        网络调试相关脚本
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/useful/shell/node/" title="节点相关脚本" class="dd-item ">
+        <a href="/useful/shell/node/">
+        节点相关脚本
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/big-data/" title="大数据" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/big-data/">
+          大数据
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/big-data/flink-on-kubernetes/" title="Flink on Kubernetes" class="dd-item ">
+        <a href="/big-data/flink-on-kubernetes/">
+        Flink on Kubernetes
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+ 
+  
+    
+    <li data-nav-id="/dev/" title="开发指南" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/dev/">
+          开发指南
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/dev/golang-build/" title="Go 语言编译原理与优化" class="dd-item ">
+        <a href="/dev/golang-build/">
+        Go 语言编译原理与优化
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+ 
+  
+    
+      <li data-nav-id="/dev/client-go/" title="使用 client-go 开发 k8s 应用" class="dd-item ">
+        <a href="/dev/client-go/">
+        使用 client-go 开发 k8s 应用
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
+         
+    </ul>
+
+    
+    
+
+    
+    <section id="prefooter">
+      <hr/>
+      <ul>
+      
+        <li>
+          <a class="padding">
+            <i class="fas fa-language fa-fw"></i>
+          <div class="select-style">
+            <select id="select-language" onchange="location = this.value;">
+          
+          
+          
+              
+              
+                  
+                    
+                    
+                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/node/no-space-left-on-device/" selected>简体中文</option>
+                    
+                  
+              
+                  
+              
+          
+        </select>
+        <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+          width="255px" height="255px" viewBox="0 0 255 255" style="enable-background:new 0 0 255 255;" xml:space="preserve">
+          <g>
+            <g id="arrow-drop-down">
+              <polygon points="0,63.75 127.5,191.25 255,63.75 		" />
+            </g>
+          </g>
+        </svg>
+        </div>
+        </a>
+        </li>
+      
+      
+      
+        <li><a class="padding" href="#" data-clear-history-toggle=""><i class="fas fa-history fa-fw"></i> 清理历史记录</a></li>
+      
+      </ul>
+    </section>
+    
+    <section id="footer">
+      <center>
+
+    
+    <a class="github-button" href="https://github.com/imroc/kubernetes-practice-guide" data-icon="octicon-star"
+        data-show-count="true" aria-label="Star imroc/kubernetes-practice-guide on GitHub">Star</a>
+
+    
+    <a class="github-button" href="https://github.com/imroc/kubernetes-practice-guide/fork"
+        data-icon="octicon-repo-forked" data-show-count="true"
+        aria-label="Fork imroc/kubernetes-practice-guide on GitHub">Fork</a>
+
+</center>
+
+<script async defer src="https://buttons.github.io/buttons.js"></script>
+
+    </section>
+  </div>
+</nav>
+
+
+
+
+
+        <section id="body">
+        <div id="overlay"></div>
+        <div class="padding highlightable">
+              
+              <div>
+                <div id="top-bar">
+                
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/node/no-space-left-on-device.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">编辑当前页</span>
+                    </a>
+                  </div>
+                  
+                
+                
+                <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <span id="sidebar-toggle-span">
+                        <a href="#" id="sidebar-toggle" data-sidebar-toggle="">
+                          <i class="fas fa-bars"></i>
+                        </a>
+                    </span>
+                  
+                  <span id="toc-menu"><i class="fas fa-list-alt"></i></span>
+                  
+                  <span class="links">
+                 
+                 
+                    
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            
+            
+          
+          
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/node/'>节点排错</a> > no space left on device
+          
+         
+          
+         
+          
+         
+          
+        
+                 
+                  </span>
+                </div>
+                
+                    <div class="progress">
+    <div class="wrapper">
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#inotify-watch-耗尽">inotify watch 耗尽</a></li>
+    <li><a href="#cgroup-泄露">cgroup 泄露</a></li>
+    <li><a href="#磁盘被写满todo">磁盘被写满(TODO)</a></li>
+  </ul>
+</nav>
+    </div>
+</div>
+
+                
+              </div>
+            </div>
+            
+        <div id="head-tags">
+        
+        </div>
+        
+        <div id="body-inner">
+          
+            <h1>
+              
+              no space left on device
+            </h1>
+          
+
+        
+
+
+
+
+
+<ul>
+<li>有时候节点 NotReady， kubelet 日志报 <code>no space left on device</code></li>
+<li>有时候创建 Pod 失败，<code>describe pod</code> 看 event 报 <code>no space left on device</code></li>
+</ul>
+<p>出现这种错误有很多中可能原因，下面我们来根据现象找对应原因。</p>
+<h2 id="inotify-watch-耗尽">inotify watch 耗尽</h2>
+<p>节点 NotReady，kubelet 启动失败，看 kubelet 日志:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Jul <span style="color:#ae81ff">18</span> 15:20:58 VM_16_16_centos kubelet<span style="color:#f92672">[</span>11519<span style="color:#f92672">]</span>: E0718 15:20:58.280275   <span style="color:#ae81ff">11519</span> raw.go:140<span style="color:#f92672">]</span> Failed to watch directory <span style="color:#e6db74">&#34;/sys/fs/cgroup/memory/kubepods&#34;</span>: inotify_add_watch /sys/fs/cgroup/memory/kubepods/burstable/pod926b7ff4-7bff-11e8-945b-52540048533c/6e85761a30707b43ed874e0140f58839618285fc90717153b3cbe7f91629ef5a: no space left on device
+</code></pre></div><p>系统调用 <code>inotify_add_watch</code> 失败，提示 <code>no space left on device</code>， 这是因为系统上进程 watch 文件目录的总数超出了最大限制，可以修改内核参数调高限制，详细请参考本书 <a href="../../../handle/runnig-out-of-inotify-watches/">处理实践: inotify watch 耗尽</a></p>
+<h2 id="cgroup-泄露">cgroup 泄露</h2>
+<p>查看当前 cgroup 数量:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cat /proc/cgroups | column -t
+<span style="color:#75715e">#subsys_name  hierarchy  num_cgroups  enabled</span>
+cpuset        <span style="color:#ae81ff">5</span>          <span style="color:#ae81ff">29</span>           <span style="color:#ae81ff">1</span>
+cpu           <span style="color:#ae81ff">7</span>          <span style="color:#ae81ff">126</span>          <span style="color:#ae81ff">1</span>
+cpuacct       <span style="color:#ae81ff">7</span>          <span style="color:#ae81ff">126</span>          <span style="color:#ae81ff">1</span>
+memory        <span style="color:#ae81ff">9</span>          <span style="color:#ae81ff">127</span>          <span style="color:#ae81ff">1</span>
+devices       <span style="color:#ae81ff">4</span>          <span style="color:#ae81ff">126</span>          <span style="color:#ae81ff">1</span>
+freezer       <span style="color:#ae81ff">2</span>          <span style="color:#ae81ff">29</span>           <span style="color:#ae81ff">1</span>
+net_cls       <span style="color:#ae81ff">6</span>          <span style="color:#ae81ff">29</span>           <span style="color:#ae81ff">1</span>
+blkio         <span style="color:#ae81ff">10</span>         <span style="color:#ae81ff">126</span>          <span style="color:#ae81ff">1</span>
+perf_event    <span style="color:#ae81ff">3</span>          <span style="color:#ae81ff">29</span>           <span style="color:#ae81ff">1</span>
+hugetlb       <span style="color:#ae81ff">11</span>         <span style="color:#ae81ff">29</span>           <span style="color:#ae81ff">1</span>
+pids          <span style="color:#ae81ff">8</span>          <span style="color:#ae81ff">126</span>          <span style="color:#ae81ff">1</span>
+net_prio      <span style="color:#ae81ff">6</span>          <span style="color:#ae81ff">29</span>           <span style="color:#ae81ff">1</span>
+</code></pre></div><p>cgroup 子系统目录下面所有每个目录及其子目录都认为是一个独立的 cgroup，所以也可以在文件系统中统计目录数来获取实际 cgroup 数量，通常跟 <code>/proc/cgroups</code> 里面看到的应该一致:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ find -L /sys/fs/cgroup/memory -type d | wc -l
+<span style="color:#ae81ff">127</span>
+</code></pre></div><p>当 cgroup 泄露发生时，这里的数量就不是真实的了，低版本内核限制最大 65535 个 cgroup，并且开启 kmem 删除 cgroup 时会泄露，大量创建删除容器后泄露了许多 cgroup，最终总数达到 65535，新建容器创建 cgroup 将会失败，报 <code>no space left on device</code></p>
+<p>详细请参考本书 <a href="../../../summary/cgroup-leaking/">案例分享: cgroup 泄露</a></p>
+<h2 id="磁盘被写满todo">磁盘被写满(TODO)</h2>
+<p>Pod 启动失败，状态 <code>CreateContainerError</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">csi-cephfsplugin-27znb                        0/2     CreateContainerError   <span style="color:#ae81ff">167</span>        17h
+</code></pre></div><p>Pod 事件报错:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">  Warning  Failed   5m1s <span style="color:#f92672">(</span>x3397 over 17h<span style="color:#f92672">)</span>  kubelet, ip-10-0-151-35.us-west-2.compute.internal  <span style="color:#f92672">(</span>combined from similar events<span style="color:#f92672">)</span>: Error: container create failed: container_linux.go:336: starting container process caused <span style="color:#e6db74">&#34;process_linux.go:399: container init caused \&#34;rootfs_linux.go:58: mounting \\\&#34;/sys\\\&#34; to rootfs \\\&#34;/var/lib/containers/storage/overlay/051e985771cc69f3f699895a1dada9ef6483e912b46a99e004af7bb4852183eb/merged\\\&#34; at \\\&#34;/var/lib/containers/storage/overlay/051e985771cc69f3f699895a1dada9ef6483e912b46a99e004af7bb4852183eb/merged/sys\\\&#34; caused \\\&#34;no space left on device\\\&#34;\&#34;&#34;</span>
+</code></pre></div>
+
+<footer class="footline">
+	
+</footer>
+
+        
+        </div> 
+       
+         <div class="entry-shang text-center">
+    <p>「真诚赞赏，手留余香」</p>
+    <button class="zs show-zs btn btn-bred">赞赏</button>
+</div>
+<div class="zs-modal-bg"></div>
+<div class="zs-modal-box">
+    <div class="zs-modal-head">
+        <button type="button" class="close">×</button>
+        <span class="author"><img
+                src="https://res.cloudinary.com/imroc/image/upload/c_scale,w_128/v1583303821/img/favicon.jpg" />roc</span>
+        <p class="tip"><i></i><span>请我喝杯咖啡？</span></p>
+    </div>
+    <div class="zs-modal-body">
+        <div class="zs-modal-btns">
+            <button class="btn btn-blink" data-num="2">2元</button>
+            <button class="btn btn-blink" data-num="5">5元</button>
+            <button class="btn btn-blink" data-num="10">10元</button>
+            <button class="btn btn-blink" data-num="50">50元</button>
+            <button class="btn btn-blink" data-num="100">100元</button>
+            <button class="btn btn-blink" data-num="1">任意金额</button>
+        </div>
+        <div class="zs-modal-pay">
+            <button class="btn btn-bred" id="pay-text">2元</button>
+            <p>使用<span id="pay-type">微信</span>扫描二维码完成支付</p>
+            <img src="/img/wechat-2.png" id="pay-image"/>
+        </div>
+    </div>
+    <div class="zs-modal-footer">
+        <label>
+            <input type="radio" name="zs-type" value="wechat" class="zs-type" checked="checked">
+            <span class="zs-wechat"><img src="/img/wechat-btn.png" /></span>
+        </label>
+        <label>
+            <input type="radio" name="zs-type" value="alipay" class="zs-type">
+            <span class="zs-alipay"><img src="/img/alipay-btn.png" /></span>
+        </label>
+    </div>
+</div>
+       
+        
+          
+<div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script>
+  
+  
+  console.log("id:no-space-left-on-device-zh")
+  var gitalk = new Gitalk({
+      clientID: '6e0166abfd4b13fb3f6e',
+      clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
+      repo: 'kubernetes-practice-guide',
+      owner: 'imroc',
+      admin: 'imroc',
+      labels: ['Gitalk'],
+      title: 'no space left on device',
+      createIssueManually: false,
+      id: 'no-space-left-on-device-zh',
+      distractionFreeMode: true
+  });
+  gitalk.render('gitalk-container');
+</script>
+
+        
+      </div>
+
+    <div id="navigation">
+        
+        
+        
+        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+        
+                    
+                        
+            
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                        
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+            
+        
+        
+        
+
+
+	 
+	 
+		
+			<a class="nav nav-prev" href="/troubleshooting/node/cannot-allocate-memory/" title="Cannot allocate memory"> <i class="fa fa-chevron-left"></i></a>
+		
+		
+			<a class="nav nav-next" href="/troubleshooting/node/not-ready/" title="Node NotReady" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+	
+    </div>
+
+    </section>
+    
+    <div style="left: -1000px; overflow: scroll; position: absolute; top: -1000px; border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;">
+      <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
+    </div>
+
+    <script>
+      window.algoliaAppID='B6Q6PSGUV5';
+      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
+      window.algoliaIndex='kubernetes-practice-guide-zh';
+    </script>
+
+    
+    <script
+        src='https://res.cloudinary.com/imroc/raw/upload/v1583305908/kubernetes-practice-guide/js/bundle.min.d2d3888b947d0dd3dbc4cf91680c3654991c1a1ca525f0696b0061acfc692f7e.js'>
+    </script>
+    
+    
+
+  </body>
+</html>
+

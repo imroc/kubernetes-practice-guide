@@ -101,11 +101,66 @@ sudo sed -i &amp;#34;s/SELINUX=enforcing/SELINUX=disabled/g&amp;#34; /etc/selinu
     </item>
     
     <item>
-      <title>ARP 缓存爆满导致健康检查失败</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed/</link>
+      <title>安装 cert-manager</title>
+      <link>https://k8s.imroc.io/security/cert/install-cert-manger/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/arp-cache-overflow-causes-healthcheck-failed/</guid>
+      <guid>https://k8s.imroc.io/security/cert/install-cert-manger/</guid>
+      <description>参考官方文档: https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html
+介绍几种安装方式，不管是用哪种我们都先规划一下使用哪个命名空间，推荐使用 cert-manger 命名空间，如果使用其它的命名空间需要做些更改，会稍微有点麻烦，先创建好命名空间:
+kubectl create namespace cert-manager cert-manager 部署时会生成 ValidatingWebhookConfiguration 来注册 [ValidatingAdmissionWebhook])(ValidatingAdmissionWebhook) 来实现 CRD 校验，而ValidatingWebhookConfiguration 里需要写入 cert-manager 自身校验服务端的证书信息，就需要在自己命名空间创建 ClusterIssuer 和 Certificate 来自动创建证书，创建这些 CRD 资源又会被校验服务端校验，但校验服务端证书还没有创建所以校验请求无法发送到校验服务端，这就是一个鸡生蛋还是蛋生鸡的问题了，所以我们需要关闭 cert-manager 所在命名空间的 CRD 校验，通过打 label 来实现:
+kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true 使用原生 yaml 资源安装 直接执行 kubectl apply 来安装:
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml  使用 kubectl v1.15 及其以下的版本需要加上 --validate=false，否则会报错。
+ 使用 Helm 安装 安装 CRD:
+kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml 添加 repo:
+helm repo add jetstack https://charts.</description>
+    </item>
+    
+    <item>
+      <title>方案选型</title>
+      <link>https://k8s.imroc.io/deploy/selection/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/deploy/selection/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>使用 cert-manager 自动生成证书</title>
+      <link>https://k8s.imroc.io/security/cert/autogenerate-certificate-with-cert-manager/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/security/cert/autogenerate-certificate-with-cert-manager/</guid>
+      <description>确保 cert-manager 已安装，参考 安装 cert-manager
+利用 Let’s Encrypt 生成免费证书 免费证书颁发原理 Let’s Encrypt 利用 ACME 协议来校验域名是否真的属于你，校验成功后就可以自动颁发免费证书，证书有效期只有 90 天，在到期前需要再校验一次来实现续期，幸运的是 cert-manager 可以自动续期，这样就可以使用永久免费的证书了。如何校验你对这个域名属于你呢？主流的两种校验方式是 HTTP-01 和 DNS-01，下面简单介绍下校验原理:
+HTTP-01 校验原理 HTTP-01 的校验原理是给你域名指向的 HTTP 服务增加一个临时 location ，Let’s Encrypt 会发送 http 请求到 http://&amp;lt;YOUR_DOMAIN&amp;gt;/.well-known/acme-challenge/&amp;lt;TOKEN&amp;gt;，YOUR_DOMAIN 就是被校验的域名，TOKEN 是 ACME 协议的客户端负责放置的文件，在这里 ACME 客户端就是 cert-manager，它通过修改 Ingress 规则来增加这个临时校验路径并指向提供 TOKEN 的服务。Let’s Encrypt 会对比 TOKEN 是否符合预期，校验成功后就会颁发证书。此方法仅适用于给使用 Ingress 暴露流量的服务颁发证书，并且不支持泛域名证书。
+DNS-01 校验原理 DNS-01 的校验原理是利用 DNS 提供商的 API Key 拿到你的 DNS 控制权限， 在 Let’s Encrypt 为 ACME 客户端提供令牌后，ACME 客户端 (cert-manager) 将创建从该令牌和您的帐户密钥派生的 TXT 记录，并将该记录放在 _acme-challenge.</description>
+    </item>
+    
+    <item>
+      <title>使用 kubespray 部署</title>
+      <link>https://k8s.imroc.io/deploy/kubespray/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/deploy/kubespray/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>APIServer 响应慢</title>
+      <link>https://k8s.imroc.io/troubleshooting/others/slow-apiserver/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/others/slow-apiserver/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>ARP 缓存爆满导致健康检查失败</title>
+      <link>https://k8s.imroc.io/avoid/cases/arp-cache-overflow-causes-healthcheck-failed/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/avoid/cases/arp-cache-overflow-causes-healthcheck-failed/</guid>
       <description>案例 TKE 一用户某集群节点数 1200+，用户监控方案是 daemonset 部署 node-exporter 暴露节点监控指标，使用 hostNework 方式，statefulset 部署 promethues 且仅有一个实例，落在了一个节点上，promethues 请求所有节点 node-exporter 获取节点监控指标，也就是或扫描所有节点，导致 arp cache 需要存所有 node 的记录，而节点数 1200+，大于了 net.ipv4.neigh.default.gc_thresh3 的默认值 1024，这个值是个硬限制，arp cache记录数大于这个就会强制触发 gc，所以会造成频繁gc，当有数据包发送会查本地 arp，如果本地没找到 arp 记录就会判断当前 arp cache 记录数+1是否大于 gc_thresh3，如果没有就会广播 arp 查询 mac 地址，如果大于了就直接报 arp_cache: neighbor table overflow!，并且放弃 arp 请求，无法获取 mac 地址也就无法知道探测报文该往哪儿发(即便就在本机某个 veth pair)，kubelet 对本机 pod 做存活检查发 arp 查 mac 地址，在 arp cahce 找不到，由于这时 arp cache已经满了，刚要 gc 但还没做所以就只有报错丢包，导致存活检查失败重启 pod
 解决方案 调整部分节点内核参数，将 arp cache 的 gc 阀值调高 (/etc/sysctl.</description>
     </item>
@@ -123,11 +178,11 @@ $ sysctl -a | grep gc_thresh net.ipv4.neigh.default.gc_thresh1 = 128 net.ipv4.ne
     </item>
     
     <item>
-      <title>arp_cache: neighbor table overflow!</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/errors/arp_cache-neighbor-table-overflow/</link>
+      <title>arp_cache: neighbor table overflow! (arp缓存溢出)</title>
+      <link>https://k8s.imroc.io/troubleshooting/node/arp_cache-neighbor-table-overflow/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/errors/arp_cache-neighbor-table-overflow/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/node/arp_cache-neighbor-table-overflow/</guid>
       <description>节点内核报这个错说明当前节点 arp 缓存满了。
 查看当前 arp 记录数:
 $ arp -an | wc -l 1335 查看 gc 阀值:
@@ -138,10 +193,10 @@ $ sysctl -a | grep net.ipv4.neigh.default.gc_thresh net.ipv4.neigh.default.gc_th
     
     <item>
       <title>Cannot allocate memory</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/errors/cannot-allocate-memory/</link>
+      <link>https://k8s.imroc.io/troubleshooting/node/cannot-allocate-memory/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/errors/cannot-allocate-memory/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/node/cannot-allocate-memory/</guid>
       <description>容器启动失败，报错 Cannot allocate memory。
 PID 耗尽 如果登录 ssh 困难，并且登录成功后执行任意命名经常报 Cannot allocate memory，多半是 PID 耗尽了。
 处理方法参考本书 处理实践: PID 耗尽</description>
@@ -149,10 +204,10 @@ PID 耗尽 如果登录 ssh 困难，并且登录成功后执行任意命名经�
     
     <item>
       <title>cgroup 泄露</title>
-      <link>https://k8s.imroc.io/troubleshooting/summary/cgroup-leaking/</link>
+      <link>https://k8s.imroc.io/avoid/cgroup-leaking/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/summary/cgroup-leaking/</guid>
+      <guid>https://k8s.imroc.io/avoid/cgroup-leaking/</guid>
       <description>内核 Bug memcg 是 Linux 内核中用于管理 cgroup 内存的模块，整个生命周期应该是跟随 cgroup 的，但是在低版本内核中(已知3.10)，一旦给某个 memory cgroup 开启 kmem accounting 中的 memory.kmem.limit_in_bytes 就可能会导致不能彻底删除 memcg 和对应的 cssid，也就是说应用即使已经删除了 cgroup (/sys/fs/cgroup/memory 下对应的 cgroup 目录已经删除), 但在内核中没有释放 cssid，导致内核认为的 cgroup 的数量实际数量不一致，我们也无法得知内核认为的 cgroup 数量是多少。
 关于 cgroup kernel memory，在 kernel.org 中有如下描述：
 2.7 Kernel Memory Extension (CONFIG_MEMCG_KMEM) ----------------------------------------------- With the Kernel memory extension, the Memory Controller is able to limit the amount of kernel memory used by the system. Kernel memory is fundamentally different than user memory, since it can&#39;t be swapped out, which makes it possible to DoS the system by consuming too much of this precious resource.</description>
@@ -160,29 +215,38 @@ PID 耗尽 如果登录 ssh 困难，并且登录成功后执行任意命名经�
     
     <item>
       <title>conntrack 冲突导致丢包</title>
-      <link>https://k8s.imroc.io/troubleshooting/summary/conntrack-conflict/</link>
+      <link>https://k8s.imroc.io/avoid/conntrack-conflict/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/summary/conntrack-conflict/</guid>
+      <guid>https://k8s.imroc.io/avoid/conntrack-conflict/</guid>
       <description>TODO</description>
     </item>
     
     <item>
       <title>Daemonset 没有被调度</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/cluster/daemonset-not-scheduled/</link>
+      <link>https://k8s.imroc.io/troubleshooting/others/daemonset-not-scheduled/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/cluster/daemonset-not-scheduled/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/others/daemonset-not-scheduled/</guid>
       <description>Daemonset 的期望实例为 0，可能原因:
  controller-manager 的 bug，重启 controller-manager 可以恢复 controller-manager 挂了  </description>
     </item>
     
     <item>
-      <title>DNS 5 秒延时</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/dns-lookup-5s-delay/</link>
+      <title>Deployment</title>
+      <link>https://k8s.imroc.io/useful/yaml/deployment/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/dns-lookup-5s-delay/</guid>
+      <guid>https://k8s.imroc.io/useful/yaml/deployment/</guid>
+      <description>最简单的 nginx 测试服务 apiVersion: apps/v1 kind: Deployment metadata: name: nginx spec: replicas: 1 selector: matchLabels: app: nginx template: metadata: labels: app: nginx spec: containers: - name: nginx image: nginx --- apiVersion: v1 kind: Service metadata: name: nginx labels: app: nginx spec: type: ClusterIP ports: - port: 80 protocol: TCP name: http selector: app: nginx </description>
+    </item>
+    
+    <item>
+      <title>DNS 5 秒延时</title>
+      <link>https://k8s.imroc.io/avoid/cases/dns-lookup-5s-delay/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/avoid/cases/dns-lookup-5s-delay/</guid>
       <description>延时现象 客户反馈从 pod 中访问服务时，总是有些请求的响应时延会达到5秒。正常的响应只需要毫秒级别的时延。
 抓包  通过 nsenter 进入 pod netns，使用节点上的 tcpdump 抓 pod 中的包 (抓包方法参考这里)，发现是有的 DNS 请求没有收到响应，超时 5 秒后，再次发送 DNS 请求才成功收到响应。 在 kube-dns pod 抓包，发现是有 DNS 请求没有到达 kube-dns pod，在中途被丢弃了。  为什么是 5 秒？ man resolv.conf 可以看到 glibc 的 resolver 的缺省超时时间是 5s:
 timeout:n Sets the amount of time the resolver will wait for a response from a remote name server before retrying the query via a different name server. Measured in seconds, the default is RES_TIMEOUT (currently 5, see &amp;lt;resolv.</description>
@@ -190,10 +254,10 @@ timeout:n Sets the amount of time the resolver will wait for a response from a r
     
     <item>
       <title>DNS 解析异常</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/dns-resolution-abnormal/</link>
+      <link>https://k8s.imroc.io/avoid/cases/dns-resolution-abnormal/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/dns-resolution-abnormal/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/dns-resolution-abnormal/</guid>
       <description>现象: 有个用户反馈域名解析有时有问题，看报错是解析超时。
 第一反应当然是看 coredns 的 log:
 [ERROR] 2 loginspub.xxxxmobile-inc.net. A: unreachable backend: read udp 172.16.0.230:43742-&amp;gt;10.225.30.181:53: i/o timeout 这是上游 DNS 解析异常了，因为解析外部域名 coredns 默认会请求上游 DNS 来查询，这里的上游 DNS 默认是 coredns pod 所在宿主机的 resolv.conf 里面的 nameserver (coredns pod 的 dnsPolicy 为 &amp;ldquo;Default&amp;rdquo;，也就是会将宿主机里的 resolv.conf 里的 nameserver 加到容器里的 resolv.conf, coredns 默认配置 proxy . /etc/resolv.conf, 意思是非 service 域名会使用 coredns 容器中 resolv.conf 文件里的 nameserver 来解析)
@@ -202,10 +266,10 @@ timeout:n Sets the amount of time the resolver will wait for a response from a r
     
     <item>
       <title>DNS 解析异常</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/network/dns/</link>
+      <link>https://k8s.imroc.io/troubleshooting/network/dns/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/network/dns/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/network/dns/</guid>
       <description>5 秒延时 如果DNS查询经常延时5秒才返回，通常是遇到内核 conntrack 冲突导致的丢包，详见 案例分享: DNS 5秒延时
 解析超时 如果容器内报 DNS 解析超时，先检查下集群 DNS 服务 (kube-dns/coredns) 的 Pod 是否 Ready，如果不是，请参考本章其它小节定位原因。如果运行正常，再具体看下超时现象。
 解析外部域名超时 可能原因:
@@ -215,11 +279,25 @@ timeout:n Sets the amount of time the resolver will wait for a response from a r
     </item>
     
     <item>
-      <title>Flink on Kubernetes</title>
-      <link>https://k8s.imroc.io/domains/big-data/flink-on-kubernetes/</link>
+      <title>ETCD 优化</title>
+      <link>https://k8s.imroc.io/optimization/etcd/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/domains/big-data/flink-on-kubernetes/</guid>
+      <guid>https://k8s.imroc.io/optimization/etcd/</guid>
+      <description>高可用部署 部署一个高可用ETCD集群可以参考官方文档: https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/clustering.md
+ 如果是 self-host 方式部署的集群，可以用 etcd-operator 部署 etcd 集群；也可以使用另一个小集群专门部署 etcd (使用 etcd-operator)
+ 提高磁盘 IO 性能 ETCD 对磁盘写入延迟非常敏感，对于负载较重的集群建议磁盘使用 SSD 固态硬盘。可以使用 diskbench 或 fio 测量磁盘实际顺序 IOPS。
+提高 ETCD 的磁盘 IO 优先级 由于 ETCD 必须将数据持久保存到磁盘日志文件中，因此来自其他进程的磁盘活动可能会导致增加写入时间，结果导致 ETCD 请求超时和临时 leader 丢失。当给定高磁盘优先级时，ETCD 服务可以稳定地与这些进程一起运行:
+sudo ionice -c2 -n0 -p $(pgrep etcd) 提高存储配额 默认 ETCD 空间配额大小为 2G，超过 2G 将不再写入数据。通过给 ETCD 配置 --quota-backend-bytes 参数增大空间配额，最大支持 8G。
+分离 events 存储 集群规模大的情况下，集群中包含大量节点和服务，会产生大量的 event，这些 event 将会对 etcd 造成巨大压力并占用大量 etcd 存储空间，为了在大规模集群下提高性能，可以将 events 存储在单独的 ETCD 集群中。</description>
+    </item>
+    
+    <item>
+      <title>Flink on Kubernetes</title>
+      <link>https://k8s.imroc.io/big-data/flink-on-kubernetes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/big-data/flink-on-kubernetes/</guid>
       <description>Flink 简介 Flink 是一款近年来流行的流式大数据处理框架。Storm 是流式处理框架的先锋，实时处理能做到低延迟，但很难实现高吞吐，也不能保证精确一致性(exactly-once)，即保证执行一次并且只能执行一次；后基于批处理框架 Spark 推出 Spark Streaming，将批处理数据分割的足够小，也实现了流失处理，并且可以做到高吞吐，能实现 exactly-once，但难以做到低时延，因为分割的任务之间需要有间隔时间，无法做到真实时；最后 Flink 诞生了，同时做到了低延迟、高吞吐、exactly-once，并且还支持丰富的时间类型和窗口计算。
 Flink 主要由两个部分组件构成：JobManager 和 TaskManager。如何理解这两个组件的作用？JobManager 负责资源申请和任务分发，TaskManager 负责任务的执行。跟 k8s 本身类比，JobManager 相当于 Master，TaskManager 相当于 Worker；跟 Spark 类比，JobManager 相当于 Driver，TaskManager 相当于 Executor。
 与 Kubernetes 集成 在 flink 1.10 之前，在 k8s 上运行 flink 任务都是需要事先指定 TaskManager 的个数以及CPU和内存的，存在一个问题：大多数情况下，你在任务启动前根本无法精确的预估这个任务需要多少个TaskManager，如果指定多了，会导致资源浪费，指定少了，会导致任务调度不起来。本质原因是在 Kubernetes 上运行的 Flink 任务并没有直接向 Kubernetes 集群去申请资源。
@@ -255,19 +333,19 @@ $ cat /proc/sys/fs/inotify/max_user_watches 8192 使用下面的脚本查看当�
     
     <item>
       <title>Job 无法被删除</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/others/job-cannot-delete/</link>
+      <link>https://k8s.imroc.io/troubleshooting/others/job-cannot-delete/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/others/job-cannot-delete/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/others/job-cannot-delete/</guid>
       <description>原因  可能是 k8s 的一个bug: https://github.com/kubernetes/kubernetes/issues/43168 本质上是脏数据问题，Running+Succeed != 期望Completions 数量，低版本 kubectl 不容忍，delete job 的时候打开debug(加-v=8)，会看到kubectl不断在重试，直到达到timeout时间。新版kubectl会容忍这些，删除job时会删除关联的pod  解决方法  升级 kubectl 版本，1.12 以上 低版本 kubectl 删除 job 时带 --cascade=false 参数(如果job关联的pod没删完，加这个参数不会删除关联的pod)  kubectl delete job --cascade=false &amp;lt;job name&amp;gt; </description>
     </item>
     
     <item>
       <title>kubectl edit 或者 apply 报 SchemaError</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/schemaerror-when-using-kubectl-apply-or-edit/</link>
+      <link>https://k8s.imroc.io/avoid/cases/schemaerror-when-using-kubectl-apply-or-edit/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/schemaerror-when-using-kubectl-apply-or-edit/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/schemaerror-when-using-kubectl-apply-or-edit/</guid>
       <description>问题现象 kubectl edit 或 apply 资源报如下错误:
 error: SchemaError(io.k8s.apimachinery.pkg.apis.meta.v1.APIGroup): invalid object doesn&#39;t have additional properties 集群版本：v1.10
 排查过程  使用 kubectl apply -f tmp.yaml --dry-run -v8 发现请求 /openapi/v2 这个 api 之后，kubectl在 validate 过程报错。 换成 kubectl 1.12 之后没有再报错。 kubectl get --raw &#39;/openapi/v2&#39; 发现返回的 json 内容与正常集群有差异，刚开始返回的 json title 为 Kubernetes metrics-server，正常的是 Kubernetes。 怀疑是 metrics-server 的问题，发现集群内确实安装了 k8s 官方的 metrics-server，询问得知之前是 0.3.1，后面升级为了 0.3.5。 将 metrics-server 回滚之后恢复正常。  原因分析 初步怀疑，新版本的 metrics-server 使用了新的 openapi-generator，生成的 openapi 格式和之前 k8s 版本生成的有差异。导致旧版本的 kubectl 在解析 openapi 的 schema 时发生异常，查看代码发现1.</description>
@@ -275,19 +353,19 @@ error: SchemaError(io.k8s.apimachinery.pkg.apis.meta.v1.APIGroup): invalid objec
     
     <item>
       <title>kubectl 执行 exec 或 logs 失败</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/others/kubectl-exec-or-logs-failed/</link>
+      <link>https://k8s.imroc.io/troubleshooting/others/kubectl-exec-or-logs-failed/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/others/kubectl-exec-or-logs-failed/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/others/kubectl-exec-or-logs-failed/</guid>
       <description>通常是 apiserver &amp;ndash;&amp;gt; kubelet:10250 之间的网络不通，10250 是 kubelet 提供接口的端口，kubectl exec 和 kubectl logs 的原理就是 apiserver 调 kubelet，kubelet 再调运行时 (比如 dockerd) 来实现的，所以要保证 kubelet 10250 端口对 apiserver 放通。检查防火墙、iptables 规则是否对 10250 端口或某些 IP 进行了拦截。</description>
     </item>
     
     <item>
       <title>kubectl 高效技巧</title>
-      <link>https://k8s.imroc.io/best-practice/useful/efficient-kubectl/</link>
+      <link>https://k8s.imroc.io/useful/efficient-kubectl/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/useful/efficient-kubectl/</guid>
+      <guid>https://k8s.imroc.io/useful/efficient-kubectl/</guid>
       <description>k 命令 是否有过因为使用 kubectl 经常需要重复输入命名空间而苦恼？是否觉得应该要有个记住命名空间的功能，自动记住上次使用的命名空间，不需要每次都输入？可惜没有这种功能，但是，本文会教你一个非常巧妙的方法完美帮你解决这个痛点。
 将如下脚本粘贴到当前shell(注册k命令到当前终端session):
 function k() { cmdline=`HISTTIMEFORMAT=&amp;#34;&amp;#34; history | awk &amp;#39;$2 == &amp;#34;kubectl&amp;#34; &amp;amp;&amp;amp; (/-n/ || /--namespace/) {for(i=2;i&amp;lt;=NF;i++)printf(&amp;#34;%s &amp;#34;,$i);print &amp;#34;&amp;#34;}&amp;#39; | tail -n 1` regs=(&amp;#39;\-n [\w\-\d]+&amp;#39; &amp;#39;\-n=[\w\-\d]+&amp;#39; &amp;#39;\-\-namespace [\w\-\d]+&amp;#39; &amp;#39;\-\-namespace=[\w\-\d]+&amp;#39;) for i in &amp;#34;${!regs[@]}&amp;#34;; do reg=${regs[i]} nsarg=`echo $cmdline | grep -o -P &amp;#34;$reg&amp;#34;` if [[ &amp;#34;$nsarg&amp;#34; == &amp;#34;&amp;#34; ]]; then continue fi cmd=&amp;#34;kubectl $nsarg$@&amp;#34; echo &amp;#34;$cmd&amp;#34; $cmd return done cmd=&amp;#34;kubectl $@&amp;#34; echo &amp;#34;$cmd&amp;#34; $cmd } mac 用户可以使用 dash 的 snippets 功能快速将上面的函数粘贴，使用 kk.</description>
@@ -295,20 +373,20 @@ function k() { cmdline=`HISTTIMEFORMAT=&amp;#34;&amp;#34; history | awk &amp;#39
     
     <item>
       <title>LB 健康检查失败</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/network/lb-healthcheck-failed/</link>
+      <link>https://k8s.imroc.io/troubleshooting/network/lb-healthcheck-failed/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/network/lb-healthcheck-failed/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/network/lb-healthcheck-failed/</guid>
       <description>可能原因:
  节点防火墙规则没放开 nodeport 区间端口 (默认 30000-32768) 检查iptables和云主机安全组 LB IP 绑到 kube-ipvs0 导致丢源 IP为 LB IP 的包: https://github.com/kubernetes/kubernetes/issues/79783  TODO: 完善</description>
     </item>
     
     <item>
       <title>LB 压测 NodePort CPS 低</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/low-cps-from-lb-to-nodeport/</link>
+      <link>https://k8s.imroc.io/avoid/cases/low-cps-from-lb-to-nodeport/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/low-cps-from-lb-to-nodeport/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/low-cps-from-lb-to-nodeport/</guid>
       <description>现象: LoadBalancer 类型的 Service，直接压测 NodePort CPS 比较高，但如果压测 LB CPS 就很低。
 环境说明: 用户使用的黑石TKE，不是公有云TKE，黑石的机器是物理机，LB的实现也跟公有云不一样，但 LoadBalancer 类型的 Service 的实现同样也是 LB 绑定各节点的 NodePort，报文发到 LB 后转到节点的 NodePort， 然后再路由到对应 pod，而测试在公有云 TKE 环境下没有这个问题。
  client 抓包: 大量SYN重传。 server 抓包: 抓 NodePort 的包，发现当 client SYN 重传时 server 能收到 SYN 包但没有响应。  又是 SYN 收到但没响应，难道又是开启 tcp_tw_recycle 导致的？检查节点的内核参数发现并没有开启，除了这个原因，还会有什么情况能导致被丢弃？
@@ -317,11 +395,24 @@ conntrack -S 看到 insert_failed 数量在不断增加，也就是 conntrack �
     </item>
     
     <item>
-      <title>no space left on device</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/errors/no-space-left-on-device/</link>
+      <title>Master 优化</title>
+      <link>https://k8s.imroc.io/optimization/master/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/errors/no-space-left-on-device/</guid>
+      <guid>https://k8s.imroc.io/optimization/master/</guid>
+      <description>Kubernetes 自 v1.6 以来，官方就宣称单集群最大支持 5000 个节点。不过这只是理论上，在具体实践中从 0 到 5000，还是有很长的路要走，需要见招拆招。
+官方标准如下：
+ 不超过 5000 个节点 不超过 150000 个 pod 不超过 300000 个容器 每个节点不超过 100 个 pod  Master 节点配置优化 GCE 推荐配置：
+ 1-5 节点: n1-standard-1 6-10 节点: n1-standard-2 11-100 节点: n1-standard-4 101-250 节点: n1-standard-8 251-500 节点: n1-standard-16 超过 500 节点: n1-standard-32  AWS 推荐配置：
+ 1-5 节点: m3.medium 6-10 节点: m3.large 11-100 节点: m3.xlarge 101-250 节点: m3.2xlarge 251-500 节点: c4.4xlarge 超过 500 节点: c4.</description>
+    </item>
+    
+    <item>
+      <title>no space left on device</title>
+      <link>https://k8s.imroc.io/troubleshooting/node/no-space-left-on-device/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/node/no-space-left-on-device/</guid>
       <description>有时候节点 NotReady， kubelet 日志报 no space left on device 有时候创建 Pod 失败，describe pod 看 event 报 no space left on device  出现这种错误有很多中可能原因，下面我们来根据现象找对应原因。
 inotify watch 耗尽 节点 NotReady，kubelet 启动失败，看 kubelet 日志:
 Jul 18 15:20:58 VM_16_16_centos kubelet[11519]: E0718 15:20:58.280275 11519 raw.go:140] Failed to watch directory &amp;#34;/sys/fs/cgroup/memory/kubepods&amp;#34;: inotify_add_watch /sys/fs/cgroup/memory/kubepods/burstable/pod926b7ff4-7bff-11e8-945b-52540048533c/6e85761a30707b43ed874e0140f58839618285fc90717153b3cbe7f91629ef5a: no space left on device 系统调用 inotify_add_watch 失败，提示 no space left on device， 这是因为系统上进程 watch 文件目录的总数超出了最大限制，可以修改内核参数调高限制，详细请参考本书 处理实践: inotify watch 耗尽
@@ -329,11 +420,20 @@ cgroup 泄露 查看当前 cgroup 数量:</description>
     </item>
     
     <item>
-      <title>Node 全部消失</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/cluster/node-all-gone/</link>
+      <title>Node NotReady</title>
+      <link>https://k8s.imroc.io/troubleshooting/node/not-ready/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/cluster/node-all-gone/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/node/not-ready/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Node 全部消失</title>
+      <link>https://k8s.imroc.io/troubleshooting/others/node-all-gone/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/others/node-all-gone/</guid>
       <description>Rancher 清除 Node 导致集群异常 现象 安装了 rancher 的用户，在卸载 rancher 的时候，可能会手动执行 kubectl delete ns local 来删除这个 rancher 创建的 namespace，但直接这样做会导致所有 node 被清除，通过 kubectl get node 获取不到 node。
 原因 看了下 rancher 源码，rancher 通过 nodes.management.cattle.io 这个 CRD 存储和管理 node，会给所有 node 创建对应的这个 CRD 资源，metadata 中加入了两个 finalizer，其中 user-node-remove_local 对应的 finalizer 处理逻辑就是删除对应的 k8s node 资源，也就是 delete ns local 时，会尝试删除 nodes.management.cattle.io 这些 CRD 资源，进而触发 rancher 的 finalizer 逻辑去删除对应的 k8s node 资源，从而清空了 node，所以 kubectl get node 就看不到 node 了，集群里的服务就无法被调度。</description>
     </item>
@@ -356,19 +456,19 @@ echo &amp;#34;kernel.pid_max=65535 &amp;#34; &amp;gt;&amp;gt; /etc/sysctl.conf &
     
     <item>
       <title>Pod Terminating 慢</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/slow-terminating/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/slow-terminating/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/slow-terminating/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/slow-terminating/</guid>
       <description>进程通过 bash -c 启动导致 kill 信号无法透传给业务进程 TODO: 完善</description>
     </item>
     
     <item>
       <title>Pod 一直处于 ContainerCreating 或 Waiting 状态</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-containercreating-or-waiting/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/keep-containercreating-or-waiting/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-containercreating-or-waiting/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/keep-containercreating-or-waiting/</guid>
       <description>Pod 配置错误  检查是否打包了正确的镜像 检查配置了正确的容器参数  挂载 Volume 失败 Volume 挂载失败也分许多种情况，先列下我这里目前已知的。
 Pod 漂移没有正常解挂之前的磁盘 在云尝试托管的 K8S 服务环境下，默认挂载的 Volume 一般是块存储类型的云硬盘，如果某个节点挂了，kubelet 无法正常运行或与 apiserver 通信，到达时间阀值后会触发驱逐，自动在其它节点上启动相同的副本 (Pod 漂移)，但是由于被驱逐的 Node 无法正常运行并不知道自己被驱逐了，也就没有正常执行解挂，cloud-controller-manager 也在等解挂成功后再调用云厂商的接口将磁盘真正从节点上解挂，通常会等到一个时间阀值后 cloud-controller-manager 会强制解挂云盘，然后再将其挂载到 Pod 最新所在节点上，这种情况下 ContainerCreating 的时间相对长一点，但一般最终是可以启动成功的，除非云厂商的 cloud-controller-manager 逻辑有 bug。
 命中 K8S 挂载 configmap/secret 的 subpath 的 bug 最近发现如果 Pod 挂载了 configmap 或 secret， 如果后面修改了 configmap 或 secret 的内容，Pod 里的容器又原地重启了(比如存活检查失败被 kill 然后重启拉起)，就会触发 K8S 的这个 bug，团队的小伙伴已提 PR: https://github.com/kubernetes/kubernetes/pull/82784
@@ -378,10 +478,10 @@ $ kubectl -n prod get pod -o yaml manage-5bd487cf9d-bqmvm .</description>
     
     <item>
       <title>Pod 一直处于 Error 状态</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-error/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/keep-error/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-error/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/keep-error/</guid>
       <description>TODO: 展开优化
 通常处于 Error 状态说明 Pod 启动过程中发生了错误。常见的原因包括：
  依赖的 ConfigMap、Secret 或者 PV 等不存在 请求的资源超过了管理员设置的限制，比如超过了 LimitRange 等 违反集群的安全策略，比如违反了 PodSecurityPolicy 等 容器无权操作集群内的资源，比如开启 RBAC 后，需要为 ServiceAccount 配置角色绑定  </description>
@@ -389,20 +489,20 @@ $ kubectl -n prod get pod -o yaml manage-5bd487cf9d-bqmvm .</description>
     
     <item>
       <title>Pod 一直处于 ImageInspectError 状态</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imageinspecterror/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/keep-imageinspecterror/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imageinspecterror/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/keep-imageinspecterror/</guid>
       <description>通常是镜像文件损坏了，可以尝试删除损坏的镜像重新拉取
 TODO: 完善</description>
     </item>
     
     <item>
       <title>Pod 一直处于 ImagePullBackOff 状态</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imagepullbackoff/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/keep-imagepullbackoff/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-imagepullbackoff/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/keep-imagepullbackoff/</guid>
       <description>http 类型 registry，地址未加入到 insecure-registry dockerd 默认从 https 类型的 registry 拉取镜像，如果使用 https 类型的 registry，则必须将它添加到 insecure-registry 参数中，然后重启或 reload dockerd 生效。
 https 自签发类型 resitry，没有给节点添加 ca 证书 如果 registry 是 https 类型，但证书是自签发的，dockerd 会校验 registry 的证书，校验成功才能正常使用镜像仓库，要想校验成功就需要将 registry 的 ca 证书放置到 /etc/docker/certs.d/&amp;lt;registry:port&amp;gt;/ca.crt 位置。
 私有镜像仓库认证失败 如果 registry 需要认证，但是 Pod 没有配置 imagePullSecret，配置的 Secret 不存在或者有误都会认证失败。
@@ -414,10 +514,10 @@ kubelet 默认串行下载镜像:
     
     <item>
       <title>Pod 一直处于 Pending 状态</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-pending/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/keep-pending/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-pending/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/keep-pending/</guid>
       <description>Pending 状态说明 Pod 还没有被调度到某个节点上，需要看下 Pod 事件进一步判断原因，比如:
 $ kubectl describe pod tikv-0 ... Events: Type Reason Age From Message ---- ------ ---- ---- ------- Warning FailedScheduling 3m (x106 over 33m) default-scheduler 0/4 nodes are available: 1 node(s) had no available volume zone, 2 Insufficient cpu, 3 Insufficient memory. 下面列举下可能原因和解决方法。
 节点资源不够 节点资源不够有以下几种情况:
@@ -426,10 +526,10 @@ $ kubectl describe pod tikv-0 ... Events: Type Reason Age From Message ---- ----
     
     <item>
       <title>Pod 一直处于 Terminating 状态</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-terminating/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/keep-terminating/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-terminating/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/keep-terminating/</guid>
       <description>磁盘爆满 如果 docker 的数据目录所在磁盘被写满，docker 无法正常运行，无法进行删除和创建操作，所以 kubelet 调用 docker 删除容器没反应，看 event 类似这样：
 Normal Killing 39s (x735 over 15h) kubelet, 10.179.80.31 Killing container with id docker://apigateway:Need to kill Pod 处理建议是参考本书 处理实践：磁盘爆满
 存在 &amp;ldquo;i&amp;rdquo; 文件属性 如果容器的镜像本身或者容器启动后写入的文件存在 &amp;ldquo;i&amp;rdquo; 文件属性，此文件就无法被修改删除，而删除 Pod 时会清理容器目录，但里面包含有不可删除的文件，就一直删不了，Pod 状态也将一直保持 Terminating，kubelet 报错:
@@ -438,10 +538,10 @@ Sep 27 14:37:21 VM_0_7_centos kubelet[14109]: E0927 14:37:21.922965 14109 remote
     
     <item>
       <title>Pod 一直处于 Unknown 状态</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-unkown/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/keep-unkown/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-unkown/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/keep-unkown/</guid>
       <description>TODO: 完善
 通常是节点失联，没有上报状态给 apiserver，到达阀值后 controller-manager 认为节点失联并将其状态置为 Unknown。
 可能原因:
@@ -450,10 +550,10 @@ Sep 27 14:37:21 VM_0_7_centos kubelet[14109]: E0927 14:37:21.922965 14109 remote
     
     <item>
       <title>Pod 健康检查失败</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/healthcheck-failed/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/healthcheck-failed/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/healthcheck-failed/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/healthcheck-failed/</guid>
       <description>Kubernetes 健康检查包含就绪检查(readinessProbe)和存活检查(livenessProbe) pod 如果就绪检查失败会将此 pod ip 从 service 中摘除，通过 service 访问，流量将不会被转发给就绪检查失败的 pod pod 如果存活检查失败，kubelet 将会杀死容器并尝试重启  健康检查失败的可能原因有多种，除了业务程序BUG导致不能响应健康检查导致 unhealthy，还能有有其它原因，下面我们来逐个排查。
 健康检查配置不合理 initialDelaySeconds 太短，容器启动慢，导致容器还没完全启动就开始探测，如果 successThreshold 是默认值 1，检查失败一次就会被 kill，然后 pod 一直这样被 kill 重启。
 节点负载过高 cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常会 timeout，导致 kubelet 认为 pod 不健康。参考本书 处理实践: 高负载 一节。
@@ -464,10 +564,10 @@ Sep 27 14:37:21 VM_0_7_centos kubelet[14109]: E0927 14:37:21.922965 14109 remote
     
     <item>
       <title>Pod 偶尔存活检查失败</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/livenesprobe-failed-occasionally/</link>
+      <link>https://k8s.imroc.io/avoid/cases/livenesprobe-failed-occasionally/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/livenesprobe-failed-occasionally/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/livenesprobe-failed-occasionally/</guid>
       <description>现象: Pod 偶尔会存活检查失败，导致 Pod 重启，业务偶尔连接异常。
 之前从未遇到这种情况，在自己测试环境尝试复现也没有成功，只有在用户这个环境才可以复现。这个用户环境流量较大，感觉跟连接数或并发量有关。
 用户反馈说在友商的环境里没这个问题。
@@ -479,10 +579,10 @@ TCP 连接建立会经过三次握手，server 收到 SYN 后会将连接加入 
     
     <item>
       <title>Pod 处于 CrashLoopBackOff 状态</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/keep-crashloopbackoff/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/keep-crashloopbackoff/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/keep-crashloopbackoff/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/keep-crashloopbackoff/</guid>
       <description>Pod 如果处于 CrashLoopBackOff 状态说明之前是启动了，只是又异常退出了，只要 Pod 的 restartPolicy 不是 Never 就可能被重启拉起，此时 Pod 的 RestartCounts 通常是大于 0 的，可以先看下容器进程的退出状态码来缩小问题范围，参考本书 排错技巧: 分析 ExitCode 定位 Pod 异常退出原因
 容器进程主动退出 如果是容器进程主动退出，退出状态码一般在 0-128 之间，除了可能是业务程序 BUG，还有其它许多可能原因，参考: 容器进程主动退出
 系统 OOM 如果发生系统 OOM，可以看到 Pod 中容器退出状态码是 137，表示被 SIGKILL 信号杀死，同时内核会报错: Out of memory: Kill process ...。大概率是节点上部署了其它非 K8S 管理的进程消耗了比较多的内存，或者 kubelet 的 --kube-reserved 和 --system-reserved 配的比较小，没有预留足够的空间给其它非容器进程，节点上所有 Pod 的实际内存占用总量不会超过 /sys/fs/cgroup/memory/kubepods 这里 cgroup 的限制，这个限制等于 capacity - &amp;quot;kube-reserved&amp;quot; - &amp;quot;system-reserved&amp;quot;，如果预留空间设置合理，节点上其它非容器进程（kubelet, dockerd, kube-proxy, sshd 等) 内存占用没有超过 kubelet 配置的预留空间是不会发生系统 OOM 的，可以根据实际需求做合理的调整。</description>
@@ -490,19 +590,19 @@ TCP 连接建立会经过三次握手，server 收到 SYN 后会将连接加入 
     
     <item>
       <title>Pod 相关脚本</title>
-      <link>https://k8s.imroc.io/best-practice/useful/shell/pod/</link>
+      <link>https://k8s.imroc.io/useful/shell/pod/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/useful/shell/pod/</guid>
+      <guid>https://k8s.imroc.io/useful/shell/pod/</guid>
       <description>清理 Evicted 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4==&amp;#34;Evicted&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 清理非 Running 的 pod kubectl get pod -o wide --all-namespaces | awk &amp;#39;{if($4!=&amp;#34;Running&amp;#34;){cmd=&amp;#34;kubectl -n &amp;#34;$1&amp;#34; delete pod &amp;#34;$2; system(cmd)}}&amp;#39; 升级镜像 NAMESPACE=&amp;#34;kube-system&amp;#34; WORKLOAD_TYPE=&amp;#34;daemonset&amp;#34; WORKLOAD_NAME=&amp;#34;ip-masq-agent&amp;#34; CONTAINER_NAME=&amp;#34;ip-masq-agent&amp;#34; IMAGE=&amp;#34;ccr.ccs.tencentyun.com/library/ip-masq-agent:v2.5.0&amp;#34; kubectl -n $NAMESPACE patch $WORKLOAD_TYPE $WORKLOAD_NAME --patch &amp;#39;{&amp;#34;spec&amp;#34;: {&amp;#34;template&amp;#34;: {&amp;#34;spec&amp;#34;: {&amp;#34;containers&amp;#34;: [{&amp;#34;name&amp;#34;: &amp;#34;$CONTAINER_NAME&amp;#34;,&amp;#34;image&amp;#34;: &amp;#34;$IMAGE&amp;#34; }]}}}}&amp;#39; </description>
     </item>
     
     <item>
       <title>Pod 访问另一个集群的 apiserver 有延时</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/</link>
+      <link>https://k8s.imroc.io/avoid/cases/high-legacy-from-pod-to-another-apiserver/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/high-legacy-from-pod-to-another-apiserver/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/high-legacy-from-pod-to-another-apiserver/</guid>
       <description>现象：集群 a 的 Pod 内通过 kubectl 访问集群 b 的内网地址，偶尔出现延时的情况，但直接在宿主机上用同样的方法却没有这个问题。
 提炼环境和现象精髓:
  在 pod 内将另一个集群 apiserver 的 ip 写到了 hosts，因为 TKE apiserver 开启内网集群外内网访问创建的内网 LB 暂时没有支持自动绑内网 DNS 域名解析，所以集群外的内网访问 apiserver 需要加 hosts pod 内执行 kubectl 访问另一个集群偶尔延迟 5s，有时甚至10s  观察到 5s 延时，感觉跟之前 conntrack 的丢包导致 DNS 解析 5S 延时 有关，但是加了 hosts 呀，怎么还去解析域名？
@@ -512,10 +612,10 @@ TCP 连接建立会经过三次握手，server 收到 SYN 后会将连接加入 
     
     <item>
       <title>Service 不通</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/network/service-unrecheable/</link>
+      <link>https://k8s.imroc.io/troubleshooting/network/service-unrecheable/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/network/service-unrecheable/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/network/service-unrecheable/</guid>
       <description>集群 dns 故障 TODO
 节点防火墙没放开集群容器网络 (iptables/安全组) TODO
 kube-proxy 没有工作，命中 netlink deadlock 的 bug  issue: https://github.com/kubernetes/kubernetes/issues/71071 1.14 版本已修复，修复的 PR: https://github.com/kubernetes/kubernetes/pull/72361  </description>
@@ -523,20 +623,30 @@ kube-proxy 没有工作，命中 netlink deadlock 的 bug  issue: https://github
     
     <item>
       <title>Service 无法解析</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/network/service-cannot-resolve/</link>
+      <link>https://k8s.imroc.io/troubleshooting/network/service-cannot-resolve/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/network/service-cannot-resolve/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/network/service-cannot-resolve/</guid>
       <description>集群 DNS 没有正常运行(kube-dns或CoreDNS) 检查集群 DNS 是否运行正常:
  kubelet 启动参数 --cluster-dns 可以看到 dns 服务的 cluster ip:  $ ps -ef | grep kubelet ... /usr/bin/kubelet --cluster-dns=172.16.14.217 ...  找到 dns 的 service:  $ kubectl get svc -n kube-system | grep 172.16.14.217 kube-dns ClusterIP 172.16.14.217 &amp;lt;none&amp;gt; 53/TCP,53/UDP 47d  看是否存在 endpoint:  $ kubectl -n kube-system describe svc kube-dns | grep -i endpoints Endpoints: 172.16.0.156:53,172.16.0.167:53 Endpoints: 172.16.0.156:53,172.16.0.167:53  检查 endpoint 的 对应 pod 是否正常:  $ kubectl -n kube-system get pod -o wide | grep 172.</description>
     </item>
     
     <item>
-      <title>tcp tw recycle 引发丢包</title>
-      <link>https://k8s.imroc.io/troubleshooting/summary/tcp_tw_recycle-causes-packet-loss/</link>
+      <title>soft lockup (内核软死锁)</title>
+      <link>https://k8s.imroc.io/troubleshooting/node/kernel-solft-lockup/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/summary/tcp_tw_recycle-causes-packet-loss/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/node/kernel-solft-lockup/</guid>
+      <description>内核报错 Oct 14 15:13:05 VM_1_6_centos kernel: NMI watchdog: BUG: soft lockup - CPU#5 stuck for 22s! [runc:[1:CHILD]:2274] 原因 发生这个报错通常是内核繁忙 (扫描、释放或分配大量对象)，分不出时间片给用户态进程导致的，也伴随着高负载，如果负载降低报错则会消失。
+什么情况下会导致内核繁忙  短时间内创建大量进程 (可能是业务需要，也可能是业务bug或用法不正确导致创建大量进程)  参考资料  What are all these &amp;ldquo;Bug: soft lockup&amp;rdquo; messages about : https://www.suse.com/support/kb/doc/?id=7017652  </description>
+    </item>
+    
+    <item>
+      <title>tcp tw recycle 引发丢包</title>
+      <link>https://k8s.imroc.io/avoid/tcp_tw_recycle-causes-packet-loss/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/avoid/tcp_tw_recycle-causes-packet-loss/</guid>
       <description>tcp_tw_recycle 这个内核参数用来快速回收 TIME_WAIT 连接，不过如果在 NAT 环境下会引发问题。
 RFC1323 中有如下一段描述：
 An additional mechanism could be added to the TCP, a per-host cache of the last timestamp received from any connection. This value could then be used in the PAWS mechanism to reject old duplicate segments from earlier incarnations of the connection, if the timestamp clock can be guaranteed to have ticked at least once since the old connection was open. This would require that the TIME-WAIT delay plus the RTT together must be at least one tick of the sender’s timestamp clock.</description>
@@ -555,23 +665,31 @@ cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: v1 kind: ServiceAccount
     </item>
     
     <item>
-      <title>使用 cert-manager 自动生成证书</title>
-      <link>https://k8s.imroc.io/best-practice/cert-management/autogenerate-certificate-with-cert-manager/</link>
+      <title>使用 client-go 开发 k8s 应用</title>
+      <link>https://k8s.imroc.io/dev/client-go/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/cert-management/autogenerate-certificate-with-cert-manager/</guid>
-      <description>确保 cert-manager 已安装，参考 安装 cert-manager
-利用 Let’s Encrypt 生成免费证书 免费证书颁发原理 Let’s Encrypt 利用 ACME 协议来校验域名是否真的属于你，校验成功后就可以自动颁发免费证书，证书有效期只有 90 天，在到期前需要再校验一次来实现续期，幸运的是 cert-manager 可以自动续期，这样就可以使用永久免费的证书了。如何校验你对这个域名属于你呢？主流的两种校验方式是 HTTP-01 和 DNS-01，下面简单介绍下校验原理:
-HTTP-01 校验原理 HTTP-01 的校验原理是给你域名指向的 HTTP 服务增加一个临时 location ，Let’s Encrypt 会发送 http 请求到 http://&amp;lt;YOUR_DOMAIN&amp;gt;/.well-known/acme-challenge/&amp;lt;TOKEN&amp;gt;，YOUR_DOMAIN 就是被校验的域名，TOKEN 是 ACME 协议的客户端负责放置的文件，在这里 ACME 客户端就是 cert-manager，它通过修改 Ingress 规则来增加这个临时校验路径并指向提供 TOKEN 的服务。Let’s Encrypt 会对比 TOKEN 是否符合预期，校验成功后就会颁发证书。此方法仅适用于给使用 Ingress 暴露流量的服务颁发证书，并且不支持泛域名证书。
-DNS-01 校验原理 DNS-01 的校验原理是利用 DNS 提供商的 API Key 拿到你的 DNS 控制权限， 在 Let’s Encrypt 为 ACME 客户端提供令牌后，ACME 客户端 (cert-manager) 将创建从该令牌和您的帐户密钥派生的 TXT 记录，并将该记录放在 _acme-challenge.</description>
+      <guid>https://k8s.imroc.io/dev/client-go/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>使用 NodeLocal DNS (缓存)</title>
+      <link>https://k8s.imroc.io/avoid/nodelocal-dns/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/avoid/nodelocal-dns/</guid>
+      <description>为什么需要本地 DNS 缓存   减轻集群 DNS 解析压力，提高 DNS 性能
+  避免 netfilter 做 DNAT 导致 conntrack 冲突引发 DNS 5 秒延时
+ 镜像底层库 DNS 解析行为默认使用 UDP 在同一个 socket 并发 A 和 AAAA 记录请求，由于 UDP 无状态，两个请求可能会并发创建 conntrack 表项，如果最终 DNAT 成同一个集群 DNS 的 Pod IP 就会导致 conntrack 冲突，由于 conntrack 的创建和插入是不加锁的，最终后面插入的 conntrack 表项就会被丢弃，从而请求超时，默认 5s 后重试，造成现象就是 DNS 5 秒延时; 底层库是 glibc 的容器镜像可以通过配 resolv.conf 参数来控制 DNS 解析行为，不用 TCP 或者避免相同五元组并发(使用串行解析 A 和 AAAA 避免并发或者使用不同 socket 发请求避免相同源端口)，但像基于 alpine 镜像的容器由于底层库是 musl libc，不支持这些 resolv.</description>
     </item>
     
     <item>
       <title>使用 oom-guard 在用户态处理 cgroup OOM</title>
-      <link>https://k8s.imroc.io/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/</link>
+      <link>https://k8s.imroc.io/avoid/handle-cgroup-oom-in-userspace-with-oom-guard/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/summary/handle-cgroup-oom-in-userspace-with-oom-guard/</guid>
+      <guid>https://k8s.imroc.io/avoid/handle-cgroup-oom-in-userspace-with-oom-guard/</guid>
       <description>背景 由于 linux 内核对 cgroup OOM 的处理，存在很多 bug，经常有由于频繁 cgroup OOM 导致节点故障(卡死， 重启， 进程异常但无法杀死)，于是 TKE 团队开发了 oom-guard，在用户态处理 cgroup OOM 规避了内核 bug。
 原理 核心思想是在发生内核 cgroup OOM kill 之前，在用户空间杀掉超限的容器， 减少走到内核 cgroup 内存回收失败后的代码分支从而触发各种内核故障的机会。
 threshold notify 参考文档: https://lwn.net/Articles/529927/
@@ -582,10 +700,10 @@ margin = 1000M * margin_ratio = 20M // 缺省margin_ratio是0.02 margin 最小�
     
     <item>
       <title>使用 PodDisruptionBudget 避免驱逐导致服务不可用</title>
-      <link>https://k8s.imroc.io/best-practice/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/</link>
+      <link>https://k8s.imroc.io/optimization/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/</guid>
+      <guid>https://k8s.imroc.io/optimization/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/</guid>
       <description>驱逐节点是一种有损操作，驱逐的原理:
  封锁节点 (设为不可调度，避免新的 Pod 调度上来)。 将该节点上的 Pod 删除。 ReplicaSet 控制器检测到 Pod 减少，会重新创建一个 Pod，调度到新的节点上。  这个过程是先删除，再创建，并非是滚动更新，因此更新过程中，如果一个服务的所有副本都在被驱逐的节点上，则可能导致该服务不可用。
 我们再来下什么情况下驱逐会导致服务不可用:
@@ -598,10 +716,10 @@ apiVersion: policy/v1beta1 kind: PodDisruptionBudget metadata: name: zk-pdb spec
     
     <item>
       <title>使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断</title>
-      <link>https://k8s.imroc.io/best-practice/deploy/smooth-update-using-prestophook-and-readinessprobe/</link>
+      <link>https://k8s.imroc.io/optimization/deploy/smooth-update-using-prestophook-and-readinessprobe/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/deploy/smooth-update-using-prestophook-and-readinessprobe/</guid>
+      <guid>https://k8s.imroc.io/optimization/deploy/smooth-update-using-prestophook-and-readinessprobe/</guid>
       <description>如果服务不做配置优化，默认情况下更新服务期间可能会导致部分流量异常，下面我们来分析并给出最佳实践。
 服务更新场景 我们先看下服务更新有哪些场景:
  手动调整服务的副本数量 手动删除 Pod 触发重新调度 驱逐节点 (主动或被动驱逐，Pod会先删除再在其它节点重建) 触发滚动更新 (比如修改镜像 tag 升级程序版本) HPA (HorizontalPodAutoscaler) 自动对服务进行水平伸缩 VPA (VerticalPodAutoscaler) 自动对服务进行垂直伸缩  更新过程连接异常的原因 滚动更新时，Service 对应的 Pod 会被创建或销毁，Service 对应的 Endpoint 也会新增或移除相应的 Pod IP:Port，然后 kube-proxy 会根据 Service 的 Endpoint 里的 Pod IP:Port 列表更新节点上的转发规则，而这里 kube-proxy 更新节点转发规则的动作并不是那么及时，主要是由于 K8S 的设计理念，各个组件的逻辑是解耦的，各自使用 Controller 模式 listAndWatch 感兴趣的资源并做出相应的行为，所以从 Pod 创建或销毁到 Endpoint 更新再到节点上的转发规则更新，这个过程是异步的，所以会造成转发规则更新不及时，从而导致服务更新期间部分连接异常。
@@ -623,10 +741,10 @@ sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C8CAB6595FDFF622 c
     
     <item>
       <title>使用反亲和性避免单点故障</title>
-      <link>https://k8s.imroc.io/best-practice/deploy/use-antiaffinity-to-avoid-single-points-of-failure/</link>
+      <link>https://k8s.imroc.io/optimization/deploy/use-antiaffinity-to-avoid-single-points-of-failure/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/deploy/use-antiaffinity-to-avoid-single-points-of-failure/</guid>
+      <guid>https://k8s.imroc.io/optimization/deploy/use-antiaffinity-to-avoid-single-points-of-failure/</guid>
       <description>k8s 的设计就是假设节点是不可靠的，节点越多，发生软硬件故障导致节点不可用的几率就越高，所以我们通常需要给服务部署多个副本，根据实际情况调整 replicas 的值，如果值为 1 就必然存在单点故障，如果大于 1 但所有副本都调度到同一个节点，那还是有单点故障，所以我们不仅要有合理的副本数量，还需要让这些不同副本调度到不同的节点，打散开来避免单点故障，这个可以利用反亲和性来实现，示例:
 affinity: podAntiAffinity: requiredDuringSchedulingIgnoredDuringExecution: - weight: 100 labelSelector: matchExpressions: - key: k8s-app operator: In values: - kube-dns topologyKey: kubernetes.io/hostname  requiredDuringSchedulingIgnoredDuringExecution 调度时必须满足该反亲和性条件，如果没有节点满足条件就不调度到任何节点 (Pending)。如果不用这种硬性条件可以使用 preferredDuringSchedulingIgnoredDuringExecution 来指示调度器尽量满足反亲和性条件，如果没有满足条件的也可以调度到某个节点。 labelSelector.matchExpressions 写该服务对应 pod 中 labels 的 key 与 value。 topologyKey 这里用 kubernetes.io/hostname 表示避免 pod 调度到同一节点，如果你有更高的要求，比如避免调度到同一个可用区，实现异地多活，可以用 failure-domain.beta.kubernetes.io/zone。通常不会去避免调度到同一个地域，因为一般同一个集群的节点都在一个地域，如果跨地域，即使用专线时延也会很大，所以 topologyKey 一般不至于用 failure-domain.beta.kubernetes.io/region。  </description>
     </item>
@@ -645,13 +763,12 @@ Jan 23 14:15:31 dc05 dockerd: time=&amp;#34;2019-01-23T14:15:31.</description>
     </item>
     
     <item>
-      <title>内核软死锁</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/others/kernel-solft-lockup/</link>
+      <title>内核参数优化</title>
+      <link>https://k8s.imroc.io/optimization/kernel/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/others/kernel-solft-lockup/</guid>
-      <description>内核报错 Oct 14 15:13:05 VM_1_6_centos kernel: NMI watchdog: BUG: soft lockup - CPU#5 stuck for 22s! [runc:[1:CHILD]:2274] 原因 发生这个报错通常是内核繁忙 (扫描、释放或分配大量对象)，分不出时间片给用户态进程导致的，也伴随着高负载，如果负载降低报错则会消失。
-什么情况下会导致内核繁忙  短时间内创建大量进程 (可能是业务需要，也可能是业务bug或用法不正确导致创建大量进程)  参考资料  What are all these &amp;ldquo;Bug: soft lockup&amp;rdquo; messages about : https://www.suse.com/support/kb/doc/?id=7017652  </description>
+      <guid>https://k8s.imroc.io/optimization/kernel/</guid>
+      <description># 允许的最大跟踪连接条目，是在内核内存中 netfilter 可以同时处理的“任务”（连接跟踪条目） net.netfilter.nf_conntrack_max=10485760 net.netfilter.nf_conntrack_tcp_timeout_established=300 # 哈希表大小（只读）（64位系统、8G内存默认 65536，16G翻倍，如此类推） net.netfilter.nf_conntrack_buckets=655360 # 每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目 net.core.netdev_max_backlog=10000 # 表示socket监听(listen)的backlog上限，也就是就是socket的监听队列(accept queue)，当一个tcp连接尚未被处理或建立时(半连接状态)，会保存在这个监听队列，默认为 128，在高并发场景下偏小，优化到 32768。参考 https://imroc.io/posts/kubernetes-overflow-and-drop/ net.core.somaxconn=32768 # 没有启用syncookies的情况下，syn queue(半连接队列)大小除了受somaxconn限制外，也受这个参数的限制，默认1024，优化到8096，避免在高并发场景下丢包 net.ipv4.tcp_max_syn_backlog=8096 # 表示同一用户同时最大可以创建的 inotify 实例 (每个实例可以有很多 watch) fs.inotify.max_user_instances=8192 # max-file 表示系统级别的能够打开的文件句柄的数量， 一般如果遇到文件句柄达到上限时，会碰到 # Too many open files 或者 Socket/File: Can’t open so many files 等错误 fs.file-max=2097152 # 表示同一用户同时可以添加的watch数目（watch一般是针对目录，决定了同时同一用户可以监控的目录数量) 默认值 8192 在容器场景下偏小，在某些情况下可能会导致 inotify watch 数量耗尽，使得创建 Pod 不成功或者 kubelet 无法启动成功，将其优化到 524288 fs.inotify.max_user_watches=524288 net.core.bpf_jit_enable=1 net.core.bpf_jit_harden=1 net.core.bpf_jit_kallsyms=1 net.core.dev_weight_tx_bias=1 net.core.rmem_max=16777216 net.core.wmem_max=16777216 net.ipv4.tcp_rmem=4096 12582912 16777216 net.</description>
     </item>
     
     <item>
@@ -666,42 +783,15 @@ Containers: kubedns: Container ID: docker://5fb8adf9ee62afc6d3f6f3d9590041818750
     
     <item>
       <title>利用 CSR API 创建用户</title>
-      <link>https://k8s.imroc.io/best-practice/permission/create-user-using-csr-api/</link>
+      <link>https://k8s.imroc.io/security/user/create-user-using-csr-api/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/permission/create-user-using-csr-api/</guid>
+      <guid>https://k8s.imroc.io/security/user/create-user-using-csr-api/</guid>
       <description>k8s 支持 CSR API，通过创建 CertificateSigningRequest 资源就可以发起 CSR 请求，管理员审批通过之后 kube-controller-manager 就会为我们签发证书，确保 kube-controller-manager 配了根证书密钥对:
 --cluster-signing-cert-file=/var/lib/kubernetes/ca.pem --cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem 创建步骤 我们用 cfssl 来创建 key 和 csr 文件，所以需要先安装 cfssl:
 curl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl curl -L https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -o cfssljson curl -L https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -o cfssl-certinfo chmod +x cfssl cfssljson cfssl-certinfo sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/ 指定要创建的用户名:
 USERNAME=&amp;#34;roc&amp;#34; 再创建 key 和 csr 文件:
 cat &amp;lt;&amp;lt;EOF | cfssl genkey - | cfssljson -bare ${USERNAME} { &amp;#34;CN&amp;#34;: &amp;#34;${USERNAME}&amp;#34;, &amp;#34;key&amp;#34;: { &amp;#34;algo&amp;#34;: &amp;#34;rsa&amp;#34;, &amp;#34;size&amp;#34;: 2048 } } EOF 生成以下文件:</description>
-    </item>
-    
-    <item>
-      <title>大规模集群优化</title>
-      <link>https://k8s.imroc.io/best-practice/big-cluster/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/big-cluster/</guid>
-      <description>Kubernetes 自 v1.6 以来，官方就宣称单集群最大支持 5000 个节点。不过这只是理论上，在具体实践中从 0 到 5000，还是有很长的路要走，需要见招拆招。
-官方标准如下：
- 不超过 5000 个节点 不超过 150000 个 pod 不超过 300000 个容器 每个节点不超过 100 个 pod  内核参数调优 # max-file 表示系统级别的能够打开的文件句柄的数量， 一般如果遇到文件句柄达到上限时，会碰到 # &amp;#34;Too many open files&amp;#34; 或者 Socket/File: Can’t open so many files 等错误 fs.file-max=1000000 # 配置 arp cache 大小 # 存在于 ARP 高速缓存中的最少层数，如果少于这个数，垃圾收集器将不会运行。缺省值是 128 net.ipv4.neigh.default.gc_thresh1=1024 # 保存在 ARP 高速缓存中的最多的记录软限制。垃圾收集器在开始收集前，允许记录数超过这个数字 5 秒。缺省值是 512 net.ipv4.neigh.default.gc_thresh2=4096 # 保存在 ARP 高速缓存中的最多记录的硬限制，一旦高速缓存中的数目高于此，垃圾收集器将马上运行。缺省值是 1024 net.ipv4.neigh.default.gc_thresh3=8192 # 以上三个参数，当内核维护的 arp 表过于庞大时候，可以考虑优化 # 允许的最大跟踪连接条目，是在内核内存中 netfilter 可以同时处理的“任务”（连接跟踪条目） net.</description>
-    </item>
-    
-    <item>
-      <title>安装 cert-manager</title>
-      <link>https://k8s.imroc.io/best-practice/cert-management/install-cert-manger/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/cert-management/install-cert-manger/</guid>
-      <description>参考官方文档: https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html
-介绍几种安装方式，不管是用哪种我们都先规划一下使用哪个命名空间，推荐使用 cert-manger 命名空间，如果使用其它的命名空间需要做些更改，会稍微有点麻烦，先创建好命名空间:
-kubectl create namespace cert-manager cert-manager 部署时会生成 ValidatingWebhookConfiguration 来注册 [ValidatingAdmissionWebhook])(ValidatingAdmissionWebhook) 来实现 CRD 校验，而ValidatingWebhookConfiguration 里需要写入 cert-manager 自身校验服务端的证书信息，就需要在自己命名空间创建 ClusterIssuer 和 Certificate 来自动创建证书，创建这些 CRD 资源又会被校验服务端校验，但校验服务端证书还没有创建所以校验请求无法发送到校验服务端，这就是一个鸡生蛋还是蛋生鸡的问题了，所以我们需要关闭 cert-manager 所在命名空间的 CRD 校验，通过打 label 来实现:
-kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true 使用原生 yaml 资源安装 直接执行 kubectl apply 来安装:
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml  使用 kubectl v1.15 及其以下的版本需要加上 --validate=false，否则会报错。
- 使用 Helm 安装 安装 CRD:
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml 添加 repo:
-helm repo add jetstack https://charts.</description>
     </item>
     
     <item>
@@ -762,15 +852,6 @@ kubectl apply -f deploy/1.8+/ 参考资料  Github 主页: https://github.com/ku
     </item>
     
     <item>
-      <title>实用 yaml 片段</title>
-      <link>https://k8s.imroc.io/best-practice/useful/yaml/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/useful/yaml/</guid>
-      <description>最简单的 nginx 测试服务 apiVersion: apps/v1 kind: Deployment metadata: name: nginx spec: replicas: 1 selector: matchLabels: app: nginx template: metadata: labels: app: nginx spec: containers: - name: nginx image: nginx --- apiVersion: v1 kind: Service metadata: name: nginx labels: app: nginx spec: type: ClusterIP ports: - port: 80 protocol: TCP name: http selector: app: nginx </description>
-    </item>
-    
-    <item>
       <title>容器内抓包定位网络问题</title>
       <link>https://k8s.imroc.io/troubleshooting/trick/capture-packets-in-container/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -782,10 +863,10 @@ kubectl apply -f deploy/1.8+/ 参考资料  Github 主页: https://github.com/ku
     
     <item>
       <title>容器进程主动退出</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/pod/container-proccess-exit-by-itself/</link>
+      <link>https://k8s.imroc.io/troubleshooting/pod/container-proccess-exit-by-itself/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/pod/container-proccess-exit-by-itself/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/pod/container-proccess-exit-by-itself/</guid>
       <description>容器进程如果是自己主动退出(不是被外界中断杀死)，退出状态码一般在 0-128 之间，根据约定，正常退出时状态码为 0，1-127 说明是程序发生异常，主动退出了，比如检测到启动的参数和条件不满足要求，或者运行过程中发生 panic 但没有捕获处理导致程序退出。除了可能是业务程序 BUG，还有其它许多可能原因，这里我们一一列举下。
 DNS 无法解析 可能程序依赖 集群 DNS 服务，比如启动时连接数据库，数据库使用 service 名称或外部域名都需要 DNS 解析，如果解析失败程序将报错并主动退出。解析失败的可能原因:
  集群网络有问题，Pod 连不上集群 DNS 服务 集群 DNS 服务挂了，无法响应解析请求 Service 或域名地址配置有误，本身是无法解析的地址  程序配置有误  配置文件格式错误，程序启动解析配置失败报错退出 配置内容不符合规范，比如配置中某个字段是必选但没有填写，配置校验不通过，程序报错主动退出  </description>
@@ -808,10 +889,10 @@ CNI 插件 TODO
     
     <item>
       <title>控制应用权限</title>
-      <link>https://k8s.imroc.io/best-practice/permission/app/</link>
+      <link>https://k8s.imroc.io/security/permission/app/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/permission/app/</guid>
+      <guid>https://k8s.imroc.io/security/permission/app/</guid>
       <description>不仅用户 (人) 可以操作集群，应用 (程序) 也可以操作集群，通过给 Pod 设置 Serivce Account 来对应用进行授权，如果不设置会默认配置一个 &amp;ldquo;default&amp;rdquo; 的 Service Account，几乎没有权限。
 原理 创建 Pod 时，在 apiserver 中的 service account admission controller 检测 Pod 是否指定了 ServiceAccount，如果没有就自动设置一个 &amp;ldquo;default&amp;rdquo;，如果指定了会检测指定的 ServiceAccount 是否存在，不存在的话会拒绝该 Pod，存在话就将此 ServiceAccount 对应的 Secret 挂载到 Pod 中每个容器的 /var/run/secrets/kubernetes.io/serviceaccount 这个路径，这个 Secret 是 controller manager 中 token controller 去 watch ServiceAccount，为每个 ServiceAccount 生成对应的 token 类型的 Secret 得来的。
 Pod 内的程序如果要调用 apiserver 接口操作集群，会使用 SDK，通常是 client-go ， SDK 使用 in-cluster 的方式调用 apiserver，从固定路径 /var/run/secrets/kubernetes.io/serviceaccount 读取认证配置信息去连 apiserver，从而实现认证，再结合 RBAC 配置可以实现权限控制。</description>
@@ -819,26 +900,15 @@ Pod 内的程序如果要调用 apiserver 接口操作集群，会使用 SDK，�
     
     <item>
       <title>控制用户权限</title>
-      <link>https://k8s.imroc.io/best-practice/permission/user/</link>
+      <link>https://k8s.imroc.io/security/permission/user/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/permission/user/</guid>
+      <guid>https://k8s.imroc.io/security/permission/user/</guid>
       <description>为了简单方便，小集群或测试环境集群我们通常使用最高权限的 admin 账号，可以做任何操作，但是如果是重要的生产环境集群，可以操作集群的人比较多，如果这时还用这个账号可能就会比较危险，一旦有人误操作或故意搞事就可能酿成大错，即使 apiserver 开启审计也无法知道是谁做的操作，所以最好控制下权限，根据人的级别或角色创建拥有对应权限的账号，这个可以通过 RBAC 来实现(确保 kube-apiserver 启动参数 --authorization-mode=RBAC)，基本思想是创建 User 或 ServiceAccount 绑定 Role 或 ClusterRole 来控制权限。
 User 来源 User 的来源有多种:
  token 文件: 给 kube-apiserver 启动参数 --token-auth-file 传一个 token 认证文件，比如: --token-auth-file=/etc/kubernetes/known_tokens.csv  token 文件每一行表示一个用户，示例: wJmq****PPWj,admin,admin,system:masters 第一个字段是 token 的值，最后一个字段是用户组，token 认证用户名不重要，不会识别   证书: 通过使用 CA 证书给用户签发证书，签发的证书中 CN 字段是用户名，O 是用户组  使用 RBAC 控制用户权限  下面给出几个 RBAC 定义示例。
 给 roc 授权 test 命名空间所有权限，istio-system 命名空间的只读权限:
 kind: Role apiVersion: rbac.authorization.k8s.io/v1 metadata: name: admin namespace: test rules: - apiGroups: [&amp;#34;*&amp;#34;] resources: [&amp;#34;*&amp;#34;] verbs: [&amp;#34;*&amp;#34;] --- kind: RoleBinding apiVersion: rbac.</description>
-    </item>
-    
-    <item>
-      <title>本地 DNS 缓存</title>
-      <link>https://k8s.imroc.io/best-practice/node-local-dns/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/node-local-dns/</guid>
-      <description>为什么需要本地 DNS 缓存   减轻集群 DNS 解析压力，提高 DNS 性能
-  避免 netfilter 做 DNAT 导致 conntrack 冲突引发 DNS 5 秒延时
- 镜像底层库 DNS 解析行为默认使用 UDP 在同一个 socket 并发 A 和 AAAA 记录请求，由于 UDP 无状态，两个请求可能会并发创建 conntrack 表项，如果最终 DNAT 成同一个集群 DNS 的 Pod IP 就会导致 conntrack 冲突，由于 conntrack 的创建和插入是不加锁的，最终后面插入的 conntrack 表项就会被丢弃，从而请求超时，默认 5s 后重试，造成现象就是 DNS 5 秒延时; 底层库是 glibc 的容器镜像可以通过配 resolv.conf 参数来控制 DNS 解析行为，不用 TCP 或者避免相同五元组并发(使用串行解析 A 和 AAAA 避免并发或者使用不同 socket 发请求避免相同源端口)，但像基于 alpine 镜像的容器由于底层库是 musl libc，不支持这些 resolv.</description>
     </item>
     
     <item>
@@ -870,10 +940,10 @@ docker 默认使用的目录主要有:
     
     <item>
       <title>神秘的溢出与丢包</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/kubernetes-overflow-and-drop/</link>
+      <link>https://k8s.imroc.io/avoid/cases/kubernetes-overflow-and-drop/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/kubernetes-overflow-and-drop/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/kubernetes-overflow-and-drop/</guid>
       <description>&lt;h2 id=&#34;问题描述&#34;&gt;问题描述&lt;/h2&gt;
 &lt;p&gt;有用户反馈大量图片加载不出来。&lt;/p&gt;
 &lt;p&gt;图片下载走的 k8s ingress，这个 ingress 路径对应后端 service 是一个代理静态图片文件的 nginx deployment，这个 deployment 只有一个副本，静态文件存储在 nfs 上，nginx 通过挂载 nfs 来读取静态文件来提供图片下载服务，所以调用链是：client &amp;ndash;&amp;gt; k8s ingress &amp;ndash;&amp;gt; nginx &amp;ndash;&amp;gt; nfs。&lt;/p&gt;
@@ -925,20 +995,20 @@ $ ip a
     
     <item>
       <title>网络性能差</title>
-      <link>https://k8s.imroc.io/troubleshooting/problems/network/low-throughput/</link>
+      <link>https://k8s.imroc.io/troubleshooting/network/low-throughput/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/problems/network/low-throughput/</guid>
+      <guid>https://k8s.imroc.io/troubleshooting/network/low-throughput/</guid>
       <description>IPVS 模式吞吐性能低 内核参数关闭 conn_reuse_mode:
 sysctl net.ipv4.vs.conn_reuse_mode=0 参考 issue: https://github.com/kubernetes/kubernetes/issues/70747</description>
     </item>
     
     <item>
       <title>网络调试相关脚本</title>
-      <link>https://k8s.imroc.io/best-practice/useful/shell/network/</link>
+      <link>https://k8s.imroc.io/useful/shell/network/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/useful/shell/network/</guid>
+      <guid>https://k8s.imroc.io/useful/shell/network/</guid>
       <description>进入容器 netns 粘贴脚本到命令行:
 function e() { set -eu ns=${2-&amp;#34;default&amp;#34;} pod=`kubectl -n $ns describe pod $1 | grep -A10 &amp;#34;^Containers:&amp;#34; | grep -Eo &amp;#39;docker://.*$&amp;#39; | head -n 1 | sed &amp;#39;s/docker:\/\/\(.*\)$/\1/&amp;#39;` pid=`docker inspect -f {{.State.Pid}} $pod` echo &amp;#34;entering pod netns for $ns/$1&amp;#34; cmd=&amp;#34;nsenter -n --target $pid&amp;#34; echo $cmd $cmd } 进入在当前节点上运行的某个 pod 的 netns:
 # 进入 kube-system 命名空间下名为 metrics-server-6cf9685556-rclw5 的 pod 所在的 netns e metrics-server-6cf9685556-rclw5 kube-system 进入 pod 的 netns 后就使用节点上的工具在该 netns 中做操作，比如用 ip a 查询网卡和ip、用 ip route 查询路由、用 tcpdump 抓容器内的包等。</description>
@@ -946,10 +1016,10 @@ function e() { set -eu ns=${2-&amp;#34;default&amp;#34;} pod=`kubectl -n $ns des
     
     <item>
       <title>节点相关脚本</title>
-      <link>https://k8s.imroc.io/best-practice/useful/shell/node/</link>
+      <link>https://k8s.imroc.io/useful/shell/node/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/useful/shell/node/</guid>
+      <guid>https://k8s.imroc.io/useful/shell/node/</guid>
       <description>表格输出各节点占用的 podCIDR kubectl get no -o=custom-columns=INTERNAL-IP:.metadata.name,EXTERNAL-IP:.status.addresses[1].address,CIDR:.spec.podCIDR 示例输出:
 INTERNAL-IP EXTERNAL-IP CIDR 10.100.12.194 152.136.146.157 10.101.64.64/27 10.100.16.11 10.100.16.11 10.101.66.224/27 10.100.16.24 10.100.16.24 10.101.64.32/27 10.100.16.26 10.100.16.26 10.101.65.0/27 10.100.16.37 10.100.16.37 10.101.64.0/27 表格输出各节点总可用资源 (Allocatable) kubectl get no -o=custom-columns=&amp;#34;NODE:.metadata.name,ALLOCATABLE CPU:.status.allocatable.cpu,ALLOCATABLE MEMORY:.status.allocatable.memory&amp;#34; 示例输出：
 NODE ALLOCATABLE CPU ALLOCATABLE MEMORY 10.0.0.2 3920m 7051692Ki 10.0.0.3 3920m 7051816Ki 输出各节点已分配资源的情况 所有种类的资源已分配情况概览：
@@ -958,10 +1028,10 @@ kubectl get nodes --no-headers | awk &amp;#39;{print $1}&amp;#39; | xargs -I {} 
     
     <item>
       <title>解决长连接服务扩容失效</title>
-      <link>https://k8s.imroc.io/best-practice/deploy/scale-keepalive-service/</link>
+      <link>https://k8s.imroc.io/avoid/scale-keepalive-service/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/best-practice/deploy/scale-keepalive-service/</guid>
+      <guid>https://k8s.imroc.io/avoid/scale-keepalive-service/</guid>
       <description>在现网运营中，有很多场景为了提高效率，一般都采用建立长连接的方式来请求。我们发现在客户端以长连接请求服务端的场景下，K8S的自动扩容会失效。原因是客户端长连接一直保留在老的Pod容器中，新扩容的Pod没有新的连接过来，导致K8S按照步长扩容第一批Pod之后就停止了扩容操作，而且新扩容的Pod没能承载请求，进而出现服务过载的情况，自动扩容失去了意义。
 对长连接扩容失效的问题，我们的解决方法是将长连接转换为短连接。我们参考了 nginx keepalive 的设计，nginx 中 keepalive_requests 这个配置项设定了一个TCP连接能处理的最大请求数，达到设定值(比如1000)之后服务端会在 http 的 Header 头标记 “Connection:close”，通知客户端处理完当前的请求后关闭连接，新的请求需要重新建立TCP连接，所以这个过程中不会出现请求失败，同时又达到了将长连接按需转换为短连接的目的。通过这个办法客户端和云K8S服务端处理完一批请求后不断的更新TCP连接，自动扩容的新Pod能接收到新的连接请求，从而解决了自动扩容失效的问题。
 由于Golang并没有提供方法可以获取到每个连接处理过的请求数，我们重写了 net.Listener 和 net.Conn，注入请求计数器，对每个连接处理的请求做计数，并通过 net.Conn.LocalAddr() 获得计数值，判断达到阈值 1000 后在返回的 Header 中插入 “Connection:close” 通知客户端关闭连接，重新建立连接来发起请求。以上处理逻辑用 Golang 实现示例代码如下：
@@ -970,10 +1040,10 @@ package main import ( &amp;#34;net&amp;#34; &amp;#34;github.com/gin-gonic/gin&am
     
     <item>
       <title>访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/</link>
+      <link>https://k8s.imroc.io/avoid/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/lb-with-local-externaltrafficpolicy-timeout-occasionally/</guid>
       <description>现象：用户在 TKE 创建了公网 LoadBalancer 类型的 Service，externalTrafficPolicy 设为了 Local，访问这个 Service 对应的公网 LB 有时会超时。
 externalTrafficPolicy 为 Local 的 Service 用于在四层获取客户端真实源 IP，官方参考文档：Source IP for Services with Type=LoadBalancer
 TKE 的 LoadBalancer 类型 Service 实现是使用 CLB 绑定所有节点对应 Service 的 NodePort，CLB 不做 SNAT，报文转发到 NodePort 时源 IP 还是真实的客户端 IP，如果 NodePort 对应 Service 的 externalTrafficPolicy 不是 Local 的就会做 SNAT，到 pod 时就看不到客户端真实源 IP 了，但如果是 Local 的话就不做 SNAT，如果本机 node 有这个 Service 的 endpoint 就转到对应 pod，如果没有就直接丢掉，因为如果转到其它 node 上的 pod 就必须要做 SNAT，不然无法回包，而 SNAT 之后就无法获取真实源 IP 了。</description>
@@ -981,10 +1051,10 @@ TKE 的 LoadBalancer 类型 Service 实现是使用 CLB 绑定所有节点对应
     
     <item>
       <title>诡异的 No route to host</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/no-route-to-host/</link>
+      <link>https://k8s.imroc.io/avoid/cases/no-route-to-host/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/no-route-to-host/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/no-route-to-host/</guid>
       <description>问题反馈 有用户反馈 Deployment 滚动更新的时候，业务日志偶尔会报 &amp;ldquo;No route to host&amp;rdquo; 的错误。
 分析 之前没遇到滚动更新会报 &amp;ldquo;No route to host&amp;rdquo; 的问题，我们先看下滚动更新导致连接异常有哪些常见的报错:
   Connection reset by peer: 连接被重置。通常是连接建立过，但 server 端发现 client 发的包不对劲就返回 RST，应用层就报错连接被重置。比如在 server 滚动更新过程中，client 给 server 发的请求还没完全结束，或者本身是一个类似 grpc 的多路复用长连接，当 server 对应的旧 Pod 删除(没有做优雅结束，停止时没有关闭连接)，新 Pod 很快创建启动并且刚好有跟之前旧 Pod 一样的 IP，这时 kube-proxy 也没感知到这个 IP 其实已经被删除然后又被重建了，针对这个 IP 的规则就不会更新，旧的连接依然发往这个 IP，但旧 Pod 已经不在了，后面继续发包时依然转发给这个 Pod IP，最终会被转发到这个有相同 IP 的新 Pod 上，而新 Pod 收到此包时检查报文发现不对劲，就返回 RST 给 client 告知将连接重置。针对这种情况，建议应用自身处理好优雅结束：Pod 进入 Terminating 状态后会发送 SIGTERM 信号给业务进程，业务进程的代码需处理这个信号，在进程退出前关闭所有连接。</description>
@@ -992,10 +1062,10 @@ TKE 的 LoadBalancer 类型 Service 实现是使用 CLB 绑定所有节点对应
     
     <item>
       <title>跨 VPC 访问 NodePort 经常超时</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/cross-vpc-connect-nodeport-timeout/</link>
+      <link>https://k8s.imroc.io/avoid/cases/cross-vpc-connect-nodeport-timeout/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/cross-vpc-connect-nodeport-timeout/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/cross-vpc-connect-nodeport-timeout/</guid>
       <description>现象: 从 VPC a 访问 VPC b 的 TKE 集群的某个节点的 NodePort，有时候正常，有时候会卡住直到超时。
 原因怎么查？
 当然是先抓包看看啦，抓 server 端 NodePort 的包，发现异常时 server 能收到 SYN，但没响应 ACK:
@@ -1028,10 +1098,10 @@ cat &amp;lt;&amp;lt;EOF | sudo tee kube-flannel.yml apiVersion: policy/v1beta1 k
     
     <item>
       <title>驱逐导致服务中断</title>
-      <link>https://k8s.imroc.io/troubleshooting/cases/eviction-leads-to-service-disruption/</link>
+      <link>https://k8s.imroc.io/avoid/cases/eviction-leads-to-service-disruption/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/troubleshooting/cases/eviction-leads-to-service-disruption/</guid>
+      <guid>https://k8s.imroc.io/avoid/cases/eviction-leads-to-service-disruption/</guid>
       <description>TODO 优化
 案例 TKE 一客户的某个节点有问题，无法挂载nfs，通过新加节点，驱逐故障节点的 pod 来规避，但导致了业务 10min 服务不可用，排查发现其它节点 pod 很多集体出现了重启，主要是连不上 kube-dns 无法解析 service，业务调用不成功，从而对外表现为服务不可用。
 为什么会中断？驱逐的原理是先封锁节点，然后将旧的 node 上的 pod 删除，replicaset 控制器检测到 pod 减少，会重新创建一个 pod，调度到新的 node上，这个过程是先删除，再创建，并非是滚动更新，因此更新过程中，如果一个deployment的所有 pod 都在被驱逐的节点上，则可能导致该服务不可用。

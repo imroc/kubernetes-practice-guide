@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>集群优化 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/optimization/</link>
+    <description>Recent content in 集群优化 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/optimization/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>ETCD 优化</title>
+      <link>https://k8s.imroc.io/optimization/etcd/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/optimization/etcd/</guid>
+      <description>高可用部署 部署一个高可用ETCD集群可以参考官方文档: https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/clustering.md
+ 如果是 self-host 方式部署的集群，可以用 etcd-operator 部署 etcd 集群；也可以使用另一个小集群专门部署 etcd (使用 etcd-operator)
+ 提高磁盘 IO 性能 ETCD 对磁盘写入延迟非常敏感，对于负载较重的集群建议磁盘使用 SSD 固态硬盘。可以使用 diskbench 或 fio 测量磁盘实际顺序 IOPS。
+提高 ETCD 的磁盘 IO 优先级 由于 ETCD 必须将数据持久保存到磁盘日志文件中，因此来自其他进程的磁盘活动可能会导致增加写入时间，结果导致 ETCD 请求超时和临时 leader 丢失。当给定高磁盘优先级时，ETCD 服务可以稳定地与这些进程一起运行:
+sudo ionice -c2 -n0 -p $(pgrep etcd) 提高存储配额 默认 ETCD 空间配额大小为 2G，超过 2G 将不再写入数据。通过给 ETCD 配置 --quota-backend-bytes 参数增大空间配额，最大支持 8G。
+分离 events 存储 集群规模大的情况下，集群中包含大量节点和服务，会产生大量的 event，这些 event 将会对 etcd 造成巨大压力并占用大量 etcd 存储空间，为了在大规模集群下提高性能，可以将 events 存储在单独的 ETCD 集群中。</description>
+    </item>
+    
+    <item>
+      <title>Master 优化</title>
+      <link>https://k8s.imroc.io/optimization/master/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/optimization/master/</guid>
+      <description>Kubernetes 自 v1.6 以来，官方就宣称单集群最大支持 5000 个节点。不过这只是理论上，在具体实践中从 0 到 5000，还是有很长的路要走，需要见招拆招。
+官方标准如下：
+ 不超过 5000 个节点 不超过 150000 个 pod 不超过 300000 个容器 每个节点不超过 100 个 pod  Master 节点配置优化 GCE 推荐配置：
+ 1-5 节点: n1-standard-1 6-10 节点: n1-standard-2 11-100 节点: n1-standard-4 101-250 节点: n1-standard-8 251-500 节点: n1-standard-16 超过 500 节点: n1-standard-32  AWS 推荐配置：
+ 1-5 节点: m3.medium 6-10 节点: m3.large 11-100 节点: m3.xlarge 101-250 节点: m3.2xlarge 251-500 节点: c4.4xlarge 超过 500 节点: c4.</description>
+    </item>
+    
+    <item>
+      <title>内核参数优化</title>
+      <link>https://k8s.imroc.io/optimization/kernel/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/optimization/kernel/</guid>
+      <description># 允许的最大跟踪连接条目，是在内核内存中 netfilter 可以同时处理的“任务”（连接跟踪条目） net.netfilter.nf_conntrack_max=10485760 net.netfilter.nf_conntrack_tcp_timeout_established=300 # 哈希表大小（只读）（64位系统、8G内存默认 65536，16G翻倍，如此类推） net.netfilter.nf_conntrack_buckets=655360 # 每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目 net.core.netdev_max_backlog=10000 # 表示socket监听(listen)的backlog上限，也就是就是socket的监听队列(accept queue)，当一个tcp连接尚未被处理或建立时(半连接状态)，会保存在这个监听队列，默认为 128，在高并发场景下偏小，优化到 32768。参考 https://imroc.io/posts/kubernetes-overflow-and-drop/ net.core.somaxconn=32768 # 没有启用syncookies的情况下，syn queue(半连接队列)大小除了受somaxconn限制外，也受这个参数的限制，默认1024，优化到8096，避免在高并发场景下丢包 net.ipv4.tcp_max_syn_backlog=8096 # 表示同一用户同时最大可以创建的 inotify 实例 (每个实例可以有很多 watch) fs.inotify.max_user_instances=8192 # max-file 表示系统级别的能够打开的文件句柄的数量， 一般如果遇到文件句柄达到上限时，会碰到 # Too many open files 或者 Socket/File: Can’t open so many files 等错误 fs.file-max=2097152 # 表示同一用户同时可以添加的watch数目（watch一般是针对目录，决定了同时同一用户可以监控的目录数量) 默认值 8192 在容器场景下偏小，在某些情况下可能会导致 inotify watch 数量耗尽，使得创建 Pod 不成功或者 kubelet 无法启动成功，将其优化到 524288 fs.inotify.max_user_watches=524288 net.core.bpf_jit_enable=1 net.core.bpf_jit_harden=1 net.core.bpf_jit_kallsyms=1 net.core.dev_weight_tx_bias=1 net.core.rmem_max=16777216 net.core.wmem_max=16777216 net.ipv4.tcp_rmem=4096 12582912 16777216 net.</description>
+    </item>
+    
+  </channel>
+</rss>
