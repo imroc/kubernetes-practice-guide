@@ -88,7 +88,7 @@ Sep 18 10:19:49 VM-1-33-ubuntu dockerd[4822]: time="2019-09-18T10:19:49.90394365
 
 随后可能发生状态不同步，已提issue:  https://github.com/docker/for-linux/issues/779
 
-* 临时恢复: 执行 `docker prune` 或重启 dockerd
+* 临时恢复: 执行 `docker container prune` 或重启 dockerd
 * 长期方案: 运行时推荐直接使用 containerd，绕过 dockerd 避免 docker 本身的各种 BUG
 
 ## Daemonset Controller 的 BUG
