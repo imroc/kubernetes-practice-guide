@@ -3148,7 +3148,7 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
 <pre><code class="language-log" data-lang="log">Sep 18 10:19:49 VM-1-33-ubuntu dockerd[4822]: time=&quot;2019-09-18T10:19:49.903943652+08:00&quot; level=error msg=&quot;Failed to log msg \&quot;\&quot; for logger json-file: write /opt/docker/containers/54922ec8b1863bcc504f6dac41e40139047f7a84ff09175d2800100aaccbad1f/54922ec8b1863bcc504f6dac41e40139047f7a84ff09175d2800100aaccbad1f-json.log: no space left on device&quot;
 </code></pre><p>随后可能发生状态不同步，已提issue:  <a href="https://github.com/docker/for-linux/issues/779">https://github.com/docker/for-linux/issues/779</a></p>
 <ul>
-<li>临时恢复: 执行 <code>docker prune</code> 或重启 dockerd</li>
+<li>临时恢复: 执行 <code>docker container prune</code> 或重启 dockerd</li>
 <li>长期方案: 运行时推荐直接使用 containerd，绕过 dockerd 避免 docker 本身的各种 BUG</li>
 </ul>
 <h2 id="daemonset-controller-的-bug">Daemonset Controller 的 BUG</h2>
