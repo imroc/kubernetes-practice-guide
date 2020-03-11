@@ -53,7 +53,7 @@
 	"title": "集群方案",
 	"tags": [],
 	"description": "",
-	"content": "  Ingress 方案    Nginx Ingress    安装 nginx ingress controller    Traefik Ingress    安装 traefik ingress controller     Metrics 方案    应用部署优化    使用 PodDisruptionBudget 避免驱逐导致服务不可用   使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断   使用反亲和性避免单点故障    ETCD 优化     Master 优化     内核参数优化      网络方案    Flannel    部署 Flannel    彻底理解集群网络      运行时方案    Containerd    安装 containerd     "
+	"content": "  Ingress 方案    Nginx Ingress    安装 nginx ingress controller    Traefik Ingress    安装 traefik ingress controller     Metrics 方案    安装 metrics server      网络方案    Flannel    部署 Flannel    彻底理解集群网络      运行时方案    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      "
 },
 {
 	"uri": "https://k8s.imroc.io/deploy/manual/bootstrapping-worker-nodes/",
@@ -68,6 +68,20 @@
 	"tags": [],
 	"description": "",
 	"content": "部署 kube-proxy kube-proxy 会请求 apiserver 获取 Service 及其 Endpoint，将 Service 的 ClUSTER IP 与对应 Endpoint 的 Pod IP 映射关系转换成 iptables 或 ipvs 规则写到节点上，实现 Service 转发。\n部署方法参考 以 Daemonset 方式部署 kube-proxy\n部署网络插件 参考 部署 Flannel\n部署集群 DNS 集群 DNS 是 Kubernetes 的核心功能之一，被许多服务所依赖，用于解析集群内 Pod 的 DNS 请求，包括:\n 解析 service 名称成对应的 CLUSTER IP 解析 headless service 名称成对应 Pod IP (选取一个 endpoint 的 Pod IP 返回) 解析外部域名(代理 Pod 请求上游 DNS)  可以通过部署 kube-dns 或 CoreDNS 作为集群的必备扩展来提供命名服务，推荐使用 CoreDNS，效率更高，资源占用率更小，部署方法参考 部署 CoreDNS\n"
+},
+{
+	"uri": "https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/",
+	"title": "Flink on Kubernetes",
+	"tags": [],
+	"description": "",
+	"content": "介绍 Flink 在 Kubernetes 上的实践\n"
+},
+{
+	"uri": "https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/intro/",
+	"title": "Flink 介绍",
+	"tags": [],
+	"description": "",
+	"content": "Flink 概述 Apache Flink 是一个面向数据流处理和批量数据处理的可分布式的开源计算框架，它基于同一个Flink流式执行模型（streaming execution model），能够同时支持流处理和批处理两种应用类型。\n由于流处理和批处理所提供的SLA(服务等级协议)是完全不相同，流处理一般需要支持低延迟、Exactly-once保证，而批处理需要支持高吞吐、高效处理。所以在实现的时候通常是分别给出两套实现方法，或者通过一个独立的开源框架来实现其中每一种处理方案； 比如：实现批处理的开源方案有MapReduce、Spark，实现流处理的开源方案有Storm，Spark的Streaming 其实本质上也是微批处理。\nFlink在实现流处理和批处理时，与传统的一些方案完全不同，它从另一个视角看待流处理和批处理，将二者统一起来：Flink是完全支持流处理，也就是说作为流处理看待时输入数据流是无界的；批处理被作为一种特殊的流处理，只是它的输入数据流被定义为有界的。\n流式框架的演进 Storm 是流式处理框架的先锋，实时处理能做到低延迟，但很难实现高吞吐，也不能保证精确一致性(exactly-once)，即保证执行一次并且只能执行一次。\n后基于批处理框架 Spark 推出 Spark Streaming，将批处理数据分割的足够小，也实现了流失处理，并且可以做到高吞吐，能实现 exactly-once，但难以做到低时延，因为分割的任务之间需要有间隔时间，无法做到真实时。\n最后 Flink 诞生了，同时做到了低延迟、高吞吐、exactly-once，并且还支持丰富的时间类型和窗口计算。\nFlink 基本架构 JobManager 与 TaskManager Flink 主要由两个部分组件构成：JobManager 和 TaskManager。如何理解这两个组件的作用？JobManager 负责资源申请和任务分发，TaskManager 负责任务的执行。跟 k8s 本身类比，JobManager 相当于 Master，TaskManager 相当于 Worker；跟 Spark 类比，JobManager 相当于 Driver，TaskManager 相当于 Executor。\nJobManager 负责整个 Flink 集群任务的调度以及资源的管理，从客户端获取提交的任务，然后根据集群中 TaskManager 上 TaskSlot 的使用情况，为提交的应用分配相应的 TaskSlot 资源并命令 TaskManager 启动从客户端中获取的应用。JobManager 是集群中的Master节点，整个集群有且仅有一个active的JobManager，负责整个集群的任务管理和资源管理。JobManager和TaskManager之间通过Actor System 进行通信，获取任务的执行情况并通过Actor System 将应用的任务的执行情况发送到客户端。同时在任务的执行过程中，Flink JobManager 会触发Checkpoints 操作，每个TaskManager 节点接受的到checkpoints触发命令后，完成checkpoints操作，所有的checkpoint协调过程都是在Flink JobManager中完成。当任务完成后，JobManager会将任务执行信息返回到客户端，并释放掉TaskManager中的资源以供下一次任务使用。\nTaskManager 相当于整个集群的slave 节点，负责具体的任务执行和对应任务在每个节点上的资源申请与管理。客户端通过将编写好的flink应用编译打包，提交到JobManager，然后JobManager会根据已经注册在jobmanger中TaskManager的资源情况，将任务分配到有资源的TaskManager节点，然后启动并运行任务。TaskManager从JobManager那接受需要部署的任务，然后使用slot资源启动task，建立数据接入网络连接，接受数据并处理。同时TaskManager之间的数据交互都是通过数据流的方式进行的。\n有界数据流和无界数据流 Flink用于处理有界和无界数据：\n 无界数据流：无界数据流有一个开始但是没有结束，它们不会在生成时终止并提供数据，必须连续处理无界流，也就是说必须在获取后立即处理event。对于无界数据流我们无法等待所有数据都到达，因为输入是无界的，并且在任何时间点都不会完成。处理无界数据通常要求以特定顺序（例如事件发生的顺序）获取event，以便能够推断结果完整性。 有界数据流：有界数据流有明确定义的开始和结束，可以在执行任何计算之前通过获取所有数据来处理有界流，处理有界流不需要有序获取，因为可以始终对有界数据集进行排序，有界流的处理也称为批处理。  编程模型 https://ci.apache.org/projects/flink/flink-docs-release-1.10/concepts/programming-model.html\n"
 },
 {
 	"uri": "https://k8s.imroc.io/security/cert/install-cert-manger/",
@@ -96,6 +110,13 @@
 	"tags": [],
 	"description": "",
 	"content": "  方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    安装 kubectl      "
+},
+{
+	"uri": "https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/flink-on-kubernetes/",
+	"title": "Flink on Kubernetes 方案",
+	"tags": [],
+	"description": "",
+	"content": "将 Flink 部署到 Kubernetes 有 Session Cluster、Job Cluster 和 Native Kubernetes 三种集群部署方案。\nSession Cluster 相当于将静态部署的 Standalone Cluster 容器化，TaskManager 与 JobManager 都以 Deployment 方式部署，可动态提交 Job，Job 处理能力主要取决于 TaskManager 的配置 (slot/cpu/memory) 与副本数 (replicas)，调整副本数可以动态扩容。这种方式也是比较常见和成熟的方式。\nJob Cluster 相当于给每一个独立的 Job 部署一整套 Flink 集群，这套集群就只能运行一个 Job，配备专门制作的 Job 镜像，不能动态提交其它 Job。这种模式可以让每种 Job 拥有专用的资源，独立扩容。\nNative Kubernetes 这种方式是与 Kubernetes 原生集成，相比前面两种，这种模式能做到动态向 Kubernetes 申请资源，不需要提前指定 TaskManager 数量，就像 flink 与 yarn 和 mesos 集成一样。此模式能够提高资源利用率，但还处于试验阶段，不够成熟，不建议部署到生产环境。\n总结 TODO\n"
 },
 {
 	"uri": "https://k8s.imroc.io/security/cert/autogenerate-certificate-with-cert-manager/",
@@ -130,7 +151,28 @@
 	"title": "排错指南",
 	"tags": [],
 	"description": "",
-	"content": "kuernetes 问题定位手册(脑图)：https://www.processon.com/view/link/5e4662ade4b0d86ec4018e50\n目录  排错技巧    使用 Systemtap 定位疑难杂症     分析 ExitCode 定位 Pod 异常退出原因     容器内抓包定位网络问题      处理实践    arp_cache 溢出     inotify watch 耗尽     PID 耗尽     内存碎片化     磁盘爆满     高负载      节点排错    arp_cache: neighbor table overflow! (arp缓存溢出)     Cannot allocate memory     no space left on device     Node NotReady     soft lockup (内核软死锁)      Pod 排错    Pod Terminating 慢     Pod 一直处于 ContainerCreating 或 Waiting 状态     Pod 一直处于 Error 状态     Pod 一直处于 ImageInspectError 状态     Pod 一直处于 ImagePullBackOff 状态     Pod 一直处于 Pending 状态     Pod 一直处于 Terminating 状态     Pod 一直处于 Unknown 状态     Pod 健康检查失败     Pod 处于 CrashLoopBackOff 状态     容器进程主动退出      网络排错    DNS 解析异常     LB 健康检查失败     Service 不通     Service 无法解析     网络性能差      其它排错    APIServer 响应慢     Daemonset 没有被调度     Job 无法被删除     kubectl 执行 exec 或 logs 失败     Node 全部消失      "
+	"content": "kuernetes 问题定位手册(脑图)：https://www.processon.com/view/link/5e4662ade4b0d86ec4018e50\n目录  排错技巧    使用 Systemtap 定位疑难杂症     分析 ExitCode 定位 Pod 异常退出原因     容器内抓包定位网络问题      处理实践     节点排错    arp_cache: neighbor table overflow! (arp缓存溢出)     Cannot allocate memory     no space left on device     Node NotReady     soft lockup (内核软死锁)      Pod 排错    Pod Terminating 慢     Pod 一直处于 ContainerCreating 或 Waiting 状态     Pod 一直处于 Error 状态     Pod 一直处于 ImageInspectError 状态     Pod 一直处于 ImagePullBackOff 状态     Pod 一直处于 Pending 状态     Pod 一直处于 Terminating 状态     Pod 一直处于 Unknown 状态     Pod 健康检查失败     Pod 处于 CrashLoopBackOff 状态     容器进程主动退出      网络排错    DNS 解析异常     LB 健康检查失败     Service 不通     Service 无法解析     网络性能差      其它排错    APIServer 响应慢     Daemonset 没有被调度     Job 无法被删除     kubectl 执行 exec 或 logs 失败     Node 全部消失      "
+},
+{
+	"uri": "https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/session-cluster/",
+	"title": "Session Cluster 模式部署",
+	"tags": [],
+	"description": "",
+	"content": "参考官方文档: https://ci.apache.org/projects/flink/flink-docs-stable/ops/deployment/kubernetes.html#flink-session-cluster-on-kubernetes\n准备资源文件(flink.yaml):\napiVersion: v1 kind: ConfigMap metadata: name: flink-config labels: app: flink data: flink-conf.yaml: |+ jobmanager.rpc.address: flink-jobmanager taskmanager.numberOfTaskSlots: 1 blob.server.port: 6124 jobmanager.rpc.port: 6123 taskmanager.rpc.port: 6122 jobmanager.heap.size: 1024m taskmanager.memory.process.size: 1024m log4j.properties: |+ log4j.rootLogger=INFO, file log4j.logger.akka=INFO log4j.logger.org.apache.kafka=INFO log4j.logger.org.apache.hadoop=INFO log4j.logger.org.apache.zookeeper=INFO log4j.appender.file=org.apache.log4j.FileAppender log4j.appender.file.file=${log.file} log4j.appender.file.layout=org.apache.log4j.PatternLayout log4j.appender.file.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n log4j.logger.org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline=ERROR, file --- apiVersion: apps/v1 kind: Deployment metadata: name: flink-jobmanager spec: replicas: 1 selector: matchLabels: app: flink component: jobmanager template: metadata: labels: app: flink component: jobmanager spec: containers: - name: jobmanager image: flink:latest workingDir: /opt/flink command: [\u0026#34;/bin/bash\u0026#34;, \u0026#34;-c\u0026#34;, \u0026#34;$FLINK_HOME/bin/jobmanager.sh start;\\ while :; do if [[ -f $(find log -name \u0026#39;*jobmanager*.log\u0026#39; -print -quit) ]]; then tail -f -n +1 log/*jobmanager*.log; fi; done\u0026#34;] ports: - containerPort: 6123 name: rpc - containerPort: 6124 name: blob - containerPort: 8081 name: ui livenessProbe: tcpSocket: port: 6123 initialDelaySeconds: 30 periodSeconds: 60 volumeMounts: - name: flink-config-volume mountPath: /opt/flink/conf securityContext: runAsUser: 9999 # refers to user _flink_ from official flink image, change if necessary volumes: - name: flink-config-volume configMap: name: flink-config items: - key: flink-conf.yaml path: flink-conf.yaml - key: log4j.properties path: log4j.properties --- apiVersion: apps/v1 kind: Deployment metadata: name: flink-taskmanager spec: replicas: 2 selector: matchLabels: app: flink component: taskmanager template: metadata: labels: app: flink component: taskmanager spec: containers: - name: taskmanager image: flink:latest workingDir: /opt/flink command: [\u0026#34;/bin/bash\u0026#34;, \u0026#34;-c\u0026#34;, \u0026#34;$FLINK_HOME/bin/taskmanager.sh start; \\ while :; do if [[ -f $(find log -name \u0026#39;*taskmanager*.log\u0026#39; -print -quit) ]]; then tail -f -n +1 log/*taskmanager*.log; fi; done\u0026#34;] ports: - containerPort: 6122 name: rpc livenessProbe: tcpSocket: port: 6122 initialDelaySeconds: 30 periodSeconds: 60 volumeMounts: - name: flink-config-volume mountPath: /opt/flink/conf/ securityContext: runAsUser: 9999 # refers to user _flink_ from official flink image, change if necessary volumes: - name: flink-config-volume configMap: name: flink-config items: - key: flink-conf.yaml path: flink-conf.yaml - key: log4j.properties path: log4j.properties --- apiVersion: v1 kind: Service metadata: name: flink-jobmanager spec: type: ClusterIP ports: - name: rpc port: 6123 - name: blob port: 6124 - name: ui port: 8081 selector: app: flink component: jobmanager --- apiVersion: v1 kind: Service metadata: name: flink-jobmanager-rest spec: type: NodePort ports: - name: rest port: 8081 targetPort: 8081 selector: app: flink component: jobmanager 安装：\nkubectl apply -f flink.yaml 如何访问 JobManager 的 UI ？在 TKE 或者 EKS 上，支持 LoadBalancer 类型的 Service，可以将 JobManager 的 UI 用 LB 暴露：\nkubectl patch service flink-jobmanager -p \u0026#39;{\u0026#34;spec\u0026#34;:{\u0026#34;type\u0026#34;:\u0026#34;LoadBalancer\u0026#34;}}\u0026#39; 卸载：\nkubectl delete -f flink.yaml  若要部署到不同命名空间，请提前创建好命名空间并在所有 kubectl 命令后加 -n  "
+},
+{
+	"uri": "https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/job-cluster/",
+	"title": "Job Cluster 模式部署",
+	"tags": [],
+	"description": "",
+	"content": ""
+},
+{
+	"uri": "https://k8s.imroc.io/monitoring/wechat-work-alert/",
+	"title": "企业微信告警",
+	"tags": [],
+	"description": "",
+	"content": "原生支持的企业微信告警 配置参考：https://prometheus.io/docs/alerting/configuration/#wechat_config 操作参考: https://songjiayang.gitbooks.io/prometheus/content/alertmanager/wechat.html\n通过企业微信群机器人告警 计划开源一款适配 alertmanager 的 webhook 程序，调企业微信群机器人的 webhook 发送群消息告警，告警内容根据 alertmanager 传来的内容进行封装\n"
 },
 {
 	"uri": "https://k8s.imroc.io/troubleshooting/node/",
@@ -147,11 +189,25 @@
 	"content": "目录  cgroup 泄露     conntrack 冲突导致丢包     tcp tw recycle 引发丢包     使用 NodeLocal DNS (缓存)     使用 oom-guard 在用户态处理 cgroup OOM     解决长连接服务扩容失效     踩坑分享    ARP 缓存爆满导致健康检查失败   DNS 5 秒延时   DNS 解析异常   kubectl edit 或者 apply 报 SchemaError   LB 压测 NodePort CPS 低   Pod 偶尔存活检查失败   Pod 访问另一个集群的 apiserver 有延时   神秘的溢出与丢包   访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时   诡异的 No route to host   跨 VPC 访问 NodePort 经常超时   驱逐导致服务中断    "
 },
 {
+	"uri": "https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/native-kubernetes/",
+	"title": "Native Kubernetes 模式部署",
+	"tags": [],
+	"description": "",
+	"content": "与 Kubernetes 集成 在 flink 1.10 之前，在 k8s 上运行 flink 任务都是需要事先指定 TaskManager 的个数以及CPU和内存的，存在一个问题：大多数情况下，你在任务启动前根本无法精确的预估这个任务需要多少个TaskManager，如果指定多了，会导致资源浪费，指定少了，会导致任务调度不起来。本质原因是在 Kubernetes 上运行的 Flink 任务并没有直接向 Kubernetes 集群去申请资源。\n在 2020-02-11 发布了 flink 1.10，该版本完成了与 k8s 集成的第一阶段，实现了向 k8s 动态申请资源，就像跟 yarn 或 mesos 集成那样。\n部署步骤 确定 flink 部署的 namespace，这里我选 \u0026ldquo;flink\u0026rdquo;，确保 namespace 已创建:\nkubectl create ns flink 创建 RBAC (创建 ServiceAccount 绑定 flink 需要的对 k8s 集群操作的权限):\napiVersion: v1 kind: ServiceAccount metadata: name: flink namespace: flink --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: name: flink-role-binding roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: edit subjects: - kind: ServiceAccount name: flink namespace: flink 利用 job 运行启动 flink 的引导程序 (请求 k8s 创建 jobmanager 相关的资源: service, deployment, configmap):\napiVersion: batch/v1 kind: Job metadata: name: boot-flink namespace: flink spec: template: spec: serviceAccount: flink restartPolicy: OnFailure containers: - name: start image: flink:1.10 workingDir: /opt/flink command: [\u0026#34;bash\u0026#34;, \u0026#34;-c\u0026#34;, \u0026#34;$FLINK_HOME/bin/kubernetes-session.sh \\ -Dkubernetes.cluster-id=roc \\ -Dkubernetes.jobmanager.service-account=flink \\ -Dtaskmanager.memory.process.size=1024m \\ -Dkubernetes.taskmanager.cpu=1 \\ -Dtaskmanager.numberOfTaskSlots=1 \\ -Dkubernetes.container.image=flink:1.10 \\ -Dkubernetes.namespace=flink\u0026#34;]  kubernetes.cluster-id: 指定 flink 集群的名称，后续自动创建的 k8s 资源会带上这个作为前缀或后缀 kubernetes.namespace: 指定 flink 相关的资源创建在哪个命名空间，这里我们用 flink 命名空间 kubernetes.jobmanager.service-account: 指定我们刚刚为 flink 创建的 ServiceAccount kubernetes.container.image: 指定 flink 需要用的镜像，这里我们部署的 1.10 版本，所以镜像用 flink:1.10  部署完成后，我们可以看到有刚刚运行完成的 job 的 pod 和被这个 job 拉起的 flink jobmanager 的 pod，前缀与配置 kubernetes.cluster-id 相同:\n$ kubectl -n flink get pod NAME READY STATUS RESTARTS AGE roc-cf9f6b5df-csk9z 1/1 Running 0 84m boot-flink-nc2qx 0/1 Completed 0 84m 还有 jobmanager 的 service:\n$ kubectl -n flink get svc NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE roc ClusterIP 172.16.255.152 \u0026lt;none\u0026gt; 8081/TCP,6123/TCP,6124/TCP 88m roc-rest LoadBalancer 172.16.255.11 150.109.27.251 8081:31240/TCP 88m 访问 http://150.109.27.251:8081 即可进入此 flink 集群的 ui 界面。\n参考资料  Active Kubernetes integration phase 2 - Advanced Features: https://issues.apache.org/jira/browse/FLINK-14460 Apache Flink 1.10.0 Release Announcement: https://flink.apache.org/news/2020/02/11/release-1.10.0.html Native Kubernetes Setup Beta (flink与kubernetes集成的官方教程): https://ci.apache.org/projects/flink/flink-docs-release-1.10/ops/deployment/native_kubernetes.html  "
+},
+{
 	"uri": "https://k8s.imroc.io/troubleshooting/pod/",
 	"title": "Pod 排错",
 	"tags": [],
 	"description": "",
 	"content": "本文是本书排查指南板块下问题排查章节的 Pod排错 一节，介绍 Pod 各种异常现象，可能的原因以及解决方法。\n常用命令 排查过程常用的命名如下:\n 查看 Pod 状态: kubectl get pod \u0026lt;pod-name\u0026gt; -o wide 查看 Pod 的 yaml 配置: kubectl get pod \u0026lt;pod-name\u0026gt; -o yaml 查看 Pod 事件: kubectl describe pod \u0026lt;pod-name\u0026gt; 查看容器日志: kubectl logs \u0026lt;pod-name\u0026gt; [-c \u0026lt;container-name\u0026gt;]  Pod 状态 Pod 有多种状态，这里罗列一下:\n Error: Pod 启动过程中发生错误 NodeLost: Pod 所在节点失联 Unkown: Pod 所在节点失联或其它未知异常 Waiting: Pod 等待启动 Pending: Pod 等待被调度 ContainerCreating: Pod 容器正在被创建 Terminating: Pod 正在被销毁 CrashLoopBackOff： 容器退出，kubelet 正在将它重启 InvalidImageName： 无法解析镜像名称 ImageInspectError： 无法校验镜像 ErrImageNeverPull： 策略禁止拉取镜像 ImagePullBackOff： 正在重试拉取 RegistryUnavailable： 连接不到镜像中心 ErrImagePull： 通用的拉取镜像出错 CreateContainerConfigError： 不能创建 kubelet 使用的容器配置 CreateContainerError： 创建容器失败 RunContainerError： 启动容器失败 PreStartHookError: 执行 preStart hook 报错 PostStartHookError： 执行 postStart hook 报错 ContainersNotInitialized： 容器没有初始化完毕 ContainersNotReady： 容器没有准备完毕 ContainerCreating：容器创建中 PodInitializing：pod 初始化中 DockerDaemonNotReady：docker还没有完全启动 NetworkPluginNotReady： 网络插件还没有完全启动  问题导航 有时候我们无法直接通过异常状态找到异常原因，这里我们罗列一下各种现象，点击即可进入相应的文章，帮助你分析问题，罗列各种可能的原因，进一步定位根因:\n Pod Terminating 慢   Pod 一直处于 ContainerCreating 或 Waiting 状态   Pod 一直处于 Error 状态   Pod 一直处于 ImageInspectError 状态   Pod 一直处于 ImagePullBackOff 状态   Pod 一直处于 Pending 状态   Pod 一直处于 Terminating 状态   Pod 一直处于 Unknown 状态   Pod 健康检查失败   Pod 处于 CrashLoopBackOff 状态   容器进程主动退出   "
+},
+{
+	"uri": "https://k8s.imroc.io/monitoring/dingtalk-alert/",
+	"title": "钉钉告警",
+	"tags": [],
+	"description": "",
+	"content": "通过 webhook 告警 参考： https://theo.im/blog/2017/10/16/release-prometheus-alertmanager-webhook-for-dingtalk/\ngithub: https://github.com/timonwong/prometheus-webhook-dingtalk\n"
 },
 {
 	"uri": "https://k8s.imroc.io/deploy/addons/",
@@ -172,7 +228,7 @@
 	"title": "集群安全",
 	"tags": [],
 	"description": "",
-	"content": "目录  用户管理    利用 CSR API 创建用户      集群权限控制    控制应用权限     控制用户权限      集群证书管理    排错技巧    使用 Systemtap 定位疑难杂症   分析 ExitCode 定位 Pod 异常退出原因   容器内抓包定位网络问题    处理实践    arp_cache 溢出   inotify watch 耗尽   PID 耗尽   内存碎片化   磁盘爆满   高负载    节点排错    arp_cache: neighbor table overflow! (arp缓存溢出)   Cannot allocate memory   no space left on device   Node NotReady   soft lockup (内核软死锁)    Pod 排错    Pod Terminating 慢   Pod 一直处于 ContainerCreating 或 Waiting 状态   Pod 一直处于 Error 状态   Pod 一直处于 ImageInspectError 状态   Pod 一直处于 ImagePullBackOff 状态   Pod 一直处于 Pending 状态   Pod 一直处于 Terminating 状态   Pod 一直处于 Unknown 状态   Pod 健康检查失败   Pod 处于 CrashLoopBackOff 状态   容器进程主动退出    网络排错    DNS 解析异常   LB 健康检查失败   Service 不通   Service 无法解析   网络性能差    其它排错    APIServer 响应慢   Daemonset 没有被调度   Job 无法被删除   kubectl 执行 exec 或 logs 失败   Node 全部消失     "
+	"content": "目录  用户管理    利用 CSR API 创建用户      集群权限控制    控制应用权限     控制用户权限      集群证书管理    安装 cert-manager     使用 cert-manager 自动生成证书      "
 },
 {
 	"uri": "https://k8s.imroc.io/trick/",
@@ -203,8 +259,8 @@
 	"content": "  DNS 解析异常   LB 健康检查失败   Service 不通   Service 无法解析   网络性能差   "
 },
 {
-	"uri": "https://k8s.imroc.io/ai-and-big-data/",
-	"title": "AI 与大数据",
+	"uri": "https://k8s.imroc.io/bigdata-ai/",
+	"title": "大数据与 AI",
 	"tags": [],
 	"description": "",
 	"content": "目录  Flink on Kubernetes   "
@@ -336,13 +392,6 @@
 	"content": ""
 },
 {
-	"uri": "https://k8s.imroc.io/ai-and-big-data/flink-on-kubernetes/",
-	"title": "Flink on Kubernetes",
-	"tags": [],
-	"description": "",
-	"content": "Flink 简介 Flink 是一款近年来流行的流式大数据处理框架。Storm 是流式处理框架的先锋，实时处理能做到低延迟，但很难实现高吞吐，也不能保证精确一致性(exactly-once)，即保证执行一次并且只能执行一次；后基于批处理框架 Spark 推出 Spark Streaming，将批处理数据分割的足够小，也实现了流失处理，并且可以做到高吞吐，能实现 exactly-once，但难以做到低时延，因为分割的任务之间需要有间隔时间，无法做到真实时；最后 Flink 诞生了，同时做到了低延迟、高吞吐、exactly-once，并且还支持丰富的时间类型和窗口计算。\nFlink 主要由两个部分组件构成：JobManager 和 TaskManager。如何理解这两个组件的作用？JobManager 负责资源申请和任务分发，TaskManager 负责任务的执行。跟 k8s 本身类比，JobManager 相当于 Master，TaskManager 相当于 Worker；跟 Spark 类比，JobManager 相当于 Driver，TaskManager 相当于 Executor。\n与 Kubernetes 集成 在 flink 1.10 之前，在 k8s 上运行 flink 任务都是需要事先指定 TaskManager 的个数以及CPU和内存的，存在一个问题：大多数情况下，你在任务启动前根本无法精确的预估这个任务需要多少个TaskManager，如果指定多了，会导致资源浪费，指定少了，会导致任务调度不起来。本质原因是在 Kubernetes 上运行的 Flink 任务并没有直接向 Kubernetes 集群去申请资源。\n在 2020-02-11 发布了 flink 1.10，该版本完成了与 k8s 集成的第一阶段，实现了向 k8s 动态申请资源，就像跟 yarn 或 mesos 集成那样。\n确定 flink 部署的 namespace，这里我选 \u0026ldquo;flink\u0026rdquo;，确保 namespace 已创建:\nkubectl create ns flink 创建 RBAC (创建 ServiceAccount 绑定 flink 需要的对 k8s 集群操作的权限):\napiVersion: v1 kind: ServiceAccount metadata: name: flink namespace: flink --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: name: flink-role-binding roleRef: apiGroup: rbac.authorization.k8s.io kind: ClusterRole name: edit subjects: - kind: ServiceAccount name: flink namespace: flink 利用 job 运行启动 flink 的引导程序 (请求 k8s 创建 jobmanager 相关的资源: service, deployment, configmap):\napiVersion: batch/v1 kind: Job metadata: name: boot-flink namespace: flink spec: template: spec: serviceAccount: flink restartPolicy: OnFailure containers: - name: start image: flink:1.10 workingDir: /opt/flink command: [\u0026#34;bash\u0026#34;, \u0026#34;-c\u0026#34;, \u0026#34;$FLINK_HOME/bin/kubernetes-session.sh \\ -Dkubernetes.cluster-id=roc \\ -Dkubernetes.jobmanager.service-account=flink \\ -Dtaskmanager.memory.process.size=1024m \\ -Dkubernetes.taskmanager.cpu=1 \\ -Dtaskmanager.numberOfTaskSlots=1 \\ -Dkubernetes.container.image=flink:1.10 \\ -Dkubernetes.namespace=flink\u0026#34;]  kubernetes.cluster-id: 指定 flink 集群的名称，后续自动创建的 k8s 资源会带上这个作为前缀或后缀 kubernetes.namespace: 指定 flink 相关的资源创建在哪个命名空间，这里我们用 flink 命名空间 kubernetes.jobmanager.service-account: 指定我们刚刚为 flink 创建的 ServiceAccount kubernetes.container.image: 指定 flink 需要用的镜像，这里我们部署的 1.10 版本，所以镜像用 flink:1.10  部署完成后，我们可以看到有刚刚运行完成的 job 的 pod 和被这个 job 拉起的 flink jobmanager 的 pod，前缀与配置 kubernetes.cluster-id 相同:\n$ kubectl -n flink get pod NAME READY STATUS RESTARTS AGE roc-cf9f6b5df-csk9z 1/1 Running 0 84m boot-flink-nc2qx 0/1 Completed 0 84m 还有 jobmanager 的 service:\n$ kubectl -n flink get svc NAME TYPE CLUSTER-IP EXTERNAL-IP PORT(S) AGE roc ClusterIP 172.16.255.152 \u0026lt;none\u0026gt; 8081/TCP,6123/TCP,6124/TCP 88m roc-rest LoadBalancer 172.16.255.11 150.109.27.251 8081:31240/TCP 88m 访问 http://150.109.27.251:8081 即可进入此 flink 集群的 ui 界面。\n参考资料  Active Kubernetes integration phase 2 - Advanced Features: https://issues.apache.org/jira/browse/FLINK-14460 Apache Flink 1.10.0 Release Announcement: https://flink.apache.org/news/2020/02/11/release-1.10.0.html Native Kubernetes Setup Beta (flink与kubernetes集成的官方教程): https://ci.apache.org/projects/flink/flink-docs-release-1.10/ops/deployment/native_kubernetes.html  "
-},
-{
 	"uri": "https://k8s.imroc.io/dev/golang-build/",
 	"title": "Go 语言编译原理与优化",
 	"tags": [],
@@ -403,7 +452,7 @@
 	"title": "Kubernetes 实践指南",
 	"tags": [],
 	"description": "",
-	"content": "Roadmap 本书正在起草初期，内容将包含大量 Kubernetes 实践干货，大量规划内容还正在路上，可以点击的表示是已经可以在左侧导航栏中找到的并预览的文章，但不代表已经完善，还会不断的补充和优化。\n目录  注：不能点击的标题是还正在路上的内容\n  集群部署    方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    安装 kubectl       排错指南    排错技巧    使用 Systemtap 定位疑难杂症     分析 ExitCode 定位 Pod 异常退出原因     容器内抓包定位网络问题      处理实践    arp_cache 溢出     inotify watch 耗尽     PID 耗尽     内存碎片化     磁盘爆满     高负载      节点排错    arp_cache: neighbor table overflow! (arp缓存溢出)     Cannot allocate memory     no space left on device     Node NotReady     soft lockup (内核软死锁)      Pod 排错    Pod Terminating 慢     Pod 一直处于 ContainerCreating 或 Waiting 状态     Pod 一直处于 Error 状态     Pod 一直处于 ImageInspectError 状态     Pod 一直处于 ImagePullBackOff 状态     Pod 一直处于 Pending 状态     Pod 一直处于 Terminating 状态     Pod 一直处于 Unknown 状态     Pod 健康检查失败     Pod 处于 CrashLoopBackOff 状态     容器进程主动退出      网络排错    DNS 解析异常     LB 健康检查失败     Service 不通     Service 无法解析     网络性能差      其它排错    APIServer 响应慢     Daemonset 没有被调度     Job 无法被删除     kubectl 执行 exec 或 logs 失败     Node 全部消失       避坑指南    cgroup 泄露     conntrack 冲突导致丢包     tcp tw recycle 引发丢包     使用 NodeLocal DNS (缓存)     使用 oom-guard 在用户态处理 cgroup OOM     解决长连接服务扩容失效     踩坑分享    ARP 缓存爆满导致健康检查失败     DNS 5 秒延时     DNS 解析异常     kubectl edit 或者 apply 报 SchemaError     LB 压测 NodePort CPS 低     Pod 偶尔存活检查失败     Pod 访问另一个集群的 apiserver 有延时     神秘的溢出与丢包     访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时     诡异的 No route to host     跨 VPC 访问 NodePort 经常超时     驱逐导致服务中断       集群优化    应用部署优化    使用 PodDisruptionBudget 避免驱逐导致服务不可用     使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断     使用反亲和性避免单点故障      ETCD 优化     Master 优化     内核参数优化      集群安全    用户管理    利用 CSR API 创建用户      集群权限控制    控制应用权限     控制用户权限      集群证书管理    安装 cert-manager     使用 cert-manager 自动生成证书       实用技巧    kubectl 高效技巧     yaml 片段    Deployment      实用命令与脚本    Pod 相关脚本     网络调试相关脚本     节点相关脚本       监控告警     日志搜集     AI 与大数据    Flink on Kubernetes      开发指南    Go 语言编译原理与优化     使用 client-go 开发 k8s 应用      在线阅读 本书将支持中英文两个语言版本，通常文章会先用中文起草并更新，等待其内容较为成熟完善，更新不再频繁的时候才会翻译成英文，点击左上角切换语言。\n 中文: https://k8s.imroc.io English: https://k8s.imroc.io/en  项目源码 项目源码存放于 Github 上: https://github.com/imroc/kubernetes-practice-guide\n贡献 欢迎参与贡献和完善内容，贡献方法参考 CONTRIBUTING\nLicense 署名-非商业性使用-相同方式共享 4.0 (CC BY-NC-SA 4.0)\n"
+	"content": " 本书还正在起草，部分内容还不太成熟，请关注文章头部的成熟度提示，无提示的表示已成熟。\n 目录  注：不能点击的标题是还正在路上的内容\n  集群部署    方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    安装 kubectl       排错指南    排错技巧    使用 Systemtap 定位疑难杂症     分析 ExitCode 定位 Pod 异常退出原因     容器内抓包定位网络问题      处理实践    arp_cache 溢出     inotify watch 耗尽     PID 耗尽     内存碎片化     磁盘爆满     高负载      节点排错    arp_cache: neighbor table overflow! (arp缓存溢出)     Cannot allocate memory     no space left on device     Node NotReady     soft lockup (内核软死锁)      Pod 排错    Pod Terminating 慢     Pod 一直处于 ContainerCreating 或 Waiting 状态     Pod 一直处于 Error 状态     Pod 一直处于 ImageInspectError 状态     Pod 一直处于 ImagePullBackOff 状态     Pod 一直处于 Pending 状态     Pod 一直处于 Terminating 状态     Pod 一直处于 Unknown 状态     Pod 健康检查失败     Pod 处于 CrashLoopBackOff 状态     容器进程主动退出      网络排错    DNS 解析异常     LB 健康检查失败     Service 不通     Service 无法解析     网络性能差      其它排错    APIServer 响应慢     Daemonset 没有被调度     Job 无法被删除     kubectl 执行 exec 或 logs 失败     Node 全部消失       避坑指南    cgroup 泄露     conntrack 冲突导致丢包     tcp tw recycle 引发丢包     使用 NodeLocal DNS (缓存)     使用 oom-guard 在用户态处理 cgroup OOM     解决长连接服务扩容失效     踩坑分享    ARP 缓存爆满导致健康检查失败     DNS 5 秒延时     DNS 解析异常     kubectl edit 或者 apply 报 SchemaError     LB 压测 NodePort CPS 低     Pod 偶尔存活检查失败     Pod 访问另一个集群的 apiserver 有延时     神秘的溢出与丢包     访问 externalTrafficPolicy 为 Local 的 Service 对应 LB 有时超时     诡异的 No route to host     跨 VPC 访问 NodePort 经常超时     驱逐导致服务中断       集群优化    应用部署优化    使用 PodDisruptionBudget 避免驱逐导致服务不可用     使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断     使用反亲和性避免单点故障      ETCD 优化     Master 优化     内核参数优化      集群安全    用户管理    利用 CSR API 创建用户      集群权限控制    控制应用权限     控制用户权限      集群证书管理    安装 cert-manager     使用 cert-manager 自动生成证书       实用技巧    kubectl 高效技巧     yaml 片段    Deployment      实用命令与脚本    Pod 相关脚本     网络调试相关脚本     节点相关脚本       监控告警    企业微信告警     钉钉告警      日志搜集     大数据与 AI    Flink on Kubernetes    Flink 介绍     Flink on Kubernetes 方案     Session Cluster 模式部署     Job Cluster 模式部署     Native Kubernetes 模式部署       开发指南    Go 语言编译原理与优化     使用 client-go 开发 k8s 应用      在线阅读 本书将支持中英文两个语言版本，通常文章会先用中文起草并更新，等待其内容较为成熟完善，更新不再频繁的时候才会翻译成英文，点击左上角切换语言。\n 中文: https://k8s.imroc.io English: https://k8s.imroc.io/en  项目源码 项目源码存放于 Github 上: https://github.com/imroc/kubernetes-practice-guide\n贡献 欢迎参与贡献和完善内容，贡献方法参考 CONTRIBUTING\nLicense 署名-非商业性使用-相同方式共享 4.0 (CC BY-NC-SA 4.0)\n"
 },
 {
 	"uri": "https://k8s.imroc.io/troubleshooting/network/lb-healthcheck-failed/",

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Flink on Kubernetes on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/</link>
+    <description>Recent content in Flink on Kubernetes on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Flink 介绍</title>
+      <link>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/intro/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/intro/</guid>
+      <description>Flink 概述 Apache Flink 是一个面向数据流处理和批量数据处理的可分布式的开源计算框架，它基于同一个Flink流式执行模型（streaming execution model），能够同时支持流处理和批处理两种应用类型。
+由于流处理和批处理所提供的SLA(服务等级协议)是完全不相同，流处理一般需要支持低延迟、Exactly-once保证，而批处理需要支持高吞吐、高效处理。所以在实现的时候通常是分别给出两套实现方法，或者通过一个独立的开源框架来实现其中每一种处理方案； 比如：实现批处理的开源方案有MapReduce、Spark，实现流处理的开源方案有Storm，Spark的Streaming 其实本质上也是微批处理。
+Flink在实现流处理和批处理时，与传统的一些方案完全不同，它从另一个视角看待流处理和批处理，将二者统一起来：Flink是完全支持流处理，也就是说作为流处理看待时输入数据流是无界的；批处理被作为一种特殊的流处理，只是它的输入数据流被定义为有界的。
+流式框架的演进 Storm 是流式处理框架的先锋，实时处理能做到低延迟，但很难实现高吞吐，也不能保证精确一致性(exactly-once)，即保证执行一次并且只能执行一次。
+后基于批处理框架 Spark 推出 Spark Streaming，将批处理数据分割的足够小，也实现了流失处理，并且可以做到高吞吐，能实现 exactly-once，但难以做到低时延，因为分割的任务之间需要有间隔时间，无法做到真实时。
+最后 Flink 诞生了，同时做到了低延迟、高吞吐、exactly-once，并且还支持丰富的时间类型和窗口计算。
+Flink 基本架构 JobManager 与 TaskManager Flink 主要由两个部分组件构成：JobManager 和 TaskManager。如何理解这两个组件的作用？JobManager 负责资源申请和任务分发，TaskManager 负责任务的执行。跟 k8s 本身类比，JobManager 相当于 Master，TaskManager 相当于 Worker；跟 Spark 类比，JobManager 相当于 Driver，TaskManager 相当于 Executor。
+JobManager 负责整个 Flink 集群任务的调度以及资源的管理，从客户端获取提交的任务，然后根据集群中 TaskManager 上 TaskSlot 的使用情况，为提交的应用分配相应的 TaskSlot 资源并命令 TaskManager 启动从客户端中获取的应用。JobManager 是集群中的Master节点，整个集群有且仅有一个active的JobManager，负责整个集群的任务管理和资源管理。JobManager和TaskManager之间通过Actor System 进行通信，获取任务的执行情况并通过Actor System 将应用的任务的执行情况发送到客户端。同时在任务的执行过程中，Flink JobManager 会触发Checkpoints 操作，每个TaskManager 节点接受的到checkpoints触发命令后，完成checkpoints操作，所有的checkpoint协调过程都是在Flink JobManager中完成。当任务完成后，JobManager会将任务执行信息返回到客户端，并释放掉TaskManager中的资源以供下一次任务使用。
+TaskManager 相当于整个集群的slave 节点，负责具体的任务执行和对应任务在每个节点上的资源申请与管理。客户端通过将编写好的flink应用编译打包，提交到JobManager，然后JobManager会根据已经注册在jobmanger中TaskManager的资源情况，将任务分配到有资源的TaskManager节点，然后启动并运行任务。TaskManager从JobManager那接受需要部署的任务，然后使用slot资源启动task，建立数据接入网络连接，接受数据并处理。同时TaskManager之间的数据交互都是通过数据流的方式进行的。</description>
+    </item>
+    
+    <item>
+      <title>Flink on Kubernetes 方案</title>
+      <link>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/flink-on-kubernetes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/flink-on-kubernetes/</guid>
+      <description>将 Flink 部署到 Kubernetes 有 Session Cluster、Job Cluster 和 Native Kubernetes 三种集群部署方案。
+Session Cluster 相当于将静态部署的 Standalone Cluster 容器化，TaskManager 与 JobManager 都以 Deployment 方式部署，可动态提交 Job，Job 处理能力主要取决于 TaskManager 的配置 (slot/cpu/memory) 与副本数 (replicas)，调整副本数可以动态扩容。这种方式也是比较常见和成熟的方式。
+Job Cluster 相当于给每一个独立的 Job 部署一整套 Flink 集群，这套集群就只能运行一个 Job，配备专门制作的 Job 镜像，不能动态提交其它 Job。这种模式可以让每种 Job 拥有专用的资源，独立扩容。
+Native Kubernetes 这种方式是与 Kubernetes 原生集成，相比前面两种，这种模式能做到动态向 Kubernetes 申请资源，不需要提前指定 TaskManager 数量，就像 flink 与 yarn 和 mesos 集成一样。此模式能够提高资源利用率，但还处于试验阶段，不够成熟，不建议部署到生产环境。
+总结 TODO</description>
+    </item>
+    
+    <item>
+      <title>Session Cluster 模式部署</title>
+      <link>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/session-cluster/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/session-cluster/</guid>
+      <description>参考官方文档: https://ci.apache.org/projects/flink/flink-docs-stable/ops/deployment/kubernetes.html#flink-session-cluster-on-kubernetes
+准备资源文件(flink.yaml):
+apiVersion: v1 kind: ConfigMap metadata: name: flink-config labels: app: flink data: flink-conf.yaml: |+ jobmanager.rpc.address: flink-jobmanager taskmanager.numberOfTaskSlots: 1 blob.server.port: 6124 jobmanager.rpc.port: 6123 taskmanager.rpc.port: 6122 jobmanager.heap.size: 1024m taskmanager.memory.process.size: 1024m log4j.properties: |+ log4j.rootLogger=INFO, file log4j.logger.akka=INFO log4j.logger.org.apache.kafka=INFO log4j.logger.org.apache.hadoop=INFO log4j.logger.org.apache.zookeeper=INFO log4j.appender.file=org.apache.log4j.FileAppender log4j.appender.file.file=${log.file} log4j.appender.file.layout=org.apache.log4j.PatternLayout log4j.appender.file.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n log4j.logger.org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline=ERROR, file --- apiVersion: apps/v1 kind: Deployment metadata: name: flink-jobmanager spec: replicas: 1 selector: matchLabels: app: flink component: jobmanager template: metadata: labels: app: flink component: jobmanager spec: containers: - name: jobmanager image: flink:latest workingDir: /opt/flink command: [&amp;#34;/bin/bash&amp;#34;, &amp;#34;-c&amp;#34;, &amp;#34;$FLINK_HOME/bin/jobmanager.</description>
+    </item>
+    
+    <item>
+      <title>Job Cluster 模式部署</title>
+      <link>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/job-cluster/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/job-cluster/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Native Kubernetes 模式部署</title>
+      <link>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/native-kubernetes/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/native-kubernetes/</guid>
+      <description>与 Kubernetes 集成 在 flink 1.10 之前，在 k8s 上运行 flink 任务都是需要事先指定 TaskManager 的个数以及CPU和内存的，存在一个问题：大多数情况下，你在任务启动前根本无法精确的预估这个任务需要多少个TaskManager，如果指定多了，会导致资源浪费，指定少了，会导致任务调度不起来。本质原因是在 Kubernetes 上运行的 Flink 任务并没有直接向 Kubernetes 集群去申请资源。
+在 2020-02-11 发布了 flink 1.10，该版本完成了与 k8s 集成的第一阶段，实现了向 k8s 动态申请资源，就像跟 yarn 或 mesos 集成那样。
+部署步骤 确定 flink 部署的 namespace，这里我选 &amp;ldquo;flink&amp;rdquo;，确保 namespace 已创建:
+kubectl create ns flink 创建 RBAC (创建 ServiceAccount 绑定 flink 需要的对 k8s 集群操作的权限):
+apiVersion: v1 kind: ServiceAccount metadata: name: flink namespace: flink --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: name: flink-role-binding roleRef: apiGroup: rbac.</description>
+    </item>
+    
+  </channel>
+</rss>

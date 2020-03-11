@@ -3,29 +3,13 @@
         "title": "Kubernetes 实践指南",
         "uri": "",
         "content": "Roadmap                  Kubernetes                                                                                                children depth 10                                                                                    https   k8s imroc io English  https   k8s imroc io en              Github    https   github com imroc kubernetes practice guide                       CONTRIBUTING License                  4 0   CC BY NC SA 4 0",
-        "objectID": "",
-        "state": "Alpha"
-    },
-    {
-        "title": "AI 与大数据",
-        "uri": "ai-and-big-data",
-        "content": "children",
-        "objectID": "ai-and-big-data",
-        "chapter": true,
-        "weight": 60
-    },
-    {
-        "title": "Flink on Kubernetes",
-        "uri": "ai-and-big-data/flink-on-kubernetes",
-        "content": "Flink    Flink                    Storm                                           exactly once                           Spark    Spark Streaming                                     exactly once                                      Flink                  exactly once                    Flink             JobManager   TaskManager              JobManager             TaskManager           k8s      JobManager     Master TaskManager     Worker   Spark    JobManager     Driver TaskManager     Executor    Kubernetes      flink 1 10      k8s     flink            TaskManager      CPU                                            TaskManager                                       Kubernetes      Flink          Kubernetes            2020 02 11     flink 1 10         k8s              k8s            yarn   mesos          flink     namespace       flink     namespace      kubectl create ns flink    RBAC     ServiceAccount    flink      k8s           apiVersion  v1 kind  ServiceAccount metadata  name  flink namespace  flink apiVersion  rbac authorization k8s io v1 kind  ClusterRoleBinding metadata  name  flink role binding roleRef  apiGroup  rbac authorization k8s io kind  ClusterRole name  edit subjects  kind  ServiceAccount name  flink namespace  flink    job      flink           k8s    jobmanager        service  deployment  configmap   apiVersion  batch v1 kind  Job metadata  name  boot flink namespace  flink spec  template  spec  serviceAccount  flink restartPolicy  OnFailure containers  name  start image  flink 1 10 workingDir   opt flink command    bash     c     FLINK_HOME bin kubernetes session sh    Dkubernetes cluster id roc    Dkubernetes jobmanager service account flink    Dtaskmanager memory process size 1024m    Dkubernetes taskmanager cpu 1    Dtaskmanager numberOfTaskSlots 1    Dkubernetes container image flink 1 10    Dkubernetes namespace flink   kubernetes cluster id     flink               k8s                kubernetes namespace     flink                      flink      kubernetes jobmanager service account          flink     ServiceAccount kubernetes container image     flink                1 10          flink 1 10                      job   pod      job     flink jobmanager   pod       kubernetes cluster id       kubectl  n flink pod NAME READY STATUS RESTARTS AGE roc cf9f6b5df csk9z 1 1 Running 0 84m boot flink nc2qx 0 1 Completed 0 84m    jobmanager   service    kubectl  n flink svc NAME TYPE CLUSTER IP EXTERNAL IP PORT S  AGE roc ClusterIP 172 16 255 152 8081 TCP 6123 TCP 6124 TCP 88m roc rest LoadBalancer 172 16 255 11 150 109 27 251 8081 31240 TCP 88m    http   150 109 27 251 8081       flink     ui          Active Kubernetes integration phase 2   Advanced Features  https   issues apache org jira browse FLINK 14460 Apache Flink 1 10 0 Release Announcement  https   flink apache org news 2020 02 11 release 1 10 0 html Native Kubernetes Setup Beta  flink kubernetes          https   ci apache org projects flink flink docs release 1 10 ops deployment native_kubernetes html",
-        "objectID": "ai-and-big-data/flink-on-kubernetes"
+        "objectID": ""
     },
     {
         "title": "避坑指南",
         "uri": "avoid",
         "content": "children depth 2",
         "objectID": "avoid",
-        "chapter": true,
         "weight": 30
     },
     {
@@ -187,6 +171,60 @@
         "objectID": "best-practice/wildcard-domain-forward"
     },
     {
+        "title": "大数据与 AI",
+        "uri": "bigdata-ai",
+        "content": "children",
+        "objectID": "bigdata-ai",
+        "weight": 60
+    },
+    {
+        "title": "Flink on Kubernetes",
+        "uri": "bigdata-ai/flink-on-kubernetes",
+        "content": "Flink   Kubernetes",
+        "objectID": "bigdata-ai/flink-on-kubernetes",
+        "weight": 10,
+        "chapter": true
+    },
+    {
+        "title": "Flink on Kubernetes 方案",
+        "uri": "bigdata-ai/flink-on-kubernetes/flink-on-kubernetes",
+        "content": "Flink     Kubernetes   Session Cluster Job Cluster   Native Kubernetes           Session Cluster           Standalone Cluster     TaskManager   JobManager    Deployment            Job Job           TaskManager      slot cpu memory        replicas                                Job Cluster            Job       Flink                Job         Job             Job           Job               Native Kubernetes        Kubernetes                        Kubernetes              TaskManager       flink   yarn   mesos                                                TODO",
+        "objectID": "bigdata-ai/flink-on-kubernetes/flink-on-kubernetes",
+        "weight": 20,
+        "state": "Alpha"
+    },
+    {
+        "title": "Flink 介绍",
+        "uri": "bigdata-ai/flink-on-kubernetes/intro",
+        "content": "Flink    Apache Flink                                     Flink       streaming execution model                                    SLA                            Exactly once                                                                                   MapReduce Spark            Storm Spark Streaming              Flink                                                  Flink                                                                        Storm                                           exactly once                            Spark    Spark Streaming                                     exactly once                                       Flink                  exactly once                    Flink      JobManager   TaskManager Flink             JobManager   TaskManager              JobManager             TaskManager           k8s      JobManager     Master TaskManager     Worker   Spark    JobManager     Driver TaskManager     Executor  JobManager      Flink                                    TaskManager   TaskSlot                   TaskSlot       TaskManager              JobManager      Master             active JobManager                  JobManager TaskManager    Actor System                  Actor System                               Flink JobManager    Checkpoints      TaskManager       checkpoints        checkpoints      checkpoint       Flink JobManager           JobManager                   TaskManager               TaskManager         slave                                           flink          JobManager   JobManager        jobmanger TaskManager                TaskManager             TaskManager JobManager               slot    task                      TaskManager                                  Flink                                                                            event                                                                         event                                                                                                                https   ci apache org projects flink flink docs release 1 10 concepts programming model html",
+        "objectID": "bigdata-ai/flink-on-kubernetes/intro",
+        "weight": 10
+    },
+    {
+        "title": "Job Cluster 模式部署",
+        "uri": "bigdata-ai/flink-on-kubernetes/job-cluster",
+        "content": "",
+        "objectID": "bigdata-ai/flink-on-kubernetes/job-cluster",
+        "weight": 30,
+        "state": "TODO"
+    },
+    {
+        "title": "Native Kubernetes 模式部署",
+        "uri": "bigdata-ai/flink-on-kubernetes/native-kubernetes",
+        "content": "Kubernetes      flink 1 10      k8s     flink            TaskManager      CPU                                            TaskManager                                       Kubernetes      Flink          Kubernetes            2020 02 11     flink 1 10         k8s              k8s            yarn   mesos               flink     namespace       flink     namespace      kubectl create ns flink    RBAC     ServiceAccount    flink      k8s           apiVersion  v1 kind  ServiceAccount metadata  name  flink namespace  flink apiVersion  rbac authorization k8s io v1 kind  ClusterRoleBinding metadata  name  flink role binding roleRef  apiGroup  rbac authorization k8s io kind  ClusterRole name  edit subjects  kind  ServiceAccount name  flink namespace  flink    job      flink           k8s    jobmanager        service  deployment  configmap   apiVersion  batch v1 kind  Job metadata  name  boot flink namespace  flink spec  template  spec  serviceAccount  flink restartPolicy  OnFailure containers  name  start image  flink 1 10 workingDir   opt flink command    bash     c     FLINK_HOME bin kubernetes session sh    Dkubernetes cluster id roc    Dkubernetes jobmanager service account flink    Dtaskmanager memory process size 1024m    Dkubernetes taskmanager cpu 1    Dtaskmanager numberOfTaskSlots 1    Dkubernetes container image flink 1 10    Dkubernetes namespace flink   kubernetes cluster id     flink               k8s                kubernetes namespace     flink                      flink      kubernetes jobmanager service account          flink     ServiceAccount kubernetes container image     flink                1 10          flink 1 10                      job   pod      job     flink jobmanager   pod       kubernetes cluster id       kubectl  n flink pod NAME READY STATUS RESTARTS AGE roc cf9f6b5df csk9z 1 1 Running 0 84m boot flink nc2qx 0 1 Completed 0 84m    jobmanager   service    kubectl  n flink svc NAME TYPE CLUSTER IP EXTERNAL IP PORT S  AGE roc ClusterIP 172 16 255 152 8081 TCP 6123 TCP 6124 TCP 88m roc rest LoadBalancer 172 16 255 11 150 109 27 251 8081 31240 TCP 88m    http   150 109 27 251 8081       flink     ui          Active Kubernetes integration phase 2   Advanced Features  https   issues apache org jira browse FLINK 14460 Apache Flink 1 10 0 Release Announcement  https   flink apache org news 2020 02 11 release 1 10 0 html Native Kubernetes Setup Beta  flink kubernetes          https   ci apache org projects flink flink docs release 1 10 ops deployment native_kubernetes html",
+        "objectID": "bigdata-ai/flink-on-kubernetes/native-kubernetes",
+        "weight": 40,
+        "state": "Alpha"
+    },
+    {
+        "title": "Session Cluster 模式部署",
+        "uri": "bigdata-ai/flink-on-kubernetes/session-cluster",
+        "content": "https   ci apache org projects flink flink docs stable ops deployment kubernetes html flink session cluster on kubernetes        flink yaml   apiVersion  v1 kind  ConfigMap metadata  name  flink config labels  app  flink data  flink conf yaml     jobmanager rpc address  flink jobmanager taskmanager numberOfTaskSlots  1 blob server port  6124 jobmanager rpc port  6123 taskmanager rpc port  6122 jobmanager heap size  1024m taskmanager memory process size  1024m log4j properties     log4j rootLogger INFO  file log4j logger akka INFO log4j logger org apache kafka INFO log4j logger org apache hadoop INFO log4j logger org apache zookeeper INFO log4j appender file org apache log4j FileAppender log4j appender file file   log file  log4j appender file layout org apache log4j PatternLayout log4j appender file layout ConversionPattern  d yyyy MM dd HH mm ss SSS    5p   60c  x    m n log4j logger org apache flink shaded akka org jboss netty channel DefaultChannelPipeline ERROR  file apiVersion  apps v1 kind  Deployment metadata  name  flink jobmanager spec  replicas  1 selector  matchLabels  app  flink component  jobmanager template  metadata  labels  app  flink component  jobmanager spec  containers  name  jobmanager image  flink latest workingDir   opt flink command     bin bash     c     FLINK_HOME bin jobmanager sh start          f   find log  name  jobmanager log   print  quit      tail  f  n  1 log jobmanager log  fi  done   ports  containerPort  6123 name  rpc containerPort  6124 name  blob containerPort  8081 name  ui livenessProbe  tcpSocket  port  6123 initialDelaySeconds  30 periodSeconds  60 volumeMounts  name  flink config volume mountPath   opt flink conf securityContext  runAsUser  9999   refers user flink official flink image  change necessary volumes  name  flink config volume configMap  name  flink config items  key  flink conf yaml path  flink conf yaml key  log4j properties path  log4j properties apiVersion  apps v1 kind  Deployment metadata  name  flink taskmanager spec  replicas  2 selector  matchLabels  app  flink component  taskmanager template  metadata  labels  app  flink component  taskmanager spec  containers  name  taskmanager image  flink latest workingDir   opt flink command     bin bash     c     FLINK_HOME bin taskmanager sh start           f   find log  name  taskmanager log   print  quit      tail  f  n  1 log taskmanager log  fi  done   ports  containerPort  6122 name  rpc livenessProbe  tcpSocket  port  6122 initialDelaySeconds  30 periodSeconds  60 volumeMounts  name  flink config volume mountPath   opt flink conf  securityContext  runAsUser  9999   refers user flink official flink image  change necessary volumes  name  flink config volume configMap  name  flink config items  key  flink conf yaml path  flink conf yaml key  log4j properties path  log4j properties apiVersion  v1 kind  Service metadata  name  flink jobmanager spec  type  ClusterIP ports  name  rpc port  6123 name  blob port  6124 name  ui port  8081 selector  app  flink component  jobmanager apiVersion  v1 kind  Service metadata  name  flink jobmanager rest spec  type  NodePort ports  name  rest port  8081 targetPort  8081 selector  app  flink component  jobmanager     kubectl apply  f flink yaml      JobManager   UI    TKE    EKS      LoadBalancer     Service     JobManager   UI   LB     kubectl patch service flink jobmanager  p    spec    type   LoadBalancer         kubectl delete  f flink yaml                              kubectl       n",
+        "objectID": "bigdata-ai/flink-on-kubernetes/session-cluster",
+        "weight": 22,
+        "state": "Alpha"
+    },
+    {
         "title": "集群方案",
         "uri": "cluster",
         "content": "children depth 3",
@@ -284,16 +322,15 @@
         "uri": "deploy",
         "content": "children depth 3",
         "objectID": "deploy",
-        "chapter": true,
         "weight": 10
     },
     {
         "title": "附加组件",
         "uri": "deploy/addons",
-        "content": "",
+        "content": "children",
         "objectID": "deploy/addons",
-        "chapter": true,
-        "weight": 40
+        "weight": 40,
+        "state": "Alpha"
     },
     {
         "title": "部署 CoreDNS",
@@ -333,8 +370,8 @@
         "uri": "deploy/manual",
         "content": "kubernetes 1 16 1 containerd 1 3 0 coredns v1 6 2 cni v0 8 2 flannel v0 11 0 etcd v3 4 1     kubelet           kube proxy   daemonset                         docker      containerd    dockerd     bug                  ETCD    Master    Worker",
         "objectID": "deploy/manual",
-        "chapter": true,
-        "weight": 20
+        "weight": 20,
+        "state": "Beta"
     },
     {
         "title": "部署 ETCD",
@@ -384,8 +421,8 @@
         "uri": "dev",
         "content": "",
         "objectID": "dev",
-        "chapter": true,
-        "weight": 100
+        "weight": 100,
+        "state": "Alpha"
     },
     {
         "title": "使用 client-go 开发 k8s 应用",
@@ -404,25 +441,40 @@
     {
         "title": "日志搜集",
         "uri": "log",
-        "content": "notice info                    notice",
+        "content": "",
         "objectID": "log",
-        "chapter": true,
-        "weight": 44
+        "weight": 44,
+        "state": "TODO"
     },
     {
         "title": "监控告警",
         "uri": "monitoring",
-        "content": "notice info                    notice",
+        "content": "",
         "objectID": "monitoring",
-        "chapter": true,
-        "weight": 43
+        "weight": 43,
+        "state": "TODO"
+    },
+    {
+        "title": "钉钉告警",
+        "uri": "monitoring/dingtalk-alert",
+        "content": "webhook        https   theo im blog 2017 10 16 release prometheus alertmanager webhook for dingtalk  github  https   github com timonwong prometheus webhook dingtalk",
+        "objectID": "monitoring/dingtalk-alert",
+        "weight": 40,
+        "state": "TODO"
+    },
+    {
+        "title": "企业微信告警",
+        "uri": "monitoring/wechat-work-alert",
+        "content": "https   prometheus io docs alerting configuration  wechat_config       https   songjiayang gitbooks io prometheus content alertmanager wechat html                       alertmanager   webhook               webhook                alertmanager",
+        "objectID": "monitoring/wechat-work-alert",
+        "weight": 30,
+        "state": "TODO"
     },
     {
         "title": "集群优化",
         "uri": "optimization",
         "content": "kuernetes            https   www processon com view link 5e4662ade4b0d86ec4018e50        children depth 3",
         "objectID": "optimization",
-        "chapter": true,
         "weight": 40
     },
     {
@@ -473,15 +525,13 @@
         "uri": "security",
         "content": "children depth 3",
         "objectID": "security",
-        "chapter": true,
         "weight": 40
     },
     {
         "title": "集群证书管理",
         "uri": "security/cert",
         "content": "",
-        "objectID": "security/cert",
-        "chapter": true
+        "objectID": "security/cert"
     },
     {
         "title": "使用 cert-manager 自动生成证书",
@@ -519,8 +569,7 @@
         "title": "用户管理",
         "uri": "security/user",
         "content": "children depth 3",
-        "objectID": "security/user",
-        "chapter": true
+        "objectID": "security/user"
     },
     {
         "title": "利用 CSR API 创建用户",
@@ -569,8 +618,7 @@
         "title": "yaml 片段",
         "uri": "trick/yaml",
         "content": "",
-        "objectID": "trick/yaml",
-        "chapter": true
+        "objectID": "trick/yaml"
     },
     {
         "title": "Deployment",
@@ -583,7 +631,6 @@
         "uri": "troubleshooting",
         "content": "kuernetes            https   www processon com view link 5e4662ade4b0d86ec4018e50        children depth 3",
         "objectID": "troubleshooting",
-        "chapter": true,
         "weight": 20
     },
     {
@@ -591,7 +638,6 @@
         "uri": "troubleshooting/handle",
         "content": "children",
         "objectID": "troubleshooting/handle",
-        "chapter": true,
         "weight": 20
     },
     {
@@ -635,7 +681,6 @@
         "uri": "troubleshooting/network",
         "content": "children",
         "objectID": "troubleshooting/network",
-        "chapter": true,
         "weight": 50
     },
     {
@@ -673,7 +718,6 @@
         "uri": "troubleshooting/node",
         "content": "children",
         "objectID": "troubleshooting/node",
-        "chapter": true,
         "weight": 30
     },
     {
@@ -712,7 +756,6 @@
         "uri": "troubleshooting/others",
         "content": "children",
         "objectID": "troubleshooting/others",
-        "chapter": true,
         "weight": 70
     },
     {
@@ -754,7 +797,6 @@
         "uri": "troubleshooting/pod",
         "content": "Pod         Pod                                          Pod     kubectl pod  o wide    Pod   yaml     kubectl pod  o yaml    Pod     kubectl describe pod         kubectl logs   c   Pod    Pod               Error  Pod           NodeLost  Pod        Unkown  Pod               Waiting  Pod      Pending  Pod       ContainerCreating  Pod         Terminating  Pod       CrashLoopBackOff       kubelet        InvalidImageName           ImageInspectError         ErrImageNeverPull           ImagePullBackOff         RegistryUnavailable           ErrImagePull            CreateContainerConfigError       kubelet         CreateContainerError         RunContainerError         PreStartHookError     preStart hook    PostStartHookError     postStart hook    ContainersNotInitialized            ContainersNotReady           ContainerCreating       PodInitializing pod      DockerDaemonNotReady docker        NetworkPluginNotReady                                                                                                 children",
         "objectID": "troubleshooting/pod",
-        "chapter": true,
         "weight": 40
     },
     {
@@ -829,7 +871,6 @@
         "uri": "troubleshooting/trick",
         "content": "children",
         "objectID": "troubleshooting/trick",
-        "chapter": true,
         "weight": 10
     },
     {

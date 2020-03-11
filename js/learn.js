@@ -36,9 +36,11 @@ function fallbackMessage(action) {
 
     if (/iPhone|iPad/i.test(navigator.userAgent)) {
         actionMsg = 'No support :(';
-    } else if (/Mac/i.test(navigator.userAgent)) {
+    }
+    else if (/Mac/i.test(navigator.userAgent)) {
         actionMsg = 'Press ⌘-' + actionKey + ' to ' + action;
-    } else {
+    }
+    else {
         actionMsg = 'Press Ctrl-' + actionKey + ' to ' + action;
     }
 
@@ -46,20 +48,19 @@ function fallbackMessage(action) {
 }
 
 // for the window resize
-$(window).resize(function () {
+$(window).resize(function() {
     setMenuHeight();
 });
 
 // debouncing function from John Hann
 // http://unscriptable.com/index.php/2009/03/20/debouncing-javascript-methods/
-(function ($, sr) {
+(function($, sr) {
 
-    var debounce = function (func, threshold, execAsap) {
+    var debounce = function(func, threshold, execAsap) {
         var timeout;
 
         return function debounced() {
-            var obj = this,
-                args = arguments;
+            var obj = this, args = arguments;
 
             function delayed() {
                 if (!execAsap)
@@ -76,17 +77,15 @@ $(window).resize(function () {
         };
     }
     // smartresize
-    jQuery.fn[sr] = function (fn) {
-        return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr);
-    };
+    jQuery.fn[sr] = function(fn) { return fn ? this.bind('resize', debounce(fn)) : this.trigger(sr); };
 
 })(jQuery, 'smartresize');
 
 
-jQuery(document).ready(function () {
-    jQuery('#sidebar .category-icon').on('click', function () {
-        $(this).toggleClass("fa-angle-down fa-angle-right");
-        $(this).parent().parent().children('ul').toggle();
+jQuery(document).ready(function() {
+    jQuery('#sidebar .category-icon').on('click', function() {
+        $( this ).toggleClass("fa-angle-down fa-angle-right") ;
+        $( this ).parent().parent().children('ul').toggle() ;
         return false;
     });
 
@@ -94,25 +93,25 @@ jQuery(document).ready(function () {
     $('#sidebar .highlightable').perfectScrollbar();
     setMenuHeight();
 
-    jQuery('#overlay').on('click', function () {
+    jQuery('#overlay').on('click', function() {
         jQuery(document.body).toggleClass('sidebar-hidden');
         sidebarStatus = (jQuery(document.body).hasClass('sidebar-hidden') ? 'closed' : 'open');
 
         return false;
     });
 
-    jQuery('[data-sidebar-toggle]').on('click', function () {
+    jQuery('[data-sidebar-toggle]').on('click', function() {
         jQuery(document.body).toggleClass('sidebar-hidden');
         sidebarStatus = (jQuery(document.body).hasClass('sidebar-hidden') ? 'closed' : 'open');
 
         return false;
     });
-    jQuery('[data-clear-history-toggle]').on('click', function () {
+    jQuery('[data-clear-history-toggle]').on('click', function() {
         sessionStorage.clear();
         location.reload();
         return false;
     });
-    jQuery('[data-search-toggle]').on('click', function () {
+    jQuery('[data-search-toggle]').on('click', function() {
         if (sidebarStatus == 'closed') {
             jQuery('[data-sidebar-toggle]').trigger('click');
             jQuery(document.body).removeClass('searchbox-hidden');
@@ -128,7 +127,7 @@ jQuery(document).ready(function () {
     });
 
     var ajax;
-    jQuery('[data-search-input]').on('input', function () {
+    jQuery('[data-search-input]').on('input', function() {
         var input = jQuery(this),
             value = input.val(),
             items = jQuery('[data-nav-id]');
@@ -137,32 +136,24 @@ jQuery(document).ready(function () {
             $('ul.topics').removeClass('searched');
             items.css('display', 'block');
             sessionStorage.removeItem('search-value');
-            $(".highlightable").unhighlight({
-                element: 'mark'
-            })
+            $(".highlightable").unhighlight({ element: 'mark' })
             return;
         }
 
         sessionStorage.setItem('search-value', value);
-        $(".highlightable").unhighlight({
-            element: 'mark'
-        }).highlight(value, {
-            element: 'mark'
-        });
+        $(".highlightable").unhighlight({ element: 'mark' }).highlight(value, { element: 'mark' });
 
         if (ajax && ajax.abort) ajax.abort();
 
-        jQuery('[data-search-clear]').on('click', function () {
+        jQuery('[data-search-clear]').on('click', function() {
             jQuery('[data-search-input]').val('').trigger('input');
             sessionStorage.removeItem('search-input');
-            $(".highlightable").unhighlight({
-                element: 'mark'
-            })
+            $(".highlightable").unhighlight({ element: 'mark' })
         });
     });
 
-    $.expr[":"].contains = $.expr.createPseudo(function (arg) {
-        return function (elem) {
+    $.expr[":"].contains = $.expr.createPseudo(function(arg) {
+        return function( elem ) {
             return $(elem).text().toUpperCase().indexOf(arg.toUpperCase()) >= 0;
         };
     });
@@ -176,7 +167,7 @@ jQuery(document).ready(function () {
         if (searchedElem) {
             searchedElem.scrollIntoView(true);
             var scrolledY = window.scrollY;
-            if (scrolledY) {
+            if(scrolledY){
                 window.scroll(0, scrolledY - 125);
             }
         }
@@ -184,30 +175,30 @@ jQuery(document).ready(function () {
 
     // clipboard
     var clipInit = false;
-    $('code').each(function () {
+    $('code').each(function() {
         var code = $(this),
             text = code.text();
 
         if (text.length > 5) {
             if (!clipInit) {
                 var text, clip = new ClipboardJS('.copy-to-clipboard', {
-                    text: function (trigger) {
+                    text: function(trigger) {
                         text = $(trigger).prev('code').text();
                         return text.replace(/^\$\s/gm, '');
                     }
                 });
 
                 var inPre;
-                clip.on('success', function (e) {
+                clip.on('success', function(e) {
                     e.clearSelection();
                     inPre = $(e.trigger).parent().prop('tagName') == 'PRE';
                     $(e.trigger).attr('aria-label', 'Copied to clipboard!').addClass('tooltipped tooltipped-' + (inPre ? 'w' : 's'));
                 });
 
-                clip.on('error', function (e) {
+                clip.on('error', function(e) {
                     inPre = $(e.trigger).parent().prop('tagName') == 'PRE';
                     $(e.trigger).attr('aria-label', fallbackMessage(e.action)).addClass('tooltipped tooltipped-' + (inPre ? 'w' : 's'));
-                    $(document).one('copy', function () {
+                    $(document).one('copy', function(){
                         $(e.trigger).attr('aria-label', 'Copied to clipboard!').addClass('tooltipped tooltipped-' + (inPre ? 'w' : 's'));
                     });
                 });
@@ -216,70 +207,70 @@ jQuery(document).ready(function () {
             }
 
             code.after('<span class="copy-to-clipboard" title="Copy to clipboard" />');
-            code.next('.copy-to-clipboard').on('mouseleave', function () {
+            code.next('.copy-to-clipboard').on('mouseleave', function() {
                 $(this).attr('aria-label', null).removeClass('tooltipped tooltipped-s tooltipped-w');
             });
         }
     });
 
     // allow keyboard control for prev/next links
-    jQuery(function () {
-        jQuery('.nav-prev').click(function () {
+    jQuery(function() {
+        jQuery('.nav-prev').click(function(){
             location.href = jQuery(this).attr('href');
         });
-        jQuery('.nav-next').click(function () {
+        jQuery('.nav-next').click(function() {
             location.href = jQuery(this).attr('href');
         });
     });
 
     jQuery('input, textarea').keydown(function (e) {
-        //  left and right arrow keys
-        if (e.which == '37' || e.which == '39') {
-            e.stopPropagation();
-        }
-    });
+         //  left and right arrow keys
+         if (e.which == '37' || e.which == '39') {
+             e.stopPropagation();
+         }
+     });
+    
+    jQuery(document).keydown(function(e) {
+      // prev links - left arrow key
+      if(e.which == '37') {
+        jQuery('.nav.nav-prev').click();
+      }
 
-    jQuery(document).keydown(function (e) {
-        // prev links - left arrow key
-        if (e.which == '37') {
-            jQuery('.nav.nav-prev').click();
-        }
-
-        // next links - right arrow key
-        if (e.which == '39') {
-            jQuery('.nav.nav-next').click();
-        }
+      // next links - right arrow key
+      if(e.which == '39') {
+        jQuery('.nav.nav-next').click();
+      }
     });
 
     $('#top-bar a:not(:has(img)):not(.btn)').addClass('highlight');
     $('#body-inner a:not(:has(img)):not(.btn):not(a[rel="footnote"])').addClass('highlight');
 
     var touchsupport = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0) || (navigator.msMaxTouchPoints > 0)
-    if (!touchsupport) { // browser doesn't support touch
-        $('#toc-menu').hover(function () {
+    if (!touchsupport){ // browser doesn't support touch
+        $('#toc-menu').hover(function() {
             $('.progress').stop(true, false, true).fadeToggle(100);
         });
 
-        $('.progress').hover(function () {
+        $('.progress').hover(function() {
             $('.progress').stop(true, false, true).fadeToggle(100);
         });
     }
-    if (touchsupport) { // browser does support touch
-        $('#toc-menu').click(function () {
+    if (touchsupport){ // browser does support touch
+        $('#toc-menu').click(function() {
             $('.progress').stop(true, false, true).fadeToggle(100);
         });
-        $('.progress').click(function () {
+        $('.progress').click(function() {
             $('.progress').stop(true, false, true).fadeToggle(100);
         });
     }
 
     /** 
-     * Fix anchor scrolling that hides behind top nav bar
-     * Courtesy of https://stackoverflow.com/a/13067009/28106
-     *
-     * We could use pure css for this if only heading anchors were
-     * involved, but this works for any anchor, including footnotes
-     **/
+    * Fix anchor scrolling that hides behind top nav bar
+    * Courtesy of https://stackoverflow.com/a/13067009/28106
+    *
+    * We could use pure css for this if only heading anchors were
+    * involved, but this works for any anchor, including footnotes
+    **/
     (function (document, history, location) {
         var HISTORY_SUPPORT = !!(history && history.pushState);
 
@@ -321,9 +312,7 @@ jQuery(document).ready(function () {
 
                 if (match) {
                     anchorOffset = $(match).offset().top - this.getFixedOffset();
-                    $('html, body').animate({
-                        scrollTop: anchorOffset
-                    });
+                    $('html, body').animate({ scrollTop: anchorOffset });
 
                     // Add the state to history as-per normal anchor links
                     if (HISTORY_SUPPORT && pushToHistory) {
@@ -357,80 +346,23 @@ jQuery(document).ready(function () {
 
         $(document).ready($.proxy(anchorScrolls, 'init'));
     })(window.document, window.history, window.location);
-
-    // Add link button for every
-    var text, clip = new ClipboardJS('.anchor');
-    $("h1~h2,h1~h3,h1~h4,h1~h5,h1~h6").append(function (index, html) {
-        var element = $(this);
-        var url = encodeURI(document.location.origin + document.location.pathname);
-        var link = url + "#" + element[0].id;
-        return " <span class='anchor' data-clipboard-text='" + link + "'>" +
-            "<i class='fas fa-link fa-lg'></i>" +
-            "</span>";
-    });
-
-    $(".anchor").on('mouseleave', function (e) {
-        $(this).attr('aria-label', null).removeClass('tooltipped tooltipped-s tooltipped-w');
-    });
-
-    clip.on('success', function (e) {
-        e.clearSelection();
-        $(e.trigger).attr('aria-label', 'Link copied to clipboard!').addClass('tooltipped tooltipped-s');
-    });
-    $('code.language-mermaid').each(function (index, element) {
-        var content = $(element).html().replace(/&amp;/g, '&');
-        $(element).parent().replaceWith('<div class="mermaid" align="center">' + content + '</div>');
-    });
-
-    var client = algoliasearch(window.algoliaAppID, window.algoliaKey);
-    var index = client.initIndex(window.algoliaIndex);
-
-    //initialize autocomplete on search input (ID selector must match)
-    autocomplete('#aa-search-input', {
-        hint: false
-    }, {
-        source: autocomplete.sources.hits(index, {
-            hitsPerPage: 10
-        }),
-        //value to be displayed in input control after user's suggestion selection
-        displayKey: 'name',
-        //hash of templates used when rendering dataset
-        templates: {
-            //'suggestion' templating function used to render a single suggestion
-            suggestion: function (suggestion) {
-                return '<a href="/' + suggestion.uri + '">' + suggestion._highlightResult.title
-                    .value + '</a>';
-            }
-        }
-    });
-    hljs.initHighlightingOnLoad();
-    mermaid.initialize({ startOnLoad: true });
     
-    // Stick the top to the top of the screen when  scrolling
-    $("#top-bar").sticky({
-        topSpacing: 0,
-        zIndex: 1000
-    });
 });
 
-jQuery(window).on('load', function () {
+jQuery(window).on('load', function() {
 
     function adjustForScrollbar() {
         if ((parseInt(jQuery('#body-inner').height()) + 83) >= jQuery('#body').height()) {
-            jQuery('.nav.nav-next').css({
-                'margin-right': getScrollBarWidth()
-            });
+            jQuery('.nav.nav-next').css({ 'margin-right': getScrollBarWidth() });
         } else {
-            jQuery('.nav.nav-next').css({
-                'margin-right': 0
-            });
+            jQuery('.nav.nav-next').css({ 'margin-right': 0 });
         }
     }
 
     // adjust sidebar for scrollbar
     adjustForScrollbar();
 
-    jQuery(window).smartresize(function () {
+    jQuery(window).smartresize(function() {
         adjustForScrollbar();
     });
 
@@ -443,19 +375,17 @@ jQuery(window).on('load', function () {
     }
 
 
-    $(".highlightable").highlight(sessionStorage.getItem('search-value'), {
-        element: 'mark'
-    });
+    $(".highlightable").highlight(sessionStorage.getItem('search-value'), { element: 'mark' });
 });
 
-$(function () {
+$(function() {
     $('a[rel="lightbox"]').featherlight({
         root: 'section#body'
     });
 });
 
 jQuery.extend({
-    highlight: function (node, re, nodeName, className) {
+    highlight: function(node, re, nodeName, className) {
         if (node.nodeType === 3) {
             var match = node.data.match(re);
             if (match) {
@@ -479,21 +409,21 @@ jQuery.extend({
     }
 });
 
-jQuery.fn.unhighlight = function (options) {
+jQuery.fn.unhighlight = function(options) {
     var settings = {
         className: 'highlight',
         element: 'span'
     };
     jQuery.extend(settings, options);
 
-    return this.find(settings.element + "." + settings.className).each(function () {
+    return this.find(settings.element + "." + settings.className).each(function() {
         var parent = this.parentNode;
         parent.replaceChild(this.firstChild, this);
         parent.normalize();
     }).end();
 };
 
-jQuery.fn.highlight = function (words, options) {
+jQuery.fn.highlight = function(words, options) {
     var settings = {
         className: 'highlight',
         element: 'span',
@@ -502,22 +432,19 @@ jQuery.fn.highlight = function (words, options) {
     };
     jQuery.extend(settings, options);
 
-    if (!words) {
-        return;
-    }
+    if (!words) { return; }
 
     if (words.constructor === String) {
         words = [words];
     }
-    words = jQuery.grep(words, function (word, i) {
+    words = jQuery.grep(words, function(word, i) {
         return word != '';
     });
-    words = jQuery.map(words, function (word, i) {
+    words = jQuery.map(words, function(word, i) {
         return word.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, "\\$&");
     });
-    if (words.length == 0) {
-        return this;
-    };
+    if (words.length == 0) { return this; }
+    ;
 
     var flag = settings.caseSensitive ? "" : "i";
     var pattern = "(" + words.join("|") + ")";
@@ -526,72 +453,7 @@ jQuery.fn.highlight = function (words, options) {
     }
     var re = new RegExp(pattern, flag);
 
-    return this.each(function () {
+    return this.each(function() {
         jQuery.highlight(this, re, settings.element, settings.className);
     });
 };
-
-
-// Get Parameters from some url
-var getUrlParameter = function getUrlParameter(sPageURL) {
-    var url = sPageURL.split('?');
-    var obj = {};
-    if (url.length == 2) {
-        var sURLVariables = url[1].split('&'),
-            sParameterName,
-            i;
-        for (i = 0; i < sURLVariables.length; i++) {
-            sParameterName = sURLVariables[i].split('=');
-            obj[sParameterName[0]] = sParameterName[1];
-        }
-        return obj;
-    } else {
-        return undefined;
-    }
-};
-
-// Execute actions on images generated from Markdown pages
-var images = $("div#body-inner img").not(".inline");
-// Wrap image inside a featherlight (to get a full size view in a popup)
-images.wrap(function () {
-    var image = $(this);
-    var o = getUrlParameter(image[0].src);
-    var f = o['featherlight'];
-    // IF featherlight is false, do not use feather light
-    if (f != 'false') {
-        if (!image.parent("a").length) {
-            return "<a href='" + image[0].src + "' data-featherlight='image'></a>";
-        }
-    }
-});
-
-// Change styles, depending on parameters set to the image
-images.each(function (index) {
-    var image = $(this)
-    var o = getUrlParameter(image[0].src);
-    if (typeof o !== "undefined") {
-        var h = o["height"];
-        var w = o["width"];
-        var c = o["classes"];
-        image.css("width", function () {
-            if (typeof w !== "undefined") {
-                return w;
-            } else {
-                return "auto";
-            }
-        });
-        image.css("height", function () {
-            if (typeof h !== "undefined") {
-                return h;
-            } else {
-                return "auto";
-            }
-        });
-        if (typeof c !== "undefined") {
-            var classes = c.split(',');
-            for (i = 0; i < classes.length; i++) {
-                image.addClass(classes[i]);
-            }
-        }
-    }
-});

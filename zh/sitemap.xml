@@ -43,6 +43,14 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/intro/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/security/cert/install-cert-manger/</loc>
   </url>
   
@@ -56,6 +64,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/deploy/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/flink-on-kubernetes/</loc>
   </url>
   
   <url>
@@ -89,6 +101,18 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/session-cluster/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/job-cluster/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/monitoring/wechat-work-alert/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/troubleshooting/node/</loc>
   </url>
   
@@ -97,7 +121,15 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/native-kubernetes/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/troubleshooting/pod/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/monitoring/dingtalk-alert/</loc>
   </url>
   
   <url>
@@ -129,7 +161,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/ai-and-big-data/</loc>
+    <loc>https://k8s.imroc.io/bigdata-ai/</loc>
   </url>
   
   <url>
@@ -212,10 +244,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/cluster/network/flannel/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/ai-and-big-data/flink-on-kubernetes/</loc>
   </url>
   
   <url>
