@@ -32,7 +32,7 @@
 	"title": "最佳实践",
 	"tags": [],
 	"description": "",
-	"content": "  泛域名转发     集群配置管理    用户管理    利用 CSR API 创建用户    集群权限控制    控制应用权限   控制用户权限    集群证书管理    安装 cert-manager   使用 cert-manager 自动生成证书     "
+	"content": "  泛域名转发     集群配置管理    Helm    Helm V2 迁移到 V3   安装 Helm     "
 },
 {
 	"uri": "https://k8s.imroc.io/deploy/manual/bootstrapping-etcd/",
@@ -158,7 +158,7 @@
 	"title": "利用 Loki/Promtail/Grafana 收集分析日志",
 	"tags": [],
 	"description": "",
-	"content": "Loki/Promtail/Grafana vs EFK  Loki 类似 EFK 中的 ElasticSearch，用于存储和查询日志 Promtail 类似 EFK 中的 Filebeat/Fluentd，用于采集和发送日志 Grafana 类似 EFK 中的 Kibana，用于 UI 展示  使用 Helm 安装  参考官方文档: https://github.com/grafana/loki/blob/master/docs/installation/helm.md\n "
+	"content": "Loki/Promtail/Grafana vs EFK  Loki 相当于 EFK 中的 ElasticSearch，用于存储和查询日志 Promtail 相当于 EFK 中的 Filebeat/Fluentd，用于采集和发送日志 Grafana 相当于 EFK 中的 Kibana，用于 UI 展示  使用 Helm 安装  参考官方文档: https://github.com/grafana/loki/blob/master/docs/installation/helm.md\n "
 },
 {
 	"uri": "https://k8s.imroc.io/troubleshooting/handle/",
