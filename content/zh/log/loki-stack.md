@@ -2,6 +2,9 @@
 title: "利用 Loki/Promtail/Grafana 收集分析日志"
 weight: 20
 state: TODO
+LastModifierDisplayName: "roc"
+LastModifierURL: "https://imroc.io"
+date: 2020-03-12
 ---
 
 ## Loki/Promtail/Grafana vs EFK
