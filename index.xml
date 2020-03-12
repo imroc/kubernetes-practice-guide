@@ -12,18 +12,6 @@
     
     
     <item>
-      <title>Helm V2 迁移到 V3</title>
-      <link>https://k8s.imroc.io/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3/</guid>
-      <description>Helm V3 与 V2 版本架构变化较大，数据迁移比较麻烦，官方提供了一个名为 helm-2to3 的插件来简化迁移工作，本文将介绍如何利用此插件迁移 Helm V2 到 V3 版本。这里前提是 Helm V3 已安装，安装方法请参考 这里。
-安装 2to3 插件 一键安装:
-$ helm3 plugin install https://github.com/helm/helm-2to3 Downloading and installing helm-2to3 v0.1.1 ... https://github.com/helm/helm-2to3/releases/download/v0.1.1/helm-2to3_0.1.1_linux_amd64.tar.gz Installed plugin: 2to3 检查插件是否安装成功:
-$ helm3 plugin list NAME VERSION DESCRIPTION 2to3 0.1.1 migrate Helm v2 configuration and releases in-place to Helm v3 迁移 Helm V2 配置 $ helm3 2to3 move config [Helm 2] Home directory: /root/.helm [Helm 3] Config directory: /root/.</description>
-    </item>
-    
-    <item>
       <title>部署前的准备工作</title>
       <link>https://k8s.imroc.io/deploy/manual/prepare/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -36,17 +24,6 @@ Worker 节点 实际运行工作负载的节点，Master 节点也可以作为 W
 通常会给 Master 节点打标签，让关键的 Pod 跑在 Master 节点上，比如集群 DNS 服务。
 准备客户端工具 我们需要用 cfssl 和 kubectl 来为各个组件生成证书和 kubeconfig，所以先将这两个工具在某个机器下载安装好。
 安装 cfssl  curl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl curl -L https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -o cfssljson curl -L https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -o cfssl-certinfo chmod +x cfssl cfssljson cfssl-certinfo sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/ 安装 kubectl wget -q --show-progress --https-only --timestamping \  https://storage.</description>
-    </item>
-    
-    <item>
-      <title>安装 Helm</title>
-      <link>https://k8s.imroc.io/best-practice/configuration-management/helm/install-helm/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/configuration-management/helm/install-helm/</guid>
-      <description>Helm 是 Kubernetes 的包管理器，可以帮我们简化 kubernetes 的操作，一键部署应用。假如你的机器上已经安装了 kubectl 并且能够操作集群，那么你就可以安装 Helm 了。当前最新稳定版是 V2，Helm V3 还未正式发布，下面分别说下安装方法。
-安装 Helm V2 执行脚本安装 helm 客户端:
-$ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash % Total % Received % Xferd Average Speed Time Time Time Current Dload Upload Total Spent Left Speed 100 6737 100 6737 0 0 12491 0 --:--:-- --:--:-- --:--:-- 12475 Downloading https://kubernetes-helm.storage.googleapis.com/helm-v2.9.1-linux-amd64.tar.gz Preparing to install into /usr/local/bin helm installed into /usr/local/bin/helm Run &amp;#39;helm init&amp;#39; to configure helm.</description>
     </item>
     
     <item>
@@ -1026,6 +1003,19 @@ User 来源 User 的来源有多种:
  token 文件: 给 kube-apiserver 启动参数 --token-auth-file 传一个 token 认证文件，比如: --token-auth-file=/etc/kubernetes/known_tokens.csv  token 文件每一行表示一个用户，示例: wJmq****PPWj,admin,admin,system:masters 第一个字段是 token 的值，最后一个字段是用户组，token 认证用户名不重要，不会识别   证书: 通过使用 CA 证书给用户签发证书，签发的证书中 CN 字段是用户名，O 是用户组  使用 RBAC 控制用户权限  下面给出几个 RBAC 定义示例。
 给 roc 授权 test 命名空间所有权限，istio-system 命名空间的只读权限:
 kind: Role apiVersion: rbac.authorization.k8s.io/v1 metadata: name: admin namespace: test rules: - apiGroups: [&amp;#34;*&amp;#34;] resources: [&amp;#34;*&amp;#34;] verbs: [&amp;#34;*&amp;#34;] --- kind: RoleBinding apiVersion: rbac.</description>
+    </item>
+    
+    <item>
+      <title>泛域名动态转发 Service</title>
+      <link>https://k8s.imroc.io/trick/wildcard-domain-forward/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/trick/wildcard-domain-forward/</guid>
+      <description>需求 集群对外暴露了一个公网IP作为流量入口(可以是 Ingress 或 Service)，DNS 解析配置了一个泛域名指向该IP（比如 *.test.imroc.io），现希望根据请求中不同 Host 转发到不同的后端 Service。比如 a.test.imroc.io 的请求被转发到 my-svc-a，b.test.imroc.io 的请求转发到 my-svc-b。当前 K8S 的 Ingress 并不原生支持这种泛域名转发规则，本文将给出一个解决方案来实现泛域名转发。
+简单做法 先说一种简单的方法，这也是大多数人的第一反应：配置 Ingress 规则
+假如泛域名有两个不同 Host 分别转发到不同 Service，Ingress 类似这样写:
+apiVersion: extensions/v1beta1 kind: Ingress metadata: name: my-ingress spec: rules: - host: a.test.imroc.io http: paths: - backend: serviceName: my-svc-a servicePort: 80 path: / - host: b.test.imroc.io http: paths: - backend: serviceName: my-svc-b servicePort: 80 path: / 但是！如果 Host 非常多会怎样？（比如200+）
+ 每次新增 Host 都要改 Ingress 规则，太麻烦 单个 Ingress 上面的规则越来越多，更改规则对 LB 的压力变大，可能会导致偶尔访问不了  正确姿势 我们可以约定请求中泛域名 Host 通配符的 * 号匹配到的字符跟 Service 的名字相关联（可以是相等，或者 Service 统一在前面加个前缀，比如 a.</description>
     </item>
     
     <item>

@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>Tags</title>
+    <title>泛域名动态转发 Service</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/tags/">
+  <body class="" data-url="/trick/wildcard-domain-forward/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -2572,7 +2572,7 @@
   
     
     <li data-nav-id="/trick/" title="奇技淫巧" class="dd-item 
-        
+        parent
         
         
         ">
@@ -2783,7 +2783,7 @@
  
   
     
-      <li data-nav-id="/trick/wildcard-domain-forward/" title="泛域名动态转发 Service" class="dd-item ">
+      <li data-nav-id="/trick/wildcard-domain-forward/" title="泛域名动态转发 Service" class="dd-item active">
         <a href="/trick/wildcard-domain-forward/">
         泛域名动态转发 Service
         <i class="fas fa-check read-icon"></i>
@@ -3221,22 +3221,10 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/tags/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/trick/wildcard-domain-forward/" selected>简体中文</option>
                     
                   
               
-                  
-              
-          
-              
-              
-                  
-              
-                  
-                    
-                    
-                      <option id="en" value="https://k8s.imroc.io/en/tags/">English</option>
-                    
                   
               
           
@@ -3291,6 +3279,17 @@
               <div>
                 <div id="top-bar">
                 
+                  
+                  
+                  
+                  <div id="top-github-link">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/trick/wildcard-domain-forward.md" target="blank">
+                      <i class="fas fa-code-branch"></i>
+                      <span id="top-github-link-text">编辑当前页</span>
+                    </a>
+                  </div>
+                  
+                
                 
                 <div id="breadcrumbs" itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
                     <span id="sidebar-toggle-span">
@@ -3311,7 +3310,13 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > Tags
+            
+            
+          
+          
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/trick/'>奇技淫巧</a> > 泛域名动态转发 Service
+          
+         
           
          
           
@@ -3322,7 +3327,13 @@
                 
                     <div class="progress">
     <div class="wrapper">
-
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#需求">需求</a></li>
+    <li><a href="#简单做法">简单做法</a></li>
+    <li><a href="#正确姿势">正确姿势</a></li>
+  </ul>
+</nav>
     </div>
 </div>
 
@@ -3338,7 +3349,7 @@
           
             <h1>
               
-              Tags
+              泛域名动态转发 Service
             </h1>
           
 
@@ -3346,13 +3357,227 @@
 
 
 
-
+<h2 id="需求">需求</h2>
+<p>集群对外暴露了一个公网IP作为流量入口(可以是 Ingress 或 Service)，DNS 解析配置了一个泛域名指向该IP（比如 <code>*.test.imroc.io</code>），现希望根据请求中不同 Host 转发到不同的后端 Service。比如 <code>a.test.imroc.io</code> 的请求被转发到 <code>my-svc-a</code>，<code>b.test.imroc.io</code> 的请求转发到 <code>my-svc-b</code>。当前 K8S 的 Ingress 并不原生支持这种泛域名转发规则，本文将给出一个解决方案来实现泛域名转发。</p>
+<h2 id="简单做法">简单做法</h2>
+<p>先说一种简单的方法，这也是大多数人的第一反应：<strong>配置 Ingress 规则</strong></p>
+<p>假如泛域名有两个不同 Host 分别转发到不同 Service，Ingress 类似这样写:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: extensions/v1beta1
+<span style="color:#66d9ef">kind</span>: Ingress
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: my-ingress
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">rules</span>:
+  - <span style="color:#66d9ef">host</span>: a.test.imroc.io
+    <span style="color:#66d9ef">http</span>:
+      <span style="color:#66d9ef">paths</span>:
+      - <span style="color:#66d9ef">backend</span>:
+          <span style="color:#66d9ef">serviceName</span>: my-svc-a
+          <span style="color:#66d9ef">servicePort</span>: <span style="color:#ae81ff">80</span>
+        <span style="color:#66d9ef">path</span>: /
+  - <span style="color:#66d9ef">host</span>: b.test.imroc.io
+    <span style="color:#66d9ef">http</span>:
+      <span style="color:#66d9ef">paths</span>:
+      - <span style="color:#66d9ef">backend</span>:
+          <span style="color:#66d9ef">serviceName</span>: my-svc-b
+          <span style="color:#66d9ef">servicePort</span>: <span style="color:#ae81ff">80</span>
+        <span style="color:#66d9ef">path</span>: /
+</code></pre></div><p>但是！如果 Host 非常多会怎样？（比如200+）</p>
 <ul>
-	
+<li>每次新增 Host 都要改 Ingress 规则，太麻烦</li>
+<li>单个 Ingress 上面的规则越来越多，更改规则对 LB 的压力变大，可能会导致偶尔访问不了</li>
 </ul>
+<h2 id="正确姿势">正确姿势</h2>
+<p>我们可以约定请求中泛域名 Host 通配符的 <code>*</code> 号匹配到的字符跟 Service 的名字相关联（可以是相等，或者 Service 统一在前面加个前缀，比如 <code>a.test.imroc.io</code> 转发到 <code>my-svc-a</code> 这个 Service)，集群内起一个反向代理服务，匹配泛域名的请求全部转发到这个代理服务上，这个代理服务只做一件简单的事，解析 Host，正则匹配抓取泛域名中 <code>*</code> 号这部分，把它转换为 Service 名字，然后在集群里转发（集群 DNS 解析)</p>
+<p>这个反向代理服务可以是 Nginx+Lua脚本 来实现，或者自己写个简单程序来做反向代理，这里我用 <a href="https://openresty.org">OpenResty</a> 来实现，它可以看成是 Nginx 的发行版，自带 lua 支持。</p>
+<p>有几点需要说明下：</p>
+<ul>
+<li>我们使用 nginx 的  <code>proxy_pass</code> 来反向代理到后端服务，<code>proxy_pass</code> 后面跟的变量，我们需要用 lua 来判断 Host 修改变量</li>
+<li>nginx 的 <code>proxy_pass</code> 后面跟的如果是可变的域名（非IP，需要 dns 解析)，它需要一个域名解析器，不会走默认的 dns 解析，需要在 <code>nginx.conf</code> 里添加 <code>resolver</code> 配置项来设置一个外部的 dns 解析器</li>
+<li>这个解析器我们是用 go-dnsmasq 来实现，它可以将集群的 dns 解析代理给 nginx，以 sidecar 的形式注入到 pod 中，监听 53 端口</li>
+</ul>
+<p><code>nginx.conf</code> 里关键的配置如下图所示：</p>
+<p><img src="https://imroc.io/assets/blog/nginx-wilcard-conf.png" alt="nginx.conf"></p>
+<p>下面给出完整的 yaml 示例</p>
+<p><code>proxy.yaml</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: apps/v1beta1
+<span style="color:#66d9ef">kind</span>: Deployment
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">labels</span>:
+    <span style="color:#66d9ef">component</span>: nginx
+  <span style="color:#66d9ef">name</span>: proxy
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">1</span>
+  <span style="color:#66d9ef">selector</span>:
+    <span style="color:#66d9ef">matchLabels</span>:
+      <span style="color:#66d9ef">component</span>: nginx
+  <span style="color:#66d9ef">template</span>:
+    <span style="color:#66d9ef">metadata</span>:
+      <span style="color:#66d9ef">labels</span>:
+        <span style="color:#66d9ef">component</span>: nginx
+    <span style="color:#66d9ef">spec</span>:
+      <span style="color:#66d9ef">containers</span>:
+      - <span style="color:#66d9ef">name</span>: nginx
+        <span style="color:#66d9ef">image</span>: <span style="color:#e6db74">&#34;openresty/openresty:centos&#34;</span>
+        <span style="color:#66d9ef">ports</span>:
+        - <span style="color:#66d9ef">name</span>: http
+          <span style="color:#66d9ef">containerPort</span>: <span style="color:#ae81ff">80</span>
+          <span style="color:#66d9ef">protocol</span>: TCP
+        <span style="color:#66d9ef">volumeMounts</span>:
+        - <span style="color:#66d9ef">mountPath</span>: /usr/local/openresty/nginx/conf/nginx.conf
+          <span style="color:#66d9ef">name</span>: config
+          <span style="color:#66d9ef">subPath</span>: nginx.conf
+      - <span style="color:#66d9ef">name</span>: dnsmasq
+        <span style="color:#66d9ef">image</span>: <span style="color:#e6db74">&#34;janeczku/go-dnsmasq:release-1.0.7&#34;</span>
+        <span style="color:#66d9ef">args</span>:
+          - --listen
+          - <span style="color:#e6db74">&#34;127.0.0.1:53&#34;</span>
+          - --default-resolver
+          - --append-search-domains
+          - --hostsfile=/etc/hosts
+          - --verbose
+      <span style="color:#66d9ef">volumes</span>:
+      - <span style="color:#66d9ef">name</span>: config
+        <span style="color:#66d9ef">configMap</span>:
+          <span style="color:#66d9ef">name</span>: configmap-nginx
+
+---
+
+<span style="color:#66d9ef">apiVersion</span>: v1
+<span style="color:#66d9ef">kind</span>: ConfigMap
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">labels</span>:
+    <span style="color:#66d9ef">component</span>: nginx
+  <span style="color:#66d9ef">name</span>: configmap-nginx
+<span style="color:#66d9ef">data</span>:
+  <span style="color:#66d9ef">nginx.conf</span>: |<span style="color:#e6db74">-
+</span><span style="color:#e6db74">    worker_processes  1;</span>
+
+    error_log  /error.log;
+
+    events {
+        accept_mutex on;
+        multi_accept on;
+        use epoll;
+        worker_connections  <span style="color:#ae81ff">1024</span>;
+    }
 
 
-<footer class=" footline" >
+    http {
+        include       mime.types;
+        default_type  application/octet-stream;
+        log_format  main  <span style="color:#e6db74">&#39;$time_local $remote_user $remote_addr $host $request_uri $request_method $http_cookie &#39;</span>
+                          <span style="color:#e6db74">&#39;$status $body_bytes_sent &#34;$http_referer&#34; &#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;$http_user_agent&#34; &#34;$http_x_forwarded_for&#34; &#39;</span>
+                          <span style="color:#e6db74">&#39;$request_time $upstream_response_time &#34;$upstream_cache_status&#34;&#39;</span>;
+
+        log_format  browser <span style="color:#e6db74">&#39;$time_iso8601 $cookie_km_uid $remote_addr $host $request_uri $request_method &#39;</span>
+                          <span style="color:#e6db74">&#39;$status $body_bytes_sent &#34;$http_referer&#34; &#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;$http_user_agent&#34; &#34;$http_x_forwarded_for&#34; &#39;</span>
+                          <span style="color:#e6db74">&#39;$request_time $upstream_response_time &#34;$upstream_cache_status&#34; $http_x_requested_with $http_x_real_ip $upstream_addr $request_body&#39;</span>;
+
+        log_format client <span style="color:#e6db74">&#39;{&#34;@timestamp&#34;:&#34;$time_iso8601&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;time_local&#34;:&#34;$time_local&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;remote_user&#34;:&#34;$remote_user&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;http_x_forwarded_for&#34;:&#34;$http_x_forwarded_for&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;host&#34;:&#34;$server_addr&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;remote_addr&#34;:&#34;$remote_addr&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;http_x_real_ip&#34;:&#34;$http_x_real_ip&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;body_bytes_sent&#34;:$body_bytes_sent,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;request_time&#34;:$request_time,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;status&#34;:$status,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;upstream_response_time&#34;:&#34;$upstream_response_time&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;upstream_response_status&#34;:&#34;$upstream_status&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;request&#34;:&#34;$request&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;http_referer&#34;:&#34;$http_referer&#34;,&#39;</span>
+                          <span style="color:#e6db74">&#39;&#34;http_user_agent&#34;:&#34;$http_user_agent&#34;}&#39;</span>;
+
+        access_log  /access.log  main;
+
+        sendfile        on;
+
+        keepalive_timeout 120s 100s;
+        keepalive_requests <span style="color:#ae81ff">500</span>;
+        send_timeout 60000s;
+        client_header_buffer_size 4k;
+        proxy_ignore_client_abort on;
+        proxy_buffers <span style="color:#ae81ff">16</span> 32k;
+        proxy_buffer_size 64k;
+
+        proxy_busy_buffers_size 64k;
+
+        proxy_send_timeout <span style="color:#ae81ff">60000</span>;
+        proxy_read_timeout <span style="color:#ae81ff">60000</span>;
+        proxy_connect_timeout <span style="color:#ae81ff">60000</span>;
+        proxy_cache_valid <span style="color:#ae81ff">200</span> <span style="color:#ae81ff">304</span> 2h;
+        proxy_cache_valid <span style="color:#ae81ff">500</span> <span style="color:#ae81ff">404</span> 2s;
+        proxy_cache_key $host$request_uri$cookie_user;
+        proxy_cache_methods GET HEAD POST;
+
+        proxy_redirect off;
+        proxy_http_version <span style="color:#ae81ff">1.1</span>;
+        proxy_set_header Host                $http_host;
+        proxy_set_header X-Real-IP           $remote_addr;
+        proxy_set_header X-Forwarded-For     $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto   $scheme;
+        proxy_set_header X-Frame-Options     SAMEORIGIN;
+
+        server_tokens off;
+        client_max_body_size 50G;
+        add_header X-Cache $upstream_cache_status;
+        autoindex off;
+
+        resolver      <span style="color:#ae81ff">127.0.0.1</span>:<span style="color:#ae81ff">53</span> ipv6=off;
+
+        server {
+            listen <span style="color:#ae81ff">80</span>;
+
+            location / {
+                set $service  <span style="color:#e6db74">&#39;&#39;</span>;
+                rewrite_by_lua <span style="color:#e6db74">&#39;
+</span><span style="color:#e6db74">                    local host = ngx.var.host
+</span><span style="color:#e6db74">                    local m = ngx.re.match(host, &#34;(.+).test.imroc.io&#34;)
+</span><span style="color:#e6db74">                    if m then
+</span><span style="color:#e6db74">                        ngx.var.service = &#34;my-svc-&#34; .. m[1]
+</span><span style="color:#e6db74">                    end
+</span><span style="color:#e6db74">                &#39;</span>;
+                proxy_pass http://$service;
+            }
+        }
+    }
+</code></pre></div><p>让该代理服务暴露公网访问可以用 Service 或 Ingress</p>
+<p>用 Service 的示例 (<code>service.yaml</code>):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
+<span style="color:#66d9ef">kind</span>: Service
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">labels</span>:
+    <span style="color:#66d9ef">component</span>: nginx
+  <span style="color:#66d9ef">name</span>: service-nginx
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">type</span>: LoadBalancer
+  <span style="color:#66d9ef">ports</span>:
+  - <span style="color:#66d9ef">name</span>: http
+    <span style="color:#66d9ef">port</span>: <span style="color:#ae81ff">80</span>
+    <span style="color:#66d9ef">targetPort</span>: http
+  <span style="color:#66d9ef">selector</span>:
+    <span style="color:#66d9ef">component</span>: nginx
+</code></pre></div><p>用 Ingress 的示例 (<code>ingress.yaml</code>):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: extensions/v1beta1
+<span style="color:#66d9ef">kind</span>: Ingress
+<span style="color:#66d9ef">metadata</span>:
+  <span style="color:#66d9ef">name</span>: ingress-nginx
+<span style="color:#66d9ef">spec</span>:
+  <span style="color:#66d9ef">rules</span>:
+  - <span style="color:#66d9ef">host</span>: <span style="color:#e6db74">&#34;*.test.imroc.io&#34;</span>
+    <span style="color:#66d9ef">http</span>:
+      <span style="color:#66d9ef">paths</span>:
+      - <span style="color:#66d9ef">backend</span>:
+          <span style="color:#66d9ef">serviceName</span>: service-nginx
+          <span style="color:#66d9ef">servicePort</span>: <span style="color:#ae81ff">80</span>
+        <span style="color:#66d9ef">path</span>: /
+</code></pre></div>
+
+<footer class="footline">
 	
 </footer>
 
@@ -3404,7 +3629,7 @@
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:d41d8cd98f00b204e9800998ecf8427e")
+  console.log("gitalk id:941eede3744ae04cce563f05241cf6df")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3412,9 +3637,9 @@
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: 'Tags',
+      title: '泛域名动态转发 Service',
       createIssueManually: false,
-      id: 'd41d8cd98f00b204e9800998ecf8427e',
+      id: '941eede3744ae04cce563f05241cf6df',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -5072,6 +5297,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -5086,6 +5312,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5199,6 +5428,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -5217,6 +5447,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5464,8 +5697,10 @@
 	 
 	 
 		
+			<a class="nav nav-prev" href="/trick/shell/node/" title="节点相关脚本"> <i class="fa fa-chevron-left"></i></a>
 		
-			<a class="nav nav-next" href="/deploy/" title="部署指南" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+			<a class="nav nav-next" href="/monitoring/" title="监控指南" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

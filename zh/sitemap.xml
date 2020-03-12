@@ -3,19 +3,11 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://k8s.imroc.io/best-practice/configuration-management/helm/upgrade-helm-v2-to-v3/</loc>
-  </url>
-  
-  <url>
     <loc>https://k8s.imroc.io/optimization/deploy/</loc>
   </url>
   
   <url>
     <loc>https://k8s.imroc.io/deploy/manual/prepare/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/best-practice/configuration-management/helm/install-helm/</loc>
   </url>
   
   <url>
@@ -303,10 +295,6 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/best-practice/configuration-management/helm/</loc>
-  </url>
-  
-  <url>
     <loc>https://k8s.imroc.io/cluster/ingress/</loc>
   </url>
   
@@ -549,6 +537,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/trick/wildcard-domain-forward/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/best-practice/wildcard-domain-forward/</loc>
   </url>
   
@@ -622,10 +614,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/security/cert/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/best-practice/configuration-management/</loc>
   </url>
   
   <url>
