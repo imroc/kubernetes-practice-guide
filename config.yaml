@@ -22,7 +22,7 @@ params:
     text: "Kubernetes 实践指南"
     image: "https://res.cloudinary.com/imroc/image/upload/c_scale,w_64/v1583293443/kubernetes-practice-guide/img/kubernetes.png"
   github:
-    repo: "imroc/kuberntes-practice-guide"
+    repo: "imroc/kubernetes-practice-guide"
   gitcomment:
     owner: "imroc"
     repo: "kubernetes-practice-guide"
