@@ -11,9 +11,17 @@
 
     <title>控制用户权限</title>
 
+    <script>
+      window.algoliaAppID='B6Q6PSGUV5';
+      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
+      window.algoliaIndex='kubernetes-practice-guide-zh';
+    </script>
+    
+    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.2b43e1a054df27f5ef97f588ec17933c5b9d9c9d66c2f2ac670e93f9509ecc1e.js'></script>
+    
     
     <link rel="stylesheet"
-      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.10bb02828e29fa3315241572ef5cf8181c079c0c86cfde9a587215c3f80fcf4e.css'>
+      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.b0e6163350b1169d986890f4bd317db6286105863b7a53274abdb5c8d935eaa1.css'>
     
 
     <style>
@@ -3196,8 +3204,6 @@
 
 
 
-
-
 <p>为了简单方便，小集群或测试环境集群我们通常使用最高权限的 admin 账号，可以做任何操作，但是如果是重要的生产环境集群，可以操作集群的人比较多，如果这时还用这个账号可能就会比较危险，一旦有人误操作或故意搞事就可能酿成大错，即使 apiserver 开启审计也无法知道是谁做的操作，所以最好控制下权限，根据人的级别或角色创建拥有对应权限的账号，这个可以通过 RBAC 来实现(确保 <code>kube-apiserver</code> 启动参数 <code>--authorization-mode=RBAC</code>)，基本思想是创建 User 或 ServiceAccount 绑定 Role 或 ClusterRole 来控制权限。</p>
 <h2 id="user-来源">User 来源</h2>
 <p>User 的来源有多种:</p>
@@ -5374,16 +5380,7 @@ kubectl config view
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
 
-    <script>
-      window.algoliaAppID='B6Q6PSGUV5';
-      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
-      window.algoliaIndex='kubernetes-practice-guide-zh';
-    </script>
-    
-    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.d2d3888b947d0dd3dbc4cf91680c3654991c1a1ca525f0696b0061acfc692f7e.js'></script>
-    
     
 
   </body>
 </html>
-

@@ -11,9 +11,17 @@
 
     <title>Pod 相关脚本</title>
 
+    <script>
+      window.algoliaAppID='B6Q6PSGUV5';
+      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
+      window.algoliaIndex='kubernetes-practice-guide-zh';
+    </script>
+    
+    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.2b43e1a054df27f5ef97f588ec17933c5b9d9c9d66c2f2ac670e93f9509ecc1e.js'></script>
+    
     
     <link rel="stylesheet"
-      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.10bb02828e29fa3315241572ef5cf8181c079c0c86cfde9a587215c3f80fcf4e.css'>
+      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.b0e6163350b1169d986890f4bd317db6286105863b7a53274abdb5c8d935eaa1.css'>
     
 
     <style>
@@ -3195,8 +3203,6 @@
 
 
 
-
-
 <h2 id="清理-evicted-的-pod">清理 Evicted 的 pod</h2>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get pod -o wide --all-namespaces | awk <span style="color:#e6db74">&#39;{if($4==&#34;Evicted&#34;){cmd=&#34;kubectl -n &#34;$1&#34; delete pod &#34;$2; system(cmd)}}&#39;</span>
 </code></pre></div><h2 id="清理非-running-的-pod">清理非 Running 的 pod</h2>
@@ -5247,16 +5253,7 @@ IMAGE<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;ccr.cc
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
 
-    <script>
-      window.algoliaAppID='B6Q6PSGUV5';
-      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
-      window.algoliaIndex='kubernetes-practice-guide-zh';
-    </script>
-    
-    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.d2d3888b947d0dd3dbc4cf91680c3654991c1a1ca525f0696b0061acfc692f7e.js'></script>
-    
     
 
   </body>
 </html>
-

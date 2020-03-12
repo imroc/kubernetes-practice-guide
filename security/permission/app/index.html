@@ -11,9 +11,17 @@
 
     <title>控制应用权限</title>
 
+    <script>
+      window.algoliaAppID='B6Q6PSGUV5';
+      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
+      window.algoliaIndex='kubernetes-practice-guide-zh';
+    </script>
+    
+    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.2b43e1a054df27f5ef97f588ec17933c5b9d9c9d66c2f2ac670e93f9509ecc1e.js'></script>
+    
     
     <link rel="stylesheet"
-      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.10bb02828e29fa3315241572ef5cf8181c079c0c86cfde9a587215c3f80fcf4e.css'>
+      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.b0e6163350b1169d986890f4bd317db6286105863b7a53274abdb5c8d935eaa1.css'>
     
 
     <style>
@@ -3197,8 +3205,6 @@
 
 
 
-
-
 <p>不仅用户 (人) 可以操作集群，应用 (程序) 也可以操作集群，通过给 Pod 设置 Serivce Account 来对应用进行授权，如果不设置会默认配置一个 &ldquo;default&rdquo; 的 Service Account，几乎没有权限。</p>
 <h2 id="原理">原理</h2>
 <p>创建 Pod 时，在 apiserver 中的 service account admission controller 检测 Pod 是否指定了 ServiceAccount，如果没有就自动设置一个 &ldquo;default&rdquo;，如果指定了会检测指定的 ServiceAccount 是否存在，不存在的话会拒绝该 Pod，存在话就将此 ServiceAccount 对应的 Secret 挂载到 Pod 中每个容器的 <code>/var/run/secrets/kubernetes.io/serviceaccount</code> 这个路径，这个 Secret 是 controller manager 中 token controller 去 watch ServiceAccount，为每个 ServiceAccount 生成对应的 token 类型的 Secret 得来的。</p>
@@ -5312,16 +5318,7 @@
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
 
-    <script>
-      window.algoliaAppID='B6Q6PSGUV5';
-      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
-      window.algoliaIndex='kubernetes-practice-guide-zh';
-    </script>
-    
-    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.d2d3888b947d0dd3dbc4cf91680c3654991c1a1ca525f0696b0061acfc692f7e.js'></script>
-    
     
 
   </body>
 </html>
-

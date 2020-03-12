@@ -11,9 +11,17 @@
 
     <title>泛域名转发</title>
 
+    <script>
+      window.algoliaAppID='B6Q6PSGUV5';
+      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
+      window.algoliaIndex='kubernetes-practice-guide-zh';
+    </script>
+    
+    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.2b43e1a054df27f5ef97f588ec17933c5b9d9c9d66c2f2ac670e93f9509ecc1e.js'></script>
+    
     
     <link rel="stylesheet"
-      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.10bb02828e29fa3315241572ef5cf8181c079c0c86cfde9a587215c3f80fcf4e.css'>
+      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.b0e6163350b1169d986890f4bd317db6286105863b7a53274abdb5c8d935eaa1.css'>
     
 
     <style>
@@ -3189,8 +3197,6 @@
 
 
 
-
-
 <h2 id="需求">需求</h2>
 <p>集群对外暴露了一个公网IP作为流量入口(可以是 Ingress 或 Service)，DNS 解析配置了一个泛域名指向该IP（比如 <code>*.test.imroc.io</code>），现希望根据请求中不同 Host 转发到不同的后端 Service。比如 <code>a.test.imroc.io</code> 的请求被转发到 <code>my-svc-a</code>，<code>b.test.imroc.io</code> 的请求转发到 <code>my-svc-b</code>。当前 K8S 的 Ingress 并不原生支持这种泛域名转发规则，本文将给出一个解决方案来实现泛域名转发。</p>
 <h2 id="简单做法">简单做法</h2>
@@ -5437,16 +5443,7 @@
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
 
-    <script>
-      window.algoliaAppID='B6Q6PSGUV5';
-      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
-      window.algoliaIndex='kubernetes-practice-guide-zh';
-    </script>
-    
-    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.d2d3888b947d0dd3dbc4cf91680c3654991c1a1ca525f0696b0061acfc692f7e.js'></script>
-    
     
 
   </body>
 </html>
-

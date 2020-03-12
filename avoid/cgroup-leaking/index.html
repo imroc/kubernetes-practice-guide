@@ -11,9 +11,17 @@
 
     <title>cgroup 泄露</title>
 
+    <script>
+      window.algoliaAppID='B6Q6PSGUV5';
+      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
+      window.algoliaIndex='kubernetes-practice-guide-zh';
+    </script>
+    
+    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.2b43e1a054df27f5ef97f588ec17933c5b9d9c9d66c2f2ac670e93f9509ecc1e.js'></script>
+    
     
     <link rel="stylesheet"
-      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.10bb02828e29fa3315241572ef5cf8181c079c0c86cfde9a587215c3f80fcf4e.css'>
+      href='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.b0e6163350b1169d986890f4bd317db6286105863b7a53274abdb5c8d935eaa1.css'>
     
 
     <style>
@@ -3193,8 +3201,6 @@
 
 
 
-
-
 <h2 id="内核-bug">内核 Bug</h2>
 <p><code>memcg</code> 是 Linux 内核中用于管理 cgroup 内存的模块，整个生命周期应该是跟随 cgroup 的，但是在低版本内核中(已知3.10)，一旦给某个 memory cgroup 开启 kmem accounting 中的 <code>memory.kmem.limit_in_bytes</code> 就可能会导致不能彻底删除 memcg 和对应的 cssid，也就是说应用即使已经删除了 cgroup (<code>/sys/fs/cgroup/memory</code> 下对应的 cgroup 目录已经删除), 但在内核中没有释放 cssid，导致内核认为的 cgroup 的数量实际数量不一致，我们也无法得知内核认为的 cgroup 数量是多少。</p>
 <p>关于 cgroup kernel memory，在 <a href="https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v1/memory.html#kernel-memory-extension-config-memcg-kmem">kernel.org</a> 中有如下描述：</p>
@@ -5286,16 +5292,7 @@ make BUILDTAGS<span style="color:#f92672">=</span><span style="color:#e6db74">&#
       <div style="border: none; box-sizing: content-box; height: 200px; margin: 0px; padding: 0px; width: 200px;"></div>
     </div>
 
-    <script>
-      window.algoliaAppID='B6Q6PSGUV5';
-      window.algoliaKey='5b4678e9995fe4211c4fa43ad2ffdab5';
-      window.algoliaIndex='kubernetes-practice-guide-zh';
-    </script>
-    
-    <script src='https://kubetencent-1251707795.cos.accelerate.myqcloud.com/js/bundle.min.d2d3888b947d0dd3dbc4cf91680c3654991c1a1ca525f0696b0061acfc692f7e.js'></script>
-    
     
 
   </body>
 </html>
-
