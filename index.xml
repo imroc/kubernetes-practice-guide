@@ -144,6 +144,16 @@ helm repo add jetstack https://charts.</description>
     </item>
     
     <item>
+      <title>利用 Loki/Promtail/Grafana 收集分析日志</title>
+      <link>https://k8s.imroc.io/log/loki-stack/</link>
+      <pubDate>Thu, 12 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/log/loki-stack/</guid>
+      <description>Loki/Promtail/Grafana vs EFK  Loki 相当于 EFK 中的 ElasticSearch，用于存储和查询日志 Promtail 相当于 EFK 中的 Filebeat/Fluentd，用于采集和发送日志 Grafana 相当于 EFK 中的 Kibana，用于 UI 展示  使用 Helm 安装  参考官方文档: https://github.com/grafana/loki/blob/master/docs/installation/helm.md
+ </description>
+    </item>
+    
+    <item>
       <title>Flink on Kubernetes 方案</title>
       <link>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/flink-on-kubernetes/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -175,16 +185,6 @@ DNS-01 校验原理 DNS-01 的校验原理是利用 DNS 提供商的 API Key 拿
       
       <guid>https://k8s.imroc.io/deploy/kubespray/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>利用 Loki/Promtail/Grafana 收集分析日志</title>
-      <link>https://k8s.imroc.io/log/loki-stack/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/log/loki-stack/</guid>
-      <description>Loki/Promtail/Grafana vs EFK  Loki 相当于 EFK 中的 ElasticSearch，用于存储和查询日志 Promtail 相当于 EFK 中的 Filebeat/Fluentd，用于采集和发送日志 Grafana 相当于 EFK 中的 Kibana，用于 UI 展示  使用 Helm 安装  参考官方文档: https://github.com/grafana/loki/blob/master/docs/installation/helm.md
- </description>
     </item>
     
     <item>

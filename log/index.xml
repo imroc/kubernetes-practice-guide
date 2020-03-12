@@ -6,6 +6,7 @@
     <description>Recent content in 日志收集 on Kubernetes 实践指南</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
+    <lastBuildDate>Thu, 12 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://k8s.imroc.io/log/index.xml" rel="self" type="application/rss+xml" />
     
@@ -13,7 +14,7 @@
     <item>
       <title>利用 Loki/Promtail/Grafana 收集分析日志</title>
       <link>https://k8s.imroc.io/log/loki-stack/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Thu, 12 Mar 2020 00:00:00 +0000</pubDate>
       
       <guid>https://k8s.imroc.io/log/loki-stack/</guid>
       <description>Loki/Promtail/Grafana vs EFK  Loki 相当于 EFK 中的 ElasticSearch，用于存储和查询日志 Promtail 相当于 EFK 中的 Filebeat/Fluentd，用于采集和发送日志 Grafana 相当于 EFK 中的 Kibana，用于 UI 展示  使用 Helm 安装  参考官方文档: https://github.com/grafana/loki/blob/master/docs/installation/helm.md
