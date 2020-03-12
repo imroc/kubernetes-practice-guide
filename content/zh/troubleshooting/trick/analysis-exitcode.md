@@ -1,5 +1,8 @@
 ---
 title: "分析 ExitCode 定位 Pod 异常退出原因"
+LastModifierDisplayName: "roc"
+LastModifierURL: "https://imroc.io"
+date: 2020-03-12
 ---
 
 使用 `kubectl describe pod <pod name>` 查看异常 pod 的状态:
