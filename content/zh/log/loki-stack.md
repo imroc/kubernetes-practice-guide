@@ -59,6 +59,8 @@ helm install loki loki/loki-stack
 
 ![](/images/loki-grafana-data-source.png)
 
-数据源添加好了，我们就可以开始查询分析日志了，点击 `Explore`，下拉选择 loki 作为数据源，切到 `Logs` 模式(不用 `Metrics` 模式)，在 `Log labels` 按钮那里就能通过 label 筛选日志了。更多用法请参考 [官方文档](https://github.com/grafana/loki/tree/master/docs)
+数据源添加好了，我们就可以开始查询分析日志了，点击 `Explore`，下拉选择 loki 作为数据源，切到 `Logs` 模式(不用 `Metrics` 模式)，在 `Log labels` 按钮那里就能通过 label 筛选日志了。
 
 ![](/images/loki-log.png)
+
+更多用法请参考 [官方文档](https://github.com/grafana/loki/tree/master/docs)
