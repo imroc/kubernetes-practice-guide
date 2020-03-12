@@ -96,13 +96,13 @@
  
   
     
-    <li data-nav-id="/deploy/" title="集群部署" class="dd-item 
+    <li data-nav-id="/deploy/" title="部署指南" class="dd-item 
         
         
         
         ">
       <a href="/deploy/">
-          集群部署
+          部署指南
           
             <i class="fas fa-check read-icon"></i>
           
@@ -444,6 +444,58 @@
           
         
         </ul>
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/ingress/" title="Ingress 指南" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/ingress/">
+          Ingress 指南
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+              
+    </li>
+  
+ 
+
+          
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/metrics/" title="Metrics 指南" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/metrics/">
+          Metrics 指南
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
               
     </li>
   
@@ -1913,13 +1965,13 @@
  
   
     
-    <li data-nav-id="/optimization/" title="集群优化" class="dd-item 
+    <li data-nav-id="/optimization/" title="优化指南" class="dd-item 
         
         
         
         ">
       <a href="/optimization/">
-          集群优化
+          优化指南
           
             <i class="fas fa-check read-icon"></i>
           
@@ -2115,13 +2167,13 @@
  
   
     
-    <li data-nav-id="/security/" title="集群安全" class="dd-item 
+    <li data-nav-id="/security/" title="安全指南" class="dd-item 
         
         
         
         ">
       <a href="/security/">
-          集群安全
+          安全指南
           
             <i class="fas fa-check read-icon"></i>
           
@@ -2372,13 +2424,13 @@
  
   
     
-    <li data-nav-id="/trick/" title="实用技巧" class="dd-item 
+    <li data-nav-id="/trick/" title="奇技淫巧" class="dd-item 
         
         
         
         ">
       <a href="/trick/">
-          实用技巧
+          奇技淫巧
           
             <i class="fas fa-check read-icon"></i>
           
@@ -2591,13 +2643,13 @@
  
   
     
-    <li data-nav-id="/monitoring/" title="监控告警" class="dd-item 
+    <li data-nav-id="/monitoring/" title="监控指南" class="dd-item 
         
         
         
         ">
       <a href="/monitoring/">
-          监控告警
+          监控指南
           
             <i class="fas fa-check read-icon"></i>
           
@@ -2669,18 +2721,49 @@
  
   
     
-    <li data-nav-id="/log/" title="日志搜集" class="dd-item 
+    <li data-nav-id="/log/" title="日志收集" class="dd-item 
         
         
         
         ">
       <a href="/log/">
-          日志搜集
+          日志收集
           
             <i class="fas fa-check read-icon"></i>
           
       </a>
       
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/log/loki-promtail/" title="利用 Loki/Promtail/Grafana 收集分析日志" class="dd-item ">
+        <a href="/log/loki-promtail/">
+        利用 Loki/Promtail/Grafana 收集分析日志
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
               
     </li>
   
@@ -2905,9 +2988,9 @@
  
   
     
-      <li data-nav-id="/dev/golang-build/" title="Go 语言编译原理与优化" class="dd-item ">
-        <a href="/dev/golang-build/">
-        Go 语言编译原理与优化
+      <li data-nav-id="/troubleshooting/network/dns/" title="DNS 解析异常" class="dd-item ">
+        <a href="/troubleshooting/network/dns/">
+        DNS 解析异常
         <i class="fas fa-check read-icon"></i>
         </a>
     </li>
@@ -2926,9 +3009,72 @@
  
   
     
-      <li data-nav-id="/dev/client-go/" title="使用 client-go 开发 k8s 应用" class="dd-item ">
-        <a href="/dev/client-go/">
-        使用 client-go 开发 k8s 应用
+      <li data-nav-id="/troubleshooting/network/lb-healthcheck-failed/" title="LB 健康检查失败" class="dd-item ">
+        <a href="/troubleshooting/network/lb-healthcheck-failed/">
+        LB 健康检查失败
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/network/service-unrecheable/" title="Service 不通" class="dd-item ">
+        <a href="/troubleshooting/network/service-unrecheable/">
+        Service 不通
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/network/service-cannot-resolve/" title="Service 无法解析" class="dd-item ">
+        <a href="/troubleshooting/network/service-cannot-resolve/">
+        Service 无法解析
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/troubleshooting/network/low-throughput/" title="网络性能差" class="dd-item ">
+        <a href="/troubleshooting/network/low-throughput/">
+        网络性能差
         <i class="fas fa-check read-icon"></i>
         </a>
     </li>
@@ -3524,7 +3670,39 @@
             
                 
                     
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
                     
+                    
                 
                 
 
@@ -4976,7 +5154,20 @@
                     
             
         
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
                     
+                    
+
+                    
                         
             
             
@@ -4989,6 +5180,9 @@
                     
                     
 
+                    
+            
+        
                     
             
         

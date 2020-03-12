@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>监控告警 on Kubernetes 实践指南</title>
+    <title>监控指南 on Kubernetes 实践指南</title>
     <link>https://k8s.imroc.io/monitoring/</link>
-    <description>Recent content in 监控告警 on Kubernetes 实践指南</description>
+    <description>Recent content in 监控指南 on Kubernetes 实践指南</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
     
