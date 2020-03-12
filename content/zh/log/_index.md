@@ -1,5 +1,5 @@
 ---
-title: "日志搜集"
+title: "日志收集"
 weight: 44
 state: TODO
 ---
