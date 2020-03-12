@@ -50,6 +50,17 @@ $ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | ba
     </item>
     
     <item>
+      <title>安装 Helm</title>
+      <link>https://k8s.imroc.io/configuration/helm/install-helm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/configuration/helm/install-helm/</guid>
+      <description>Helm 是 Kubernetes 的包管理器，可以帮我们简化 kubernetes 的操作，一键部署应用。假如你的机器上已经安装了 kubectl 并且能够操作集群，那么你就可以安装 Helm 了。当前最新稳定版是 V2，Helm V3 还未正式发布，下面分别说下安装方法。
+安装 Helm V2 执行脚本安装 helm 客户端:
+$ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash % Total % Received % Xferd Average Speed Time Time Time Current Dload Upload Total Spent Left Speed 100 6737 100 6737 0 0 12491 0 --:--:-- --:--:-- --:--:-- 12475 Downloading https://kubernetes-helm.storage.googleapis.com/helm-v2.9.1-linux-amd64.tar.gz Preparing to install into /usr/local/bin helm installed into /usr/local/bin/helm Run &amp;#39;helm init&amp;#39; to configure helm.</description>
+    </item>
+    
+    <item>
       <title>部署 ETCD</title>
       <link>https://k8s.imroc.io/deploy/manual/bootstrapping-etcd/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -57,6 +68,18 @@ $ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | ba
       <guid>https://k8s.imroc.io/deploy/manual/bootstrapping-etcd/</guid>
       <description>为 ETCD 签发证书 这里证书可以只创建一次，所有 etcd 实例都公用这里创建的证书:
 cat &amp;gt; etcd-csr.json &amp;lt;&amp;lt;EOF { &amp;#34;CN&amp;#34;: &amp;#34;etcd&amp;#34;, &amp;#34;hosts&amp;#34;: [ &amp;#34;127.0.0.1&amp;#34;, &amp;#34;10.200.16.79&amp;#34;, &amp;#34;10.200.17.6&amp;#34;, &amp;#34;10.200.16.70&amp;#34; ], &amp;#34;key&amp;#34;: { &amp;#34;algo&amp;#34;: &amp;#34;rsa&amp;#34;, &amp;#34;size&amp;#34;: 2048 }, &amp;#34;names&amp;#34;: [ { &amp;#34;C&amp;#34;: &amp;#34;CN&amp;#34;, &amp;#34;ST&amp;#34;: &amp;#34;SiChuan&amp;#34;, &amp;#34;L&amp;#34;: &amp;#34;Chengdu&amp;#34;, &amp;#34;O&amp;#34;: &amp;#34;etcd&amp;#34;, &amp;#34;OU&amp;#34;: &amp;#34;etcd&amp;#34; } ] } EOF cfssl gencert \  -ca=ca.pem \  -ca-key=ca-key.pem \  -config=ca-config.json \  -profile=kubernetes \  etcd-csr.json | cfssljson -bare etcd  hosts 需要包含 etcd 每个实例所在节点的内网 IP</description>
+    </item>
+    
+    <item>
+      <title>Helm V2 迁移到 V3</title>
+      <link>https://k8s.imroc.io/configuration/helm/upgrade-helm-v2-to-v3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/configuration/helm/upgrade-helm-v2-to-v3/</guid>
+      <description>Helm V3 与 V2 版本架构变化较大，数据迁移比较麻烦，官方提供了一个名为 helm-2to3 的插件来简化迁移工作，本文将介绍如何利用此插件迁移 Helm V2 到 V3 版本。这里前提是 Helm V3 已安装，安装方法请参考 这里。
+安装 2to3 插件 一键安装:
+$ helm3 plugin install https://github.com/helm/helm-2to3 Downloading and installing helm-2to3 v0.1.1 ... https://github.com/helm/helm-2to3/releases/download/v0.1.1/helm-2to3_0.1.1_linux_amd64.tar.gz Installed plugin: 2to3 检查插件是否安装成功:
+$ helm3 plugin list NAME VERSION DESCRIPTION 2to3 0.1.1 migrate Helm v2 configuration and releases in-place to Helm v3 迁移 Helm V2 配置 $ helm3 2to3 move config [Helm 2] Home directory: /root/.helm [Helm 3] Config directory: /root/.</description>
     </item>
     
     <item>
@@ -70,6 +93,17 @@ cat &amp;gt; etcd-csr.json &amp;lt;&amp;lt;EOF { &amp;#34;CN&amp;#34;: &amp;#34;
  签发证书需要用到 生成 CA 证书 时创建的 CA 证书及其密钥文件，确保它们在当前目录 确保 cfssl 在当前环境已安装，安装方法参考 这里  为 kube-apiserver 签发证书  kube-apiserver 是 k8s 的访问核心，所有 K8S 组件和用户 kubectl 操作都会请求 kube-apiserver，通常启用 tls 证书认证，证书里面需要包含 kube-apiserver 可能被访问的地址，这样 client 校验 kube-apiserver 证书时才会通过，集群内的 Pod 一般通过 kube-apiserver 的 Service 名称访问，可能的 Service 名称有:
  kubernetes kubernetes.default kubernetes.default.svc kubernetes.default.svc.cluster kubernetes.default.svc.cluster.local  通过集群外也可能访问 kube-apiserver，比如使用 kubectl，或者部署在集群外的服务会连 kube-apiserver (比如部署在集群外的 Promethues 采集集群指标做监控)，这里列一下通过集群外连 kube-apiserver 有哪些可能地址:
  127.0.0.1: 在 Master 所在机器通过 127.</description>
+    </item>
+    
+    <item>
+      <title>Helm 常见问题</title>
+      <link>https://k8s.imroc.io/configuration/helm/helm-faq/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/configuration/helm/helm-faq/</guid>
+      <description>helm 3 没有内置 stable repo 默认没有，可以手动添加:
+helm repo add stable https://kubernetes-charts.storage.googleapis.com 国内环境的可以用国内的 mirror:
+helm repo add stable https://apphub.aliyuncs.com/stable </description>
     </item>
     
     <item>

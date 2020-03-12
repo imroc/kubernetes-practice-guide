@@ -19,6 +19,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/configuration/helm/install-helm/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/best-practice/</loc>
   </url>
   
@@ -27,11 +31,19 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/configuration/helm/upgrade-helm-v2-to-v3/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/deploy/manual/bootstrapping-master/</loc>
   </url>
   
   <url>
     <loc>https://k8s.imroc.io/cluster/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/configuration/helm/helm-faq/</loc>
   </url>
   
   <url>
@@ -73,6 +85,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/metrics/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/configuration/</loc>
   </url>
   
   <url>
@@ -446,6 +462,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/dev/client-go/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/configuration/helm/</loc>
   </url>
   
   <url>

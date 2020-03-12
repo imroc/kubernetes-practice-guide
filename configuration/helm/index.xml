@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>使用 Helm 管理集群资源 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/configuration/helm/</link>
+    <description>Recent content in 使用 Helm 管理集群资源 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/configuration/helm/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>安装 Helm</title>
+      <link>https://k8s.imroc.io/configuration/helm/install-helm/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/configuration/helm/install-helm/</guid>
+      <description>Helm 是 Kubernetes 的包管理器，可以帮我们简化 kubernetes 的操作，一键部署应用。假如你的机器上已经安装了 kubectl 并且能够操作集群，那么你就可以安装 Helm 了。当前最新稳定版是 V2，Helm V3 还未正式发布，下面分别说下安装方法。
+安装 Helm V2 执行脚本安装 helm 客户端:
+$ curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get | bash % Total % Received % Xferd Average Speed Time Time Time Current Dload Upload Total Spent Left Speed 100 6737 100 6737 0 0 12491 0 --:--:-- --:--:-- --:--:-- 12475 Downloading https://kubernetes-helm.storage.googleapis.com/helm-v2.9.1-linux-amd64.tar.gz Preparing to install into /usr/local/bin helm installed into /usr/local/bin/helm Run &amp;#39;helm init&amp;#39; to configure helm.</description>
+    </item>
+    
+    <item>
+      <title>Helm V2 迁移到 V3</title>
+      <link>https://k8s.imroc.io/configuration/helm/upgrade-helm-v2-to-v3/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/configuration/helm/upgrade-helm-v2-to-v3/</guid>
+      <description>Helm V3 与 V2 版本架构变化较大，数据迁移比较麻烦，官方提供了一个名为 helm-2to3 的插件来简化迁移工作，本文将介绍如何利用此插件迁移 Helm V2 到 V3 版本。这里前提是 Helm V3 已安装，安装方法请参考 这里。
+安装 2to3 插件 一键安装:
+$ helm3 plugin install https://github.com/helm/helm-2to3 Downloading and installing helm-2to3 v0.1.1 ... https://github.com/helm/helm-2to3/releases/download/v0.1.1/helm-2to3_0.1.1_linux_amd64.tar.gz Installed plugin: 2to3 检查插件是否安装成功:
+$ helm3 plugin list NAME VERSION DESCRIPTION 2to3 0.1.1 migrate Helm v2 configuration and releases in-place to Helm v3 迁移 Helm V2 配置 $ helm3 2to3 move config [Helm 2] Home directory: /root/.helm [Helm 3] Config directory: /root/.</description>
+    </item>
+    
+    <item>
+      <title>Helm 常见问题</title>
+      <link>https://k8s.imroc.io/configuration/helm/helm-faq/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/configuration/helm/helm-faq/</guid>
+      <description>helm 3 没有内置 stable repo 默认没有，可以手动添加:
+helm repo add stable https://kubernetes-charts.storage.googleapis.com 国内环境的可以用国内的 mirror:
+helm repo add stable https://apphub.aliyuncs.com/stable </description>
+    </item>
+    
+  </channel>
+</rss>
