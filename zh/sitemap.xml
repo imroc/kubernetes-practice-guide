@@ -43,6 +43,11 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/troubleshooting/trick/</loc>
+    <lastmod>2020-03-12T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/</loc>
   </url>
   
@@ -55,15 +60,26 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/troubleshooting/trick/</loc>
-  </url>
-  
-  <url>
     <loc>https://k8s.imroc.io/deploy/selection/</loc>
   </url>
   
   <url>
     <loc>https://k8s.imroc.io/deploy/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/</loc>
+    <lastmod>2020-03-12T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://k8s.imroc.io/en/troubleshooting/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://k8s.imroc.io/troubleshooting/"
+                />
   </url>
   
   <url>
@@ -84,20 +100,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/deploy/manual/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/troubleshooting/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://k8s.imroc.io/en/troubleshooting/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh"
-                href="https://k8s.imroc.io/troubleshooting/"
-                />
   </url>
   
   <url>
@@ -170,6 +172,26 @@
   
   <url>
     <loc>https://k8s.imroc.io/dev/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/</loc>
+    <lastmod>2020-03-12T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://k8s.imroc.io/en/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh"
+                href="https://k8s.imroc.io/"
+                />
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/trick/analysis-exitcode/</loc>
+    <lastmod>2020-03-12T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -276,20 +298,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/trick/efficient-kubectl/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/</loc>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://k8s.imroc.io/en/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh"
-                href="https://k8s.imroc.io/"
-                />
   </url>
   
   <url>
@@ -456,10 +464,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/optimization/kernel/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/troubleshooting/trick/analysis-exitcode/</loc>
   </url>
   
   <url>
