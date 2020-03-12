@@ -57,4 +57,8 @@ helm install loki loki/loki-stack
 
 进入 grafana 界面，添加 loki 作为数据源：Configuration-Data Sources-Add data source-Loki，然后填入 loki 在集群中的地址，比如: http://loki.monitoring.svc.cluster.local:3100
 
+![](/images/loki-grafana-data-source.png)
+
 数据源添加好了，我们就可以开始查询分析日志了，点击 `Explore`，下拉选择 loki 作为数据源，切到 `Logs` 模式(不用 `Metrics` 模式)，在 `Log labels` 按钮那里就能通过 label 筛选日志了。更多用法请参考 [官方文档](https://github.com/grafana/loki/tree/master/docs)
+
+![](/images/loki-log.png)
