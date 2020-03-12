@@ -12,4 +12,5 @@ state: TODO
 
 ## 使用 Helm 安装
 
-参考: https://github.com/grafana/loki/blob/master/docs/installation/helm.md
+> 参考官方文档: https://github.com/grafana/loki/blob/master/docs/installation/helm.md
+
