@@ -3211,10 +3211,16 @@
 <blockquote>
 <p>参考官方文档: <a href="https://github.com/grafana/loki/blob/master/docs/installation/helm.md">https://github.com/grafana/loki/blob/master/docs/installation/helm.md</a></p>
 </blockquote>
-<p><code>loki/loki-stack</code> 这个 chart 包含 loki stack 涉及的各个组件，首先添加 repo:</p>
+<p><code>loki/loki-stack</code> 这个 chart 包含 loki stack 涉及的各个组件:</p>
+<ul>
+<li>loki: 以 Statefulset 方式部署，可横向扩容</li>
+<li>promtail: 以 Daemonset 方式部署，采集每个节点上容器日志并发送给 loki</li>
+<li>grafana: 默认不开启，如果集群中已经有 grafana 就可以不用在部署 grafana，如果没有，部署时可以选择也同时部署 grafana</li>
+</ul>
+<p>首先添加 repo:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm repo add loki https://grafana.github.io/loki/charts
 helm repo update
-</code></pre></div><p>默认安装就只包含 loki 和 promtail 两个组件，如果你的集群中已有了 grafana，部署时可以直接用默认安装，不启用 grafana，当然也可以指定参数同时部署 grafana。</p>
+</code></pre></div><p>执行安装:</p>
 
 
 
@@ -3237,8 +3243,10 @@ helm repo update
 helm upgrade --install loki loki/loki-stack
 <span style="color:#75715e"># 安装到指定命名空间</span>
 <span style="color:#75715e"># helm upgrade --install loki loki/loki-stack -n monitoring</span>
+<span style="color:#75715e"># 持久化 loki 的数据，避免 loki 重启后数据丢失</span>
+<span style="color:#75715e"># helm upgrade --install loki loki/loki-stack --set=&#34;loki.persistence.enabled=ture,loki.persistence.size=100G&#34;</span>
 <span style="color:#75715e"># 部署 grafana</span>
-<span style="color:#75715e"># helm upgrade --install loki loki/loki-stack -n monitoring --set=&#34;grafana=true&#34;</span>
+<span style="color:#75715e"># helm upgrade --install loki loki/loki-stack --set=&#34;grafana=true&#34;</span>
 </code></pre></div>
 	
 </div>
@@ -3250,8 +3258,10 @@ helm upgrade --install loki loki/loki-stack
 helm install loki loki/loki-stack
 <span style="color:#75715e"># 安装到指定命名空间</span>
 <span style="color:#75715e"># helm install loki loki/loki-stack -n monitoring</span>
+<span style="color:#75715e"># 持久化 loki 的数据，避免 loki 重启后数据丢失</span>
+<span style="color:#75715e"># helm install loki loki/loki-stack --set=&#34;loki.persistence.enabled=ture,loki.persistence.size=100G&#34;</span>
 <span style="color:#75715e"># 部署 grafana</span>
-<span style="color:#75715e"># helm install loki loki/loki-stack -n monitoring --set=&#34;grafana=true&#34;</span>
+<span style="color:#75715e"># helm install loki loki/loki-stack --set=&#34;grafana.enabled=true&#34;</span>
 </code></pre></div>
 	
 </div>
@@ -3260,6 +3270,8 @@ helm install loki loki/loki-stack
 
 <script>$(function(){$("#tab_with_code").tabs();});</script>
 
+<p>进入 grafana 界面，添加 loki 作为数据源：<code>Configuration-Data Sources-Add data source-Loki</code>，然后填入 loki 在集群中的地址，比如: <code>http://loki.monitoring.svc.cluster.local:3100</code></p>
+<p>数据源添加好了，我们就可以开始查询分析日志了，点击 <code>Explore</code>，下拉选择 loki 作为数据源，切到 <code>Logs</code> 模式(不用 <code>Metrics</code> 模式)，在 <code>Log labels</code> 按钮那里就能通过 label 筛选日志了。更多用法请参考 <a href="https://github.com/grafana/loki/tree/master/docs">官方文档</a></p>
 
 
 <footer class="footline">

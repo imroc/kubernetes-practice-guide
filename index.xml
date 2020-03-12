@@ -151,9 +151,9 @@ helm repo add jetstack https://charts.</description>
       <guid>https://k8s.imroc.io/log/loki-stack/</guid>
       <description>Loki/Promtail/Grafana vs EFK Loki Stack 包含三个组件：
  Loki: 相当于 EFK 中的 ElasticSearch，用于存储和查询日志 Promtail: 相当于 EFK 中的 Filebeat/Fluentd，用于采集和发送日志 Grafana: 相当于 EFK 中的 Kibana，用于 UI 展示  使用 Helm 部署 Loki Stack 到 Kubernetes  参考官方文档: https://github.com/grafana/loki/blob/master/docs/installation/helm.md
- loki/loki-stack 这个 chart 包含 loki stack 涉及的各个组件，首先添加 repo:
-helm repo add loki https://grafana.github.io/loki/charts helm repo update 默认安装就只包含 loki 和 promtail 两个组件，如果你的集群中已有了 grafana，部署时可以直接用默认安装，不启用 grafana，当然也可以指定参数同时部署 grafana。
- Helm 2 Helm 3  helm upgrade --install loki loki/loki-stack # 安装到指定命名空间 # helm upgrade --install loki loki/loki-stack -n monitoring # 部署 grafana # helm upgrade --install loki loki/loki-stack -n monitoring --set=&amp;#34;grafana=true&amp;#34;   helm install loki loki/loki-stack # 安装到指定命名空间 # helm install loki loki/loki-stack -n monitoring # 部署 grafana # helm install loki loki/loki-stack -n monitoring --set=&amp;#34;grafana=true&amp;#34;    $(function(){$(&#34;</description>
+ loki/loki-stack 这个 chart 包含 loki stack 涉及的各个组件:
+ loki: 以 Statefulset 方式部署，可横向扩容 promtail: 以 Daemonset 方式部署，采集每个节点上容器日志并发送给 loki grafana: 默认不开启，如果集群中已经有 grafana 就可以不用在部署 grafana，如果没有，部署时可以选择也同时部署 grafana  首先添加 repo:
+helm repo add loki https://grafana.github.io/loki/charts helm repo update 执行安装:</description>
     </item>
     
     <item>
