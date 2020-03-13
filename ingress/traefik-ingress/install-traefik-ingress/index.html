@@ -3534,18 +3534,107 @@
 <div class="notices info" ><p>traefik 官方默认的 Helm Chart 是 v1.x 版本 (stable/traefik)，v2.x 的 chart 还在试验阶段</p>
 </div>
 
-<p>下面是 traefik 官方默认的 chart 安装方法:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm install stable/traefik <span style="color:#ae81ff">\
+<p>下面是 traefik 官方稳定版的 chart 安装方法(traefik v1.x):</p>
+
+
+
+
+<div id="traefik-v1">
+<ul>
+	
+	  
+  <li><a href="#traefik-v1-0">Helm 2</a></li>
+
+	  
+  <li><a href="#traefik-v1-1">Helm 3</a></li>
+
+</ul>
+
+
+<div id="traefik-v1-0">
+	
+		<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
+helm install stable/traefik <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --name traefik <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --namespace kube-system <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --set kubernetes.ingressClass<span style="color:#f92672">=</span>traefik <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --set kubernetes.ingressEndpoint.useDefaultPublishedService<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --set rbac.enabled<span style="color:#f92672">=</span>true
-</code></pre></div><ul>
+</code></pre></div>
+	
+</div>
+
+
+<div id="traefik-v1-1">
+	
+		<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
+helm install traefik stable/traefik <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --namespace kube-system <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set kubernetes.ingressClass<span style="color:#f92672">=</span>traefik <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set kubernetes.ingressEndpoint.useDefaultPublishedService<span style="color:#f92672">=</span>true <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set rbac.enabled<span style="color:#f92672">=</span>true
+</code></pre></div>
+	
+</div>
+
+</div>
+
+<script>$(function(){$("#traefik-v1").tabs();});</script>
+
+<ul>
 <li><code>kubernetes.ingressClass=traefik</code>: 创建的 ingress 中包含 <code>kubernetes.io/ingress.class</code> 这个 annotation 并且值与这里配置的一致，这个 traefik ingress controller 才会处理 (生成转发规则)</li>
-<li><code>kubernetes.ingressEndpoint.useDefaultPublishedService=true</code>: 这个置为 true 主要是为了让 ingress 的外部地址正确显示 (显示为负载均衡器的地址)，因为如果不配置这个，默认情况下会将 ingress controller 所有实例的节点 ip 写到 ingress 的 address 里</li>
+<li><code>kubernetes.ingressEndpoint.useDefaultPublishedService=true</code>: 这个置为 true 主要是为了让 ingress 的外部地址正确显示 (显示为负载均衡器的地址)，因为如果不配置这个，默认情况下会将 ingress controller 所有实例的节点 ip 写到 ingress 的 address 列表里，使用 <code>kubectl get ingress</code> 查看时会很丑陋并且容易误解。</li>
 <li><code>rbac.enabled</code> 默认为 false，如果没有事先给 default 的 service account 绑足够权限就会报错，通常置为 true，自动创建 rbac 规则</li>
 </ul>
+<p>如果喜欢尝鲜，可以装 traefik v2.x 版本的 chart:</p>
+
+
+
+
+<div id="traefik-v2">
+<ul>
+	
+	  
+  <li><a href="#traefik-v2-0">Helm 2</a></li>
+
+	  
+  <li><a href="#traefik-v2-1">Helm 3</a></li>
+
+</ul>
+
+
+<div id="traefik-v2-0">
+	
+		<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
+git clone --depth <span style="color:#ae81ff">1</span> https://github.com/containous/traefik-helm-chart.git
+kubectl apply -f traefik-helm-chart/traefik/crds
+helm repo add traefik https://containous.github.io/traefik-helm-chart
+helm repo update
+helm install traefik/traefik <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --name traefik <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --namespace kube-system
+</code></pre></div>
+	
+</div>
+
+
+<div id="traefik-v2-1">
+	
+		<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">
+helm repo add traefik https://containous.github.io/traefik-helm-chart
+helm repo update
+helm install traefik traefik/traefik <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --namespace kube-system <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set ports.web.port<span style="color:#f92672">=</span><span style="color:#ae81ff">80</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set ports.websecure.port<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span>
+</code></pre></div>
+	
+</div>
+
+</div>
+
+<script>$(function(){$("#traefik-v2").tabs();});</script>
+
 <h2 id="参考资料">参考资料</h2>
 <ul>
 <li>Github 主页: <a href="https://github.com/containous/traefik">https://github.com/containous/traefik</a></li>
