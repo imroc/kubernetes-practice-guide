@@ -146,6 +146,15 @@ helm repo add jetstack https://charts.</description>
     </item>
     
     <item>
+      <title>彻底理解 Ingress</title>
+      <link>https://k8s.imroc.io/ingress/understand/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/ingress/understand/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>方案选型</title>
       <link>https://k8s.imroc.io/deploy/selection/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -178,6 +187,15 @@ Session Cluster 相当于将静态部署的 Standalone Cluster 容器化，TaskM
 Job Cluster 相当于给每一个独立的 Job 部署一整套 Flink 集群，这套集群就只能运行一个 Job，配备专门制作的 Job 镜像，不能动态提交其它 Job。这种模式可以让每种 Job 拥有专用的资源，独立扩容。
 Native Kubernetes 这种方式是与 Kubernetes 原生集成，相比前面两种，这种模式能做到动态向 Kubernetes 申请资源，不需要提前指定 TaskManager 数量，就像 flink 与 yarn 和 mesos 集成一样。此模式能够提高资源利用率，但还处于试验阶段，不够成熟，不建议部署到生产环境。
 总结 TODO</description>
+    </item>
+    
+    <item>
+      <title>Ingress 方案选型</title>
+      <link>https://k8s.imroc.io/ingress/choose/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/ingress/choose/</guid>
+      <description></description>
     </item>
     
     <item>
@@ -935,11 +953,33 @@ kubectl apply -f deploy/1.8+/ 参考资料  Github 主页: https://github.com/ku
     </item>
     
     <item>
+      <title>安装 nginx ingress controller</title>
+      <link>https://k8s.imroc.io/ingress/nginx-ingress/install-nginx-ingress/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/ingress/nginx-ingress/install-nginx-ingress/</guid>
+      <description>最佳安装方案 如何暴露 ingress 访问入口? 最佳方案是使用 LoadBalancer 类型的 Service 来暴露，即创建外部负载均衡器来暴露流量，后续访问 ingress 的流量都走这个负载均衡器的地址，ingress 规则里面配的域名也要配置解析到这个负载均衡器的 IP 地址。
+这种方式需要集群支持 LoadBalancer 类型的 Service，如果是云厂商提供的 k8s 服务，或者在云上自建集群并使用了云厂商提供的 cloud provider，也都是支持的，创建 LoadBalancer 类型的 Service 的时候会自动调云厂商的接口创建云厂商提供的负载均衡器产品(通常公网类型的负载均衡器是付费的)；如果你的集群不是前面说的情况，是自建集群并且有自己的负载均衡器方案，并部署了相关插件来适配，比如 MetalLB 和 Porter，这样也是可以支持 LoadBalancer 类型的 Service 的。
+使用 helm 安装 helm install stable/nginx-ingress \  --name nginx \  --namespace kube-system \  --set controller.ingressClass=nginx \  --set controller.publishService.enabled=true \  controller.ingressClass: 创建的 ingress 中包含 kubernetes.io/ingress.class 这个 annotation 并且值与这里配置的一致，这个 nginx ingress controller 才会处理 (生成转发规则) controller.</description>
+    </item>
+    
+    <item>
       <title>安装 traefik ingress controller</title>
       <link>https://k8s.imroc.io/cluster/ingress/traefik/install-traefik-ingress/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://k8s.imroc.io/cluster/ingress/traefik/install-traefik-ingress/</guid>
+      <description>最佳安装方案 如何暴露 ingress 访问入口? 最佳方案是使用 LoadBalancer 类型的 Service 来暴露，即创建外部负载均衡器来暴露流量，后续访问 ingress 的流量都走这个负载均衡器的地址，ingress 规则里面配的域名也要配置解析到这个负载均衡器的 IP 地址。
+这种方式需要集群支持 LoadBalancer 类型的 Service，如果是云厂商提供的 k8s 服务，或者在云上自建集群并使用了云厂商提供的 cloud provider，也都是支持的，创建 LoadBalancer 类型的 Service 的时候会自动调云厂商的接口创建云厂商提供的负载均衡器产品(通常公网类型的负载均衡器是付费的)；如果你的集群不是前面说的情况，是自建集群并且有自己的负载均衡器方案，并部署了相关插件来适配，比如 MetalLB 和 Porter，这样也是可以支持 LoadBalancer 类型的 Service 的。
+使用 helm 安装 helm install stable/traefik \  --name traefik \  --namespace kube-system \  --set kubernetes.ingressClass=traefik \  --set kubernetes.ingressEndpoint.useDefaultPublishedService=true \  --set rbac.enabled=true  kubernetes.ingressClass=traefik: 创建的 ingress 中包含 kubernetes.io/ingress.class 这个 annotation 并且值与这里配置的一致，这个 traefik ingress controller 才会处理 (生成转发规则) kubernetes.</description>
+    </item>
+    
+    <item>
+      <title>安装 traefik ingress controller</title>
+      <link>https://k8s.imroc.io/ingress/traefik-ingress/install-traefik-ingress/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/ingress/traefik-ingress/install-traefik-ingress/</guid>
       <description>最佳安装方案 如何暴露 ingress 访问入口? 最佳方案是使用 LoadBalancer 类型的 Service 来暴露，即创建外部负载均衡器来暴露流量，后续访问 ingress 的流量都走这个负载均衡器的地址，ingress 规则里面配的域名也要配置解析到这个负载均衡器的 IP 地址。
 这种方式需要集群支持 LoadBalancer 类型的 Service，如果是云厂商提供的 k8s 服务，或者在云上自建集群并使用了云厂商提供的 cloud provider，也都是支持的，创建 LoadBalancer 类型的 Service 的时候会自动调云厂商的接口创建云厂商提供的负载均衡器产品(通常公网类型的负载均衡器是付费的)；如果你的集群不是前面说的情况，是自建集群并且有自己的负载均衡器方案，并部署了相关插件来适配，比如 MetalLB 和 Porter，这样也是可以支持 LoadBalancer 类型的 Service 的。
 使用 helm 安装 helm install stable/traefik \  --name traefik \  --namespace kube-system \  --set kubernetes.ingressClass=traefik \  --set kubernetes.ingressEndpoint.useDefaultPublishedService=true \  --set rbac.enabled=true  kubernetes.ingressClass=traefik: 创建的 ingress 中包含 kubernetes.io/ingress.class 这个 annotation 并且值与这里配置的一致，这个 traefik ingress controller 才会处理 (生成转发规则) kubernetes.</description>
@@ -1011,19 +1051,6 @@ kind: Role apiVersion: rbac.authorization.k8s.io/v1 metadata: name: admin namesp
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://k8s.imroc.io/trick/wildcard-domain-forward/</guid>
-      <description>需求 集群对外暴露了一个公网IP作为流量入口(可以是 Ingress 或 Service)，DNS 解析配置了一个泛域名指向该IP（比如 *.test.imroc.io），现希望根据请求中不同 Host 转发到不同的后端 Service。比如 a.test.imroc.io 的请求被转发到 my-svc-a，b.test.imroc.io 的请求转发到 my-svc-b。当前 K8S 的 Ingress 并不原生支持这种泛域名转发规则，本文将给出一个解决方案来实现泛域名转发。
-简单做法 先说一种简单的方法，这也是大多数人的第一反应：配置 Ingress 规则
-假如泛域名有两个不同 Host 分别转发到不同 Service，Ingress 类似这样写:
-apiVersion: extensions/v1beta1 kind: Ingress metadata: name: my-ingress spec: rules: - host: a.test.imroc.io http: paths: - backend: serviceName: my-svc-a servicePort: 80 path: / - host: b.test.imroc.io http: paths: - backend: serviceName: my-svc-b servicePort: 80 path: / 但是！如果 Host 非常多会怎样？（比如200+）
- 每次新增 Host 都要改 Ingress 规则，太麻烦 单个 Ingress 上面的规则越来越多，更改规则对 LB 的压力变大，可能会导致偶尔访问不了  正确姿势 我们可以约定请求中泛域名 Host 通配符的 * 号匹配到的字符跟 Service 的名字相关联（可以是相等，或者 Service 统一在前面加个前缀，比如 a.</description>
-    </item>
-    
-    <item>
-      <title>泛域名转发</title>
-      <link>https://k8s.imroc.io/best-practice/wildcard-domain-forward/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/wildcard-domain-forward/</guid>
       <description>需求 集群对外暴露了一个公网IP作为流量入口(可以是 Ingress 或 Service)，DNS 解析配置了一个泛域名指向该IP（比如 *.test.imroc.io），现希望根据请求中不同 Host 转发到不同的后端 Service。比如 a.test.imroc.io 的请求被转发到 my-svc-a，b.test.imroc.io 的请求转发到 my-svc-b。当前 K8S 的 Ingress 并不原生支持这种泛域名转发规则，本文将给出一个解决方案来实现泛域名转发。
 简单做法 先说一种简单的方法，这也是大多数人的第一反应：配置 Ingress 规则
 假如泛域名有两个不同 Host 分别转发到不同 Service，Ingress 类似这样写:

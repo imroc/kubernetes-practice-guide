@@ -15,10 +15,6 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/best-practice/</loc>
-  </url>
-  
-  <url>
     <loc>https://k8s.imroc.io/deploy/manual/bootstrapping-etcd/</loc>
   </url>
   
@@ -61,6 +57,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/security/cert/install-cert-manger/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/ingress/understand/</loc>
   </url>
   
   <url>
@@ -108,6 +108,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/ingress/choose/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/security/cert/autogenerate-certificate-with-cert-manager/</loc>
   </url>
   
@@ -132,6 +136,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/ingress/nginx-ingress/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/monitoring/wechat-work-alert/</loc>
   </url>
   
@@ -149,6 +157,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/troubleshooting/pod/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/ingress/traefik-ingress/</loc>
   </url>
   
   <url>
@@ -509,7 +521,15 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/ingress/nginx-ingress/install-nginx-ingress/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/cluster/ingress/traefik/install-traefik-ingress/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/ingress/traefik-ingress/install-traefik-ingress/</loc>
   </url>
   
   <url>
@@ -538,10 +558,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/trick/wildcard-domain-forward/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/best-practice/wildcard-domain-forward/</loc>
   </url>
   
   <url>
