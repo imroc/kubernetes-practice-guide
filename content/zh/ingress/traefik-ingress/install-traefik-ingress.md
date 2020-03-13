@@ -10,6 +10,13 @@ title: "安装 traefik ingress controller"
 
 ## 使用 helm 安装
 
+> 参考官方文档: https://docs.traefik.io/getting-started/install-traefik/
+
+{{% notice info %}}
+traefik 官方默认的 Helm Chart 是 v1.x 版本 (stable/traefik)，v2.x 的 chart 还在试验阶段
+{{% /notice %}}
+
+下面是 traefik 官方默认的 chart 安装方法:
 ``` bash
 helm install stable/traefik \
   --name traefik \

@@ -10,6 +10,7 @@ title: "安装 nginx ingress controller"
 
 ## 使用 helm 安装
 
+
 ``` bash
 helm install stable/nginx-ingress \
   --name nginx \
