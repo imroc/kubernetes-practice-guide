@@ -1,5 +1,6 @@
 ---
 title: "安装 traefik ingress controller"
+weight: 20
 ---
 
 ## 最佳安装方案
@@ -58,7 +59,8 @@ helm repo update
 helm install traefik traefik/traefik \
   --namespace kube-system \
   --set ports.web.port=80 \
-  --set ports.websecure.port=443
+  --set ports.websecure.port=443 \
+  --set="additionalArguments={--providers.kubernetesingress}"
 {{< /tab >}}}
 {{< /tabs >}}
 

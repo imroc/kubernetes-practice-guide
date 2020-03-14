@@ -28,7 +28,7 @@ DNS-01 的校验原理是利用 DNS 提供商的 API Key 拿到你的 DNS 控制
 假设域名是用 `cloudflare` 管理的，先登录 `cloudflare` 拿到 API Key，然后创建一个 Secret:
 
 ```bash
-kubectl -n cert-manager create secret generic cloudflare-apikey --from-literal=apikey=213807bd0fb1ca59bba24a58eac90492e6287
+kubectl -n cert-manager create secret generic cloudflare-apikey --from-literal=apikey=213807bdxxxxxxxxxxxxxx58eac90492e6287
 ```
 
 > 由于 `ClusterIssuer` 是 NonNamespaced 类型的资源，不在任何命名空间，它需要引用 Secret，而 Secret 必须存在某个命名空间下，所以就规定 `ClusterIssuer` 引用的 Secret 要与 cert-manager 在同一个命名空间下。
