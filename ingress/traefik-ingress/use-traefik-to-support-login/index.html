@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>Nginx Ingress</title>
+    <title>使用 Traefik V2 让你的后台管理页面支持登录</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/cluster/ingress/nginx/">
+  <body class="" data-url="/ingress/traefik-ingress/use-traefik-to-support-login/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -455,7 +455,7 @@
   
     
     <li data-nav-id="/ingress/" title="Ingress 指南" class="dd-item 
-        
+        parent
         
         
         ">
@@ -587,7 +587,7 @@
   
     
     <li data-nav-id="/ingress/traefik-ingress/" title="Traefik Ingress" class="dd-item 
-        
+        parent
         
         
         ">
@@ -636,7 +636,7 @@
  
   
     
-      <li data-nav-id="/ingress/traefik-ingress/use-traefik-to-support-login/" title="使用 Traefik V2 让你的后台管理页面支持登录" class="dd-item ">
+      <li data-nav-id="/ingress/traefik-ingress/use-traefik-to-support-login/" title="使用 Traefik V2 让你的后台管理页面支持登录" class="dd-item active">
         <a href="/ingress/traefik-ingress/use-traefik-to-support-login/">
         使用 Traefik V2 让你的后台管理页面支持登录
         <i class="fas fa-check read-icon"></i>
@@ -3402,7 +3402,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/cluster/ingress/nginx/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/ingress/traefik-ingress/use-traefik-to-support-login/" selected>简体中文</option>
                     
                   
               
@@ -3464,7 +3464,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/cluster/ingress/nginx/_index.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/ingress/traefik-ingress/use-traefik-to-support-login.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3499,7 +3499,7 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/cluster/'>集群方案</a> > <a href='/cluster/ingress/'>Ingress 方案</a> > Nginx Ingress
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/ingress/'>Ingress 指南</a> > <a href='/ingress/traefik-ingress/'>Traefik Ingress</a> > 使用 Traefik V2 让你的后台管理页面支持登录
           
          
           
@@ -3530,7 +3530,7 @@
           
             <h1>
               
-              Nginx Ingress
+              使用 Traefik V2 让你的后台管理页面支持登录
             </h1>
           
 
@@ -3538,10 +3538,59 @@
 
 
 
+<p>我们安装的应用，它们的后台管理页面很多不支持用户登录(认证)，所以没有将其暴露出来对外提供访问，我们经常用 kubectl proxy 的方式来访问，这样比较不方便。</p>
+<p>这里以 Traefik 本身的后台管理页面为例，将其加上 basic auth 登录才允许访问。</p>
+<p>创建用户名密码：</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">USERNAME<span style="color:#f92672">=</span>roc
+PASSWORD<span style="color:#f92672">=</span>mypassword
+</code></pre></div><p>创建 Secret:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">USERS<span style="color:#f92672">=</span><span style="color:#66d9ef">$(</span>htpasswd -nb USERNAME PASSWORD<span style="color:#66d9ef">)</span>
+cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span><span style="color:#e6db74">apiVersion: v1
+</span><span style="color:#e6db74">kind: Secret
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: authsecret
+</span><span style="color:#e6db74">  namespace: kube-system
+</span><span style="color:#e6db74">type: Opaque
+</span><span style="color:#e6db74">stringData:
+</span><span style="color:#e6db74">  users: ${USERS}
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><p>创建 Middleware:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span><span style="color:#e6db74">apiVersion: traefik.containo.us/v1alpha1
+</span><span style="color:#e6db74">kind: Middleware
+</span><span style="color:#e6db74">metadata:
+</span><span style="color:#e6db74">  name: roc-auth
+</span><span style="color:#e6db74">  namespace: kube-system
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  basicAuth:
+</span><span style="color:#e6db74">    secret: authsecret
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><p>创建 IngressRoute，引用 Middleware:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat <span style="color:#e6db74">&lt;&lt;EOF | kubectl apply -f -
+</span><span style="color:#e6db74">apiVersion: traefik.containo.us/v1alpha1
+</span><span style="color:#e6db74">kind: IngressRoute
+</span><span style="color:#e6db74">  name: traefik-dashboard
+</span><span style="color:#e6db74">  namespace: kube-system
+</span><span style="color:#e6db74">spec:
+</span><span style="color:#e6db74">  entryPoints:
+</span><span style="color:#e6db74">  - websecure
+</span><span style="color:#e6db74">  routes:
+</span><span style="color:#e6db74">  - kind: Rule
+</span><span style="color:#e6db74">    match: Host(`traefik.imroc.io`) &amp;&amp; (PathPrefix(`/dashboard`) || PathPrefix(`/api`))
+</span><span style="color:#e6db74">    services:
+</span><span style="color:#e6db74">    - kind: TraefikService
+</span><span style="color:#e6db74">      name: api@internal
+</span><span style="color:#e6db74">    middlewares:
+</span><span style="color:#e6db74">    - name: roc-auth
+</span><span style="color:#e6db74">  tls:
+</span><span style="color:#e6db74">    secretName: traefik-imroc-io-tls
+</span><span style="color:#e6db74">EOF</span>
+</code></pre></div><p>打开浏览器，进入 traefik 后台管理页面： <a href="https://traefik.imroc.io/dashboard/">https://traefik.imroc.io/dashboard/</a>，通常浏览器检测到401会自动弹出简单的登录框，我们输入用户名密码即可进入管理页面。</p>
 
 
 <footer class="footline">
-    
+	
 </footer>
 
         
@@ -3592,7 +3641,7 @@
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:bc86ae0e1f57a842b27575be30931772")
+  console.log("gitalk id:0132741b4644cf6420d1ab4b21f203ac")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3600,9 +3649,9 @@
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: 'Nginx Ingress',
+      title: '使用 Traefik V2 让你的后台管理页面支持登录',
       createIssueManually: false,
-      id: 'bc86ae0e1f57a842b27575be30931772',
+      id: '0132741b4644cf6420d1ab4b21f203ac',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -3869,6 +3918,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -3883,6 +3933,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -3948,6 +4001,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -3961,6 +4015,9 @@
             
                 
                     
+                        
+                        
+                    
                 
                 
 
@@ -3977,6 +4034,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -3998,6 +4056,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5761,8 +5822,10 @@
 	 
 	 
 		
+			<a class="nav nav-prev" href="/ingress/traefik-ingress/install-traefik-ingress/" title="安装 traefik ingress controller"> <i class="fa fa-chevron-left"></i></a>
 		
-			<a class="nav nav-next" href="/deploy/" title="部署指南" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+		
+			<a class="nav nav-next" href="/metrics/" title="Metrics 指南" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

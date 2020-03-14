@@ -24,5 +24,20 @@
  Helm 2 Helm 3  helm install stable/traefik \  --name traefik \  --namespace kube-system \  --set kubernetes.</description>
     </item>
     
+    <item>
+      <title>使用 Traefik V2 让你的后台管理页面支持登录</title>
+      <link>https://k8s.imroc.io/ingress/traefik-ingress/use-traefik-to-support-login/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/ingress/traefik-ingress/use-traefik-to-support-login/</guid>
+      <description>我们安装的应用，它们的后台管理页面很多不支持用户登录(认证)，所以没有将其暴露出来对外提供访问，我们经常用 kubectl proxy 的方式来访问，这样比较不方便。
+这里以 Traefik 本身的后台管理页面为例，将其加上 basic auth 登录才允许访问。
+创建用户名密码：
+USERNAME=roc PASSWORD=mypassword 创建 Secret:
+USERS=$(htpasswd -nb USERNAME PASSWORD) cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: v1 kind: Secret metadata: name: authsecret namespace: kube-system type: Opaque stringData: users: ${USERS} EOF 创建 Middleware:
+cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: traefik.containo.us/v1alpha1 kind: Middleware metadata: name: roc-auth namespace: kube-system spec: basicAuth: secret: authsecret EOF 创建 IngressRoute，引用 Middleware:
+cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: traefik.</description>
+    </item>
+    
   </channel>
 </rss>

@@ -627,6 +627,27 @@
 
             
           
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/ingress/traefik-ingress/use-traefik-to-support-login/" title="使用 Traefik V2 让你的后台管理页面支持登录" class="dd-item ">
+        <a href="/ingress/traefik-ingress/use-traefik-to-support-login/">
+        使用 Traefik V2 让你的后台管理页面支持登录
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
         
         </ul>
               
@@ -3496,7 +3517,6 @@
 <nav id="TableOfContents">
   <ul>
     <li><a href="#使用原生-yaml-资源安装">使用原生 yaml 资源安装</a></li>
-    <li><a href="#使用-helm-安装">使用 Helm 安装</a></li>
     <li><a href="#校验是否安装成功">校验是否安装成功</a></li>
   </ul>
 </nav>
@@ -3526,34 +3546,20 @@
 <p>参考官方文档: <a href="https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html">https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html</a></p>
 <p>介绍几种安装方式，不管是用哪种我们都先规划一下使用哪个命名空间，推荐使用 <code>cert-manger</code> 命名空间，如果使用其它的命名空间需要做些更改，会稍微有点麻烦，先创建好命名空间:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl create namespace cert-manager
-</code></pre></div><p>cert-manager 部署时会生成 <a href="https://kubernetes.io/docs/reference/access-authn-authz/admission-controllers/">ValidatingWebhookConfiguration</a> 来注册 [ValidatingAdmissionWebhook])(ValidatingAdmissionWebhook) 来实现 CRD 校验，而<code>ValidatingWebhookConfiguration</code> 里需要写入 <code>cert-manager</code> 自身校验服务端的证书信息，就需要在自己命名空间创建 <code>ClusterIssuer</code> 和 <code>Certificate</code> 来自动创建证书，创建这些 CRD 资源又会被校验服务端校验，但校验服务端证书还没有创建所以校验请求无法发送到校验服务端，这就是一个鸡生蛋还是蛋生鸡的问题了，所以我们需要关闭 <code>cert-manager</code> 所在命名空间的 CRD 校验，通过打 label 来实现:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl label namespace cert-manager certmanager.k8s.io/disable-validation<span style="color:#f92672">=</span>true
 </code></pre></div><h2 id="使用原生-yaml-资源安装">使用原生 yaml 资源安装</h2>
 <p>直接执行 <code>kubectl apply</code> 来安装:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply --validate<span style="color:#f92672">=</span>false -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply --validate<span style="color:#f92672">=</span>false -f https://github.com/jetstack/cert-manager/releases/download/v0.13.1/cert-manager.yaml
 </code></pre></div><blockquote>
-<p>使用 <code>kubectl v1.15</code> 及其以下的版本需要加上 <code>--validate=false</code>，否则会报错。</p>
+<p>使用 <code>kubectl v1.15.4</code> 及其以下的版本需要加上 <code>--validate=false</code>，否则会报错。</p>
 </blockquote>
-<h2 id="使用-helm-安装">使用 Helm 安装</h2>
-<p>安装 CRD:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml
-</code></pre></div><p>添加 repo:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm repo add jetstack https://charts.jetstack.io
-helm repo update
-</code></pre></div><p>执行安装:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">helm install <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  --name cert-manager <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  --namespace cert-manager <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  --version v0.11.0 <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  jetstack/cert-manager
-</code></pre></div><h2 id="校验是否安装成功">校验是否安装成功</h2>
+<h2 id="校验是否安装成功">校验是否安装成功</h2>
 <p>检查 cert-manager 相关的 pod 是否启动成功:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl get pods --namespace cert-manager
 
 NAME                                       READY   STATUS    RESTARTS   AGE
-cert-manager-cainjector-74bb68d67c-4vplr   1/1     Running   <span style="color:#ae81ff">0</span>          101s
-cert-manager-f7f8bf74d-j4hcz               1/1     Running   <span style="color:#ae81ff">0</span>          101s
-cert-manager-webhook-665df569b5-5p6x8      1/1     Running   <span style="color:#ae81ff">0</span>          101s
+cert-manager-5c6866597-zw7kh               1/1     Running   <span style="color:#ae81ff">0</span>          2m
+cert-manager-cainjector-577f6d9fd7-tr77l   1/1     Running   <span style="color:#ae81ff">0</span>          2m
+cert-manager-webhook-787858fcdb-nlzsq      1/1     Running   <span style="color:#ae81ff">0</span>          2m
 </code></pre></div>
 
 <footer class="footline">
@@ -3971,6 +3977,22 @@ cert-manager-webhook-665df569b5-5p6x8      1/1     Running   <span style="color:
                     
                     
 
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
                     
                         
             

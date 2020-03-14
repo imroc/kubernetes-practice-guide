@@ -627,6 +627,27 @@
 
             
           
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/ingress/traefik-ingress/use-traefik-to-support-login/" title="使用 Traefik V2 让你的后台管理页面支持登录" class="dd-item ">
+        <a href="/ingress/traefik-ingress/use-traefik-to-support-login/">
+        使用 Traefik V2 让你的后台管理页面支持登录
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
         
         </ul>
               
@@ -3626,7 +3647,8 @@ helm repo update
 helm install traefik traefik/traefik <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --namespace kube-system <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>  --set ports.web.port<span style="color:#f92672">=</span><span style="color:#ae81ff">80</span> <span style="color:#ae81ff">\
-</span><span style="color:#ae81ff"></span>  --set ports.websecure.port<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span>
+</span><span style="color:#ae81ff"></span>  --set ports.websecure.port<span style="color:#f92672">=</span><span style="color:#ae81ff">443</span> <span style="color:#ae81ff">\
+</span><span style="color:#ae81ff"></span>  --set<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;additionalArguments={--providers.kubernetesingress}&#34;</span>
 </code></pre></div>
 	
 </div>
@@ -4081,6 +4103,25 @@ helm install traefik traefik/traefik <span style="color:#ae81ff">\
             
         
                     
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
             
         
                     
@@ -4091,9 +4132,6 @@ helm install traefik traefik/traefik <span style="color:#ae81ff">\
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -5860,7 +5898,7 @@ helm install traefik traefik/traefik <span style="color:#ae81ff">\
 			<a class="nav nav-prev" href="/ingress/traefik-ingress/" title="Traefik Ingress"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/metrics/" title="Metrics 指南" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/ingress/traefik-ingress/use-traefik-to-support-login/" title="使用 Traefik V2 让你的后台管理页面支持登录" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

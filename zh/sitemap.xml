@@ -124,6 +124,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/ingress/traefik-ingress/install-traefik-ingress/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/deploy/manual/</loc>
   </url>
   
@@ -141,6 +145,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/monitoring/wechat-work-alert/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/ingress/traefik-ingress/use-traefik-to-support-login/</loc>
   </url>
   
   <url>
@@ -526,10 +534,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/cluster/ingress/traefik/install-traefik-ingress/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/ingress/traefik-ingress/install-traefik-ingress/</loc>
   </url>
   
   <url>

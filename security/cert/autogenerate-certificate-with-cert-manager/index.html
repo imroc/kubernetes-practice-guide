@@ -627,6 +627,27 @@
 
             
           
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/ingress/traefik-ingress/use-traefik-to-support-login/" title="使用 Traefik V2 让你的后台管理页面支持登录" class="dd-item ">
+        <a href="/ingress/traefik-ingress/use-traefik-to-support-login/">
+        使用 Traefik V2 让你的后台管理页面支持登录
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
         
         </ul>
               
@@ -3539,7 +3560,7 @@
 <p>我们需要先创建一个用于签发证书的 Issuer 或 ClusterIssuer，它们唯一区别就是 Issuer 只能用来签发自己所在 namespace 下的证书，ClusterIssuer 可以签发任意 namespace 下的证书，除了名称不同之外，两者所有字段完全一致，下面给出一些示例，简单起见，我们仅以 ClusterIssuer 为例。</p>
 <h4 id="创建使用-dns-01-校验的-clusterissuer">创建使用 DNS-01 校验的 ClusterIssuer</h4>
 <p>假设域名是用 <code>cloudflare</code> 管理的，先登录 <code>cloudflare</code> 拿到 API Key，然后创建一个 Secret:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n cert-manager create secret generic cloudflare-apikey --from-literal<span style="color:#f92672">=</span>apikey<span style="color:#f92672">=</span>213807bd0fb1ca59bba24a58eac90492e6287
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n cert-manager create secret generic cloudflare-apikey --from-literal<span style="color:#f92672">=</span>apikey<span style="color:#f92672">=</span>213807bdxxxxxxxxxxxxxx58eac90492e6287
 </code></pre></div><blockquote>
 <p>由于 <code>ClusterIssuer</code> 是 NonNamespaced 类型的资源，不在任何命名空间，它需要引用 Secret，而 Secret 必须存在某个命名空间下，所以就规定 <code>ClusterIssuer</code> 引用的 Secret 要与 cert-manager 在同一个命名空间下。</p>
 </blockquote>
@@ -4114,6 +4135,22 @@ type: kubernetes.io/tls
                     
                     
 
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
                     
                         
             

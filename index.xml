@@ -137,12 +137,10 @@ TaskManager 相当于整个集群的slave 节点，负责具体的任务执行�
       <guid>https://k8s.imroc.io/security/cert/install-cert-manger/</guid>
       <description>参考官方文档: https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html
 介绍几种安装方式，不管是用哪种我们都先规划一下使用哪个命名空间，推荐使用 cert-manger 命名空间，如果使用其它的命名空间需要做些更改，会稍微有点麻烦，先创建好命名空间:
-kubectl create namespace cert-manager cert-manager 部署时会生成 ValidatingWebhookConfiguration 来注册 [ValidatingAdmissionWebhook])(ValidatingAdmissionWebhook) 来实现 CRD 校验，而ValidatingWebhookConfiguration 里需要写入 cert-manager 自身校验服务端的证书信息，就需要在自己命名空间创建 ClusterIssuer 和 Certificate 来自动创建证书，创建这些 CRD 资源又会被校验服务端校验，但校验服务端证书还没有创建所以校验请求无法发送到校验服务端，这就是一个鸡生蛋还是蛋生鸡的问题了，所以我们需要关闭 cert-manager 所在命名空间的 CRD 校验，通过打 label 来实现:
-kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true 使用原生 yaml 资源安装 直接执行 kubectl apply 来安装:
-kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.11.0/cert-manager.yaml  使用 kubectl v1.15 及其以下的版本需要加上 --validate=false，否则会报错。
- 使用 Helm 安装 安装 CRD:
-kubectl apply -f https://raw.githubusercontent.com/jetstack/cert-manager/release-0.11/deploy/manifests/00-crds.yaml 添加 repo:
-helm repo add jetstack https://charts.</description>
+kubectl create namespace cert-manager 使用原生 yaml 资源安装 直接执行 kubectl apply 来安装:
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.13.1/cert-manager.yaml  使用 kubectl v1.15.4 及其以下的版本需要加上 --validate=false，否则会报错。
+ 校验是否安装成功 检查 cert-manager 相关的 pod 是否启动成功:
+$ kubectl get pods --namespace cert-manager NAME READY STATUS RESTARTS AGE cert-manager-5c6866597-zw7kh 1/1 Running 0 2m cert-manager-cainjector-577f6d9fd7-tr77l 1/1 Running 0 2m cert-manager-webhook-787858fcdb-nlzsq 1/1 Running 0 2m </description>
     </item>
     
     <item>
@@ -220,6 +218,20 @@ DNS-01 校验原理 DNS-01 的校验原理是利用 DNS 提供商的 API Key 拿
     </item>
     
     <item>
+      <title>安装 traefik ingress controller</title>
+      <link>https://k8s.imroc.io/ingress/traefik-ingress/install-traefik-ingress/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/ingress/traefik-ingress/install-traefik-ingress/</guid>
+      <description>最佳安装方案 如何暴露 ingress 访问入口? 最佳方案是使用 LoadBalancer 类型的 Service 来暴露，即创建外部负载均衡器来暴露流量，后续访问 ingress 的流量都走这个负载均衡器的地址，ingress 规则里面配的域名也要配置解析到这个负载均衡器的 IP 地址。
+这种方式需要集群支持 LoadBalancer 类型的 Service，如果是云厂商提供的 k8s 服务，或者在云上自建集群并使用了云厂商提供的 cloud provider，也都是支持的，创建 LoadBalancer 类型的 Service 的时候会自动调云厂商的接口创建云厂商提供的负载均衡器产品(通常公网类型的负载均衡器是付费的)；如果你的集群不是前面说的情况，是自建集群并且有自己的负载均衡器方案，并部署了相关插件来适配，比如 MetalLB 和 Porter，这样也是可以支持 LoadBalancer 类型的 Service 的。
+使用 helm 安装  参考官方文档: https://docs.traefik.io/getting-started/install-traefik/
+ traefik 官方默认的 Helm Chart 是 v1.x 版本 (stable/traefik)，v2.x 的 chart 还在试验阶段
+ 下面是 traefik 官方稳定版的 chart 安装方法(traefik v1.x):
+ Helm 2 Helm 3  helm install stable/traefik \  --name traefik \  --namespace kube-system \  --set kubernetes.</description>
+    </item>
+    
+    <item>
       <title>Session Cluster 模式部署</title>
       <link>https://k8s.imroc.io/bigdata-ai/flink-on-kubernetes/session-cluster/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -247,6 +259,21 @@ apiVersion: v1 kind: ConfigMap metadata: name: flink-config labels: app: flink d
       <guid>https://k8s.imroc.io/monitoring/wechat-work-alert/</guid>
       <description>原生支持的企业微信告警 配置参考：https://prometheus.io/docs/alerting/configuration/#wechat_config 操作参考: https://songjiayang.gitbooks.io/prometheus/content/alertmanager/wechat.html
 通过企业微信群机器人告警 计划开源一款适配 alertmanager 的 webhook 程序，调企业微信群机器人的 webhook 发送群消息告警，告警内容根据 alertmanager 传来的内容进行封装</description>
+    </item>
+    
+    <item>
+      <title>使用 Traefik V2 让你的后台管理页面支持登录</title>
+      <link>https://k8s.imroc.io/ingress/traefik-ingress/use-traefik-to-support-login/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/ingress/traefik-ingress/use-traefik-to-support-login/</guid>
+      <description>我们安装的应用，它们的后台管理页面很多不支持用户登录(认证)，所以没有将其暴露出来对外提供访问，我们经常用 kubectl proxy 的方式来访问，这样比较不方便。
+这里以 Traefik 本身的后台管理页面为例，将其加上 basic auth 登录才允许访问。
+创建用户名密码：
+USERNAME=roc PASSWORD=mypassword 创建 Secret:
+USERS=$(htpasswd -nb USERNAME PASSWORD) cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: v1 kind: Secret metadata: name: authsecret namespace: kube-system type: Opaque stringData: users: ${USERS} EOF 创建 Middleware:
+cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: traefik.containo.us/v1alpha1 kind: Middleware metadata: name: roc-auth namespace: kube-system spec: basicAuth: secret: authsecret EOF 创建 IngressRoute，引用 Middleware:
+cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: traefik.</description>
     </item>
     
     <item>
@@ -972,20 +999,6 @@ kubectl apply -f deploy/1.8+/ 参考资料  Github 主页: https://github.com/ku
       <description>最佳安装方案 如何暴露 ingress 访问入口? 最佳方案是使用 LoadBalancer 类型的 Service 来暴露，即创建外部负载均衡器来暴露流量，后续访问 ingress 的流量都走这个负载均衡器的地址，ingress 规则里面配的域名也要配置解析到这个负载均衡器的 IP 地址。
 这种方式需要集群支持 LoadBalancer 类型的 Service，如果是云厂商提供的 k8s 服务，或者在云上自建集群并使用了云厂商提供的 cloud provider，也都是支持的，创建 LoadBalancer 类型的 Service 的时候会自动调云厂商的接口创建云厂商提供的负载均衡器产品(通常公网类型的负载均衡器是付费的)；如果你的集群不是前面说的情况，是自建集群并且有自己的负载均衡器方案，并部署了相关插件来适配，比如 MetalLB 和 Porter，这样也是可以支持 LoadBalancer 类型的 Service 的。
 使用 helm 安装 helm install stable/traefik \  --name traefik \  --namespace kube-system \  --set kubernetes.ingressClass=traefik \  --set kubernetes.ingressEndpoint.useDefaultPublishedService=true \  --set rbac.enabled=true  kubernetes.ingressClass=traefik: 创建的 ingress 中包含 kubernetes.io/ingress.class 这个 annotation 并且值与这里配置的一致，这个 traefik ingress controller 才会处理 (生成转发规则) kubernetes.</description>
-    </item>
-    
-    <item>
-      <title>安装 traefik ingress controller</title>
-      <link>https://k8s.imroc.io/ingress/traefik-ingress/install-traefik-ingress/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/ingress/traefik-ingress/install-traefik-ingress/</guid>
-      <description>最佳安装方案 如何暴露 ingress 访问入口? 最佳方案是使用 LoadBalancer 类型的 Service 来暴露，即创建外部负载均衡器来暴露流量，后续访问 ingress 的流量都走这个负载均衡器的地址，ingress 规则里面配的域名也要配置解析到这个负载均衡器的 IP 地址。
-这种方式需要集群支持 LoadBalancer 类型的 Service，如果是云厂商提供的 k8s 服务，或者在云上自建集群并使用了云厂商提供的 cloud provider，也都是支持的，创建 LoadBalancer 类型的 Service 的时候会自动调云厂商的接口创建云厂商提供的负载均衡器产品(通常公网类型的负载均衡器是付费的)；如果你的集群不是前面说的情况，是自建集群并且有自己的负载均衡器方案，并部署了相关插件来适配，比如 MetalLB 和 Porter，这样也是可以支持 LoadBalancer 类型的 Service 的。
-使用 helm 安装  参考官方文档: https://docs.traefik.io/getting-started/install-traefik/
- traefik 官方默认的 Helm Chart 是 v1.x 版本 (stable/traefik)，v2.x 的 chart 还在试验阶段
- 下面是 traefik 官方稳定版的 chart 安装方法(traefik v1.x):
- Helm 2 Helm 3  helm install stable/traefik \  --name traefik \  --namespace kube-system \  --set kubernetes.</description>
     </item>
     
     <item>
