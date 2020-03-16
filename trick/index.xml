@@ -22,6 +22,16 @@ function k() { cmdline=`HISTTIMEFORMAT=&amp;#34;&amp;#34; history | awk &amp;#39
     </item>
     
     <item>
+      <title>在容器内使用 perf</title>
+      <link>https://k8s.imroc.io/trick/perf-in-container/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/trick/perf-in-container/</guid>
+      <description>条件 运行 perf 主要会用到 perf_event_open 系统调用，要在容器内使用，需要满足以下条件:
+ 设置内核参数：kernel.perf_event_paranoid = -1 把系统调用perf_event_open放到白名单中（获取dockerd 默认的seccomp profile，然后把系统调用perf_event_open从CAP_SYS_ADMIN移出放到白名单）或者设置seccomp=unconfined 而在k8s场景下，由于kubelet默认会给pod配置seccomp=unconfined的SecurityOpt选项，所以只需要满足第一个条件即可  </description>
+    </item>
+    
+    <item>
       <title>泛域名动态转发 Service</title>
       <link>https://k8s.imroc.io/trick/wildcard-domain-forward/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

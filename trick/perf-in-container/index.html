@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>钉钉告警</title>
+    <title>在容器内使用 perf</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/monitoring/dingtalk-alert/">
+  <body class="" data-url="/trick/perf-in-container/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -2753,7 +2753,7 @@
   
     
     <li data-nav-id="/trick/" title="奇技淫巧" class="dd-item 
-        
+        parent
         
         
         ">
@@ -2863,7 +2863,7 @@
  
   
     
-      <li data-nav-id="/trick/perf-in-container/" title="在容器内使用 perf" class="dd-item ">
+      <li data-nav-id="/trick/perf-in-container/" title="在容器内使用 perf" class="dd-item active">
         <a href="/trick/perf-in-container/">
         在容器内使用 perf
         <i class="fas fa-check read-icon"></i>
@@ -3014,7 +3014,7 @@
   
     
     <li data-nav-id="/monitoring/" title="监控指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -3063,7 +3063,7 @@
  
   
     
-      <li data-nav-id="/monitoring/dingtalk-alert/" title="钉钉告警" class="dd-item active">
+      <li data-nav-id="/monitoring/dingtalk-alert/" title="钉钉告警" class="dd-item ">
         <a href="/monitoring/dingtalk-alert/">
         钉钉告警
         <i class="fas fa-check read-icon"></i>
@@ -3423,7 +3423,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/monitoring/dingtalk-alert/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/trick/perf-in-container/" selected>简体中文</option>
                     
                   
               
@@ -3485,7 +3485,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/monitoring/dingtalk-alert.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/trick/perf-in-container.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3516,7 +3516,7 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/monitoring/'>监控指南</a> > 钉钉告警
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/trick/'>奇技淫巧</a> > 在容器内使用 perf
           
          
           
@@ -3531,7 +3531,7 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#通过-webhook-告警">通过 webhook 告警</a></li>
+    <li><a href="#条件">条件</a></li>
   </ul>
 </nav>
     </div>
@@ -3549,7 +3549,7 @@
           
             <h1>
               
-              钉钉告警
+              在容器内使用 perf
             </h1>
           
 
@@ -3561,9 +3561,13 @@
 </div>
 
 
-<h2 id="通过-webhook-告警">通过 webhook 告警</h2>
-<p>参考： <a href="https://theo.im/blog/2017/10/16/release-prometheus-alertmanager-webhook-for-dingtalk/">https://theo.im/blog/2017/10/16/release-prometheus-alertmanager-webhook-for-dingtalk/</a></p>
-<p>github: <a href="https://github.com/timonwong/prometheus-webhook-dingtalk">https://github.com/timonwong/prometheus-webhook-dingtalk</a></p>
+<h2 id="条件">条件</h2>
+<p>运行 perf 主要会用到 <code>perf_event_open</code> 系统调用，要在容器内使用，需要满足以下条件:</p>
+<ol>
+<li>设置内核参数：<code>kernel.perf_event_paranoid = -1</code></li>
+<li>把系统调用perf_event_open放到白名单中（获取dockerd 默认的seccomp profile，然后把系统调用perf_event_open从CAP_SYS_ADMIN移出放到白名单）或者设置seccomp=unconfined
+而在k8s场景下，由于kubelet默认会给pod配置seccomp=unconfined的SecurityOpt选项，所以只需要满足第一个条件即可</li>
+</ol>
 
 
 <footer class="footline">
@@ -3618,7 +3622,7 @@
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:e8ec6f3d7e2647ce4efdf3c28d803a46")
+  console.log("gitalk id:2871f9d870077ff5f3f202a76a98529a")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3626,9 +3630,9 @@
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: '钉钉告警',
+      title: '在容器内使用 perf',
       createIssueManually: false,
-      id: 'e8ec6f3d7e2647ce4efdf3c28d803a46',
+      id: '2871f9d870077ff5f3f202a76a98529a',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -5395,6 +5399,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -5410,53 +5415,8 @@
             
                 
                     
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
                         
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
                         
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
                     
                 
                 
@@ -5498,6 +5458,125 @@
             
         
                     
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
                         
             
             
@@ -5537,81 +5616,6 @@
             
             
                 
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                        
-                        
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                        
-                        
                     
                 
                 
@@ -5811,10 +5815,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="/monitoring/wechat-work-alert/" title="企业微信告警"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/trick/yaml/deployment/" title="Deployment"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/log/" title="日志收集" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/trick/shell/" title="实用命令与脚本" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

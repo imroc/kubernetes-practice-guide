@@ -513,6 +513,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/trick/perf-in-container/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/cluster/runtime/containerd/install-containerd/</loc>
   </url>
   
