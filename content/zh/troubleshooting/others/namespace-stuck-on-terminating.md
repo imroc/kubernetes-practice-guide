@@ -1,11 +1,11 @@
 ---
-title: "kube-node-lease namespace 卡在 Terminating"
+title: "Namespace 卡在 Terminating"
 state: Alpha
 ---
 
 ## 原因
 
-可能是勿删 ns，删除 kube-node-lease 后，ns 一直卡在 Terminating 状态。通常是存在 finalizers，通过 `kubectl get ns kube-node-lease -o yaml` 可以看到是否有 finalizers:
+删除 ns 后，一直卡在 Terminating 状态。通常是存在 finalizers，通过 `kubectl get ns kube-node-lease -o yaml` 可以看到是否有 finalizers:
 
 ``` bash
 $ kubectl get ns -o yaml kube-node-lease
