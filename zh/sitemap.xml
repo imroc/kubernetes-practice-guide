@@ -56,6 +56,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/monitoring/kube-prometheus-quickstart/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/security/cert/install-cert-manger/</loc>
   </url>
   

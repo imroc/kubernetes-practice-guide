@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>跨 VPC 访问 NodePort 经常超时</title>
+    <title>使用 kube-promethues 快速上手集群监控</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/avoid/cases/cross-vpc-connect-nodeport-timeout/">
+  <body class="" data-url="/monitoring/kube-prometheus-quickstart/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -1861,7 +1861,7 @@
   
     
     <li data-nav-id="/avoid/" title="避坑指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -2018,7 +2018,7 @@
   
     
     <li data-nav-id="/avoid/cases/" title="踩坑分享" class="dd-item 
-        parent
+        
         
         
         ">
@@ -2256,7 +2256,7 @@
  
   
     
-      <li data-nav-id="/avoid/cases/cross-vpc-connect-nodeport-timeout/" title="跨 VPC 访问 NodePort 经常超时" class="dd-item active">
+      <li data-nav-id="/avoid/cases/cross-vpc-connect-nodeport-timeout/" title="跨 VPC 访问 NodePort 经常超时" class="dd-item ">
         <a href="/avoid/cases/cross-vpc-connect-nodeport-timeout/">
         跨 VPC 访问 NodePort 经常超时
         <i class="fas fa-check read-icon"></i>
@@ -3035,7 +3035,7 @@
   
     
     <li data-nav-id="/monitoring/" title="监控指南" class="dd-item 
-        
+        parent
         
         
         ">
@@ -3063,7 +3063,7 @@
  
   
     
-      <li data-nav-id="/monitoring/kube-prometheus-quickstart/" title="使用 kube-promethues 快速上手集群监控" class="dd-item ">
+      <li data-nav-id="/monitoring/kube-prometheus-quickstart/" title="使用 kube-promethues 快速上手集群监控" class="dd-item active">
         <a href="/monitoring/kube-prometheus-quickstart/">
         使用 kube-promethues 快速上手集群监控
         <i class="fas fa-check read-icon"></i>
@@ -3465,7 +3465,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/avoid/cases/cross-vpc-connect-nodeport-timeout/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/monitoring/kube-prometheus-quickstart/" selected>简体中文</option>
                     
                   
               
@@ -3527,7 +3527,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/avoid/cases/cross-vpc-connect-nodeport-timeout.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/monitoring/kube-prometheus-quickstart.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3558,13 +3558,7 @@
             
           
           
-            
-            
-          
-          
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/avoid/'>避坑指南</a> > <a href='/avoid/cases/'>踩坑分享</a> > 跨 VPC 访问 NodePort 经常超时
-          
-         
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/monitoring/'>监控指南</a> > 使用 kube-promethues 快速上手集群监控
           
          
           
@@ -3577,7 +3571,13 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#kube-prometheus-介绍">kube-prometheus 介绍</a></li>
+    <li><a href="#快速安装">快速安装</a></li>
+    <li><a href="#进入-grafana-界面">进入 grafana 界面</a></li>
+  </ul>
+</nav>
     </div>
 </div>
 
@@ -3593,40 +3593,44 @@
           
             <h1>
               
-              跨 VPC 访问 NodePort 经常超时
+              使用 kube-promethues 快速上手集群监控
             </h1>
           
 
         
 
 
+<div class="notices info">
+	<p>文档当前状态：Alpha </p>
+</div>
 
-<p>现象: 从 VPC a 访问 VPC b 的 TKE 集群的某个节点的 NodePort，有时候正常，有时候会卡住直到超时。</p>
-<p>原因怎么查？</p>
-<p>当然是先抓包看看啦，抓 server 端 NodePort 的包，发现异常时 server 能收到 SYN，但没响应 ACK:</p>
-<p><img src="https://imroc.io/assets/blog/troubleshooting-k8s-network/no_ack.png" alt=""></p>
-<p>反复执行 <code>netstat -s | grep LISTEN</code> 发现 SYN 被丢弃数量不断增加:</p>
-<p><img src="https://imroc.io/assets/blog/troubleshooting-k8s-network/drop_syn.png" alt=""></p>
-<p>分析：</p>
+
+<h2 id="kube-prometheus-介绍">kube-prometheus 介绍</h2>
+<p>kube-prometheus 包含了在 k8s 环境下各种主流的监控组件，将其安装到集群可以快速搭建我们自己的监控系统:</p>
 <ul>
-<li>两个VPC之间使用对等连接打通的，CVM 之间通信应该就跟在一个内网一样可以互通。</li>
-<li>为什么同一 VPC 下访问没问题，跨 VPC 有问题? 两者访问的区别是什么?</li>
+<li>prometheus-operator: 让 prometheus 更好的适配 k8s，可直接通过创建 k8s CRD 资源来创建 prometheus 与 alertmanager 实例及其监控告警规则 (默认安装时也会创建这些 CRD 资源，也就是会自动部署 prometheus 和 alertmanager，以及它们的配置)</li>
+<li>prometheus-adapter: 让 prometheus 采集的监控数据来适配 k8s 的 <a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/instrumentation/resource-metrics-api.md">resource metrics API</a> 和 <a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/instrumentation/custom-metrics-api.md">custom metrics API</a>，<code>kubectl top</code> 和 HPA 功能都依赖它们。</li>
+<li>node-exporter: 已 DaemonSet 方式部署在每个节点，将节点的各项系统指标暴露成 prometheus 能识别的格式，以便让 prometheus 采集。</li>
+<li>kube-state-metrics: 将 k8s 的资源对象转换成 prometheus 的 metrics 格式以便让 prometheus 采集，比如 Node/Pod 的各种状态。</li>
+<li>grafana: 可视化展示监控数据的界面。</li>
 </ul>
-<p>再仔细看下 client 所在环境，发现 client 是 VPC a 的 TKE 集群节点，捋一下:</p>
-<ul>
-<li>client 在 VPC a 的 TKE 集群的节点</li>
-<li>server 在 VPC b 的 TKE 集群的节点</li>
-</ul>
-<p>因为 TKE 集群中有个叫 <code>ip-masq-agent</code> 的 daemonset，它会给 node 写 iptables 规则，默认 SNAT 目的 IP 是 VPC 之外的报文，所以 client 访问 server 会做 SNAT，也就是这里跨 VPC 相比同 VPC 访问 NodePort 多了一次 SNAT，如果是因为多了一次 SNAT 导致的这个问题，直觉告诉我这个应该跟内核参数有关，因为是 server 收到包没回包，所以应该是 server 所在 node 的内核参数问题，对比这个 node 和 普通 TKE node 的默认内核参数，发现这个 node <code>net.ipv4.tcp_tw_recycle = 1</code>，这个参数默认是关闭的，跟用户沟通后发现这个内核参数确实在做压测的时候调整过。</p>
-<p>解释一下，TCP 主动关闭连接的一方在发送最后一个 ACK 会进入 <code>TIME_AWAIT</code> 状态，再等待 2 个 MSL 时间后才会关闭(因为如果 server 没收到 client 第四次挥手确认报文，server 会重发第三次挥手 FIN 报文，所以 client 需要停留 2 MSL的时长来处理可能会重复收到的报文段；同时等待 2 MSL 也可以让由于网络不通畅产生的滞留报文失效，避免新建立的连接收到之前旧连接的报文)，了解更详细的过程请参考 TCP 四次挥手。</p>
-<p>参数 <code>tcp_tw_recycle</code> 用于快速回收 <code>TIME_AWAIT</code> 连接，通常在增加连接并发能力的场景会开启，比如发起大量短连接，快速回收可避免  <code>tw_buckets</code> 资源耗尽导致无法建立新连接 (<code>time wait bucket table overflow</code>)</p>
-<p>查得 <code>tcp_tw_recycle</code> 有个坑，在 RFC1323 有段描述:</p>
-<p><code>An additional mechanism could be added to the TCP, a per-host cache of the last timestamp received from any connection. This value could then be used in the PAWS mechanism to reject old duplicate segments from earlier incarnations of the connection, if the timestamp clock can be guaranteed to have ticked at least once since the old connection was open. This would require that the TIME-WAIT delay plus the RTT together must be at least one tick of the sender’s timestamp clock. Such an extension is not part of the proposal of this RFC.</code></p>
-<p>大概意思是说 TCP 有一种行为，可以缓存每个连接最新的时间戳，后续请求中如果时间戳小于缓存的时间戳，即视为无效，相应的数据包会被丢弃。</p>
-<p>Linux 是否启用这种行为取决于 <code>tcp_timestamps</code> 和 <code>tcp_tw_recycle</code>，因为 <code>tcp_timestamps</code> 缺省开启，所以当 <code>tcp_tw_recycle</code> 被开启后，实际上这种行为就被激活了，当客户端或服务端以 <code>NAT</code> 方式构建的时候就可能出现问题。</p>
-<p>当多个客户端通过 NAT 方式联网并与服务端交互时，服务端看到的是同一个 IP，也就是说对服务端而言这些客户端实际上等同于一个，可惜由于这些客户端的时间戳可能存在差异，于是乎从服务端的视角看，便可能出现时间戳错乱的现象，进而直接导致时间戳小的数据包被丢弃。如果发生了此类问题，具体的表现通常是是客户端明明发送的 SYN，但服务端就是不响应 ACK。</p>
-<p>回到我们的问题上，client 所在节点上可能也会有其它 pod 访问到 server 所在节点，而它们都被 SNAT 成了 client 所在节点的 NODE IP，但时间戳存在差异，server 就会看到时间戳错乱，因为开启了 <code>tcp_tw_recycle</code> 和 <code>tcp_timestamps</code> 激活了上述行为，就丢掉了比缓存时间戳小的报文，导致部分 SYN 被丢弃，这也解释了为什么之前我们抓包发现异常时 server 收到了 SYN，但没有响应 ACK，进而说明为什么 client 的请求部分会卡住直到超时。</p>
-<p>由于 <code>tcp_tw_recycle</code> 坑太多，在内核 4.12 之后已移除: <a href="https://github.com/torvalds/linux/commit/4396e46187ca5070219b81773c4e65088dac50cc">remove tcp_tw_recycle</a></p>
+<p>项目地址: <a href="https://github.com/coreos/kube-prometheus">https://github.com/coreos/kube-prometheus</a></p>
+<h2 id="快速安装">快速安装</h2>
+<p>如果只是想学习如何使用，可以参考 <a href="https://github.com/coreos/kube-prometheus#quickstart">官方文档</a> 一键部署到集群:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">git clone https://github.com/coreos/kube-prometheus.git
+cd kube-prometheus
+<span style="color:#75715e"># Create the namespace and CRDs, and then wait for them to be availble before creating the remaining resources</span>
+kubectl create -f manifests/setup
+<span style="color:#66d9ef">until</span> kubectl get servicemonitors --all-namespaces ; <span style="color:#66d9ef">do</span> date; sleep 1; echo <span style="color:#e6db74">&#34;&#34;</span>; <span style="color:#66d9ef">done</span>
+kubectl create -f manifests/
+</code></pre></div><h2 id="进入-grafana-界面">进入 grafana 界面</h2>
+<p>grafana service 3000 端口是 grafana ui 界面，用 <code>kubectl port-forward</code> 端口转发来暴露访问:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl port-forward service/grafana 3000:3000 -n monitoring
+</code></pre></div><p>然后打开 http://localhost:3000 即可进入 grafana 的界面，初始用户名密码都是 admin，输入后会强制让改一下初始密码才允许进入。</p>
+<p>因为 kube-prometheus 为我们预配置了指标采集规则和 grafana 的 dashboard 展示配置，所以进入 grafana 界面后，点击左上角即可选择预配置好的监控面板:</p>
+<p><img src="/images/grafana-select-dashboard.png?classes=no-margin" alt=""></p>
+<p>选择一些看下效果探索下吧:</p>
+<p><img src="/images/grafana-dashboard-pod.png?classes=no-margin" alt=""></p>
 
 
 <footer class="footline">
@@ -3681,7 +3685,7 @@
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:b1d6d569b8579ec28631ae102554b7d8")
+  console.log("gitalk id:c6e72dadafce72d3ebd255f4631f6567")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3689,9 +3693,9 @@
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: '跨 VPC 访问 NodePort 经常超时',
+      title: '使用 kube-promethues 快速上手集群监控',
       createIssueManually: false,
-      id: 'b1d6d569b8579ec28631ae102554b7d8',
+      id: 'c6e72dadafce72d3ebd255f4631f6567',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -4876,7 +4880,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -4886,138 +4889,6 @@
                     
                     
 
-                    
-                        
-            
-            
-                
-                    
-                        
-                        
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-                        
-            
-            
-                
-                    
-                        
-                        
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
                     
                         
             
@@ -5128,6 +4999,51 @@
                     
 
                     
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
             
         
                     
@@ -5168,6 +5084,21 @@
             
                 
                     
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
                     
                 
                 
@@ -5185,8 +5116,69 @@
             
                 
                     
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
                         
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
                         
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
                     
                 
                 
@@ -5648,6 +5640,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -5660,6 +5653,7 @@
             
             
                 
+                    
                     
                 
                 
@@ -5676,6 +5670,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5910,10 +5907,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="/avoid/cases/no-route-to-host/" title="诡异的 No route to host"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/monitoring/" title="监控指南"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/avoid/cases/eviction-leads-to-service-disruption/" title="驱逐导致服务中断" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/monitoring/wechat-work-alert/" title="企业微信告警" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
