@@ -327,10 +327,6 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/troubleshooting/others/kube-node-lease-terminating/</loc>
-  </url>
-  
-  <url>
     <loc>https://k8s.imroc.io/avoid/cases/schemaerror-when-using-kubectl-apply-or-edit/</loc>
   </url>
   
@@ -356,6 +352,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/cluster/metrics/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/troubleshooting/others/namespace-stuck-on-terminating/</loc>
   </url>
   
   <url>

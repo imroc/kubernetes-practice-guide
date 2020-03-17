@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>使用 kubespray 部署</title>
+    <title>Namespace 卡在 Terminating</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/deploy/kubespray/">
+  <body class="" data-url="/troubleshooting/others/namespace-stuck-on-terminating/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -93,7 +93,7 @@
   
     
     <li data-nav-id="/deploy/" title="部署指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -144,7 +144,7 @@
  
   
     
-      <li data-nav-id="/deploy/kubespray/" title="使用 kubespray 部署" class="dd-item active">
+      <li data-nav-id="/deploy/kubespray/" title="使用 kubespray 部署" class="dd-item ">
         <a href="/deploy/kubespray/">
         使用 kubespray 部署
         <i class="fas fa-check read-icon"></i>
@@ -839,7 +839,7 @@
   
     
     <li data-nav-id="/troubleshooting/" title="排错指南" class="dd-item 
-        
+        parent
         
         
         ">
@@ -1690,7 +1690,7 @@
   
     
     <li data-nav-id="/troubleshooting/others/" title="其它排错" class="dd-item 
-        
+        parent
         
         
         ">
@@ -1802,7 +1802,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/others/namespace-stuck-on-terminating/" title="Namespace 卡在 Terminating" class="dd-item ">
+      <li data-nav-id="/troubleshooting/others/namespace-stuck-on-terminating/" title="Namespace 卡在 Terminating" class="dd-item active">
         <a href="/troubleshooting/others/namespace-stuck-on-terminating/">
         Namespace 卡在 Terminating
         <i class="fas fa-check read-icon"></i>
@@ -3444,7 +3444,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/deploy/kubespray/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/others/namespace-stuck-on-terminating/" selected>简体中文</option>
                     
                   
               
@@ -3506,7 +3506,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/deploy/kubespray.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/others/namespace-stuck-on-terminating.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3537,7 +3537,13 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/deploy/'>部署指南</a> > 使用 kubespray 部署
+            
+            
+          
+          
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/others/'>其它排错</a> > Namespace 卡在 Terminating
+          
+         
           
          
           
@@ -3550,7 +3556,13 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#原因">原因</a></li>
+    <li><a href="#拓展">拓展</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+</nav>
     </div>
 </div>
 
@@ -3566,7 +3578,7 @@
           
             <h1>
               
-              使用 kubespray 部署
+              Namespace 卡在 Terminating
             </h1>
           
 
@@ -3574,10 +3586,45 @@
 
 
 <div class="notices info">
-	<p>文档当前状态：TODO </p>
+	<p>文档当前状态：Alpha </p>
 </div>
 
 
+<h2 id="原因">原因</h2>
+<p>删除 ns 后，一直卡在 Terminating 状态。通常是存在 finalizers，通过 <code>kubectl get ns kube-node-lease -o yaml</code> 可以看到是否有 finalizers:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl get ns -o yaml kube-node-lease
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openpitrix_runtime: runtime-9M5z8pAzL8ox
+  creationTimestamp: <span style="color:#e6db74">&#34;2019-11-11T06:09:09Z&#34;</span>
+  deletionGracePeriodSeconds: <span style="color:#ae81ff">0</span>
+  deletionTimestamp: <span style="color:#e6db74">&#34;2020-03-17T02:25:02Z&#34;</span>
+  finalizers:
+  - finalizers.kubesphere.io/namespaces
+  labels:
+    kubesphere.io/workspace: system-workspace
+  name: kube-node-lease
+  ownerReferences:
+  - apiVersion: tenant.kubesphere.io/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Workspace
+    name: system-workspace
+    uid: d4310acd-1fdc-11ea-a370-a2c490b9ae47
+  resourceVersion: <span style="color:#e6db74">&#34;1239449686&#34;</span>
+  selfLink: /api/v1/namespaces/kube-node-lease
+  uid: c63ce63a-0449-11ea-9b80-6aa4eb51927f
+spec: <span style="color:#f92672">{}</span>
+</code></pre></div><p>此例是因为之前装过 kubesphere，然后卸载了，但没有清理 finalizers，将其删除就可以了。</p>
+<h2 id="拓展">拓展</h2>
+<p>k8s 资源的 metadata 里如果存在 finalizers，那么该资源一般是由某应用创建的，或者是这个资源是此应用关心的。应用会在资源的 metadata 里的 finalizers 加了一个它自己可以识别的标识，这意味着这个资源被删除时需要由此应用来做删除前的清理，清理完了它需要将标识从该资源的 finalizers 中移除，然后才会最终彻底删除资源。比如 Rancher 创建的一些资源就会写入 finalizers 标识。</p>
+<p>如果应用被删除，而finalizer没清理，删除资源时就会一直卡在terminating，可以手动删除finalizer来解决。</p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li>Node Lease 的 Proposal: <a href="https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md">https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md</a></li>
+</ul>
 
 
 <footer class="footline">
@@ -3632,7 +3679,7 @@
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:b5d681c669a9bbfc68970d7bc4744489")
+  console.log("gitalk id:464c1d10ca139cafc039c45dba23356a")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3640,9 +3687,9 @@
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: '使用 kubespray 部署',
+      title: 'Namespace 卡在 Terminating',
       createIssueManually: false,
-      id: 'b5d681c669a9bbfc68970d7bc4744489',
+      id: '464c1d10ca139cafc039c45dba23356a',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -3680,6 +3727,8 @@
             
                 
                     
+                        
+                        
                     
                 
                 
@@ -3695,9 +3744,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -3715,7 +3761,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -3731,9 +3776,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4141,6 +4183,7 @@
             
             
                 
+                    
                     
                 
                 
@@ -4157,6 +4200,9 @@
             
                 
                     
+                        
+                        
+                    
                 
                 
 
@@ -4717,6 +4763,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -4729,6 +4776,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -4793,6 +4843,7 @@
             
             
                 
+                    
                     
                 
                 
@@ -4809,6 +4860,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5838,10 +5892,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="/deploy/selection/" title="方案选型"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/troubleshooting/others/kubectl-exec-or-logs-failed/" title="kubectl 执行 exec 或 logs 失败"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/deploy/manual/" title="手工部署" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/troubleshooting/others/node-all-gone/" title="Node 全部消失" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
