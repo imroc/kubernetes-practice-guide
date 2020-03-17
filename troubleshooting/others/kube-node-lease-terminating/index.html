@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>Pod 健康检查失败</title>
+    <title>kube-node-lease namespace 卡在 Terminating</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/troubleshooting/pod/healthcheck-failed/">
+  <body class="" data-url="/troubleshooting/others/kube-node-lease-terminating/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -1278,7 +1278,7 @@
   
     
     <li data-nav-id="/troubleshooting/pod/" title="Pod 排错" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1474,7 +1474,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/pod/healthcheck-failed/" title="Pod 健康检查失败" class="dd-item active">
+      <li data-nav-id="/troubleshooting/pod/healthcheck-failed/" title="Pod 健康检查失败" class="dd-item ">
         <a href="/troubleshooting/pod/healthcheck-failed/">
         Pod 健康检查失败
         <i class="fas fa-check read-icon"></i>
@@ -1690,7 +1690,7 @@
   
     
     <li data-nav-id="/troubleshooting/others/" title="其它排错" class="dd-item 
-        
+        parent
         
         
         ">
@@ -1781,7 +1781,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/others/kube-node-lease-terminating/" title="kube-node-lease namespace 卡在 Terminating" class="dd-item ">
+      <li data-nav-id="/troubleshooting/others/kube-node-lease-terminating/" title="kube-node-lease namespace 卡在 Terminating" class="dd-item active">
         <a href="/troubleshooting/others/kube-node-lease-terminating/">
         kube-node-lease namespace 卡在 Terminating
         <i class="fas fa-check read-icon"></i>
@@ -3444,7 +3444,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/pod/healthcheck-failed/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/others/kube-node-lease-terminating/" selected>简体中文</option>
                     
                   
               
@@ -3506,7 +3506,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/pod/healthcheck-failed.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/others/kube-node-lease-terminating.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3541,7 +3541,7 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/pod/'>Pod 排错</a> > Pod 健康检查失败
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/others/'>其它排错</a> > kube-node-lease namespace 卡在 Terminating
           
          
           
@@ -3558,11 +3558,9 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#健康检查配置不合理">健康检查配置不合理</a></li>
-    <li><a href="#节点负载过高">节点负载过高</a></li>
-    <li><a href="#容器进程被木马进程杀死">容器进程被木马进程杀死</a></li>
-    <li><a href="#容器内进程端口监听挂掉">容器内进程端口监听挂掉</a></li>
-    <li><a href="#syn-backlog-设置过小">SYN backlog 设置过小</a></li>
+    <li><a href="#原因">原因</a></li>
+    <li><a href="#拓展">拓展</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
   </ul>
 </nav>
     </div>
@@ -3580,36 +3578,53 @@
           
             <h1>
               
-              Pod 健康检查失败
+              kube-node-lease namespace 卡在 Terminating
             </h1>
           
 
         
 
 
+<div class="notices info">
+	<p>文档当前状态：Alpha </p>
+</div>
 
+
+<h2 id="原因">原因</h2>
+<p>可能是勿删 ns，删除 kube-node-lease 后，ns 一直卡在 Terminating 状态。通常是存在 finalizers，通过 <code>kubectl get ns kube-node-lease -o yaml</code> 可以看到是否有 finalizers:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl get ns -o yaml kube-node-lease
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    openpitrix_runtime: runtime-9M5z8pAzL8ox
+  creationTimestamp: <span style="color:#e6db74">&#34;2019-11-11T06:09:09Z&#34;</span>
+  deletionGracePeriodSeconds: <span style="color:#ae81ff">0</span>
+  deletionTimestamp: <span style="color:#e6db74">&#34;2020-03-17T02:25:02Z&#34;</span>
+  finalizers:
+  - finalizers.kubesphere.io/namespaces
+  labels:
+    kubesphere.io/workspace: system-workspace
+  name: kube-node-lease
+  ownerReferences:
+  - apiVersion: tenant.kubesphere.io/v1alpha1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Workspace
+    name: system-workspace
+    uid: d4310acd-1fdc-11ea-a370-a2c490b9ae47
+  resourceVersion: <span style="color:#e6db74">&#34;1239449686&#34;</span>
+  selfLink: /api/v1/namespaces/kube-node-lease
+  uid: c63ce63a-0449-11ea-9b80-6aa4eb51927f
+spec: <span style="color:#f92672">{}</span>
+</code></pre></div><p>此例是因为之前装过 kubesphere，然后卸载了，但没有清理 finalizers，将其删除就可以了。</p>
+<h2 id="拓展">拓展</h2>
+<p>k8s 资源的 metadata 里如果存在 finalizers，那么该资源一般是由某应用创建的，或者是这个资源是此应用关心的。应用会在资源的 metadata 里的 finalizers 加了一个它自己可以识别的标识，这意味着这个资源被删除时需要由此应用来做删除前的清理，清理完了它需要将标识从该资源的 finalizers 中移除，然后才会最终彻底删除资源。比如 Rancher 创建的一些资源就会写入 finalizers 标识。</p>
+<p>如果应用被删除，而finalizer没清理，删除资源时就会一直卡在terminating，可以手动删除finalizer来解决。</p>
+<h2 id="参考资料">参考资料</h2>
 <ul>
-<li>Kubernetes 健康检查包含就绪检查(readinessProbe)和存活检查(livenessProbe)</li>
-<li>pod 如果就绪检查失败会将此 pod ip 从 service 中摘除，通过 service 访问，流量将不会被转发给就绪检查失败的 pod</li>
-<li>pod 如果存活检查失败，kubelet 将会杀死容器并尝试重启</li>
+<li>Node Lease 的 Proposal: <a href="https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md">https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md</a></li>
 </ul>
-<p>健康检查失败的可能原因有多种，除了业务程序BUG导致不能响应健康检查导致 unhealthy，还能有有其它原因，下面我们来逐个排查。</p>
-<h2 id="健康检查配置不合理">健康检查配置不合理</h2>
-<p><code>initialDelaySeconds</code> 太短，容器启动慢，导致容器还没完全启动就开始探测，如果 successThreshold 是默认值 1，检查失败一次就会被 kill，然后 pod 一直这样被 kill 重启。</p>
-<h2 id="节点负载过高">节点负载过高</h2>
-<p>cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常会 timeout，导致 kubelet 认为 pod 不健康。参考本书 <a href="../../../handle/high-load/">处理实践: 高负载</a> 一节。</p>
-<h2 id="容器进程被木马进程杀死">容器进程被木马进程杀死</h2>
-<p>参考本书 <a href="../../../trick/use-systemtap-to-locate-problems/">处理实践: 使用 systemtap 定位疑难杂症</a> 进一步定位。</p>
-<h2 id="容器内进程端口监听挂掉">容器内进程端口监听挂掉</h2>
-<p>使用 <code>netstat -tunlp</code> 检查端口监听是否还在，如果不在了，抓包可以看到会直接 reset 掉健康检查探测的连接:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">20:15:17.890996 IP 172.16.2.1.38074 &gt; 172.16.2.23.8888: Flags <span style="color:#f92672">[</span>S<span style="color:#f92672">]</span>, seq 96880261, win 14600, options <span style="color:#f92672">[</span>mss 1424,nop,nop,sackOK,nop,wscale 7<span style="color:#f92672">]</span>, length <span style="color:#ae81ff">0</span>
-20:15:17.891021 IP 172.16.2.23.8888 &gt; 172.16.2.1.38074: Flags <span style="color:#f92672">[</span>R.<span style="color:#f92672">]</span>, seq 0, ack 96880262, win 0, length <span style="color:#ae81ff">0</span>
-20:15:17.906744 IP 10.0.0.16.54132 &gt; 172.16.2.23.8888: Flags <span style="color:#f92672">[</span>S<span style="color:#f92672">]</span>, seq 1207014342, win 14600, options <span style="color:#f92672">[</span>mss 1424,nop,nop,sackOK,nop,wscale 7<span style="color:#f92672">]</span>, length <span style="color:#ae81ff">0</span>
-20:15:17.906766 IP 172.16.2.23.8888 &gt; 10.0.0.16.54132: Flags <span style="color:#f92672">[</span>R.<span style="color:#f92672">]</span>, seq 0, ack 1207014343, win 0, length <span style="color:#ae81ff">0</span>
-</code></pre></div><p>连接异常，从而健康检查失败。发生这种情况的原因可能在一个节点上启动了多个使用 <code>hostNetwork</code> 监听相同宿主机端口的 Pod，只会有一个 Pod 监听成功，但监听失败的 Pod 的业务逻辑允许了监听失败，并没有退出，Pod 又配了健康检查，kubelet 就会给 Pod 发送健康检查探测报文，但 Pod 由于没有监听所以就会健康检查失败。</p>
-<h2 id="syn-backlog-设置过小">SYN backlog 设置过小</h2>
-<p>SYN backlog 大小即 SYN 队列大小，如果短时间内新建连接比较多，而 SYN backlog 设置太小，就会导致新建连接失败，通过 <code>netstat -s | grep TCPBacklogDrop</code> 可以看到有多少是因为 backlog 满了导致丢弃的新连接。</p>
-<p>如果确认是 backlog 满了导致的丢包，建议调高 backlog 的值，内核参数为 <code>net.ipv4.tcp_max_syn_backlog</code>。</p>
 
 
 <footer class="footline">
@@ -3664,7 +3679,7 @@
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:573e7754e4d6850f910c2fc85d54e57a")
+  console.log("gitalk id:f76dd2a3eda7b64a5ea3376b99728507")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3672,9 +3687,9 @@
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: 'Pod 健康检查失败',
+      title: 'kube-node-lease namespace 卡在 Terminating',
       createIssueManually: false,
-      id: '573e7754e4d6850f910c2fc85d54e57a',
+      id: 'f76dd2a3eda7b64a5ea3376b99728507',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -4460,7 +4475,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -4473,9 +4487,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4567,106 +4578,6 @@
                     
             
         
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                        
-                        
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
-            
-        
-                    
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
                     
                         
             
@@ -4832,6 +4743,110 @@
             
             
                 
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                        
+                        
                     
                 
                 
@@ -5877,10 +5892,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="/troubleshooting/pod/keep-unkown/" title="Pod 一直处于 Unknown 状态"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/troubleshooting/others/job-cannot-delete/" title="Job 无法被删除"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/troubleshooting/pod/keep-crashloopbackoff/" title="Pod 处于 CrashLoopBackOff 状态" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/troubleshooting/others/kubectl-exec-or-logs-failed/" title="kubectl 执行 exec 或 logs 失败" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
