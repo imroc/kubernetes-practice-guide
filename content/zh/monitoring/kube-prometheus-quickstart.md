@@ -31,7 +31,7 @@ kubectl create -f manifests/
 
 ## 进入 grafana 界面
 
-grafana service 3000 端口是 grafana ui 界面，用 `kubectl port-forward` 端口转发来暴露访问:
+你可以通过将 grafana 的 service 类型改为 NodePort 或 LoadBalancer，也可以用 Ingress 来暴露 grafana 的界面, 如果你本机能通过 kubectl 访问集群，那可以直接通过 `kubectl port-forward` 端口转发来暴露访问:
 
 ``` bash
 kubectl port-forward service/grafana 3000:3000 -n monitoring
