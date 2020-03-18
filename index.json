@@ -95,7 +95,7 @@
 	"title": "使用 kube-promethues 快速上手集群监控",
 	"tags": [],
 	"description": "",
-	"content": "kube-prometheus 介绍 kube-prometheus 包含了在 k8s 环境下各种主流的监控组件，将其安装到集群可以快速搭建我们自己的监控系统:\n prometheus-operator: 让 prometheus 更好的适配 k8s，可直接通过创建 k8s CRD 资源来创建 prometheus 与 alertmanager 实例及其监控告警规则 (默认安装时也会创建这些 CRD 资源，也就是会自动部署 prometheus 和 alertmanager，以及它们的配置) prometheus-adapter: 让 prometheus 采集的监控数据来适配 k8s 的 resource metrics API 和 custom metrics API，kubectl top 和 HPA 功能都依赖它们。 node-exporter: 已 DaemonSet 方式部署在每个节点，将节点的各项系统指标暴露成 prometheus 能识别的格式，以便让 prometheus 采集。 kube-state-metrics: 将 k8s 的资源对象转换成 prometheus 的 metrics 格式以便让 prometheus 采集，比如 Node/Pod 的各种状态。 grafana: 可视化展示监控数据的界面。  项目地址: https://github.com/coreos/kube-prometheus\n快速安装 如果只是想学习如何使用，可以参考 官方文档 一键部署到集群:\ngit clone https://github.com/coreos/kube-prometheus.git cd kube-prometheus # Create the namespace and CRDs, and then wait for them to be availble before creating the remaining resources kubectl create -f manifests/setup until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo \u0026#34;\u0026#34;; done kubectl create -f manifests/ 进入 grafana 界面 grafana service 3000 端口是 grafana ui 界面，用 kubectl port-forward 端口转发来暴露访问:\nkubectl port-forward service/grafana 3000:3000 -n monitoring 然后打开 http://localhost:3000 即可进入 grafana 的界面，初始用户名密码都是 admin，输入后会强制让改一下初始密码才允许进入。\n因为 kube-prometheus 为我们预配置了指标采集规则和 grafana 的 dashboard 展示配置，所以进入 grafana 界面后，点击左上角即可选择预配置好的监控面板:\n选择一些看下效果探索下吧:\n"
+	"content": "kube-prometheus 介绍 kube-prometheus 包含了在 k8s 环境下各种主流的监控组件，将其安装到集群可以快速搭建我们自己的监控系统:\n prometheus-operator: 让 prometheus 更好的适配 k8s，可直接通过创建 k8s CRD 资源来创建 prometheus 与 alertmanager 实例及其监控告警规则 (默认安装时也会创建这些 CRD 资源，也就是会自动部署 prometheus 和 alertmanager，以及它们的配置) prometheus-adapter: 让 prometheus 采集的监控数据来适配 k8s 的 resource metrics API 和 custom metrics API，kubectl top 和 HPA 功能都依赖它们。 node-exporter: 已 DaemonSet 方式部署在每个节点，将节点的各项系统指标暴露成 prometheus 能识别的格式，以便让 prometheus 采集。 kube-state-metrics: 将 k8s 的资源对象转换成 prometheus 的 metrics 格式以便让 prometheus 采集，比如 Node/Pod 的各种状态。 grafana: 可视化展示监控数据的界面。  项目地址: https://github.com/coreos/kube-prometheus\n快速安装 如果只是想学习如何使用，可以参考 官方文档 一键部署到集群:\ngit clone https://github.com/coreos/kube-prometheus.git cd kube-prometheus # Create the namespace and CRDs, and then wait for them to be availble before creating the remaining resources kubectl create -f manifests/setup until kubectl get servicemonitors --all-namespaces ; do date; sleep 1; echo \u0026#34;\u0026#34;; done kubectl create -f manifests/ 进入 grafana 界面 你可以通过将 grafana 的 service 类型改为 NodePort 或 LoadBalancer，也可以用 Ingress 来暴露 grafana 的界面, 如果你本机能通过 kubectl 访问集群，那可以直接通过 kubectl port-forward 端口转发来暴露访问:\nkubectl port-forward service/grafana 3000:3000 -n monitoring 然后打开 http://localhost:3000 即可进入 grafana 的界面，初始用户名密码都是 admin，输入后会强制让改一下初始密码才允许进入。\n因为 kube-prometheus 为我们预配置了指标采集规则和 grafana 的 dashboard 展示配置，所以进入 grafana 界面后，点击左上角即可选择预配置好的监控面板:\n选择一些看下效果探索下吧:\n"
 },
 {
 	"uri": "https://k8s.imroc.io/security/cert/install-cert-manger/",
@@ -123,7 +123,7 @@
 	"title": "部署指南",
 	"tags": [],
 	"description": "",
-	"content": "  方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    安装 kubectl      "
+	"content": "  方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录     "
 },
 {
 	"uri": "https://k8s.imroc.io/ingress/",
@@ -291,7 +291,7 @@
 	"title": "安全指南",
 	"tags": [],
 	"description": "",
-	"content": "目录  用户管理    利用 CSR API 创建用户      集群权限控制    控制应用权限     控制用户权限      集群证书管理     "
+	"content": "目录  用户管理    利用 CSR API 创建用户      集群权限控制    控制应用权限     控制用户权限      集群证书管理    安装 cert-manager     使用 cert-manager 自动生成证书      "
 },
 {
 	"uri": "https://k8s.imroc.io/monitoring/dingtalk-alert/",
@@ -319,7 +319,7 @@
 	"title": "监控指南",
 	"tags": [],
 	"description": "",
-	"content": ""
+	"content": "由浅入深，平滑学习曲线让你快速掌握云原生监控系统的搭建与使用。\n 使用 kube-promethues 快速上手集群监控     企业微信告警     钉钉告警     "
 },
 {
 	"uri": "https://k8s.imroc.io/log/",
@@ -564,7 +564,7 @@
 	"title": "Namespace 卡在 Terminating",
 	"tags": [],
 	"description": "",
-	"content": "原因 删除 ns 后，一直卡在 Terminating 状态。通常是存在 finalizers，通过 kubectl get ns kube-node-lease -o yaml 可以看到是否有 finalizers:\n$ kubectl get ns -o yaml kube-node-lease apiVersion: v1 kind: Namespace metadata: annotations: openpitrix_runtime: runtime-9M5z8pAzL8ox creationTimestamp: \u0026#34;2019-11-11T06:09:09Z\u0026#34; deletionGracePeriodSeconds: 0 deletionTimestamp: \u0026#34;2020-03-17T02:25:02Z\u0026#34; finalizers: - finalizers.kubesphere.io/namespaces labels: kubesphere.io/workspace: system-workspace name: kube-node-lease ownerReferences: - apiVersion: tenant.kubesphere.io/v1alpha1 blockOwnerDeletion: true controller: true kind: Workspace name: system-workspace uid: d4310acd-1fdc-11ea-a370-a2c490b9ae47 resourceVersion: \u0026#34;1239449686\u0026#34; selfLink: /api/v1/namespaces/kube-node-lease uid: c63ce63a-0449-11ea-9b80-6aa4eb51927f spec: {} 此例是因为之前装过 kubesphere，然后卸载了，但没有清理 finalizers，将其删除就可以了。\n拓展 k8s 资源的 metadata 里如果存在 finalizers，那么该资源一般是由某应用创建的，或者是这个资源是此应用关心的。应用会在资源的 metadata 里的 finalizers 加了一个它自己可以识别的标识，这意味着这个资源被删除时需要由此应用来做删除前的清理，清理完了它需要将标识从该资源的 finalizers 中移除，然后才会最终彻底删除资源。比如 Rancher 创建的一些资源就会写入 finalizers 标识。\n如果应用被删除，而finalizer没清理，删除资源时就会一直卡在terminating，可以手动删除finalizer来解决。\n参考资料  Node Lease 的 Proposal: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md  "
+	"content": "原因 删除 ns 后，一直卡在 Terminating 状态。通常是存在 finalizers，通过 kubectl get ns xxx -o yaml 可以看到是否有 finalizers:\n$ kubectl get ns -o yaml kube-node-lease apiVersion: v1 kind: Namespace metadata: annotations: openpitrix_runtime: runtime-9M5z8pAzL8ox creationTimestamp: \u0026#34;2019-11-11T06:09:09Z\u0026#34; deletionGracePeriodSeconds: 0 deletionTimestamp: \u0026#34;2020-03-17T02:25:02Z\u0026#34; finalizers: - finalizers.kubesphere.io/namespaces labels: kubesphere.io/workspace: system-workspace name: kube-node-lease ownerReferences: - apiVersion: tenant.kubesphere.io/v1alpha1 blockOwnerDeletion: true controller: true kind: Workspace name: system-workspace uid: d4310acd-1fdc-11ea-a370-a2c490b9ae47 resourceVersion: \u0026#34;1239449686\u0026#34; selfLink: /api/v1/namespaces/kube-node-lease uid: c63ce63a-0449-11ea-9b80-6aa4eb51927f spec: {} 此例是因为之前装过 kubesphere，然后卸载了，但没有清理 finalizers，将其删除就可以了。\n拓展 k8s 资源的 metadata 里如果存在 finalizers，那么该资源一般是由某应用创建的，或者是这个资源是此应用关心的。应用会在资源的 metadata 里的 finalizers 加了一个它自己可以识别的标识，这意味着这个资源被删除时需要由此应用来做删除前的清理，清理完了它需要将标识从该资源的 finalizers 中移除，然后才会最终彻底删除资源。比如 Rancher 创建的一些资源就会写入 finalizers 标识。\n如果应用被删除，而finalizer没清理，删除资源时就会一直卡在terminating，可以手动删除finalizer来解决。\n参考资料  Node Lease 的 Proposal: https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md  "
 },
 {
 	"uri": "https://k8s.imroc.io/cluster/ingress/nginx/",
@@ -824,6 +824,13 @@
 	"tags": [],
 	"description": "",
 	"content": "k8s 支持 CSR API，通过创建 CertificateSigningRequest 资源就可以发起 CSR 请求，管理员审批通过之后 kube-controller-manager 就会为我们签发证书，确保 kube-controller-manager 配了根证书密钥对:\n--cluster-signing-cert-file=/var/lib/kubernetes/ca.pem --cluster-signing-key-file=/var/lib/kubernetes/ca-key.pem 创建步骤 我们用 cfssl 来创建 key 和 csr 文件，所以需要先安装 cfssl:\ncurl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl curl -L https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -o cfssljson curl -L https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -o cfssl-certinfo chmod +x cfssl cfssljson cfssl-certinfo sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/ 指定要创建的用户名:\nUSERNAME=\u0026#34;roc\u0026#34; 再创建 key 和 csr 文件:\ncat \u0026lt;\u0026lt;EOF | cfssl genkey - | cfssljson -bare ${USERNAME} { \u0026#34;CN\u0026#34;: \u0026#34;${USERNAME}\u0026#34;, \u0026#34;key\u0026#34;: { \u0026#34;algo\u0026#34;: \u0026#34;rsa\u0026#34;, \u0026#34;size\u0026#34;: 2048 } } EOF 生成以下文件:\nroc.csr roc-key.pem 创建 CertificateSigningRequest(发起 CSR 请求):\ncat \u0026lt;\u0026lt;EOF | kubectl apply -f - apiVersion: certificates.k8s.io/v1beta1 kind: CertificateSigningRequest metadata: name: ${USERNAME} spec: request: $(cat ${USERNAME}.csr | base64 | tr -d \u0026#39;\\n\u0026#39;) usages: - digital signature - key encipherment - client auth EOF 管理员审批 CSR 请求:\n# 查看 csr # kubectl get csr # 审批 csr kubectl certificate approve ${USERNAME} 获取证书:\nkubectl get csr ${USERNAME} -o jsonpath={.status.certificate} | base64 --decode \u0026gt; ${USERNAME}.pem 得到证书文件:\nroc.pem 至此，我们已经创建好了用户，用户的证书密钥对文件:\nroc.pem roc-key.pem 配置 kubeconfig # 增加 user kubectl config set-credentials ${USERNAME} --embed-certs=true --client-certificate=${USERNAME}.pem --client-key=${USERNAME}-key.pem # 如果还没配 cluster，可以通过下面命令配一下 kubectl config set-cluster \u0026lt;cluster\u0026gt; --server=\u0026lt;apiserver-url\u0026gt; --certificate-authority=\u0026lt;ca-cert-file\u0026gt; # 增加 context，绑定 cluster 和 user kubectl config set-context \u0026lt;context\u0026gt; --cluster=\u0026lt;cluster\u0026gt; --user=${USERNAME} # 使用刚增加的 context kubectl config use-context \u0026lt;context\u0026gt; 配置用户权限 我们可以用 RBAC 控制用户权限，参考 使用 RBAC 控制用户权限\n参考资料  Manage TLS Certificates in a Cluster: https://kubernetes.io/docs/tasks/tls/managing-tls-in-a-cluster/  "
+},
+{
+	"uri": "https://k8s.imroc.io/monitoring/alerting/",
+	"title": "告警",
+	"tags": [],
+	"description": "",
+	"content": "先将 alertmanager 配置文件 dump 下来:\nkubectl -n monitoring get secret alertmanager-main -o jsonpath=\u0026#39;{.data.alertmanager\\.yaml}\u0026#39; | base64 -d \u0026gt; alertmanager-main.yaml "
 },
 {
 	"uri": "https://k8s.imroc.io/trick/perf-in-container/",

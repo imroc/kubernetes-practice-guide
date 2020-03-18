@@ -3117,6 +3117,9 @@
 
             
           
+             
+            
+          
         
         </ul>
               
@@ -3612,7 +3615,7 @@
 
 
 <h2 id="原因">原因</h2>
-<p>删除 ns 后，一直卡在 Terminating 状态。通常是存在 finalizers，通过 <code>kubectl get ns kube-node-lease -o yaml</code> 可以看到是否有 finalizers:</p>
+<p>删除 ns 后，一直卡在 Terminating 状态。通常是存在 finalizers，通过 <code>kubectl get ns xxx -o yaml</code> 可以看到是否有 finalizers:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl get ns -o yaml kube-node-lease
 apiVersion: v1
 kind: Namespace
@@ -5720,6 +5723,11 @@ spec: <span style="color:#f92672">{}</span>
                     
 
                     
+            
+        
+                    
+                        
+            
             
         
                     

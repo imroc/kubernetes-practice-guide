@@ -573,7 +573,7 @@ conntrack -S 看到 insert_failed 数量在不断增加，也就是 conntrack �
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>https://k8s.imroc.io/troubleshooting/others/namespace-stuck-on-terminating/</guid>
-      <description>原因 删除 ns 后，一直卡在 Terminating 状态。通常是存在 finalizers，通过 kubectl get ns kube-node-lease -o yaml 可以看到是否有 finalizers:
+      <description>原因 删除 ns 后，一直卡在 Terminating 状态。通常是存在 finalizers，通过 kubectl get ns xxx -o yaml 可以看到是否有 finalizers:
 $ kubectl get ns -o yaml kube-node-lease apiVersion: v1 kind: Namespace metadata: annotations: openpitrix_runtime: runtime-9M5z8pAzL8ox creationTimestamp: &amp;#34;2019-11-11T06:09:09Z&amp;#34; deletionGracePeriodSeconds: 0 deletionTimestamp: &amp;#34;2020-03-17T02:25:02Z&amp;#34; finalizers: - finalizers.kubesphere.io/namespaces labels: kubesphere.io/workspace: system-workspace name: kube-node-lease ownerReferences: - apiVersion: tenant.kubesphere.io/v1alpha1 blockOwnerDeletion: true controller: true kind: Workspace name: system-workspace uid: d4310acd-1fdc-11ea-a370-a2c490b9ae47 resourceVersion: &amp;#34;1239449686&amp;#34; selfLink: /api/v1/namespaces/kube-node-lease uid: c63ce63a-0449-11ea-9b80-6aa4eb51927f spec: {} 此例是因为之前装过 kubesphere，然后卸载了，但没有清理 finalizers，将其删除就可以了。
 拓展 k8s 资源的 metadata 里如果存在 finalizers，那么该资源一般是由某应用创建的，或者是这个资源是此应用关心的。应用会在资源的 metadata 里的 finalizers 加了一个它自己可以识别的标识，这意味着这个资源被删除时需要由此应用来做删除前的清理，清理完了它需要将标识从该资源的 finalizers 中移除，然后才会最终彻底删除资源。比如 Rancher 创建的一些资源就会写入 finalizers 标识。</description>
     </item>
@@ -953,6 +953,16 @@ Jan 23 14:15:31 dc05 dockerd: time=&amp;#34;2019-01-23T14:15:31.</description>
 curl -L https://pkg.cfssl.org/R1.2/cfssl_linux-amd64 -o cfssl curl -L https://pkg.cfssl.org/R1.2/cfssljson_linux-amd64 -o cfssljson curl -L https://pkg.cfssl.org/R1.2/cfssl-certinfo_linux-amd64 -o cfssl-certinfo chmod +x cfssl cfssljson cfssl-certinfo sudo mv cfssl cfssljson cfssl-certinfo /usr/local/bin/ 指定要创建的用户名:
 USERNAME=&amp;#34;roc&amp;#34; 再创建 key 和 csr 文件:
 cat &amp;lt;&amp;lt;EOF | cfssl genkey - | cfssljson -bare ${USERNAME} { &amp;#34;CN&amp;#34;: &amp;#34;${USERNAME}&amp;#34;, &amp;#34;key&amp;#34;: { &amp;#34;algo&amp;#34;: &amp;#34;rsa&amp;#34;, &amp;#34;size&amp;#34;: 2048 } } EOF 生成以下文件:</description>
+    </item>
+    
+    <item>
+      <title>告警</title>
+      <link>https://k8s.imroc.io/monitoring/alerting/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/monitoring/alerting/</guid>
+      <description>先将 alertmanager 配置文件 dump 下来:
+kubectl -n monitoring get secret alertmanager-main -o jsonpath=&amp;#39;{.data.alertmanager\.yaml}&amp;#39; | base64 -d &amp;gt; alertmanager-main.yaml </description>
     </item>
     
     <item>

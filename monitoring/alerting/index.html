@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>Node NotReady</title>
+    <title>告警</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/troubleshooting/node/not-ready/">
+  <body class="" data-url="/monitoring/alerting/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -839,7 +839,7 @@
   
     
     <li data-nav-id="/troubleshooting/" title="排错指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1135,7 +1135,7 @@
   
     
     <li data-nav-id="/troubleshooting/node/" title="节点排错" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1226,7 +1226,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/node/not-ready/" title="Node NotReady" class="dd-item active">
+      <li data-nav-id="/troubleshooting/node/not-ready/" title="Node NotReady" class="dd-item ">
         <a href="/troubleshooting/node/not-ready/">
         Node NotReady
         <i class="fas fa-check read-icon"></i>
@@ -3035,7 +3035,7 @@
   
     
     <li data-nav-id="/monitoring/" title="监控指南" class="dd-item 
-        
+        parent
         
         
         ">
@@ -3468,7 +3468,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/node/not-ready/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/monitoring/alerting/" selected>简体中文</option>
                     
                   
               
@@ -3530,7 +3530,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/node/not-ready.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/monitoring/alerting.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3561,13 +3561,7 @@
             
           
           
-            
-            
-          
-          
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/node/'>节点排错</a> > Node NotReady
-          
-         
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/monitoring/'>监控指南</a> > 告警
           
          
           
@@ -3596,19 +3590,17 @@
           
             <h1>
               
-              Node NotReady
+              告警
             </h1>
           
 
         
 
 
-<div class="notices info">
-	<p>文档当前状态：TODO </p>
-</div>
 
-
-
+<p>先将 alertmanager 配置文件 dump 下来:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n monitoring get secret alertmanager-main -o jsonpath<span style="color:#f92672">=</span><span style="color:#e6db74">&#39;{.data.alertmanager\.yaml}&#39;</span> | base64 -d &gt; alertmanager-main.yaml
+</code></pre></div>
 
 <footer class="footline">
 	
@@ -3662,7 +3654,7 @@
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:80eb0e025686435eeaba3f8d27eea7e9")
+  console.log("gitalk id:d0e691b6c7284e839e54d7b0543a96d3")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3670,9 +3662,9 @@
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: 'Node NotReady',
+      title: '告警',
       createIssueManually: false,
-      id: '80eb0e025686435eeaba3f8d27eea7e9',
+      id: 'd0e691b6c7284e839e54d7b0543a96d3',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -4167,7 +4159,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -4182,9 +4173,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4362,7 +4350,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -4375,9 +4362,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4427,7 +4411,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -4443,9 +4426,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -5629,6 +5609,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -5641,6 +5622,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5896,10 +5880,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="/troubleshooting/node/no-space-left-on-device/" title="no space left on device"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/trick/wildcard-domain-forward/" title="泛域名动态转发 Service"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/troubleshooting/node/kernel-solft-lockup/" title="soft lockup (内核软死锁)" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/monitoring/kube-prometheus-quickstart/" title="使用 kube-promethues 快速上手集群监控" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

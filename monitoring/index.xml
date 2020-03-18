@@ -41,5 +41,15 @@
 github: https://github.com/timonwong/prometheus-webhook-dingtalk</description>
     </item>
     
+    <item>
+      <title>告警</title>
+      <link>https://k8s.imroc.io/monitoring/alerting/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/monitoring/alerting/</guid>
+      <description>先将 alertmanager 配置文件 dump 下来:
+kubectl -n monitoring get secret alertmanager-main -o jsonpath=&amp;#39;{.data.alertmanager\.yaml}&amp;#39; | base64 -d &amp;gt; alertmanager-main.yaml </description>
+    </item>
+    
   </channel>
 </rss>

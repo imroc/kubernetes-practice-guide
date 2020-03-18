@@ -521,6 +521,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/monitoring/alerting/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/trick/perf-in-container/</loc>
   </url>
   

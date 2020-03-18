@@ -3117,6 +3117,9 @@
 
             
           
+             
+            
+          
         
         </ul>
               
@@ -3624,7 +3627,7 @@ kubectl create -f manifests/setup
 <span style="color:#66d9ef">until</span> kubectl get servicemonitors --all-namespaces ; <span style="color:#66d9ef">do</span> date; sleep 1; echo <span style="color:#e6db74">&#34;&#34;</span>; <span style="color:#66d9ef">done</span>
 kubectl create -f manifests/
 </code></pre></div><h2 id="进入-grafana-界面">进入 grafana 界面</h2>
-<p>grafana service 3000 端口是 grafana ui 界面，用 <code>kubectl port-forward</code> 端口转发来暴露访问:</p>
+<p>你可以通过将 grafana 的 service 类型改为 NodePort 或 LoadBalancer，也可以用 Ingress 来暴露 grafana 的界面, 如果你本机能通过 kubectl 访问集群，那可以直接通过 <code>kubectl port-forward</code> 端口转发来暴露访问:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl port-forward service/grafana 3000:3000 -n monitoring
 </code></pre></div><p>然后打开 http://localhost:3000 即可进入 grafana 的界面，初始用户名密码都是 admin，输入后会强制让改一下初始密码才允许进入。</p>
 <p>因为 kube-prometheus 为我们预配置了指标采集规则和 grafana 的 dashboard 展示配置，所以进入 grafana 界面后，点击左上角即可选择预配置好的监控面板:</p>
@@ -5698,6 +5701,11 @@ kubectl create -f manifests/
                     
 
                     
+            
+        
+                    
+                        
+            
             
         
                     
