@@ -1,5 +1,6 @@
 ---
 title: "Service 不通"
+state: "Alpha"
 ---
 
 ## 集群 dns 故障
