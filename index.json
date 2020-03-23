@@ -123,7 +123,7 @@
 	"title": "部署指南",
 	"tags": [],
 	"description": "",
-	"content": "  方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    Pod Terminating 慢     Pod 一直处于 ContainerCreating 或 Waiting 状态     Pod 一直处于 Error 状态     Pod 一直处于 ImageInspectError 状态     Pod 一直处于 ImagePullBackOff 状态     Pod 一直处于 Pending 状态     Pod 一直处于 Terminating 状态     Pod 一直处于 Unknown 状态     Pod 健康检查失败     Pod 处于 CrashLoopBackOff 状态     容器进程主动退出      "
+	"content": "  方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    安装 kubectl      "
 },
 {
 	"uri": "https://k8s.imroc.io/ingress/",
