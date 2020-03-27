@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>使用 oom-guard 在用户态处理 cgroup OOM</title>
+    <title>大规模场景下 Prometheus 的优化手段</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/avoid/handle-cgroup-oom-in-userspace-with-oom-guard/">
+  <body class="" data-url="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -1861,7 +1861,7 @@
   
     
     <li data-nav-id="/avoid/" title="避坑指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1975,7 +1975,7 @@
  
   
     
-      <li data-nav-id="/avoid/handle-cgroup-oom-in-userspace-with-oom-guard/" title="使用 oom-guard 在用户态处理 cgroup OOM" class="dd-item active">
+      <li data-nav-id="/avoid/handle-cgroup-oom-in-userspace-with-oom-guard/" title="使用 oom-guard 在用户态处理 cgroup OOM" class="dd-item ">
         <a href="/avoid/handle-cgroup-oom-in-userspace-with-oom-guard/">
         使用 oom-guard 在用户态处理 cgroup OOM
         <i class="fas fa-check read-icon"></i>
@@ -3035,7 +3035,7 @@
   
     
     <li data-nav-id="/monitoring/" title="监控指南" class="dd-item 
-        
+        parent
         
         
         ">
@@ -3129,7 +3129,7 @@
   
     
     <li data-nav-id="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/" title="打造云原生大型分布式监控系统" class="dd-item 
-        
+        parent
         
         
         ">
@@ -3157,7 +3157,7 @@
  
   
     
-      <li data-nav-id="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale/" title="大规模场景下 Prometheus 的优化手段" class="dd-item ">
+      <li data-nav-id="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale/" title="大规模场景下 Prometheus 的优化手段" class="dd-item active">
         <a href="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale/">
         大规模场景下 Prometheus 的优化手段
         <i class="fas fa-check read-icon"></i>
@@ -3529,7 +3529,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/avoid/handle-cgroup-oom-in-userspace-with-oom-guard/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale/" selected>简体中文</option>
                     
                   
               
@@ -3591,7 +3591,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/avoid/handle-cgroup-oom-in-userspace-with-oom-guard.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3622,7 +3622,13 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/avoid/'>避坑指南</a> > 使用 oom-guard 在用户态处理 cgroup OOM
+            
+            
+          
+          
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/monitoring/'>监控指南</a> > <a href='/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/'>打造云原生大型分布式监控系统</a> > 大规模场景下 Prometheus 的优化手段
+          
+         
           
          
           
@@ -3637,23 +3643,15 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#背景">背景</a></li>
-    <li><a href="#原理">原理</a>
-      <ul>
-        <li><a href="#threshold-notify">threshold notify</a></li>
-        <li><a href="#达到阈值后的处理策略">达到阈值后的处理策略</a></li>
-        <li><a href="#事件上报">事件上报</a></li>
-      </ul>
-    </li>
-    <li><a href="#使用方法">使用方法</a>
-      <ul>
-        <li><a href="#部署">部署</a></li>
-        <li><a href="#查看-oom-guard-日志">查看 oom-guard 日志</a></li>
-        <li><a href="#查看-oom-相关事件">查看 oom 相关事件</a></li>
-        <li><a href="#卸载">卸载</a></li>
-      </ul>
-    </li>
-    <li><a href="#关于开源">关于开源</a></li>
+    <li><a href="#概述">概述</a></li>
+    <li><a href="#大规模场景下-prometheus-的痛点">大规模场景下 Prometheus 的痛点</a></li>
+    <li><a href="#从服务维度拆分-prometheus">从服务维度拆分 Prometheus</a></li>
+    <li><a href="#对超大规模的服务做分片">对超大规模的服务做分片</a></li>
+    <li><a href="#拆分引入的新问题">拆分引入的新问题</a></li>
+    <li><a href="#集中数据存储">集中数据存储</a></li>
+    <li><a href="#prometheus-联邦">Prometheus 联邦</a></li>
+    <li><a href="#prometheus-高可用">Prometheus 高可用</a></li>
+    <li><a href="#总结">总结</a></li>
   </ul>
 </nav>
     </div>
@@ -3671,7 +3669,7 @@
           
             <h1>
               
-              使用 oom-guard 在用户态处理 cgroup OOM
+              大规模场景下 Prometheus 的优化手段
             </h1>
           
 
@@ -3679,168 +3677,77 @@
 
 
 
-<h2 id="背景">背景</h2>
-<p>由于 linux 内核对 cgroup OOM 的处理，存在很多 bug，经常有由于频繁 cgroup OOM 导致节点故障(卡死， 重启， 进程异常但无法杀死)，于是 TKE 团队开发了 <code>oom-guard</code>，在用户态处理 cgroup OOM 规避了内核 bug。</p>
-<h2 id="原理">原理</h2>
-<p>核心思想是在发生内核 cgroup OOM kill 之前，在用户空间杀掉超限的容器， 减少走到内核 cgroup 内存回收失败后的代码分支从而触发各种内核故障的机会。</p>
-<h3 id="threshold-notify">threshold notify</h3>
-<p>参考文档: <a href="https://lwn.net/Articles/529927/">https://lwn.net/Articles/529927/</a></p>
-<p><code>oom-guard</code> 会给 memory cgroup 设置 threshold notify， 接受内核的通知。</p>
-<p>以一个例子来说明阀值计算通知原理: 一个 pod 设置的 memory limit 是 1000M， <code>oom-guard</code> 会根据配置参数计算出 margin:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">margin = 1000M * margin_ratio = 20M // 缺省margin_ratio是0.02
-</code></pre></div><p>margin 最小不小于 mim_margin(缺省1M)， 最大不大于 max_margin(缺省为30M)。如果超出范围，则取 mim_margin 或 max_margin。计算 threshold = limit - margin ，也就是 1000M - 20M = 980M，把 980M 作为阈值设置给内核。当这个 pod 的内存使用量达到 980M 时， <code>oom-guard</code> 会收到内核的通知。</p>
-<p>在触发阈值之前，<code>oom-gurad</code> 会先通过 <code>memory.force_empty</code> 触发相关 cgroup 的内存回收。 另外，如果触发阈值时，相关 cgroup 的 memory.stat 显示还有较多 cache， 则不会触发后续处理策略，这样当 cgroup 内存达到 limit 时，会内核会触发内存回收。 这个策略也会造成部分容器内存增长太快时，还是会触发内核 cgroup OOM</p>
-<h3 id="达到阈值后的处理策略">达到阈值后的处理策略</h3>
-<p>通过 <code>--policy</code> 参数来控制处理策略。目前有三个策略， 缺省策略是 process。</p>
-<ul>
-<li><code>process</code>: 采用跟内核cgroup OOM killer相同的策略，在该cgroup内部，选择一个 oom_score 得分最高的进程杀掉。 通过 oom-guard 发送 SIGKILL 来杀掉进程</li>
-<li><code>container</code>: 在该cgroup下选择一个 docker 容器，杀掉整个容器</li>
-<li><code>noop</code>: 只记录日志，并不采取任何措施</li>
-</ul>
-<h3 id="事件上报">事件上报</h3>
-<p>通过 webhook reporter 上报 k8s event，便于分析统计，使用<code>kubectl get event</code> 可以看到:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">LAST SEEN   FIRST SEEN   COUNT     NAME                            KIND      SUBOBJECT                  TYPE      REASON                   SOURCE                    MESSAGE
-14s         14s          1         172.21.16.23.158b732d352bcc31   Node                                 Warning   OomGuardKillContainer    oom-guard, 172.21.16.23   {&#34;hostname&#34;:&#34;172.21.16.23&#34;,&#34;timestamp&#34;:&#34;2019-03-13T07:12:14.561650646Z&#34;,&#34;oomcgroup&#34;:&#34;/sys/fs/cgroup/memory/kubepods/burstable/pod3d6329e5-455f-11e9-a7e5-06925242d7ea/223d4795cc3b33e28e702f72e0497e1153c4a809de6b4363f27acc12a6781cdb&#34;,&#34;proccgroup&#34;:&#34;/sys/fs/cgroup/memory/kubepods/burstable/pod3d6329e5-455f-11e9-a7e5-06925242d7ea/223d4795cc3b33e28e702f72e0497e1153c4a809de6b4363f27acc12a6781cdb&#34;,&#34;threshold&#34;:205520896,&#34;usage&#34;:206483456,&#34;killed&#34;:&#34;16481(fakeOOM) &#34;,&#34;stats&#34;:&#34;cache 20480|rss 205938688|rss_huge 199229440|mapped_file 0|dirty 0|writeback 0|pgpgin 1842|pgpgout 104|pgfault 2059|pgmajfault 0|inactive_anon 8192|active_anon 203816960|inactive_file 0|active_file 0|unevictable 0|hierarchical_memory_limit 209715200|total_cache 20480|total_rss 205938688|total_rss_huge 199229440|total_mapped_file 0|total_dirty 0|total_writeback 0|total_pgpgin 1842|total_pgpgout 104|total_pgfault 2059|total_pgmajfault 0|total_inactive_anon 8192|total_active_anon 203816960|total_inactive_file 0|total_active_file 0|total_unevictable 0|&#34;,&#34;policy&#34;:&#34;Container&#34;}
-</code></pre></div><h2 id="使用方法">使用方法</h2>
-<h3 id="部署">部署</h3>
-<p>保存部署 yaml: <code>oom-guard.yaml</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
-<span style="color:#66d9ef">kind</span>: ServiceAccount
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: oomguard
-  <span style="color:#66d9ef">namespace</span>: kube-system
----
-<span style="color:#66d9ef">apiVersion</span>: rbac.authorization.k8s.io/v1
-<span style="color:#66d9ef">kind</span>: ClusterRoleBinding
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: system:oomguard
-<span style="color:#66d9ef">roleRef</span>:
-  <span style="color:#66d9ef">apiGroup</span>: rbac.authorization.k8s.io
-  <span style="color:#66d9ef">kind</span>: ClusterRole
-  <span style="color:#66d9ef">name</span>: cluster-admin
-<span style="color:#66d9ef">subjects</span>:
-  - <span style="color:#66d9ef">kind</span>: ServiceAccount
-    <span style="color:#66d9ef">name</span>: oomguard
-    <span style="color:#66d9ef">namespace</span>: kube-system
----
-<span style="color:#66d9ef">apiVersion</span>: apps/v1
-<span style="color:#66d9ef">kind</span>: DaemonSet
-<span style="color:#66d9ef">metadata</span>:
-  <span style="color:#66d9ef">name</span>: oom-guard
-  <span style="color:#66d9ef">namespace</span>: kube-system
-  <span style="color:#66d9ef">labels</span>:
-    <span style="color:#66d9ef">app</span>: oom-guard
-<span style="color:#66d9ef">spec</span>:
-  <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">matchLabels</span>:
-      <span style="color:#66d9ef">app</span>: oom-guard
-  <span style="color:#66d9ef">template</span>:
-    <span style="color:#66d9ef">metadata</span>:
-      <span style="color:#66d9ef">annotations</span>:
-        <span style="color:#66d9ef">scheduler.alpha.kubernetes.io/critical-pod</span>: <span style="color:#e6db74">&#34;&#34;</span>
-      <span style="color:#66d9ef">labels</span>:
-        <span style="color:#66d9ef">app</span>: oom-guard
-    <span style="color:#66d9ef">spec</span>:
-      <span style="color:#66d9ef">serviceAccountName</span>: oomguard
-      <span style="color:#66d9ef">hostPID</span>: <span style="color:#66d9ef">true</span>
-      <span style="color:#66d9ef">hostNetwork</span>: <span style="color:#66d9ef">true</span>
-      <span style="color:#66d9ef">dnsPolicy</span>: ClusterFirst
-      <span style="color:#66d9ef">containers</span>:
-      - <span style="color:#66d9ef">name</span>: k8s-event-writer
-        <span style="color:#66d9ef">image</span>: ccr.ccs.tencentyun.com/paas/k8s-event-writer:v1<span style="color:#ae81ff">.6</span>
-        <span style="color:#66d9ef">resources</span>:
-          <span style="color:#66d9ef">limits</span>:
-            <span style="color:#66d9ef">cpu</span>: 10m
-            <span style="color:#66d9ef">memory</span>: 60Mi
-          <span style="color:#66d9ef">requests</span>:
-            <span style="color:#66d9ef">cpu</span>: 10m
-            <span style="color:#66d9ef">memory</span>: 30Mi
-        <span style="color:#66d9ef">args</span>:
-        - --logtostderr
-        - --unix-socket=<span style="color:#66d9ef">true</span>
-        <span style="color:#66d9ef">env</span>:
-          - <span style="color:#66d9ef">name</span>: NODE_NAME
-            <span style="color:#66d9ef">valueFrom</span>:
-              <span style="color:#66d9ef">fieldRef</span>:
-                <span style="color:#66d9ef">fieldPath</span>: status.hostIP
-        <span style="color:#66d9ef">volumeMounts</span>:
-        - <span style="color:#66d9ef">name</span>: unix
-          <span style="color:#66d9ef">mountPath</span>: /unix
-      - <span style="color:#66d9ef">name</span>: oomguard
-        <span style="color:#66d9ef">image</span>: ccr.ccs.tencentyun.com/paas/oomguard:nosoft-v2
-        <span style="color:#66d9ef">imagePullPolicy</span>: Always
-        <span style="color:#66d9ef">securityContext</span>:
-          <span style="color:#66d9ef">privileged</span>: <span style="color:#66d9ef">true</span>
-        <span style="color:#66d9ef">resources</span>:
-          <span style="color:#66d9ef">limits</span>:
-            <span style="color:#66d9ef">cpu</span>: 10m
-            <span style="color:#66d9ef">memory</span>: 60Mi
-          <span style="color:#66d9ef">requests</span>:
-            <span style="color:#66d9ef">cpu</span>: 10m
-            <span style="color:#66d9ef">memory</span>: 30Mi
-        <span style="color:#66d9ef">volumeMounts</span>:
-        - <span style="color:#66d9ef">name</span>: cgroupdir
-          <span style="color:#66d9ef">mountPath</span>: /sys/fs/cgroup/memory
-        - <span style="color:#66d9ef">name</span>: unix
-          <span style="color:#66d9ef">mountPath</span>: /unix
-        - <span style="color:#66d9ef">name</span>: kmsg
-          <span style="color:#66d9ef">mountPath</span>: /dev/kmsg
-          <span style="color:#66d9ef">readOnly</span>: <span style="color:#66d9ef">true</span>
-        <span style="color:#66d9ef">command</span>: [<span style="color:#e6db74">&#34;/oom-guard&#34;</span>]
-        <span style="color:#66d9ef">args</span>: 
-        - --v=<span style="color:#ae81ff">2</span>
-        - --logtostderr
-        - --root=/sys/fs/cgroup/memory
-        - --walkIntervalSeconds=<span style="color:#ae81ff">277</span>
-        - --inotifyResetSeconds=<span style="color:#ae81ff">701</span>
-        - --port=<span style="color:#ae81ff">0</span>
-        - --margin-ratio=<span style="color:#ae81ff">0.02</span>
-        - --min-margin=<span style="color:#ae81ff">1</span>
-        - --max-margin=<span style="color:#ae81ff">30</span>
-        - --guard-ms=<span style="color:#ae81ff">50</span>
-        - --policy=container
-        - --openSoftLimit=<span style="color:#66d9ef">false</span>
-        - --webhook-url=http://localhost/message
-        <span style="color:#66d9ef">env</span>:
-          - <span style="color:#66d9ef">name</span>: NODE_NAME
-            <span style="color:#66d9ef">valueFrom</span>:
-              <span style="color:#66d9ef">fieldRef</span>:
-                <span style="color:#66d9ef">fieldPath</span>: status.hostIP
-      <span style="color:#66d9ef">volumes</span>:
-      - <span style="color:#66d9ef">name</span>: cgroupdir
-        <span style="color:#66d9ef">hostPath</span>:
-          <span style="color:#66d9ef">path</span>: /sys/fs/cgroup/memory
-      - <span style="color:#66d9ef">name</span>: unix
-        <span style="color:#66d9ef">emptyDir</span>: {}
-      - <span style="color:#66d9ef">name</span>: kmsg
-        <span style="color:#66d9ef">hostPath</span>:
-          <span style="color:#66d9ef">path</span>: /dev/kmsg
-</code></pre></div><p>一键部署:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl apply -f oom-guard.yaml
-</code></pre></div><p>检查是否部署成功：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl -n kube-system get ds oom-guard
-NAME        DESIRED   CURRENT   READY     UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-oom-guard   <span style="color:#ae81ff">2</span>         <span style="color:#ae81ff">2</span>         <span style="color:#ae81ff">2</span>         <span style="color:#ae81ff">2</span>            <span style="color:#ae81ff">2</span>           &lt;none&gt;          6m
-</code></pre></div><p>其中 <strong>AVAILABLE</strong> 数量跟节点数一致，说明所有节点都已经成功运行了 <code>oom-guard</code>。</p>
-<h3 id="查看-oom-guard-日志">查看 oom-guard 日志</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n kube-system logs oom-guard-xxxxx oomguard
-</code></pre></div><h3 id="查看-oom-相关事件">查看 oom 相关事件</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl get events |grep CgroupOOM
-kubectl get events |grep SystemOOM
-kubectl get events |grep OomGuardKillContainer
-kubectl get events |grep OomGuardKillProcess
-</code></pre></div><h3 id="卸载">卸载</h3>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl delete -f oom-guard.yaml
-</code></pre></div><p>这个操作可能有点慢，如果一直不返回 (有节点 NotReady 时可能会卡住)，<code>ctrl+C</code> 终止，然后执行下面的脚本:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#66d9ef">for</span> pod in <span style="color:#e6db74">`</span>kubectl get pod -n kube-system | grep oom-guard | awk <span style="color:#e6db74">&#39;{print $1}&#39;</span><span style="color:#e6db74">`</span>
-<span style="color:#66d9ef">do</span>
- kubectl delete pod $pod -n kube-system --grace-period<span style="color:#f92672">=</span><span style="color:#ae81ff">0</span> --force
-<span style="color:#66d9ef">done</span>
-</code></pre></div><p>检查删除操作是否成功</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl -n kube-system get ds oom-guard
-</code></pre></div><p>提示 <code>...not found</code> 就说明删除成功了</p>
-<h2 id="关于开源">关于开源</h2>
-<p>当前 <code>oom-gaurd</code> 暂未开源，正在做大量生产试验，后面大量反馈效果统计比较好的时候会考虑开源出来。</p>
+<h2 id="概述">概述</h2>
+<p>Prometheus 几乎已成为监控领域的事实标准，它自带高效的时序数据库存储，可以让单台 Prometheus 能够高效的处理大量的数据，还有友好并且强大的 PromQL 语法，可以用来灵活的查询各种监控数据以及配置告警规则，同时它的 pull 模型指标采集方式被广泛采纳，非常多的应用都实现了 Prometheus 的 metrics 接口以暴露自身各项数据指标让 Prometheus 去采集，很多没有适配的应用也会有第三方 exporter 帮它去适配 Prometheus，所以监控系统我们通常首选用 Prometheus，本系列文章也将基于 Prometheus 来打造云原生环境下的大型分布式监控系统。</p>
+<h2 id="大规模场景下-prometheus-的痛点">大规模场景下 Prometheus 的痛点</h2>
+<p>Prometheus 本身只支持单机部署，没有自带支持集群部署，也就不支持高可用以及水平扩容，在大规模场景下，最让人关心的问题是它的存储空间也受限于单机磁盘容量，磁盘容量决定了单个 Prometheus 所能存储的数据量，数据量大小又取决于被采集服务的指标数量、服务数量、采集速率以及数据过期时间。在数据量大的情况下，我们可能就需要做很多取舍，比如丢弃不重要的指标、降低采集速率、设置较短的数据过期时间(默认只保留15天的数据，看不到比较久远的监控数据)。</p>
+<p>这些痛点实际也是可以通过一些优化手段来改善的，下面我们来细讲一下。</p>
+<h2 id="从服务维度拆分-prometheus">从服务维度拆分 Prometheus</h2>
+<p>Prometheus 主张根据功能或服务维度进行拆分，即如果要采集的服务比较多，一个 Prometheus 实例就配置成仅采集和存储某一个或某一部分服务的指标，这样根据要采集的服务将 Prometheus 拆分成多个实例分别去采集，也能一定程度上达到水平扩容的目的。</p>
+<p><img src="https://imroc.io/assets/blog/prometheus-divide.png" alt=""></p>
+<p>通常这样的扩容方式已经能满足大部分场景的需求了，毕竟单机 Prometheus 就能采集和处理很多数据了，很少有 Prometheus 撑不住单个服务的场景。不过在超大规模集群下，有些单个服务的体量也很大，就需要进一步拆分了，我们下面来继续讲下如何再拆分。</p>
+<h2 id="对超大规模的服务做分片">对超大规模的服务做分片</h2>
+<p>想象一下，如果集群节点数量达到上千甚至几千的规模，对于一些节点级服务暴露的指标，比如 kubelet 内置的 cadvisor 暴露的容器相关的指标，又或者部署的 DeamonSet <code>node-exporter</code> 暴露的节点相关的指标，在集群规模大的情况下，它们这种单个服务背后的指标数据体量就非常大；还有一些用户量超大的业务，单个服务的 pod 副本数就可能过千，这种服务背后的指标数据也非常大，当然这是最罕见的场景，对于绝大多数的人来说这种场景都只敢 YY 一下，实际很少有单个服务就达到这么大规模的业务。</p>
+<p>针对上面这些大规模场景，一个 Prometheus 实例可能连这单个服务的采集任务都扛不住。Prometheus 需要向这个服务所有后端实例发请求采集数据，由于后端实例数量规模太大，采集并发量就会很高，一方面对节点的带宽、CPU、磁盘 IO 都有一定的压力，另一方面 Prometheus 使用的磁盘空间有限，采集的数据量过大很容易就将磁盘塞满了，通常要做一些取舍才能将数据量控制在一定范围，但这种取舍也会降低数据完整和精确程度，不推荐这样做。</p>
+<p>那么如何优化呢？我们可以给这种大规模类型的服务做一下分片(Sharding)，将其拆分成多个 group，让一个 Prometheus 实例仅采集这个服务背后的某一个 group 的数据，这样就可以将这个大体量服务的监控数据拆分到多个 Prometheus 实例上。</p>
+<p><img src="https://imroc.io/assets/blog/prometheus-sharding.png" alt=""></p>
+<p>如何将一个服务拆成多个 group 呢？下面介绍两种方案，以对 kubelet cadvisor 数据做分片为例。</p>
+<p>第一，我们可以不用 Kubernetes 的服务发现，自行实现一下 sharding 算法，比如针对节点级的服务，可以将某个节点 shard 到某个 group 里，然后再将其注册到 Prometheus 所支持的服务发现注册中心，推荐 consul，最后在 Prometheus 配置文件加上 <a href="https://prometheus.io/docs/prometheus/latest/configuration/configuration/#consul_sd_config">consul_sd_config</a> 的配置，指定每个 Prometheus 实例要采集的 group。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  - <span style="color:#66d9ef">job_name</span>: <span style="color:#e6db74">&#39;cadvisor-1&#39;</span>
+    <span style="color:#66d9ef">consul_sd_configs</span>:
+      - <span style="color:#66d9ef">server</span>: <span style="color:#ae81ff">10.0.0.3</span>:<span style="color:#ae81ff">8500</span>
+        <span style="color:#66d9ef">services</span>:
+          - cadvisor<span style="color:#ae81ff">-1</span> <span style="color:#75715e"># This is the 2nd slave</span>
+</code></pre></div><p>在未来，你甚至可以直接利用 Kubernetes 的 <a href="https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/">EndpointSlice</a> 特性来做服务发现和分片处理，在超大规模服务场景下就可以不需要其它的服务发现和分片机制。不过暂时此特性还不够成熟，没有默认启用，不推荐用(当前 Kubernentes 最新版本为 1.18)。</p>
+<p>第二，用 Kubernetes 的 node 服务发现，再利用 Prometheus relabel 配置的 hashmod 来对 node 做分片，每个 Prometheus 实例仅抓其中一个分片中的数据:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  - <span style="color:#66d9ef">job_name</span>: <span style="color:#e6db74">&#39;cadvisor-1&#39;</span>
+    <span style="color:#66d9ef">metrics_path</span>: /metrics/cadvisor
+    <span style="color:#66d9ef">scheme</span>: https
+
+    <span style="color:#75715e"># 请求 kubelet metrics 接口也需要认证和授权，通常会用 webhook 方式让 apiserver 代理进行 RBAC 校验，所以还是用 ServiceAccount 的 token</span>
+    <span style="color:#66d9ef">bearer_token_file</span>: /var/run/secrets/kubernetes.io/serviceaccount/token
+
+    <span style="color:#66d9ef">kubernetes_sd_configs</span>:
+    - <span style="color:#66d9ef">role</span>: node
+
+    <span style="color:#75715e"># 通常不校验 kubelet 的 server 证书，避免报 x509: certificate signed by unknown authority</span>
+    <span style="color:#66d9ef">tls_config</span>:
+      <span style="color:#66d9ef">insecure_skip_verify</span>: <span style="color:#66d9ef">true</span>
+
+    <span style="color:#66d9ef">relabel_configs</span>:
+    - <span style="color:#66d9ef">source_labels</span>: [__address__]
+      <span style="color:#66d9ef">modulus</span>:       <span style="color:#ae81ff">4</span>    <span style="color:#75715e"># 将节点分片成 4 个 group</span>
+      <span style="color:#66d9ef">target_label</span>:  __tmp_hash
+      <span style="color:#66d9ef">action</span>:        hashmod
+    - <span style="color:#66d9ef">source_labels</span>: [__tmp_hash]
+      <span style="color:#66d9ef">regex</span>:         ^<span style="color:#ae81ff">1</span>$  <span style="color:#75715e"># 只抓第 2 个 group 中节点的数据(序号 0 为第 1 个 group)</span>
+      <span style="color:#66d9ef">action</span>:        keep
+</code></pre></div><h2 id="拆分引入的新问题">拆分引入的新问题</h2>
+<p>前面我们通过不通层面对 Prometheus 进行了拆分部署，一方面使得 Prometheus 能够实现水平扩容，另一方面也加剧了监控数据落盘的分散程度，使用 Grafana 查询监控数据时我们也需要添加许多数据源，而且不同数据源之间的数据还不能聚合查询，监控页面也看不到全局的视图，造成查询混乱的局面。</p>
+<p><img src="https://imroc.io/assets/blog/prometheus-chaos.png" alt=""></p>
+<p>要解决这个问题，我们可以从下面的两方面入手，任选其中一种方案。</p>
+<h2 id="集中数据存储">集中数据存储</h2>
+<p>我们可以让 Prometheus 不负责存储，仅采集数据并通过 remote write 方式写入远程存储的 adapter，远程存储使用 OpenTSDB 或 InfluxDB 这些支持集群部署的时序数据库，Prometheus 配置:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">  <span style="color:#66d9ef">remote_write</span>:
+  - <span style="color:#66d9ef">url</span>: http://<span style="color:#ae81ff">10.0.0.2</span>:<span style="color:#ae81ff">8888</span>/write
+</code></pre></div><p>然后 Grafana 添加我们使用的时序数据库作为数据源来查询监控数据来展示，架构图:</p>
+<p><img src="https://imroc.io/assets/blog/prometheus-remotewirte.png" alt=""></p>
+<p>这种方式相当于更换了存储引擎，由其它支持存储水平扩容的时序数据库来存储庞大的数据量，这样我们就可以将数据集中到一起。OpenTSDB 支持 HBase, BigTable 作为存储后端，InfluxDB 企业版支持集群部署和水平扩容(开源版不支持)。不过这样的话，我们就无法使用友好且强大的 PromQL 来查询监控数据了，必须使用我们存储数据的时序数据库所支持的语法来查询。</p>
+<h2 id="prometheus-联邦">Prometheus 联邦</h2>
+<p>除了上面更换存储引擎的方式，还可以将 Prometheus 进行联邦部署。</p>
+<p><img src="https://imroc.io/assets/blog/prometheus-federation.png" alt=""></p>
+<p>简单来说，就是将多个 Prometheus 实例采集的数据再用另一个 Prometheus 采集汇总到一起，这样也意味着需要消耗更多的资源。通常我们只把需要聚合的数据或者需要在一个地方展示的数据用这种方式采集汇总到一起，比如 Kubernetes 节点数过多，cadvisor 的数据分散在多个 Prometheus 实例上，我们就可以用这种方式将 cadvisor 暴露的容器指标汇总起来，以便于在一个地方就能查询到集群中任意一个容器的监控数据或者某个服务背后所有容器的监控数据的聚合汇总以及配置告警；又或者多个服务有关联，比如通常应用只暴露了它应用相关的指标，但它的资源使用情况(比如 cpu 和 内存) 由 cadvisor 来感知和暴露，这两部分指标由不同的 Prometheus 实例所采集，这时我们也可以用这种方式将数据汇总，在一个地方展示和配置告警。</p>
+<p>更多说明和配置示例请参考官方文档: <a href="https://prometheus.io/docs/prometheus/latest/federation/">https://prometheus.io/docs/prometheus/latest/federation/</a></p>
+<h2 id="prometheus-高可用">Prometheus 高可用</h2>
+<p>虽然上面我们通过一些列操作将 Prometheus 进行了分布式改造，但并没有解决 Prometheus 本身的高可用问题，即如果其中一个实例挂了，数据的查询和完整性都将受到影响。</p>
+<p>我们可以将所有 Prometheus 实例都使用两个相同副本，分别挂载数据盘，它们都采集相同的服务，所以它们的数据是一致的，查询它们之中任意一个都可以，所以可以在它们前面再挂一层负载均衡，所有查询都经过这个负载均衡分流到其中一台 Prometheus，如果其中一台挂掉就从负载列表里踢掉不再转发。</p>
+<p>这里的负载均衡可以根据实际环境选择合适的方案，可以用 Nginx 或 HAProxy，在 Kubernetes 环境，通常使用 Kubernentes 的 Service，由 kube-proxy 生成的 iptables/ipvs 规则转发，如果使用 Istio，还可以用 VirtualService，由 envoy sidecar 去转发。</p>
+<p><img src="https://imroc.io/assets/blog/prometheus-ha.png" alt=""></p>
+<p>这样就实现了 Prometheus 的高可用，简单起见，上面的图仅展示单个 Prometheus 的高可用，当你可以将其拓展，代入应用到上面其它的优化手段中，实现整体的高可用。</p>
+<h2 id="总结">总结</h2>
+<p>通过本文一系列对 Prometheus 的优化手段，我们在一定程度上解决了单机 Prometheus 在大规模场景下的痛点，但操作和运维复杂度比较高，并且不能够很好的支持数据的长期存储(long term storage)。对于一些时间比较久远的监控数据，我们通常查看的频率很低，但也希望能够低成本的保留足够长的时间，数据如果全部落盘到磁盘成本是很高的，并且容量有限，即便利用水平扩容可以增加存储容量，但同时也增大了资源成本，不可能无限扩容，所以需要设置一个数据过期策略，也就会丢失时间比较久远的监控数据。</p>
+<p>对于这种不常用的冷数据，最理想的方式就是存到廉价的对象存储中，等需要查询的时候能够自动加载出来。Thanos 可以帮我们解决这些问题，它完全兼容 Prometheus API，提供统一查询聚合分布式部署的 Prometheus 数据的能力，同时也支持数据长期存储到各种对象存储(无限存储能力)以及降低采样率来加速大时间范围的数据查询。</p>
+<p>下一篇我们将会介绍 Thanos 的架构详解，敬请期待。</p>
 
 
 <footer class="footline">
@@ -3895,7 +3802,7 @@ kubectl get events |grep OomGuardKillProcess
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:bd159f792c7b09e93a303af2fb81e148")
+  console.log("gitalk id:8a3c2bbbeadc1f52a21dd1ae7f73ac82")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3903,9 +3810,9 @@ kubectl get events |grep OomGuardKillProcess
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: '使用 oom-guard 在用户态处理 cgroup OOM',
+      title: '大规模场景下 Prometheus 的优化手段',
       createIssueManually: false,
-      id: 'bd159f792c7b09e93a303af2fb81e148',
+      id: '8a3c2bbbeadc1f52a21dd1ae7f73ac82',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -5090,7 +4997,6 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
-                    
                 
                 
 
@@ -5105,9 +5011,6 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -5173,7 +5076,6 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
-                    
                 
                 
 
@@ -5189,9 +5091,6 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -5858,6 +5757,7 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
+                    
                 
                 
 
@@ -5872,6 +5772,9 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5921,6 +5824,7 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
+                    
                 
                 
 
@@ -5934,6 +5838,7 @@ kubectl get events |grep OomGuardKillProcess
             
                 
                     
+                    
                 
                 
 
@@ -5960,6 +5865,9 @@ kubectl get events |grep OomGuardKillProcess
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -6159,10 +6067,10 @@ kubectl get events |grep OomGuardKillProcess
 	 
 	 
 		
-			<a class="nav nav-prev" href="/avoid/nodelocal-dns/" title="使用 NodeLocal DNS (缓存)"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/" title="打造云原生大型分布式监控系统"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/avoid/scale-keepalive-service/" title="解决长连接服务扩容失效" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/log/" title="日志收集" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

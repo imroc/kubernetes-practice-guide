@@ -441,6 +441,56 @@
         "state": "TODO"
     },
     {
+        "title": "Ingress 方案选型",
+        "uri": "ingress/choose",
+        "content": "",
+        "objectID": "ingress/choose",
+        "weight": 20,
+        "state": "TODO"
+    },
+    {
+        "title": "Nginx Ingress",
+        "uri": "ingress/nginx-ingress",
+        "content": "",
+        "objectID": "ingress/nginx-ingress",
+        "weight": 30
+    },
+    {
+        "title": "安装 nginx ingress controller",
+        "uri": "ingress/nginx-ingress/install-nginx-ingress",
+        "content": "ingress               LoadBalancer     Service                          ingress                 ingress                         IP                LoadBalancer     Service           k8s                        cloud provider           LoadBalancer     Service                                                                                                 MetalLB   Porter          LoadBalancer     Service       helm    helm install stable nginx ingress     name nginx     namespace kube system     set controller ingressClass nginx     set controller publishService enabled true   controller ingressClass      ingress     kubernetes io ingress class    annotation                nginx ingress controller               controller publishService enabled       true        ingress                                           ingress controller         ip    ingress   address                   IP       nginx ingress controller   service   EXTERNAL IP        kubectl  n kube system service nginx nginx ingress controller NAME TYPE CLUSTER IP EXTERNAL IP PORT S  AGE nginx nginx ingress controller LoadBalancer 172 16 255 194 119 28 123 174 80 32348 TCP 443 32704 TCP 10m                       helm      release          controller ingressClass              ingress   kubernetes io ingress class annotation                            controller        controller replicaCount         HPA        controller autoscaling enabled    true                                     values yaml        nginx ingress        values yaml  helm inspect values stable nginx ingress   values yaml    values yaml         helm install         set                 f values yaml        nginx ingress                                       preStopHook   readinessProbe             nginx ingress      readinessProbe   preStop            values yaml   controller lifecycle    preStop     lifecycle  preStop  exec  command     bin bash     c    sleep 30                       controller affinity       affinity  podAntiAffinity  requiredDuringSchedulingIgnoredDuringExecution  weight  100 labelSelector  matchExpressions  key  app operator  values  nginx ingress key  component operator  values  controller key  release operator  values  nginx topologyKey  kubernetes io hostname      Github     https   github com kubernetes ingress nginx helm hub     https   hub helm sh charts nginx nginx ingress       https   kubernetes github io ingress nginx user guide nginx configuration",
+        "objectID": "ingress/nginx-ingress/install-nginx-ingress"
+    },
+    {
+        "title": "Traefik Ingress",
+        "uri": "ingress/traefik-ingress",
+        "content": "",
+        "objectID": "ingress/traefik-ingress",
+        "weight": 40
+    },
+    {
+        "title": "安装 traefik ingress controller",
+        "uri": "ingress/traefik-ingress/install-traefik-ingress",
+        "content": "ingress               LoadBalancer     Service                          ingress                 ingress                         IP                LoadBalancer     Service           k8s                        cloud provider           LoadBalancer     Service                                                                                                 MetalLB   Porter          LoadBalancer     Service       helm              https   docs traefik io getting started install traefik      notice info     traefik       Helm Chart   v1 x     stable traefik  v2 x   chart             notice         traefik        chart      traefik v1 x              helm install stable traefik     name traefik     namespace kube system     set kubernetes ingressClass traefik     set kubernetes ingressEndpoint useDefaultPublishedService true     set rbac enabled true           helm install traefik stable traefik     namespace kube system     set kubernetes ingressClass traefik     set kubernetes ingressEndpoint useDefaultPublishedService true     set rbac enabled true            kubernetes ingressClass traefik      ingress     kubernetes io ingress class    annotation                traefik ingress controller               kubernetes ingressEndpoint useDefaultPublishedService true       true        ingress                                           ingress controller         ip    ingress   address        kubectl ingress                rbac enabled     false         default   service account                true      rbac               traefik v2 x     chart             git clone   depth 1 https   github com containous traefik helm chart git kubectl apply  f traefik helm chart traefik crds helm repo add traefik https   containous github io traefik helm chart helm repo update helm install traefik traefik     name traefik     namespace kube system           helm repo add traefik https   containous github io traefik helm chart helm repo update helm install traefik traefik traefik     namespace kube system     set ports web port 80     set ports websecure port 443     set  additionalArguments    providers kubernetesingress                   Github     https   github com containous traefik helm hub     https   hub helm sh charts stable traefik       https   docs traefik io",
+        "objectID": "ingress/traefik-ingress/install-traefik-ingress",
+        "weight": 20
+    },
+    {
+        "title": "使用 Traefik V2 让你的后台管理页面支持登录",
+        "uri": "ingress/traefik-ingress/use-traefik-to-support-login",
+        "content": "kubectl proxy                     Traefik                  basic auth                   USERNAME roc PASSWORD mypassword    Secret  USERS   htpasswd  nb USERNAME PASSWORD  cat",
+        "objectID": "ingress/traefik-ingress/use-traefik-to-support-login",
+        "weight": 30
+    },
+    {
+        "title": "彻底理解 Ingress",
+        "uri": "ingress/understand",
+        "content": "",
+        "objectID": "ingress/understand",
+        "weight": 10,
+        "state": "TODO"
+    },
+    {
         "title": "日志收集",
         "uri": "log",
         "content": "",
@@ -470,10 +520,18 @@
     {
         "title": "监控指南",
         "uri": "monitoring",
-        "content": "",
+        "content": "children depth 2",
         "objectID": "monitoring",
         "weight": 43,
-        "state": "TODO"
+        "state": "Alpha",
+        "chapter": true
+    },
+    {
+        "title": "告警",
+        "uri": "monitoring/alerting",
+        "content": "alertmanager      dump     kubectl  n monitoring secret alertmanager main  o jsonpath    data alertmanager  yaml     base64  d   alertmanager main yaml",
+        "objectID": "monitoring/alerting",
+        "hidden": true
     },
     {
         "title": "钉钉告警",
@@ -482,6 +540,14 @@
         "objectID": "monitoring/dingtalk-alert",
         "weight": 40,
         "state": "TODO"
+    },
+    {
+        "title": "使用 kube-promethues 快速上手集群监控",
+        "uri": "monitoring/kube-prometheus-quickstart",
+        "content": "kube prometheus    kube prometheus      k8s                                      prometheus operator    prometheus       k8s         k8s CRD       prometheus   alertmanager                         CRD             prometheus   alertmanager          prometheus adapter    prometheus            k8s   resource metrics API   custom metrics API kubectl top   HPA          node exporter    DaemonSet                         prometheus            prometheus     kube state metrics    k8s          prometheus   metrics       prometheus       Node Pod        grafana                      https   github com coreos kube prometheus                                     git clone https   github com coreos kube prometheus git cd kube prometheus Create namespace CRDs  wait availble creating remaining resources kubectl create  f manifests setup until kubectl servicemonitors   all namespaces   date  sleep 1  echo     done kubectl create  f manifests     grafana           grafana   service      NodePort   LoadBalancer      Ingress     grafana               kubectl              kubectl port forward            kubectl port forward service grafana 3000 3000  n monitoring      http   localhost 3000      grafana               admin                         kube prometheus                grafana   dashboard           grafana",
+        "objectID": "monitoring/kube-prometheus-quickstart",
+        "weight": 10,
+        "state": "Alpha"
     },
     {
         "title": "企业微信告警",
@@ -557,14 +623,14 @@
     {
         "title": "使用 cert-manager 自动生成证书",
         "uri": "security/cert/autogenerate-certificate-with-cert-manager",
-        "content": "cert manager           cert manager    Let s Encrypt                 Let s Encrypt    ACME                                         90                         cert manager                                                  HTTP 01   DNS 01              HTTP 01      HTTP 01               HTTP          location  Let s Encrypt     http     http     well known acme challenge  YOUR_DOMAIN          TOKEN   ACME                   ACME       cert manager       Ingress                    TOKEN     Let s Encrypt     TOKEN                               Ingress                         DNS 01      DNS 01          DNS      API Key      DNS         Let s Encrypt   ACME          ACME       cert manager                     TXT            _acme challenge      Let s Encrypt    DNS                                      Ingress               Issuer ClusterIssuer                  Issuer   ClusterIssuer          Issuer            namespace      ClusterIssuer        namespace                                             ClusterIssuer          DNS 01     ClusterIssuer        cloudflare         cloudflare    API Key        Secret  kubectl  n cert manager create secret generic cloudflare apikey   from literal apikey 213807bd0fb1ca59bba24a58eac90492e6287      ClusterIssuer   NonNamespaced                      Secret   Secret                   ClusterIssuer     Secret    cert manager               DNS 01       ClusterIssuer  cat",
+        "content": "cert manager           cert manager    Let s Encrypt                 Let s Encrypt    ACME                                         90                         cert manager                                                  HTTP 01   DNS 01              HTTP 01      HTTP 01               HTTP          location  Let s Encrypt     http     http     well known acme challenge  YOUR_DOMAIN          TOKEN   ACME                   ACME       cert manager       Ingress                    TOKEN     Let s Encrypt     TOKEN                               Ingress                         DNS 01      DNS 01          DNS      API Key      DNS         Let s Encrypt   ACME          ACME       cert manager                     TXT            _acme challenge      Let s Encrypt    DNS                                      Ingress               Issuer ClusterIssuer                  Issuer   ClusterIssuer          Issuer            namespace      ClusterIssuer        namespace                                             ClusterIssuer          DNS 01     ClusterIssuer        cloudflare         cloudflare    API Key        Secret  kubectl  n cert manager create secret generic cloudflare apikey   from literal apikey 213807bdxxxxxxxxxxxxxx58eac90492e6287      ClusterIssuer   NonNamespaced                      Secret   Secret                   ClusterIssuer     Secret    cert manager               DNS 01       ClusterIssuer  cat",
         "objectID": "security/cert/autogenerate-certificate-with-cert-manager",
         "weight": 20
     },
     {
         "title": "安装 cert-manager",
         "uri": "security/cert/install-cert-manger",
-        "content": "https   docs cert manager io en latest getting started install kubernetes html                                      cert manger                                          kubectl create namespace cert manager cert manager        ValidatingWebhookConfiguration       ValidatingAdmissionWebhook      ValidatingAdmissionWebhook       CRD     ValidatingWebhookConfiguration       cert manager                           ClusterIssuer   Certificate              CRD                                                                       cert manager         CRD        label      kubectl label namespace cert manager certmanager k8s io disable validation true      yaml           kubectl apply      kubectl apply   validate false  f https   github com jetstack cert manager releases download v0 11 0 cert manager yaml      kubectl v1 15               validate false           Helm       CRD  kubectl apply  f https   raw githubusercontent com jetstack cert manager release 0 11 deploy manifests 00 crds yaml    repo  helm repo add jetstack https   charts jetstack io helm repo update       helm install     name cert manager     namespace cert manager     version v0 11 0   jetstack cert manager             cert manager     pod           kubectl pods   namespace cert manager NAME READY STATUS RESTARTS AGE cert manager cainjector 74bb68d67c 4vplr 1 1 Running 0 101s cert manager f7f8bf74d j4hcz 1 1 Running 0 101s cert manager webhook 665df569b5 5p6x8 1 1 Running 0 101s",
+        "content": "https   docs cert manager io en latest getting started install kubernetes html                                      cert manger                                          kubectl create namespace cert manager      yaml           kubectl apply      kubectl apply   validate false  f https   github com jetstack cert manager releases download v0 13 1 cert manager yaml      kubectl v1 15 4               validate false                    cert manager     pod           kubectl pods   namespace cert manager NAME READY STATUS RESTARTS AGE cert manager 5c6866597 zw7kh 1 1 Running 0 2m cert manager cainjector 577f6d9fd7 tr77l 1 1 Running 0 2m cert manager webhook 787858fcdb nlzsq 1 1 Running 0 2m",
         "objectID": "security/cert/install-cert-manger",
         "weight": 10
     },
@@ -610,6 +676,13 @@
         "uri": "trick/efficient-kubectl",
         "content": "k             kubectl                                                                                                           shell    k       session    function k     cmdline HISTTIMEFORMAT    history   awk   2     kubectl        n        namespace    for i 2 i",
         "objectID": "trick/efficient-kubectl"
+    },
+    {
+        "title": "在容器内使用 perf",
+        "uri": "trick/perf-in-container",
+        "content": "perf       perfeventopen                               kernel perfeventparanoid    1      perfeventopen         dockerd    seccomp profile        perfeventopen CAPSYSADMIN            seccomp unconfined   k8s      kubelet    pod  seccomp unconfined SecurityOpt",
+        "objectID": "trick/perf-in-container",
+        "state": "TODO"
     },
     {
         "title": "实用命令与脚本",
@@ -738,7 +811,8 @@
         "title": "Service 不通",
         "uri": "troubleshooting/network/service-unrecheable",
         "content": "dns    TODO                  iptables       TODO kube proxy         netlink deadlock   bug issue  https   github com kubernetes kubernetes issues 71071 1 14           PR  https   github com kubernetes kubernetes pull 72361",
-        "objectID": "troubleshooting/network/service-unrecheable"
+        "objectID": "troubleshooting/network/service-unrecheable",
+        "state": "Alpha"
     },
     {
         "title": "节点排错",
@@ -803,6 +877,13 @@
         "uri": "troubleshooting/others/kubectl-exec-or-logs-failed",
         "content": "apiserver    gt  kubelet 10250         10250   kubelet         kubectl exec   kubectl logs       apiserver   kubelet kubelet           dockerd             kubelet 10250     apiserver          iptables       10250       IP",
         "objectID": "troubleshooting/others/kubectl-exec-or-logs-failed",
+        "state": "Alpha"
+    },
+    {
+        "title": "Namespace 卡在 Terminating",
+        "uri": "troubleshooting/others/namespace-stuck-on-terminating",
+        "content": "Namespace     Finalizers    ns        Terminating          finalizers    kubectl ns xxx  o yaml         finalizers    kubectl ns  o yaml kube node lease apiVersion  v1 kind  Namespace metadata      finalizers  finalizers kubesphere io namespaces labels  kubesphere io workspace  system workspace name  kube node lease ownerReferences  apiVersion  tenant kubesphere io v1alpha1 blockOwnerDeletion  true controller  true kind  Workspace name  system workspace uid  d4310acd 1fdc 11ea a370 a2c490b9ae47 spec               kubesphere             finalizers           k8s     metadata       finalizers                                        metadata    finalizers                                                           finalizers                     Rancher             finalizers              finalizer               terminating       finalizer           Node Lease   Proposal  https   github com kubernetes enhancements blob master keps sig node 0009 node heartbeat md metrics server        ns   apiserver           api            api                            Terminating            prometheus adapter     resource metrics api   prometheus adapter           kubectl apiservice     v1beta1 metrics k8s io monitoring prometheus adapter False  ServiceNotFound  75d",
+        "objectID": "troubleshooting/others/namespace-stuck-on-terminating",
         "state": "Alpha"
     },
     {

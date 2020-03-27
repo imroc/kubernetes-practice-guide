@@ -60,6 +60,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/security/cert/install-cert-manger/</loc>
   </url>
   
@@ -218,6 +222,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/dev/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/</loc>
   </url>
   
   <url>
