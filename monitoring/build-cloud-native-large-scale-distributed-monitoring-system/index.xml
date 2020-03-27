@@ -6,6 +6,7 @@
     <description>Recent content in 打造云原生大型分布式监控系统 on Kubernetes 实践指南</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
+    <lastBuildDate>Fri, 27 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/index.xml" rel="self" type="application/rss+xml" />
     
@@ -13,7 +14,7 @@
     <item>
       <title>大规模场景下 Prometheus 的优化手段</title>
       <link>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <pubDate>Fri, 27 Mar 2020 00:00:00 +0000</pubDate>
       
       <guid>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale/</guid>
       <description>概述 Prometheus 几乎已成为监控领域的事实标准，它自带高效的时序数据库存储，可以让单台 Prometheus 能够高效的处理大量的数据，还有友好并且强大的 PromQL 语法，可以用来灵活的查询各种监控数据以及配置告警规则，同时它的 pull 模型指标采集方式被广泛采纳，非常多的应用都实现了 Prometheus 的 metrics 接口以暴露自身各项数据指标让 Prometheus 去采集，很多没有适配的应用也会有第三方 exporter 帮它去适配 Prometheus，所以监控系统我们通常首选用 Prometheus，本系列文章也将基于 Prometheus 来打造云原生环境下的大型分布式监控系统。
