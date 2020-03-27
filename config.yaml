@@ -13,6 +13,8 @@ params:
   disableBreadcrumb: false
   disableNextPrev: false
   ordersectionsby: weight
+  defaultModifierDisplayName: roc
+  defaultModifierURL: "https://imroc.io"
   cdn:
     enable: true
     css: "https://kubetencent-1251707795.cos.accelerate.myqcloud.com/css/bundle.min.b0e6163350b1169d986890f4bd317db6286105863b7a53274abdb5c8d935eaa1.css"
