@@ -14,7 +14,7 @@ Pod 如果处于 `CrashLoopBackOff` 状态说明之前是启动了，只是又�
 
 ## cgroup OOM
 
-如果是 cgrou OOM 杀掉的进程，从 Pod 事件的下 `Reason` 可以看到是 `OOMKilled`，说明容器实际占用的内存超过 limit 了，同时内核日志会报: ``。 可以根据需求调整下 limit。
+如果是 cgrou OOM 杀掉的进程，从 Pod 事件的下 `Reason` 可以看到是 `OOMKilled`，说明容器实际占用的内存超过 limit 了，同时内核日志会报: `Memory cgroup out of memory`。 可以根据需求调整下 limit。
 
 ## 节点内存碎片化
 
