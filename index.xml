@@ -6,7 +6,7 @@
     <description>Recent content on Kubernetes 实践指南</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Fri, 27 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 30 Mar 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://k8s.imroc.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -186,6 +186,16 @@ $ kubectl get pods --namespace cert-manager NAME READY STATUS RESTARTS AGE cert-
       
       <guid>https://k8s.imroc.io/deploy/selection/</guid>
       <description></description>
+    </item>
+    
+    <item>
+      <title>Thanos 架构详解</title>
+      <link>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/</link>
+      <pubDate>Mon, 30 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/</guid>
+      <description>概述 之前在 大规模场景下 Prometheus 的优化手段 中，我们想尽 &amp;ldquo;千方百计&amp;rdquo; 才好不容易把 Prometheus 优化到适配大规模场景，部署和后期维护麻烦且复杂不说，而且还无法满足一些更高级的诉求(比如查看时间久远的监控数据)。
+对于这种不常用的冷数据，最理想的方式就是存到廉价的对象存储中，等需要查询的时候能够自动加载出来。Thanos 可以帮我们解决这些问题，它完全兼容 Prometheus API，提供统一查询聚合分布式部署的 Prometheus 数据的能力，同时也支持数据长期存储到各种对象存储(无限存储能力)以及降低采样率来加速大时间范围的数据查询。</description>
     </item>
     
     <item>

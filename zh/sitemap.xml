@@ -93,6 +93,11 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/</loc>
+    <lastmod>2020-03-30T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/log/loki-stack/</loc>
     <lastmod>2020-03-12T00:00:00+00:00</lastmod>
   </url>
@@ -202,7 +207,7 @@
   
   <url>
     <loc>https://k8s.imroc.io/monitoring/</loc>
-    <lastmod>2020-03-27T00:00:00+00:00</lastmod>
+    <lastmod>2020-03-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
@@ -228,12 +233,12 @@
   
   <url>
     <loc>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/</loc>
-    <lastmod>2020-03-27T00:00:00+00:00</lastmod>
+    <lastmod>2020-03-30T00:00:00+00:00</lastmod>
   </url>
   
   <url>
     <loc>https://k8s.imroc.io/</loc>
-    <lastmod>2020-03-27T00:00:00+00:00</lastmod>
+    <lastmod>2020-03-30T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"

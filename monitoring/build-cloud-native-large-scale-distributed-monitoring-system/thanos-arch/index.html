@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>Pod 一直处于 Terminating 状态</title>
+    <title>Thanos 架构详解</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/troubleshooting/pod/keep-terminating/">
+  <body class="" data-url="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -839,7 +839,7 @@
   
     
     <li data-nav-id="/troubleshooting/" title="排错指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1278,7 +1278,7 @@
   
     
     <li data-nav-id="/troubleshooting/pod/" title="Pod 排错" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1432,7 +1432,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/pod/keep-terminating/" title="Pod 一直处于 Terminating 状态" class="dd-item active">
+      <li data-nav-id="/troubleshooting/pod/keep-terminating/" title="Pod 一直处于 Terminating 状态" class="dd-item ">
         <a href="/troubleshooting/pod/keep-terminating/">
         Pod 一直处于 Terminating 状态
         <i class="fas fa-check read-icon"></i>
@@ -3035,7 +3035,7 @@
   
     
     <li data-nav-id="/monitoring/" title="监控指南" class="dd-item 
-        
+        parent
         
         
         ">
@@ -3129,7 +3129,7 @@
   
     
     <li data-nav-id="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/" title="打造云原生大型分布式监控系统" class="dd-item 
-        
+        parent
         
         
         ">
@@ -3178,7 +3178,7 @@
  
   
     
-      <li data-nav-id="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/" title="Thanos 架构详解" class="dd-item ">
+      <li data-nav-id="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/" title="Thanos 架构详解" class="dd-item active">
         <a href="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/">
         Thanos 架构详解
         <i class="fas fa-check read-icon"></i>
@@ -3550,7 +3550,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/pod/keep-terminating/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/" selected>简体中文</option>
                     
                   
               
@@ -3612,7 +3612,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/pod/keep-terminating.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3647,7 +3647,7 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/pod/'>Pod 排错</a> > Pod 一直处于 Terminating 状态
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/monitoring/'>监控指南</a> > <a href='/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/'>打造云原生大型分布式监控系统</a> > Thanos 架构详解
           
          
           
@@ -3664,13 +3664,7 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#磁盘爆满">磁盘爆满</a></li>
-    <li><a href="#存在-i-文件属性">存在 &ldquo;i&rdquo; 文件属性</a></li>
-    <li><a href="#docker-17-的-bug">docker 17 的 bug</a></li>
-    <li><a href="#存在-finalizers">存在 Finalizers</a></li>
-    <li><a href="#低版本-kubelet-list-watch-的-bug">低版本 kubelet list-watch 的 bug</a></li>
-    <li><a href="#dockerd-与-containerd-的状态不同步">dockerd 与 containerd 的状态不同步</a></li>
-    <li><a href="#daemonset-controller-的-bug">Daemonset Controller 的 BUG</a></li>
+    <li><a href="#概述">概述</a></li>
   </ul>
 </nav>
     </div>
@@ -3688,7 +3682,7 @@
           
             <h1>
               
-              Pod 一直处于 Terminating 状态
+              Thanos 架构详解
             </h1>
           
 
@@ -3696,61 +3690,9 @@
 
 
 
-<h2 id="磁盘爆满">磁盘爆满</h2>
-<p>如果 docker 的数据目录所在磁盘被写满，docker 无法正常运行，无法进行删除和创建操作，所以 kubelet 调用 docker 删除容器没反应，看 event 类似这样：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Normal  Killing  39s <span style="color:#f92672">(</span>x735 over 15h<span style="color:#f92672">)</span>  kubelet, 10.179.80.31  Killing container with id docker://apigateway:Need to kill Pod
-</code></pre></div><p>处理建议是参考本书 <a href="/troubleshooting/handle/disk-full.md">处理实践：磁盘爆满</a></p>
-<h2 id="存在-i-文件属性">存在 &ldquo;i&rdquo; 文件属性</h2>
-<p>如果容器的镜像本身或者容器启动后写入的文件存在 &ldquo;i&rdquo; 文件属性，此文件就无法被修改删除，而删除 Pod 时会清理容器目录，但里面包含有不可删除的文件，就一直删不了，Pod 状态也将一直保持 Terminating，kubelet 报错:</p>
-<pre><code class="language-log" data-lang="log">Sep 27 14:37:21 VM_0_7_centos kubelet[14109]: E0927 14:37:21.922965   14109 remote_runtime.go:250] RemoveContainer &quot;19d837c77a3c294052a99ff9347c520bc8acb7b8b9a9dc9fab281fc09df38257&quot; from runtime service failed: rpc error: code = Unknown desc = failed to remove container &quot;19d837c77a3c294052a99ff9347c520bc8acb7b8b9a9dc9fab281fc09df38257&quot;: Error response from daemon: container 19d837c77a3c294052a99ff9347c520bc8acb7b8b9a9dc9fab281fc09df38257: driver &quot;overlay2&quot; failed to remove root filesystem: remove /data/docker/overlay2/b1aea29c590aa9abda79f7cf3976422073fb3652757f0391db88534027546868/diff/usr/bin/bash: operation not permitted
-Sep 27 14:37:21 VM_0_7_centos kubelet[14109]: E0927 14:37:21.923027   14109 kuberuntime_gc.go:126] Failed to remove container &quot;19d837c77a3c294052a99ff9347c520bc8acb7b8b9a9dc9fab281fc09df38257&quot;: rpc error: code = Unknown desc = failed to remove container &quot;19d837c77a3c294052a99ff9347c520bc8acb7b8b9a9dc9fab281fc09df38257&quot;: Error response from daemon: container 19d837c77a3c294052a99ff9347c520bc8acb7b8b9a9dc9fab281fc09df38257: driver &quot;overlay2&quot; failed to remove root filesystem: remove /data/docker/overlay2/b1aea29c590aa9abda79f7cf3976422073fb3652757f0391db88534027546868/diff/usr/bin/bash: operation not permitted
-</code></pre><p>通过 <code>man chattr</code> 查看 &ldquo;i&rdquo; 文件属性描述:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">       A file with the &#39;i&#39; attribute cannot be modified: it cannot be deleted or renamed, no
-link can be created to this file and no data can be written to the file.  Only the superuser
-or a process possessing the CAP_LINUX_IMMUTABLE capability can set or clear this attribute.
-</code></pre></div><p>彻底解决当然是不要在容器镜像中或启动后的容器设置 &ldquo;i&rdquo; 文件属性，临时恢复方法： 复制 kubelet 日志报错提示的文件路径，然后执行 <code>chattr -i &lt;file&gt;</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">chattr -i /data/docker/overlay2/b1aea29c590aa9abda79f7cf3976422073fb3652757f0391db88534027546868/diff/usr/bin/bash
-</code></pre></div><p>执行完后等待 kubelet 自动重试，Pod 就可以被自动删除了。</p>
-<h2 id="docker-17-的-bug">docker 17 的 bug</h2>
-<p>docker hang 住，没有任何响应，看 event:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">Warning FailedSync 3m <span style="color:#f92672">(</span>x408 over 1h<span style="color:#f92672">)</span> kubelet, 10.179.80.31 error determining status: rpc error: code <span style="color:#f92672">=</span> DeadlineExceeded desc <span style="color:#f92672">=</span> context deadline exceeded
-</code></pre></div><p>怀疑是17版本dockerd的BUG。可通过 <code>kubectl -n cn-staging delete pod apigateway-6dc48bf8b6-clcwk --force --grace-period=0</code> 强制删除pod，但 <code>docker ps</code> 仍看得到这个容器</p>
-<p>处置建议：</p>
-<ul>
-<li>升级到docker 18. 该版本使用了新的 containerd，针对很多bug进行了修复。</li>
-<li>如果出现terminating状态的话，可以提供让容器专家进行排查，不建议直接强行删除，会可能导致一些业务上问题。</li>
-</ul>
-<h2 id="存在-finalizers">存在 Finalizers</h2>
-<p>k8s 资源的 metadata 里如果存在 <code>finalizers</code>，那么该资源一般是由某程序创建的，并且在其创建的资源的 metadata 里的 <code>finalizers</code> 加了一个它的标识，这意味着这个资源被删除时需要由创建资源的程序来做删除前的清理，清理完了它需要将标识从该资源的 <code>finalizers</code> 中移除，然后才会最终彻底删除资源。比如 Rancher 创建的一些资源就会写入 <code>finalizers</code> 标识。</p>
-<p>处理建议：<code>kubectl edit</code> 手动编辑资源定义，删掉 <code>finalizers</code>，这时再看下资源，就会发现已经删掉了</p>
-<h2 id="低版本-kubelet-list-watch-的-bug">低版本 kubelet list-watch 的 bug</h2>
-<p>之前遇到过使用 v1.8.13 版本的 k8s，kubelet 有时 list-watch 出问题，删除 pod 后 kubelet 没收到事件，导致 kubelet 一直没做删除操作，所以 pod 状态一直是 Terminating</p>
-<h2 id="dockerd-与-containerd-的状态不同步">dockerd 与 containerd 的状态不同步</h2>
-<p>判断 dockerd 与 containerd 某个容器的状态不同步的方法：</p>
-<ul>
-<li>describe pod 拿到容器 id</li>
-<li>docker ps 查看的容器状态是 dockerd 中保存的状态</li>
-<li>通过 docker-container-ctr 查看容器在 containerd 中的状态，比如:
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ docker-container-ctr --namespace moby --address /var/run/docker/containerd/docker-containerd.sock task ls |grep a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0
-a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style="color:#ae81ff">30639</span>    STOPPED
-</code></pre></div></li>
-</ul>
-<p>containerd 看容器状态是 stopped 或者已经没有记录，而 docker 看容器状态却是 runing，说明 dockerd 与 containerd 之间容器状态同步有问题，目前发现了 docker 在 aufs 存储驱动下如果磁盘爆满可能发生内核 panic :</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-txt" data-lang="txt">aufs au_opts_verify:1597:dockerd[5347]: dirperm1 breaks the protection by the permission bits on the lower branch
-</code></pre></div><p>如果磁盘爆满过，dockerd 一般会有下面类似的日志:</p>
-<pre><code class="language-log" data-lang="log">Sep 18 10:19:49 VM-1-33-ubuntu dockerd[4822]: time=&quot;2019-09-18T10:19:49.903943652+08:00&quot; level=error msg=&quot;Failed to log msg \&quot;\&quot; for logger json-file: write /opt/docker/containers/54922ec8b1863bcc504f6dac41e40139047f7a84ff09175d2800100aaccbad1f/54922ec8b1863bcc504f6dac41e40139047f7a84ff09175d2800100aaccbad1f-json.log: no space left on device&quot;
-</code></pre><p>随后可能发生状态不同步，已提issue:  <a href="https://github.com/docker/for-linux/issues/779">https://github.com/docker/for-linux/issues/779</a></p>
-<ul>
-<li>临时恢复: 执行 <code>docker container prune</code> 或重启 dockerd</li>
-<li>长期方案: 运行时推荐直接使用 containerd，绕过 dockerd 避免 docker 本身的各种 BUG</li>
-</ul>
-<h2 id="daemonset-controller-的-bug">Daemonset Controller 的 BUG</h2>
-<p>有个 k8s 的 bug 会导致 daemonset pod 无限 terminating，1.10 和 1.11 版本受影响，原因是 daemonset controller 复用 scheduler 的 predicates 逻辑，里面将 nodeAffinity 的 nodeSelector 数组做了排序（传的指针），spec 就会跟 apiserver 中的不一致，daemonset controller 又会为 rollingUpdate类型计算 hash (会用到spec)，用于版本控制，造成不一致从而无限启动和停止的循环。</p>
-<ul>
-<li>issue: <a href="https://github.com/kubernetes/kubernetes/issues/66298">https://github.com/kubernetes/kubernetes/issues/66298</a></li>
-<li>修复的PR: <a href="https://github.com/kubernetes/kubernetes/pull/66480">https://github.com/kubernetes/kubernetes/pull/66480</a></li>
-</ul>
-<p>升级集群版本可以彻底解决，临时规避可以给 rollingUpdate 类型 daemonset 不使用 nodeAffinity，改用 nodeSelector。</p>
+<h2 id="概述">概述</h2>
+<p>之前在 <a href="../optimize-prometheus-in-large-scale.md">大规模场景下 Prometheus 的优化手段</a> 中，我们想尽 &ldquo;千方百计&rdquo; 才好不容易把 Prometheus 优化到适配大规模场景，部署和后期维护麻烦且复杂不说，而且还无法满足一些更高级的诉求(比如查看时间久远的监控数据)。</p>
+<p>对于这种不常用的冷数据，最理想的方式就是存到廉价的对象存储中，等需要查询的时候能够自动加载出来。Thanos 可以帮我们解决这些问题，它完全兼容 Prometheus API，提供统一查询聚合分布式部署的 Prometheus 数据的能力，同时也支持数据长期存储到各种对象存储(无限存储能力)以及降低采样率来加速大时间范围的数据查询。</p>
 
 
 <footer class="footline">
@@ -3759,7 +3701,7 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
 	
 	<i class='fas fa-user'></i> <a href="https://imroc.io">roc</a>
     
-	
+	 <i class='fas fa-calendar'></i> 2020-03-30
 </footer>
 
         
@@ -3810,7 +3752,7 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:e12a430db83e9456266bb78a4ac5c0e7")
+  console.log("gitalk id:a66023e79c176a77e136429f8d7ece12")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3818,9 +3760,9 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: 'Pod 一直处于 Terminating 状态',
+      title: 'Thanos 架构详解',
       createIssueManually: false,
-      id: 'e12a430db83e9456266bb78a4ac5c0e7',
+      id: 'a66023e79c176a77e136429f8d7ece12',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -4315,7 +4257,6 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
                 
                     
-                    
                 
                 
 
@@ -4330,9 +4271,6 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4606,7 +4544,6 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
                 
                     
-                    
                 
                 
 
@@ -4619,9 +4556,6 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4718,7 +4652,6 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
             
                 
-                    
                     
                 
                 
@@ -4735,9 +4668,6 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -5777,6 +5707,7 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
                 
                     
+                    
                 
                 
 
@@ -5791,6 +5722,9 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5840,6 +5774,7 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
                 
                     
+                    
                 
                 
 
@@ -5852,6 +5787,9 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5868,6 +5806,7 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
             
                 
+                    
                     
                 
                 
@@ -5895,6 +5834,9 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -6094,10 +6036,10 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
 	 
 	 
 		
-			<a class="nav nav-prev" href="/troubleshooting/pod/keep-pending/" title="Pod 一直处于 Pending 状态"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/optimize-prometheus-in-large-scale/" title="大规模场景下 Prometheus 的优化手段"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/troubleshooting/pod/keep-unkown/" title="Pod 一直处于 Unknown 状态" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/log/" title="日志收集" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
