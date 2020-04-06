@@ -194,8 +194,12 @@ $ kubectl get pods --namespace cert-manager NAME READY STATUS RESTARTS AGE cert-
       <pubDate>Mon, 30 Mar 2020 00:00:00 +0000</pubDate>
       
       <guid>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/</guid>
-      <description>概述 之前在 大规模场景下 Prometheus 的优化手段 中，我们想尽 &amp;ldquo;千方百计&amp;rdquo; 才好不容易把 Prometheus 优化到适配大规模场景，部署和后期维护麻烦且复杂不说，而且还无法满足一些更高级的诉求(比如查看时间久远的监控数据)。
-对于这种不常用的冷数据，最理想的方式就是存到廉价的对象存储中，等需要查询的时候能够自动加载出来。Thanos 可以帮我们解决这些问题，它完全兼容 Prometheus API，提供统一查询聚合分布式部署的 Prometheus 数据的能力，同时也支持数据长期存储到各种对象存储(无限存储能力)以及降低采样率来加速大时间范围的数据查询。</description>
+      <description>概述 之前在 大规模场景下 Prometheus 的优化手段 中，我们想尽 &amp;ldquo;千方百计&amp;rdquo; 才好不容易把 Prometheus 优化到适配大规模场景，部署和后期维护麻烦且复杂不说，还有很多不完美的地方，并且还无法满足一些更高级的诉求，比如查看时间久远的监控数据，对于一些时间久远不常用的 &amp;ldquo;冷数据&amp;rdquo;，最理想的方式就是存到廉价的对象存储中，等需要查询的时候能够自动加载出来。
+Thanos (没错，就是灭霸) 可以帮我们简化分布式 Prometheus 的部署与管理，并提供了一些的高级特性：全局视图，长期存储，高可用。下面我们来详细讲解一下。
+Thanos 架构 这是官方给出的架构图：
+这张图中包含了 Thanos 的几个核心组件，但并不包括所有组件，为了便于理解，我们先不细讲，简单介绍下图中这几个组件的作用：
+ Thanos Query: 实现了 Prometheus API，将来自下游组件提供的数据进行聚合最终返回给查询数据的 client (如 grafana)，类似数据库中间件。 Thanos Sidecar: 连接 Prometheus，将其数据提供给 Thanos Query 查询，并且/或者将其上传到对象存储，以供长期存储。 Thanos Store Gateway: 将对象存储的数据暴露给 Thanos Query 去查询。 Thanos Ruler: 对监控数据进行评估和告警，还可以计算出新的监控数据，将这些新数据提供给 Thanos Query 查询并且/或者上传到对象存储，以供长期存储。 Thanos Compact: 将对象存储中的数据进行压缩和降低采样率，加速大时间区间监控数据查询的速度。  架构设计剖析 如何理解 Thanos 的架构设计的？我们可以自己先 YY 一下，要是自己来设计一个分布式 Prometheus 管理应用，会怎么做？
+Query 与 Sidecar 首先，监控数据的查询肯定不能直接查 Prometheus 了，因为会存在许多个 Prometheus 实例，每个 Prometheus 实例只能感知它自己所采集的数据。我们可以比较容易联想到数据库中间件，每个数据库都只存了一部分数据，中间件能感知到所有数据库，数据查询都经过数据库中间件来查，这个中间件收到查询请求再去查下游各个数据库中的数据，最后将这些数据聚合汇总返回给查询的客户端，这样就实现了将分布式存储的数据集中查询。</description>
     </item>
     
     <item>
