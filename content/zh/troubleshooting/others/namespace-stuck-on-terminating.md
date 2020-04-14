@@ -36,7 +36,7 @@ k8s 资源的 metadata 里如果存在 finalizers，那么该资源一般是由�
 
 手动删除方法：
 1. `kubectl edit ns xx` 删除 `spec.finalizers`。
-2. 如果k8s版本较高会发现方法1行不通，因为高版本更改 namespace finalizers 被移到了 namespace 的 finalize 这个 subresource，并且需要使用 `PUT` 请求，可以先执行 `kubectl proxy` 然后再起一个终端用 curl 模拟请求去删 `finalizers`:
+2. 如果k8s版本较高会发现方法1行不通，因为高版本更改 namespace finalizers 被移到了 namespace 的 finalize 这个 subresource (参考[官方文档API文档](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/architecture/namespaces.md#rest-api))，并且需要使用 `PUT` 请求，可以先执行 `kubectl proxy` 然后再起一个终端用 curl 模拟请求去删 `finalizers`:
 ``` bash
 curl -H "Content-Type: application/json" -XPUT -d '{"apiVersion":"v1","kind":"Namespace","metadata":{"name":"delete-me"},"spec":{"finalizers":[]}}' http://localhost:8001/api/v1/namespaces/delete-me/finalize
 ```
