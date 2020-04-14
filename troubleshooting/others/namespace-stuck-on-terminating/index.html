@@ -3190,6 +3190,9 @@
 
             
           
+             
+            
+          
         
         </ul>
               
@@ -3718,6 +3721,15 @@ spec: <span style="color:#f92672">{}</span>
 </code></pre></div><p>此例是因为之前装过 kubesphere，然后卸载了，但没有清理 finalizers，将其删除就可以了。</p>
 <p>k8s 资源的 metadata 里如果存在 finalizers，那么该资源一般是由某应用创建的，或者是这个资源是此应用关心的。应用会在资源的 metadata 里的 finalizers 加了一个它自己可以识别的标识，这意味着这个资源被删除时需要由此应用来做删除前的清理，清理完了它需要将标识从该资源的 finalizers 中移除，然后才会最终彻底删除资源。比如 Rancher 创建的一些资源就会写入 finalizers 标识。</p>
 <p>如果应用被删除，而finalizer没清理，删除资源时就会一直卡在terminating，可以手动删除finalizer来解决。</p>
+<p>手动删除方法：</p>
+<ol>
+<li><code>kubectl edit ns xx</code> 删除 <code>spec.finalizers</code>。</li>
+<li>如果k8s版本较高会发现方法1行不通，因为高版本更改 namespace finalizers 被移到了 namespace 的 finalize 这个 subresource，并且需要使用 <code>PUT</code> 请求，可以先执行 <code>kubectl proxy</code> 然后再起一个终端用 curl 模拟请求去删 <code>finalizers</code>:</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> -XPUT -d <span style="color:#e6db74">&#39;{&#34;apiVersion&#34;:&#34;v1&#34;,&#34;kind&#34;:&#34;Namespace&#34;,&#34;metadata&#34;:{&#34;name&#34;:&#34;delete-me&#34;},&#34;spec&#34;:{&#34;finalizers&#34;:[]}}&#39;</span> http://localhost:8001/api/v1/namespaces/delete-me/finalize
+</code></pre></div><blockquote>
+<p>替换 <code>delete-me</code> 为你的 namespace 名称</p>
+</blockquote>
 <p>参考资料:</p>
 <ul>
 <li>Node Lease 的 Proposal: <a href="https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md">https://github.com/kubernetes/enhancements/blob/master/keps/sig-node/0009-node-heartbeat.md</a></li>
@@ -5855,6 +5867,11 @@ v1beta1.metrics.k8s.io                 monitoring/prometheus-adapter     False <
                     
 
                     
+            
+        
+                    
+                        
+            
             
         
                     

@@ -6,7 +6,7 @@
     <description>Recent content on Kubernetes 实践指南</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Mon, 30 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 09 Apr 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://k8s.imroc.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -281,6 +281,17 @@ DNS-01 校验原理 DNS-01 的校验原理是利用 DNS 提供商的 API Key 拿
       <description>参考官方文档: https://ci.apache.org/projects/flink/flink-docs-stable/ops/deployment/kubernetes.html#flink-session-cluster-on-kubernetes
 准备资源文件(flink.yaml):
 apiVersion: v1 kind: ConfigMap metadata: name: flink-config labels: app: flink data: flink-conf.yaml: |+ jobmanager.rpc.address: flink-jobmanager taskmanager.numberOfTaskSlots: 1 blob.server.port: 6124 jobmanager.rpc.port: 6123 taskmanager.rpc.port: 6122 jobmanager.heap.size: 1024m taskmanager.memory.process.size: 1024m log4j.properties: |+ log4j.rootLogger=INFO, file log4j.logger.akka=INFO log4j.logger.org.apache.kafka=INFO log4j.logger.org.apache.hadoop=INFO log4j.logger.org.apache.zookeeper=INFO log4j.appender.file=org.apache.log4j.FileAppender log4j.appender.file.file=${log.file} log4j.appender.file.layout=org.apache.log4j.PatternLayout log4j.appender.file.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %-60c %x - %m%n log4j.logger.org.apache.flink.shaded.akka.org.jboss.netty.channel.DefaultChannelPipeline=ERROR, file --- apiVersion: apps/v1 kind: Deployment metadata: name: flink-jobmanager spec: replicas: 1 selector: matchLabels: app: flink component: jobmanager template: metadata: labels: app: flink component: jobmanager spec: containers: - name: jobmanager image: flink:latest workingDir: /opt/flink command: [&amp;#34;/bin/bash&amp;#34;, &amp;#34;-c&amp;#34;, &amp;#34;$FLINK_HOME/bin/jobmanager.</description>
+    </item>
+    
+    <item>
+      <title>Thanos 部署与实践</title>
+      <link>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-deploy/</link>
+      <pubDate>Thu, 09 Apr 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-deploy/</guid>
+      <description>概述 上一篇 Thanos 架构详解 我们深入理解了 thanos 的架构设计与实现原理，现在我们来聊聊实战，分享一下如何部署和使用 Thanos。
+部署方式 本文聚焦 Thanos 的云原生部署方式，充分利用 Kubernetes 的资源调度与动态扩容能力。从官方 这里 可以看到，当前 thanos 在 Kubernetes 上部署有以下三种：
+ prometheus-operator: 集群中安装了 prometheus-operator 后，就可以通过创建 CRD 对象来部署 Thanos 了。 社区贡献的一些 helm charts: 很多个版本，目标都是能够使用 helm 来一键部署 thanos。 kube-thanos: Thanos 官方的开源项目，包含部署 thanos 到 kubernetes 的 jsonnet 模板与 yaml 示例。  本文将使用基于 kube-thanos 提供的 yaml 示例 (examples/all/manifests) 来部署，原因是 prometheus-operator 与社区的 helm chart 方式部署多了一层封装，屏蔽了许多细节，并且它们的实现都还不太成熟；直接使用 kubernetes 的 yaml 资源文件部署更直观，也更容易做自定义，而且我相信使用 thanos 的用户通常都是高玩了，也有必要对 thanos 理解透彻，日后才好根据实际场景做架构和配置的调整，直接使用 yaml 部署能够让我们看清细节。</description>
     </item>
     
     <item>
