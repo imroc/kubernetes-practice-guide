@@ -3724,7 +3724,7 @@ spec: <span style="color:#f92672">{}</span>
 <p>手动删除方法：</p>
 <ol>
 <li><code>kubectl edit ns xx</code> 删除 <code>spec.finalizers</code>。</li>
-<li>如果k8s版本较高会发现方法1行不通，因为高版本更改 namespace finalizers 被移到了 namespace 的 finalize 这个 subresource，并且需要使用 <code>PUT</code> 请求，可以先执行 <code>kubectl proxy</code> 然后再起一个终端用 curl 模拟请求去删 <code>finalizers</code>:</li>
+<li>如果k8s版本较高会发现方法1行不通，因为高版本更改 namespace finalizers 被移到了 namespace 的 finalize 这个 subresource (参考<a href="https://github.com/kubernetes/community/blob/master/contributors/design-proposals/architecture/namespaces.md#rest-api">官方文档API文档</a>)，并且需要使用 <code>PUT</code> 请求，可以先执行 <code>kubectl proxy</code> 然后再起一个终端用 curl 模拟请求去删 <code>finalizers</code>:</li>
 </ol>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">curl -H <span style="color:#e6db74">&#34;Content-Type: application/json&#34;</span> -XPUT -d <span style="color:#e6db74">&#39;{&#34;apiVersion&#34;:&#34;v1&#34;,&#34;kind&#34;:&#34;Namespace&#34;,&#34;metadata&#34;:{&#34;name&#34;:&#34;delete-me&#34;},&#34;spec&#34;:{&#34;finalizers&#34;:[]}}&#39;</span> http://localhost:8001/api/v1/namespaces/delete-me/finalize
 </code></pre></div><blockquote>
