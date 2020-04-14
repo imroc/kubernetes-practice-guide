@@ -116,4 +116,3 @@ Receiver 是做什么的呢？为什么需要 Receiver？它跟 Sidecar 有什�
 ## 总结
 
 本文详细讲解了 Thanos 的架构设计，各个组件的作用以及为什么要这么设计。如果仔细看完，我相信你已经 get 到了 Thanos 的精髓，不过我们还没开始讲如何部署与实践，实际上在腾讯云容器服务的多个产品的内部监控已经在使用 Thanos 了，比如 [TKE](https://cloud.tencent.com/product/tke) (公有云 k8s)、[TKEStack](https://github.com/tkestack/tke) (私有云 k8s)、[EKS](https://console.cloud.tencent.com/tke2/ecluster) (Serverless k8s)。 下一篇我们将介绍 Thanos 的部署与最佳实践，敬请期待。
-
