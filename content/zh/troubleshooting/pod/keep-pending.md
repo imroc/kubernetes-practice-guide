@@ -52,7 +52,25 @@ Taints:             special=true:NoSchedule
 ...
 ```
 
-污点既可以是手动添加也可以是被自动添加，下面来深入分析一下。
+通常解决方法有两个:
+
+1. 删除污点:
+
+``` bash
+kubectl taint nodes host1 special-
+```
+
+2. 给 Pod 加上这个污点的容忍:
+
+``` yaml
+tolerations:
+- key: "special"
+  operator: "Equal"
+  value: "true"
+  effect: "NoSchedule"
+```
+
+我们通常使用后者的方法来解决。污点既可以是手动添加也可以是被自动添加，下面来深入分析一下。
 
 ### 手动添加的污点
 

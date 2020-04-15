@@ -2,7 +2,7 @@
 title: "Thanos 部署与实践"
 weight: 30
 date: 2020-04-09
-hidden: true
+draft: true
 ---
 
 ## 概述
@@ -370,6 +370,24 @@ data:
         replacement: ${1}
       - target_label: endpoint
         replacement: https
+---
+
+``` yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rules
+  labels:
+    name: prometheus-rules
+  namespace: thanos
+data:
+  alert-rules.yaml: |-
+    groups:
+      - name: k8s.rules
+        rules:
+        - expr: |
+            sum(rate(container_cpu_usage_seconds_total{job="kubelet", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])) by (namespace)
+          record: namespace:container_cpu_usage_seconds_total:sum_rate
 ---
 
 ### 安装 Query
