@@ -3190,9 +3190,6 @@
 
             
           
-             
-            
-          
         
         </ul>
               
@@ -3738,7 +3735,20 @@ Events:
 ...
 Taints:             special<span style="color:#f92672">=</span>true:NoSchedule
 ...
-</code></pre></div><p>污点既可以是手动添加也可以是被自动添加，下面来深入分析一下。</p>
+</code></pre></div><p>通常解决方法有两个:</p>
+<ol>
+<li>删除污点:</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">kubectl taint nodes host1 special-
+</code></pre></div><ol start="2">
+<li>给 Pod 加上这个污点的容忍:</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">tolerations</span>:
+- <span style="color:#66d9ef">key</span>: <span style="color:#e6db74">&#34;special&#34;</span>
+  <span style="color:#66d9ef">operator</span>: <span style="color:#e6db74">&#34;Equal&#34;</span>
+  <span style="color:#66d9ef">value</span>: <span style="color:#e6db74">&#34;true&#34;</span>
+  <span style="color:#66d9ef">effect</span>: <span style="color:#e6db74">&#34;NoSchedule&#34;</span>
+</code></pre></div><p>我们通常使用后者的方法来解决。污点既可以是手动添加也可以是被自动添加，下面来深入分析一下。</p>
 <h3 id="手动添加的污点">手动添加的污点</h3>
 <p>通过类似以下方式可以给节点添加污点:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ kubectl taint node host1 special<span style="color:#f92672">=</span>true:NoSchedule
@@ -5513,22 +5523,6 @@ NetworkUnavailable     True        node.kubernetes.io/network-unavailable
                     
 
                     
-                        
-            
-            
-                
-                    
-                
-                
-
-                    
-                    
-                    
-
-                    
-            
-        
-                    
             
         
                     
@@ -5898,11 +5892,6 @@ NetworkUnavailable     True        node.kubernetes.io/network-unavailable
                     
 
                     
-            
-        
-                    
-                        
-            
             
         
                     
