@@ -2,12 +2,12 @@
 title: "Thanos 部署与实践"
 weight: 30
 date: 2020-04-09
-draft: true
+draft: false
 ---
 
 ## 概述
 
-上一篇 [Thanos 架构详解](../thanos-arch.md) 我们深入理解了 thanos 的架构设计与实现原理，现在我们来聊聊实战，分享一下如何部署和使用 Thanos。
+上一篇 [Thanos 架构详解](../thanos-arch) 我们深入理解了 thanos 的架构设计与实现原理，现在我们来聊聊实战，分享一下如何部署和使用 Thanos。
 
 ## 部署方式
 
@@ -65,7 +65,7 @@ Store 也是一个可选组件，也是 Thanos 的一大亮点的关键：数据
 
 ## 部署实践
 
-这里以 Thanos 最新版本为例，使用 k8s yaml 资源部署并解释一些细节。
+这里以 Thanos 最新版本为例，选择 Sidecar 方案，介绍各个组件的 k8s yaml 定义方式并解释一些重要细节 (根据自身需求，参考上一节的方案选型，自行评估需要安装哪些组件)。
 
 ### 准备对象存储配置
 
@@ -128,13 +128,57 @@ spec:
   selector:
     app: prometheus
   ports:
-    - name: web
-      protocol: TCP
-      port: 9090
-      targetPort: web
-    - name: grpc
-      port: 10901
-      targetPort: grpc
+  - name: web
+    protocol: TCP
+    port: 9090
+    targetPort: web
+  - name: grpc
+    port: 10901
+    targetPort: grpc
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: prometheus
+  namespace: thanos
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: prometheus
+  namespace: thanos
+rules:
+- apiGroups: [""]
+  resources:
+  - nodes
+  - nodes/proxy
+  - nodes/metrics
+  - services
+  - endpoints
+  - pods
+  verbs: ["get", "list", "watch"]
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get"]
+- nonResourceURLs: ["/metrics"]
+  verbs: ["get"]
+
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: prometheus
+subjects:
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: thanos
+roleRef:
+  kind: ClusterRole
+  name: prometheus
+  apiGroup: rbac.authorization.k8s.io
 ---
 
 apiVersion: apps/v1
@@ -161,19 +205,31 @@ spec:
         fsGroup: 2000
         runAsNonRoot: true
         runAsUser: 1000
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                  - prometheus
+              topologyKey: kubernetes.io/hostname
+            weight: 100
       containers:
       - name: prometheus
         image: quay.io/prometheus/prometheus:v2.15.2
         args:
-        - "--config.file=/etc/prometheus/config_out/prometheus.yaml"
-        - "--storage.tsdb.path=/prometheus"
-        - "--storage.tsdb.retention.time=10d"
-        - "--web.route-prefix=/"
-        - "--web.enable-lifecycle"
-        - "--storage.tsdb.no-lockfile"
-        - "--storage.tsdb.min-block-duration=2h"
-        - "--storage.tsdb.max-block-duration=2h"
-        - "--log.level=debug"
+        - --config.file=/etc/prometheus/config_out/prometheus.yaml
+        - --storage.tsdb.path=/prometheus
+        - --storage.tsdb.retention.time=10d
+        - --web.route-prefix=/
+        - --web.enable-lifecycle
+        - --storage.tsdb.no-lockfile
+        - --storage.tsdb.min-block-duration=2h
+        - --storage.tsdb.max-block-duration=2h
+        - --log.level=debug
         ports:
         - containerPort: 9090
           name: web
@@ -207,24 +263,24 @@ spec:
       - name: thanos
         image: quay.io/thanos/thanos:v0.11.0
         args:
-          - "sidecar"
-          - "--log.level=debug"
-          - "--tsdb.path=/prometheus"
-          - "--prometheus.url=http://127.0.0.1:9090"
-          - "--objstore.config-file=/etc/thanos/objectstorage.yaml"
-          - "--reloader.config-file=/etc/prometheus/config/prometheus.yaml.tmpl"
-          - "--reloader.config-envsubst-file=/etc/prometheus/config_out/prometheus.yaml"
-          - "--reloader.rule-dir=/etc/prometheus/rules/"
+        - sidecar
+        - --log.level=debug
+        - --tsdb.path=/prometheus
+        - --prometheus.url=http://127.0.0.1:9090
+        - --objstore.config-file=/etc/thanos/objectstorage.yaml
+        - --reloader.config-file=/etc/prometheus/config/prometheus.yaml.tmpl
+        - --reloader.config-envsubst-file=/etc/prometheus/config_out/prometheus.yaml
+        - --reloader.rule-dir=/etc/prometheus/rules/
         env:
-          - name: POD_NAME
-            valueFrom:
-              fieldRef:
-                fieldPath: metadata.name
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         ports:
-          - name: http-sidecar
-            containerPort: 10902
-          - name: grpc
-            containerPort: 10901
+        - name: http-sidecar
+          containerPort: 10902
+        - name: grpc
+          containerPort: 10901
         livenessProbe:
             httpGet:
               port: 10902
@@ -234,33 +290,35 @@ spec:
             port: 10902
             path: /-/ready
         volumeMounts:
-          - name: prometheus-config-tmpl
-            mountPath: /etc/prometheus/config
-          - name: prometheus-config-out
-            mountPath: /etc/prometheus/config_out
-          - name: prometheus-rules
-            mountPath: /etc/prometheus/rules
-          - name: prometheus-storage
-            mountPath: /prometheus
-          - name: thanos-objectstorage
-            subPath: objectstorage.yaml
-            mountPath: /etc/thanos/objectstorage.yaml
-      volumes:
         - name: prometheus-config-tmpl
-          configMap:
-            defaultMode: 420
-            name: prometheus-config-tmpl
+          mountPath: /etc/prometheus/config
         - name: prometheus-config-out
-          emptyDir: {}
+          mountPath: /etc/prometheus/config_out
         - name: prometheus-rules
-          configMap:
-            name: prometheus-rules
+          mountPath: /etc/prometheus/rules
+        - name: prometheus-storage
+          mountPath: /prometheus
         - name: thanos-objectstorage
-          secret:
-            secretName: thanos-objectstorage
+          subPath: objectstorage.yaml
+          mountPath: /etc/thanos/objectstorage.yaml
+      volumes:
+      - name: prometheus-config-tmpl
+        configMap:
+          defaultMode: 420
+          name: prometheus-config-tmpl
+      - name: prometheus-config-out
+        emptyDir: {}
+      - name: prometheus-rules
+        configMap:
+          name: prometheus-rules
+      - name: thanos-objectstorage
+        secret:
+          secretName: thanos-objectstorage
   volumeClaimTemplates:
   - metadata:
       name: prometheus-storage
+      labels:
+        app.kubernetes.io/name: prometheus
     spec:
       accessModes:
       - ReadWriteOnce
@@ -272,13 +330,15 @@ spec:
 
 * Prometheus 使用 StatefulSet 方式部署，挂载数据盘以便存储最新监控数据。
 * 由于 Prometheus 副本之间没有启动顺序的依赖，所以 podManagementPolicy 指定为 Parallel，加快启动速度。
-* Prometheus 使用 `--storage.tsdb.retention.time` 指定数据保留时长，默认15天，可以根据数据增长速度和数据盘大小做适当调整(数据增长取决于采集的指标和目标端点的数量和采集频率)。
-* 使用两个 Prometheus 副本，用于实现高可用。
+* 为 Prometheus 绑定足够的 RBAC 权限，以便后续配置使用 k8s 的服务发现 (`kubernetes_sd_configs`) 时能够正常工作。
 * 为 Prometheus 创建 headless 类型 service，一方面是 StatefulSet 本身需要指定 headless 的 `serviceName`，另一方面是为后续 Thanos Query 通过 DNS SRV 记录来动态发现 Sidecar 的 gRPC 端点做准备 (使用 headless service 才能让 DNS SRV 正确返回所有端点)。
-* Sidecar 使用 `--objstore.config-file` 引用我们刚刚创建并挂载的对象存储配置文件。
+* 使用两个 Prometheus 副本，用于实现高可用。
+* 使用硬反亲和，避免 Prometheus 部署在同一节点，既可以分散压力也可以避免单点故障。
+* Prometheus 使用 `--storage.tsdb.retention.time` 指定数据保留时长，默认15天，可以根据数据增长速度和数据盘大小做适当调整(数据增长取决于采集的指标和目标端点的数量和采集频率)。
+* Sidecar 使用 `--objstore.config-file` 引用我们刚刚创建并挂载的对象存储配置文件，用于上传数据到对象存储。
 * 通常会给 Prometheus 附带一个 quay.io/coreos/prometheus-config-reloader 来监听配置变更并动态加载，但 thanos sidecar 也为我们提供了这个功能，所以可以直接用 thanos sidecar 来实现此功能，也支持配置文件根据模板动态生成：`--reloader.config-file` 指定 Prometheus 配置文件模板，`--reloader.config-envsubst-file` 指定生成配置文件的存放路径，假设是 `/etc/prometheus/config_out/prometheus.yaml` ，那么 `/etc/prometheus/config_out` 这个路径使用 emptyDir 让 Prometheus 与 Sidecar 实现配置文件共享挂载，Prometheus 再通过 `--config.file` 指定生成出来的配置文件，当配置有更新时，挂载的配置文件也会同步更新，Sidecar 也会通知 Prometheus 重新加载配置。另外，Sidecar 与 Prometheus 也挂载同一份 rules 配置文件，配置更新后 Sidecar 仅通知 Prometheus 加载配置，不支持模板，因为 rules 配置不需要模板来动态生成。
 
-然后给 Prometheus 准备配置 (`prometheus-config.yaml`):
+然后再给 Prometheus 准备配置 (`prometheus-config.yaml`):
 
 ``` yaml
 apiVersion: v1
@@ -295,9 +355,9 @@ data:
         cluster: prometheus-ha
         prometheus_replica: $(POD_NAME)
     rule_files:
-      - /etc/prometheus/rules/*rules.yaml
+    - /etc/prometheus/rules/*rules.yaml
     scrape_configs:
-    - job_name: kubernetes-nodes-cadvisor
+    - job_name: cadvisor
       metrics_path: /metrics/cadvisor
       scrape_interval: 10s
       scrape_timeout: 10s
@@ -310,69 +370,8 @@ data:
       relabel_configs:
       - action: labelmap
         regex: __meta_kubernetes_node_label_(.+)
-    - job_name: apiserver
-      honor_labels: false
-      kubernetes_sd_configs:
-      - role: endpoints
-        namespaces:
-          names:
-          - default
-      scheme: https
-      tls_config:
-        insecure_skip_verify: false
-        ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-        server_name: kubernetes
-      bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-      relabel_configs:
-      - action: keep
-        source_labels:
-        - __meta_kubernetes_service_label_component
-        regex: apiserver
-      - action: keep
-        source_labels:
-        - __meta_kubernetes_service_label_provider
-        regex: kubernetes
-      - action: keep
-        source_labels:
-        - __meta_kubernetes_endpoint_port_name
-        regex: https
-      - source_labels:
-        - __meta_kubernetes_endpoint_address_target_kind
-        - __meta_kubernetes_endpoint_address_target_name
-        separator: ;
-        regex: Node;(.*)
-        replacement: ${1}
-        target_label: node
-      - source_labels:
-        - __meta_kubernetes_endpoint_address_target_kind
-        - __meta_kubernetes_endpoint_address_target_name
-        separator: ;
-        regex: Pod;(.*)
-        replacement: ${1}
-        target_label: pod
-      - source_labels:
-        - __meta_kubernetes_namespace
-        target_label: namespace
-      - source_labels:
-        - __meta_kubernetes_service_name
-        target_label: service
-      - source_labels:
-        - __meta_kubernetes_pod_name
-        target_label: pod
-      - source_labels:
-        - __meta_kubernetes_service_name
-        target_label: job
-        replacement: ${1}
-      - source_labels:
-        - __meta_kubernetes_service_label_component
-        target_label: job
-        regex: (.+)
-        replacement: ${1}
-      - target_label: endpoint
-        replacement: https
 ---
 
-``` yaml
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -383,12 +382,23 @@ metadata:
 data:
   alert-rules.yaml: |-
     groups:
-      - name: k8s.rules
-        rules:
-        - expr: |
-            sum(rate(container_cpu_usage_seconds_total{job="kubelet", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])) by (namespace)
-          record: namespace:container_cpu_usage_seconds_total:sum_rate
----
+    - name: k8s.rules
+      rules:
+      - expr: |
+          sum(rate(container_cpu_usage_seconds_total{job="cadvisor", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])) by (namespace)
+        record: namespace:container_cpu_usage_seconds_total:sum_rate
+      - expr: |
+          sum(container_memory_usage_bytes{job="cadvisor", image!="", container_name!=""}) by (namespace)
+        record: namespace:container_memory_usage_bytes:sum
+      - expr: |
+          sum by (namespace, pod_name, container_name) (
+            rate(container_cpu_usage_seconds_total{job="cadvisor", image!="", container_name!=""}[5m])
+          )
+        record: namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate
+```
+
+* 本文重点不在 prometheus 的配置文件，所以这里仅以采集 kubelet 所暴露的 cadvisor 容器指标的简单配置为例。
+* Prometheus 实例采集的所有指标数据里都会额外加上 `external_labels` 里指定的 label，通常用 `cluster` 区分当前 Prometheus 所在集群的名称，我们再加了个 `prometheus_replica`，用于区分相同 Prometheus 副本（这些副本所采集的数据除了 `prometheus_replica` 的值不一样，其它几乎一致，这个值会被 Thanos Sidecar 替换成 Pod 副本的名称，用于 Thanos 实现 Prometheus 高可用）
 
 ### 安装 Query
 
@@ -422,7 +432,7 @@ metadata:
   labels:
     app.kubernetes.io/name: thanos-query
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app.kubernetes.io/name: thanos-query
@@ -441,8 +451,6 @@ spec:
                   operator: In
                   values:
                   - thanos-query
-              namespaces:
-              - thanos
               topologyKey: kubernetes.io/hostname
             weight: 100
       containers:
@@ -452,6 +460,7 @@ spec:
         - --query.auto-downsampling
         - --grpc-address=0.0.0.0:10901
         - --http-address=0.0.0.0:9090
+        - --query.partial-response
         - --query.replica-label=prometheus_replica
         - --query.replica-label=rule_replica
         - --store=dnssrv+_grpc._tcp.prometheus-headless.thanos.svc.cluster.local
@@ -480,4 +489,506 @@ spec:
           periodSeconds: 5
         terminationMessagePolicy: FallbackToLogsOnError
       terminationGracePeriodSeconds: 120
+```
+
+* 因为 Query 是无状态的，使用 Deployment 部署，也不需要 headless service，直接创建普通的 service。
+* 使用软反亲和，尽量不让 Query 调度到同一节点。
+* 部署多个副本，实现 Query 的高可用。
+* `--query.partial-response` 启用 [Partial Response](https://thanos.io/components/query.md/#partial-response)，这样可以在部分后端 Store API 返回错误或超时的情况下也能看到正确的监控数据(如果后端 Store API 做了高可用，挂掉一个副本，Query 访问挂掉的副本超时，但由于还有没挂掉的副本，还是能正确返回结果；如果挂掉的某个后端本身就不存在我们需要的数据，挂掉也不影响结果的正确性；总之如果各个组件都做了高可用，想获得错误的结果都难，所以我们有信心启用 Partial Response 这个功能)。
+* `--query.auto-downsampling` 查询时自动降采样，提升查询效率。
+* `--query.replica-label` 指定我们刚刚给 Prometheus 配置的 `prometheus_replica` 这个 external label，Query 向 Sidecar 拉取 Prometheus 数据时会识别这个 label 并自动去重，这样即使挂掉一个副本，只要至少有一个副本正常也不会影响查询结果，也就是可以实现 Prometheus 的高可用。同理，再指定一个 `rule_replica` 用于给 Ruler 做高可用。
+* `--store` 指定实现了 Store API 的地址(Sidecar, Ruler, Store Gateway, Receiver)，通常不建议写静态地址，而是使用服务发现机制自动发现 Store API 地址，如果是部署在同一个集群，可以用 DNS SRV 记录来做服务发现，比如 `dnssrv+_grpc._tcp.prometheus-headless.thanos.svc.cluster.local`，也就是我们刚刚为包含 Sidecar 的 Prometheus 创建的 headless service (使用 headless service 才能正确实现服务发现)，并且指定了名为 grpc 的 tcp 端口，同理，其它组件也可以按照这样加到 `--store` 参数里；如果是其它有些组件部署在集群外，无法通过集群 dns 解析 DNS SRV 记录，可以使用配置文件来做服务发现，也就是指定 `--store.sd-files` 参数，将其它 Store API 地址写在配置文件里 (挂载 ConfigMap)，需要增加地址时直接更新 ConfigMap (不需要重启 Query)。
+
+## 安装 Store Gateway
+
+准备 `thanos-store.yaml`:
+
+``` yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: thanos-store
+  namespace: thanos
+  labels:
+    app.kubernetes.io/name: thanos-store
+spec:
+  clusterIP: None
+  ports:
+  - name: grpc
+    port: 10901
+    targetPort: 10901
+  - name: http
+    port: 10902
+    targetPort: 10902
+  selector:
+    app.kubernetes.io/name: thanos-store
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: thanos-store
+  namespace: thanos
+  labels:
+    app.kubernetes.io/name: thanos-store
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: thanos-store
+  serviceName: thanos-store
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: thanos-store
+    spec:
+      containers:
+      - args:
+        - store
+        - --log.level=debug
+        - --data-dir=/var/thanos/store
+        - --grpc-address=0.0.0.0:10901
+        - --http-address=0.0.0.0:10902
+        - --objstore.config-file=/etc/thanos/objectstorage.yaml
+        - --experimental.enable-index-header
+        image: thanosio/thanos:v0.11.0
+        livenessProbe:
+          failureThreshold: 8
+          httpGet:
+            path: /-/healthy
+            port: 10902
+            scheme: HTTP
+          periodSeconds: 30
+        name: thanos-store
+        ports:
+        - containerPort: 10901
+          name: grpc
+        - containerPort: 10902
+          name: http
+        readinessProbe:
+          failureThreshold: 20
+          httpGet:
+            path: /-/ready
+            port: 10902
+            scheme: HTTP
+          periodSeconds: 5
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /var/thanos/store
+          name: data
+          readOnly: false
+        - name: thanos-objectstorage
+          subPath: objectstorage.yaml
+          mountPath: /etc/thanos/objectstorage.yaml
+      terminationGracePeriodSeconds: 120
+      volumes:
+      - name: thanos-objectstorage
+        secret:
+          secretName: thanos-objectstorage
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app.kubernetes.io/name: thanos-store
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+```
+
+* Store Gateway 实际也可以做到一定程度的无状态，它会需要一点磁盘空间来对对象存储做索引以加速查询，但数据不那么重要，是可以删除的，删除后会自动去拉对象存储查数据重新建立索引。这里我们避免每次重启都重新建立索引，所以用 StatefulSet 部署 Store Gateway，挂载一块小容量的磁盘(索引占用不到多大空间)。
+* 同样创建 headless service，用于 Query 对 Store Gateway 进行服务发现。
+* 部署两个副本，实现 Store Gateway 的高可用。
+* Store Gateway 也需要对象存储的配置，用于读取对象存储的数据，所以要挂载对象存储的配置文件。
+
+### 安装 Ruler
+
+准备 `thanos-rule.yaml`:
+
+``` yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: thanos-rule
+  name: thanos-rule
+  namespace: thanos
+spec:
+  clusterIP: None
+  ports:
+  - name: grpc
+    port: 10901
+    targetPort: grpc
+  - name: http
+    port: 10902
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: thanos-rule
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/name: thanos-rule
+  name: thanos-rule
+  namespace: thanos
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: thanos-rule
+  serviceName: thanos-rule
+  podManagementPolicy: Parallel
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: thanos-rule
+    spec:
+      containers:
+      - args:
+        - rule
+        - --grpc-address=0.0.0.0:10901
+        - --http-address=0.0.0.0:10902
+        - --rule-file=/etc/thanos/rules/*rules.yaml
+        - --objstore.config-file=/etc/thanos/objectstorage.yaml
+        - --data-dir=/var/thanos/rule
+        - --label=rule_replica="$(NAME)"
+        - --alert.label-drop="rule_replica"
+        - --query=dnssrv+_http._tcp.thanos-query.thanos.svc.cluster.local
+        env:
+        - name: NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        image: thanosio/thanos:v0.11.0
+        livenessProbe:
+          failureThreshold: 24
+          httpGet:
+            path: /-/healthy
+            port: 10902
+            scheme: HTTP
+          periodSeconds: 5
+        name: thanos-rule
+        ports:
+        - containerPort: 10901
+          name: grpc
+        - containerPort: 10902
+          name: http
+        readinessProbe:
+          failureThreshold: 18
+          httpGet:
+            path: /-/ready
+            port: 10902
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /var/thanos/rule
+          name: data
+          readOnly: false
+        - name: thanos-objectstorage
+          subPath: objectstorage.yaml
+          mountPath: /etc/thanos/objectstorage.yaml
+        - name: thanos-rule
+          mountPath: /etc/thanos/rules
+      volumes:
+      - name: thanos-objectstorage
+        secret:
+          secretName: thanos-objectstorage
+      - name: thanos-rule
+        configMap:
+          name: thanos-rule
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app.kubernetes.io/name: thanos-rule
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
+```
+
+* Ruler 是有状态服务，使用 Statefulset 部署，挂载磁盘以便存储根据 rule 配置计算出的新数据。
+* 同样创建 headless service，用于 Query 对 Ruler 进行服务发现。
+* 部署两个副本，且使用 `--label=rule_replica=` 给所有数据添加 `rule_replica` 的 label (与 Query 配置的 `replica_label` 相呼应)，用于实现 Ruler 高可用。同时指定 `--alert.label-drop` 为 `rule_replica`，在触发告警发送通知给 AlertManager 时，去掉这个 label，以便让 AlertManager 自动去重 (避免重复告警)。
+* 使用 `--query` 指定 Query 地址，这里还是用 DNS SRV 来做服务发现，但效果跟配 `dns+thanos-query.thanos.svc.cluster.local:9090` 是一样的，最终都是通过 Query 的 ClusterIP (VIP) 访问，因为它是无状态的，可以直接由 K8S 来给我们做负载均衡。
+* Ruler 也需要对象存储的配置，用于上传计算出的数据到对象存储，所以要挂载对象存储的配置文件。
+* `--rule-file` 指定挂载的 rule 配置，Ruler 根据配置来生成数据和触发告警。
+
+``` yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: thanos-rules
+  labels:
+    name: thanos-rules
+  namespace: thanos
+data:
+  record.rules.yaml: |-
+    groups:
+    - name: k8s.rules
+      rules:
+      - expr: |
+          sum(rate(container_cpu_usage_seconds_total{job="cadvisor", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])) by (namespace)
+        record: namespace:container_cpu_usage_seconds_total:sum_rate
+      - expr: |
+          sum(container_memory_usage_bytes{job="cadvisor", image!="", container_name!=""}) by (namespace)
+        record: namespace:container_memory_usage_bytes:sum
+      - expr: |
+          sum by (namespace, pod_name, container_name) (
+            rate(container_cpu_usage_seconds_total{job="cadvisor", image!="", container_name!=""}[5m])
+          )
+        record: namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate
+```
+
+* 配置内容仅为示例，根据自身情况来配置，格式基本兼容 Prometheus 的 rule 配置格式，参考: https://thanos.io/components/rule.md/#configuring-rules
+
+### 安装 Compact
+
+准备 `thanos-compact.yaml`:
+
+``` yaml
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: thanos-compact
+  name: thanos-compact
+  namespace: thanos
+spec:
+  ports:
+  - name: http
+    port: 10902
+    targetPort: http
+  selector:
+    app.kubernetes.io/name: thanos-compact
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app.kubernetes.io/name: thanos-compact
+  name: thanos-compact
+  namespace: thanos
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: thanos-compact
+  serviceName: thanos-compact
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: thanos-compact
+    spec:
+      containers:
+      - args:
+        - compact
+        - --wait
+        - --objstore.config-file=/etc/thanos/objectstorage.yaml
+        - --data-dir=/var/thanos/compact
+        - --debug.accept-malformed-index
+        - --log.level=debug
+        - --retention.resolution-raw=90d
+        - --retention.resolution-5m=180d
+        - --retention.resolution-1h=360d
+        env:
+        - name: OBJSTORE_CONFIG
+          valueFrom:
+            secretKeyRef:
+              key: thanos.yaml
+              name: thanos-objectstorage
+        image: thanosio/thanos:v0.11.0
+        livenessProbe:
+          failureThreshold: 4
+          httpGet:
+            path: /-/healthy
+            port: 10902
+            scheme: HTTP
+          periodSeconds: 30
+        name: thanos-compact
+        ports:
+        - containerPort: 10902
+          name: http
+        readinessProbe:
+          failureThreshold: 20
+          httpGet:
+            path: /-/ready
+            port: 10902
+            scheme: HTTP
+          periodSeconds: 5
+        terminationMessagePolicy: FallbackToLogsOnError
+        volumeMounts:
+        - mountPath: /var/thanos/compact
+          name: data
+          readOnly: false
+        - name: thanos-objectstorage
+          subPath: objectstorage.yaml
+          mountPath: /etc/thanos/objectstorage.yaml
+      terminationGracePeriodSeconds: 120
+      volumes:
+      - name: thanos-objectstorage
+        secret:
+          secretName: thanos-objectstorage
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app.kubernetes.io/name: thanos-compact
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
+
+```
+
+* Compact 只能部署单个副本，因为如果多个副本都去对对象存储的数据做压缩和降采样的话，会造成冲突。
+* 使用 StatefulSet 部署，方便自动创建和挂载磁盘。磁盘用于存放临时数据，因为 Compact 需要一些磁盘空间来存放数据处理过程中产生的中间数据。
+* `--wait` 让 Compact 一直运行，轮询新数据来做压缩和降采样。
+* Compact 也需要对象存储的配置，用于读取对象存储数据以及上传压缩和降采样后的数据到对象存储。
+* 创建一个普通 service，主要用于被 Prometheus 使用 kubernetes 的 endpoints 服务发现来采集指标(其它组件的 service 也一样有这个用途)。
+* `--retention.resolution-raw` 指定原始数据存放时长，`--retention.resolution-5m` 指定降采样到数据点 5 分钟间隔的数据存放时长，`--retention.resolution-1h` 指定降采样到数据点 1 小时间隔的数据存放时长，它们的数据精细程度递减，占用的存储空间也是递减，通常建议它们的存放时间递增配置 (一般只有比较新的数据才会放大看，久远的数据通常只会使用大时间范围查询来看个大致，所以建议将精细程度低的数据存放更长时间)
+
+### 安装 Receiver
+
+``` yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: thanos-receive-hashrings
+  namespace: kube-system
+data:
+  thanos-receive-hashrings: |
+    [
+      {
+        "hashring": "soft-tenants",
+        "endpoints":
+        [
+          "thanos-receive-0.thanos-receive.kube-system.svc.cluster.local:10901",
+          "thanos-receive-1.thanos-receive.kube-system.svc.cluster.local:10901",
+          "thanos-receive-2.thanos-receive.kube-system.svc.cluster.local:10901"
+        ]
+      }
+    ]
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: thanos-receive
+  namespace: kube-system
+  labels:
+    kubernetes.io/name: thanos-receive
+spec:
+  ports:
+  - name: http
+    port: 10902
+    protocol: TCP
+    targetPort: 10902
+  - name: remote-write
+    port: 19291
+    protocol: TCP
+    targetPort: 19291
+  - name: grpc
+    port: 10901
+    protocol: TCP
+    targetPort: 10901
+  selector:
+    kubernetes.io/name: thanos-receive
+  clusterIP: None
+---
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    kubernetes.io/name: thanos-receive
+  name: thanos-receive
+  namespace: kube-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      kubernetes.io/name: thanos-receive
+  serviceName: thanos-receive
+  template:
+    metadata:
+      labels:
+        kubernetes.io/name: thanos-receive
+    spec:
+      containers:
+      - args:
+        - receive
+        - --grpc-address=0.0.0.0:10901
+        - --http-address=0.0.0.0:10902
+        - --remote-write.address=0.0.0.0:19291
+        - --objstore.config=$(OBJSTORE_CONFIG)
+        - --tsdb.path=/var/thanos/receive
+        - --tsdb.retention=2h
+        - --label=receive_replica="$(NAME)"
+        - --label=receive="true"
+        - --receive.hashrings-file=/etc/thanos/thanos-receive-hashrings
+        - --receive.local-endpoint=$(NAME).thanos-receive.kube-system.svc.cluster.local:10901
+        env:
+        - name: NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        image: registry.cpu.oa.com/library/thanos:v0.11.0
+        livenessProbe:
+          failureThreshold: 4
+          httpGet:
+            path: /-/healthy
+            port: 10902
+            scheme: HTTP
+          periodSeconds: 30
+        name: thanos-receive
+        ports:
+        - containerPort: 10901
+          name: grpc
+        - containerPort: 10902
+          name: http
+        - containerPort: 19291
+          name: remote-write
+        readinessProbe:
+          httpGet:
+            path: /-/ready
+            port: 10902
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        resources:
+          limits:
+            cpu: "8"
+            memory: 16Gi
+          requests:
+            cpu: "4"
+            memory: 8Gi
+        volumeMounts:
+        - mountPath: /var/thanos/receive
+          name: thanos-receive-data
+          readOnly: false
+        - mountPath: /etc/thanos/
+          name: thanos-receive-hashrings
+      terminationGracePeriodSeconds: 120
+      volumes:
+      - name: thanos-receive-data
+        hostPath:
+          path: /data/thanos-receive
+          type: DirectoryOrCreate
+      - configMap:
+          defaultMode: 420
+          name: thanos-receive-hashrings
+        name: thanos-receive-hashrings
 ```
