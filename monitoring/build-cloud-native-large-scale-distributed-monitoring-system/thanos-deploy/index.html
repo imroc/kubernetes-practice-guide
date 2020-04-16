@@ -4605,7 +4605,7 @@
         - --grpc-address=<span style="color:#ae81ff">0.0.0.0</span>:<span style="color:#ae81ff">10901</span>
         - --http-address=<span style="color:#ae81ff">0.0.0.0</span>:<span style="color:#ae81ff">10902</span>
         - --remote-write.address=<span style="color:#ae81ff">0.0.0.0</span>:<span style="color:#ae81ff">19291</span>
-        - --objstore.config=$(OBJSTORE_CONFIG)
+        - --objstore.config-file=/etc/thanos/objectstorage.yaml
         - --tsdb.path=/var/thanos/receive
         - --tsdb.retention=2h
         - --label=receive_replica=<span style="color:#e6db74">&#34;$(NAME)&#34;</span>
@@ -4653,6 +4653,9 @@
           <span style="color:#66d9ef">readOnly</span>: <span style="color:#66d9ef">false</span>
         - <span style="color:#66d9ef">mountPath</span>: /etc/thanos/
           <span style="color:#66d9ef">name</span>: thanos-receive-hashrings
+        - <span style="color:#66d9ef">name</span>: thanos-objectstorage
+          <span style="color:#66d9ef">subPath</span>: objectstorage.yaml
+          <span style="color:#66d9ef">mountPath</span>: /etc/thanos/objectstorage.yaml
       <span style="color:#66d9ef">terminationGracePeriodSeconds</span>: <span style="color:#ae81ff">120</span>
       <span style="color:#66d9ef">volumes</span>:
       - <span style="color:#66d9ef">name</span>: thanos-receive-data
@@ -4663,6 +4666,10 @@
           <span style="color:#66d9ef">defaultMode</span>: <span style="color:#ae81ff">420</span>
           <span style="color:#66d9ef">name</span>: thanos-receive-hashrings
         <span style="color:#66d9ef">name</span>: thanos-receive-hashrings
+      - <span style="color:#66d9ef">name</span>: thanos-objectstorage
+        <span style="color:#66d9ef">secret</span>:
+          <span style="color:#66d9ef">secretName</span>: thanos-objectstorage
+
 </code></pre></div>
 
 <footer class="footline">
