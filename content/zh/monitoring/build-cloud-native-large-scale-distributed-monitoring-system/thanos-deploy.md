@@ -127,7 +127,7 @@ spec:
   type: ClusterIP
   clusterIP: None
   selector:
-    app: prometheus
+    app.kubernetes.io/name: prometheus
   ports:
   - name: web
     protocol: TCP
@@ -209,15 +209,13 @@ spec:
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
-          - podAffinityTerm:
-              labelSelector:
-                matchExpressions:
-                - key: app.kubernetes.io/name
-                  operator: In
-                  values:
-                  - prometheus
-              topologyKey: kubernetes.io/hostname
-            weight: 100
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                - prometheus
+            topologyKey: kubernetes.io/hostname
       containers:
       - name: prometheus
         image: quay.io/prometheus/prometheus:v2.15.2
@@ -386,16 +384,16 @@ data:
     - name: k8s.rules
       rules:
       - expr: |
-          sum(rate(container_cpu_usage_seconds_total{job="cadvisor", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])) by (namespace)
+          sum(rate(container_cpu_usage_seconds_total{job="cadvisor", image!="", container!=""}[5m])) by (namespace)
         record: namespace:container_cpu_usage_seconds_total:sum_rate
       - expr: |
-          sum(container_memory_usage_bytes{job="cadvisor", image!="", container_name!=""}) by (namespace)
+          sum(container_memory_usage_bytes{job="cadvisor", image!="", container!=""}) by (namespace)
         record: namespace:container_memory_usage_bytes:sum
       - expr: |
-          sum by (namespace, pod_name, container_name) (
-            rate(container_cpu_usage_seconds_total{job="cadvisor", image!="", container_name!=""}[5m])
+          sum by (namespace, pod, container) (
+            rate(container_cpu_usage_seconds_total{job="cadvisor", image!="", container!=""}[5m])
           )
-        record: namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate
+        record: namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
 ```
 
 * 本文重点不在 prometheus 的配置文件，所以这里仅以采集 kubelet 所暴露的 cadvisor 容器指标的简单配置为例。
@@ -607,7 +605,7 @@ spec:
 
 ### 安装 Ruler
 
-准备 `thanos-rule.yaml`:
+准备 Ruler 部署配置 `thanos-ruler.yaml`:
 
 ``` yaml
 apiVersion: v1
@@ -695,15 +693,15 @@ spec:
         - name: thanos-objectstorage
           subPath: objectstorage.yaml
           mountPath: /etc/thanos/objectstorage.yaml
-        - name: thanos-rule
+        - name: thanos-rules
           mountPath: /etc/thanos/rules
       volumes:
       - name: thanos-objectstorage
         secret:
           secretName: thanos-objectstorage
-      - name: thanos-rule
+      - name: thanos-rules
         configMap:
-          name: thanos-rule
+          name: thanos-rules
   volumeClaimTemplates:
   - metadata:
       labels:
@@ -724,6 +722,8 @@ spec:
 * Ruler 也需要对象存储的配置，用于上传计算出的数据到对象存储，所以要挂载对象存储的配置文件。
 * `--rule-file` 指定挂载的 rule 配置，Ruler 根据配置来生成数据和触发告警。
 
+再准备 Ruler 配置文件 `thanos-ruler-config.yaml`:
+
 ``` yaml
 apiVersion: v1
 kind: ConfigMap
@@ -738,23 +738,23 @@ data:
     - name: k8s.rules
       rules:
       - expr: |
-          sum(rate(container_cpu_usage_seconds_total{job="cadvisor", metrics_path="/metrics/cadvisor", image!="", container!="POD"}[5m])) by (namespace)
+          sum(rate(container_cpu_usage_seconds_total{job="cadvisor", image!="", container!=""}[5m])) by (namespace)
         record: namespace:container_cpu_usage_seconds_total:sum_rate
       - expr: |
-          sum(container_memory_usage_bytes{job="cadvisor", image!="", container_name!=""}) by (namespace)
+          sum(container_memory_usage_bytes{job="cadvisor", image!="", container!=""}) by (namespace)
         record: namespace:container_memory_usage_bytes:sum
       - expr: |
-          sum by (namespace, pod_name, container_name) (
-            rate(container_cpu_usage_seconds_total{job="cadvisor", image!="", container_name!=""}[5m])
+          sum by (namespace, pod, container) (
+            rate(container_cpu_usage_seconds_total{job="cadvisor", image!="", container!=""}[5m])
           )
-        record: namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate
+        record: namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
 ```
 
 * 配置内容仅为示例，根据自身情况来配置，格式基本兼容 Prometheus 的 rule 配置格式，参考: https://thanos.io/components/rule.md/#configuring-rules
 
 ### 安装 Compact
 
-准备 `thanos-compact.yaml`:
+准备 Compact 部署配置 `thanos-compact.yaml`:
 
 ``` yaml
 apiVersion: v1
@@ -857,6 +857,8 @@ spec:
 
 ### 安装 Receiver
 
+准备 Receiver 部署配置 `thanos-receiver.yaml`:
+
 ``` yaml
 apiVersion: v1
 kind: ConfigMap
@@ -864,7 +866,7 @@ metadata:
   name: thanos-receive-hashrings
   namespace: thanos
 data:
-  thanos-receive-hashrings: |
+  thanos-receive-hashrings.json: |
     [
       {
         "hashring": "soft-tenants",
@@ -930,10 +932,10 @@ spec:
         - --remote-write.address=0.0.0.0:19291
         - --objstore.config-file=/etc/thanos/objectstorage.yaml
         - --tsdb.path=/var/thanos/receive
-        - --tsdb.retention=2h
+        - --tsdb.retention=12h
         - --label=receive_replica="$(NAME)"
         - --label=receive="true"
-        - --receive.hashrings-file=/etc/thanos/thanos-receive-hashrings
+        - --receive.hashrings-file=/etc/thanos/thanos-receive-hashrings.json
         - --receive.local-endpoint=$(NAME).thanos-receive.kube-system.svc.cluster.local:10901
         env:
         - name: NAME
@@ -965,26 +967,23 @@ spec:
           periodSeconds: 30
         resources:
           limits:
-            cpu: "8"
-            memory: 16Gi
-          requests:
             cpu: "4"
             memory: 8Gi
+          requests:
+            cpu: "2"
+            memory: 4Gi
         volumeMounts:
         - mountPath: /var/thanos/receive
-          name: thanos-receive-data
+          name: data
           readOnly: false
-        - mountPath: /etc/thanos/
+        - mountPath: /etc/thanos/thanos-receive-hashrings.json
           name: thanos-receive-hashrings
-        - name: thanos-objectstorage
+          subPath: thanos-receive-hashrings.json
+        - mountPath: /etc/thanos/objectstorage.yaml
+          name: thanos-objectstorage
           subPath: objectstorage.yaml
-          mountPath: /etc/thanos/objectstorage.yaml
       terminationGracePeriodSeconds: 120
       volumes:
-      - name: thanos-receive-data
-        hostPath:
-          path: /data/thanos-receive
-          type: DirectoryOrCreate
       - configMap:
           defaultMode: 420
           name: thanos-receive-hashrings
@@ -992,5 +991,20 @@ spec:
       - name: thanos-objectstorage
         secret:
           secretName: thanos-objectstorage
+  volumeClaimTemplates:
+  - metadata:
+      labels:
+        app.kubernetes.io/name: thanos-receive
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 200Gi
 
 ```
+
+* 部署 3 个副本， 配置 hashring， `--label=receive_replica` 为数据添加 `receive_replica` 这个 label (Query 的 `--query.replica-label` 也要加上这个) 来实现 Receiver 的高可用。
+* request, limit 根据自身规模情况自行做适当调整。
+* `--tsdb.retention` 根据自身需求调整最新数据的保留时间。
