@@ -801,12 +801,6 @@ spec:
         - --retention.resolution-raw=90d
         - --retention.resolution-5m=180d
         - --retention.resolution-1h=360d
-        env:
-        - name: OBJSTORE_CONFIG
-          valueFrom:
-            secretKeyRef:
-              key: thanos.yaml
-              name: thanos-objectstorage
         image: thanosio/thanos:v0.11.0
         livenessProbe:
           failureThreshold: 4
@@ -945,7 +939,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
-        image: registry.cpu.oa.com/library/thanos:v0.11.0
+        image: thanosio/thanos:v0.11.0
         livenessProbe:
           failureThreshold: 4
           httpGet:
