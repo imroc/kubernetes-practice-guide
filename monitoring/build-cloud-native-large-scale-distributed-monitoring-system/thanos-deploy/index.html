@@ -4476,12 +4476,6 @@
         - --retention.resolution-raw=90d
         - --retention.resolution-5m=180d
         - --retention.resolution-1h=360d
-        <span style="color:#66d9ef">env</span>:
-        - <span style="color:#66d9ef">name</span>: OBJSTORE_CONFIG
-          <span style="color:#66d9ef">valueFrom</span>:
-            <span style="color:#66d9ef">secretKeyRef</span>:
-              <span style="color:#66d9ef">key</span>: thanos.yaml
-              <span style="color:#66d9ef">name</span>: thanos-objectstorage
         <span style="color:#66d9ef">image</span>: thanosio/thanos:v0<span style="color:#ae81ff">.11.0</span>
         <span style="color:#66d9ef">livenessProbe</span>:
           <span style="color:#66d9ef">failureThreshold</span>: <span style="color:#ae81ff">4</span>
@@ -4617,7 +4611,7 @@
           <span style="color:#66d9ef">valueFrom</span>:
             <span style="color:#66d9ef">fieldRef</span>:
               <span style="color:#66d9ef">fieldPath</span>: metadata.name
-        <span style="color:#66d9ef">image</span>: registry.cpu.oa.com/library/thanos:v0<span style="color:#ae81ff">.11.0</span>
+        <span style="color:#66d9ef">image</span>: thanosio/thanos:v0<span style="color:#ae81ff">.11.0</span>
         <span style="color:#66d9ef">livenessProbe</span>:
           <span style="color:#66d9ef">failureThreshold</span>: <span style="color:#ae81ff">4</span>
           <span style="color:#66d9ef">httpGet</span>:
