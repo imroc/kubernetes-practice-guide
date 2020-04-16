@@ -3826,7 +3826,7 @@
   <span style="color:#66d9ef">type</span>: ClusterIP
   <span style="color:#66d9ef">clusterIP</span>: None
   <span style="color:#66d9ef">selector</span>:
-    <span style="color:#66d9ef">app</span>: prometheus
+    <span style="color:#66d9ef">app.kubernetes.io/name</span>: prometheus
   <span style="color:#66d9ef">ports</span>:
   - <span style="color:#66d9ef">name</span>: web
     <span style="color:#66d9ef">protocol</span>: TCP
@@ -3908,15 +3908,13 @@
       <span style="color:#66d9ef">affinity</span>:
         <span style="color:#66d9ef">podAntiAffinity</span>:
           <span style="color:#66d9ef">requiredDuringSchedulingIgnoredDuringExecution</span>:
-          - <span style="color:#66d9ef">podAffinityTerm</span>:
-              <span style="color:#66d9ef">labelSelector</span>:
-                <span style="color:#66d9ef">matchExpressions</span>:
-                - <span style="color:#66d9ef">key</span>: app.kubernetes.io/name
-                  <span style="color:#66d9ef">operator</span>: In
-                  <span style="color:#66d9ef">values</span>:
-                  - prometheus
-              <span style="color:#66d9ef">topologyKey</span>: kubernetes.io/hostname
-            <span style="color:#66d9ef">weight</span>: <span style="color:#ae81ff">100</span>
+          - <span style="color:#66d9ef">labelSelector</span>:
+              <span style="color:#66d9ef">matchExpressions</span>:
+              - <span style="color:#66d9ef">key</span>: app.kubernetes.io/name
+                <span style="color:#66d9ef">operator</span>: In
+                <span style="color:#66d9ef">values</span>:
+                - prometheus
+            <span style="color:#66d9ef">topologyKey</span>: kubernetes.io/hostname
       <span style="color:#66d9ef">containers</span>:
       - <span style="color:#66d9ef">name</span>: prometheus
         <span style="color:#66d9ef">image</span>: quay.io/prometheus/prometheus:v2<span style="color:#ae81ff">.15.2</span>
@@ -4082,16 +4080,16 @@
     - <span style="color:#66d9ef">name</span>: k8s.rules
       <span style="color:#66d9ef">rules</span>:
       - <span style="color:#66d9ef">expr</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">          sum(rate(container_cpu_usage_seconds_total{job=&#34;cadvisor&#34;, metrics_path=&#34;/metrics/cadvisor&#34;, image!=&#34;&#34;, container!=&#34;POD&#34;}[5m])) by (namespace)</span>
+</span><span style="color:#e6db74">          sum(rate(container_cpu_usage_seconds_total{job=&#34;cadvisor&#34;, image!=&#34;&#34;, container!=&#34;&#34;}[5m])) by (namespace)</span>
         <span style="color:#66d9ef">record</span>: namespace:container_cpu_usage_seconds_total:sum_rate
       - <span style="color:#66d9ef">expr</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">          sum(container_memory_usage_bytes{job=&#34;cadvisor&#34;, image!=&#34;&#34;, container_name!=&#34;&#34;}) by (namespace)</span>
+</span><span style="color:#e6db74">          sum(container_memory_usage_bytes{job=&#34;cadvisor&#34;, image!=&#34;&#34;, container!=&#34;&#34;}) by (namespace)</span>
         <span style="color:#66d9ef">record</span>: namespace:container_memory_usage_bytes:sum
       - <span style="color:#66d9ef">expr</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">          sum by (namespace, pod_name, container_name) (</span>
-            rate(container_cpu_usage_seconds_total{job=<span style="color:#e6db74">&#34;cadvisor&#34;</span>, image!=<span style="color:#e6db74">&#34;&#34;</span>, container_name!=<span style="color:#e6db74">&#34;&#34;</span>}[5m])
+</span><span style="color:#e6db74">          sum by (namespace, pod, container) (</span>
+            rate(container_cpu_usage_seconds_total{job=<span style="color:#e6db74">&#34;cadvisor&#34;</span>, image!=<span style="color:#e6db74">&#34;&#34;</span>, container!=<span style="color:#e6db74">&#34;&#34;</span>}[5m])
           )
-        <span style="color:#66d9ef">record</span>: namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate
+        <span style="color:#66d9ef">record</span>: namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
 </code></pre></div><ul>
 <li>本文重点不在 prometheus 的配置文件，所以这里仅以采集 kubelet 所暴露的 cadvisor 容器指标的简单配置为例。</li>
 <li>Prometheus 实例采集的所有指标数据里都会额外加上 <code>external_labels</code> 里指定的 label，通常用 <code>cluster</code> 区分当前 Prometheus 所在集群的名称，我们再加了个 <code>prometheus_replica</code>，用于区分相同 Prometheus 副本（这些副本所采集的数据除了 <code>prometheus_replica</code> 的值不一样，其它几乎一致，这个值会被 Thanos Sidecar 替换成 Pod 副本的名称，用于 Thanos 实现 Prometheus 高可用）</li>
@@ -4293,7 +4291,7 @@
 <li>Store Gateway 也需要对象存储的配置，用于读取对象存储的数据，所以要挂载对象存储的配置文件。</li>
 </ul>
 <h3 id="安装-ruler">安装 Ruler</h3>
-<p>准备 <code>thanos-rule.yaml</code>:</p>
+<p>准备 Ruler 部署配置 <code>thanos-ruler.yaml</code>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
 <span style="color:#66d9ef">kind</span>: Service
 <span style="color:#66d9ef">metadata</span>:
@@ -4379,15 +4377,15 @@
         - <span style="color:#66d9ef">name</span>: thanos-objectstorage
           <span style="color:#66d9ef">subPath</span>: objectstorage.yaml
           <span style="color:#66d9ef">mountPath</span>: /etc/thanos/objectstorage.yaml
-        - <span style="color:#66d9ef">name</span>: thanos-rule
+        - <span style="color:#66d9ef">name</span>: thanos-rules
           <span style="color:#66d9ef">mountPath</span>: /etc/thanos/rules
       <span style="color:#66d9ef">volumes</span>:
       - <span style="color:#66d9ef">name</span>: thanos-objectstorage
         <span style="color:#66d9ef">secret</span>:
           <span style="color:#66d9ef">secretName</span>: thanos-objectstorage
-      - <span style="color:#66d9ef">name</span>: thanos-rule
+      - <span style="color:#66d9ef">name</span>: thanos-rules
         <span style="color:#66d9ef">configMap</span>:
-          <span style="color:#66d9ef">name</span>: thanos-rule
+          <span style="color:#66d9ef">name</span>: thanos-rules
   <span style="color:#66d9ef">volumeClaimTemplates</span>:
   - <span style="color:#66d9ef">metadata</span>:
       <span style="color:#66d9ef">labels</span>:
@@ -4407,6 +4405,7 @@
 <li>Ruler 也需要对象存储的配置，用于上传计算出的数据到对象存储，所以要挂载对象存储的配置文件。</li>
 <li><code>--rule-file</code> 指定挂载的 rule 配置，Ruler 根据配置来生成数据和触发告警。</li>
 </ul>
+<p>再准备 Ruler 配置文件 <code>thanos-ruler-config.yaml</code>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
 <span style="color:#66d9ef">kind</span>: ConfigMap
 <span style="color:#66d9ef">metadata</span>:
@@ -4420,21 +4419,21 @@
     - <span style="color:#66d9ef">name</span>: k8s.rules
       <span style="color:#66d9ef">rules</span>:
       - <span style="color:#66d9ef">expr</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">          sum(rate(container_cpu_usage_seconds_total{job=&#34;cadvisor&#34;, metrics_path=&#34;/metrics/cadvisor&#34;, image!=&#34;&#34;, container!=&#34;POD&#34;}[5m])) by (namespace)</span>
+</span><span style="color:#e6db74">          sum(rate(container_cpu_usage_seconds_total{job=&#34;cadvisor&#34;, image!=&#34;&#34;, container!=&#34;&#34;}[5m])) by (namespace)</span>
         <span style="color:#66d9ef">record</span>: namespace:container_cpu_usage_seconds_total:sum_rate
       - <span style="color:#66d9ef">expr</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">          sum(container_memory_usage_bytes{job=&#34;cadvisor&#34;, image!=&#34;&#34;, container_name!=&#34;&#34;}) by (namespace)</span>
+</span><span style="color:#e6db74">          sum(container_memory_usage_bytes{job=&#34;cadvisor&#34;, image!=&#34;&#34;, container!=&#34;&#34;}) by (namespace)</span>
         <span style="color:#66d9ef">record</span>: namespace:container_memory_usage_bytes:sum
       - <span style="color:#66d9ef">expr</span>: <span style="color:#e6db74">|
-</span><span style="color:#e6db74">          sum by (namespace, pod_name, container_name) (</span>
-            rate(container_cpu_usage_seconds_total{job=<span style="color:#e6db74">&#34;cadvisor&#34;</span>, image!=<span style="color:#e6db74">&#34;&#34;</span>, container_name!=<span style="color:#e6db74">&#34;&#34;</span>}[5m])
+</span><span style="color:#e6db74">          sum by (namespace, pod, container) (</span>
+            rate(container_cpu_usage_seconds_total{job=<span style="color:#e6db74">&#34;cadvisor&#34;</span>, image!=<span style="color:#e6db74">&#34;&#34;</span>, container!=<span style="color:#e6db74">&#34;&#34;</span>}[5m])
           )
-        <span style="color:#66d9ef">record</span>: namespace_pod_name_container_name:container_cpu_usage_seconds_total:sum_rate
+        <span style="color:#66d9ef">record</span>: namespace_pod_container:container_cpu_usage_seconds_total:sum_rate
 </code></pre></div><ul>
 <li>配置内容仅为示例，根据自身情况来配置，格式基本兼容 Prometheus 的 rule 配置格式，参考: <a href="https://thanos.io/components/rule.md/#configuring-rules">https://thanos.io/components/rule.md/#configuring-rules</a></li>
 </ul>
 <h3 id="安装-compact">安装 Compact</h3>
-<p>准备 <code>thanos-compact.yaml</code>:</p>
+<p>准备 Compact 部署配置 <code>thanos-compact.yaml</code>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
 <span style="color:#66d9ef">kind</span>: Service
 <span style="color:#66d9ef">metadata</span>:
@@ -4533,13 +4532,14 @@
 <li><code>--retention.resolution-raw</code> 指定原始数据存放时长，<code>--retention.resolution-5m</code> 指定降采样到数据点 5 分钟间隔的数据存放时长，<code>--retention.resolution-1h</code> 指定降采样到数据点 1 小时间隔的数据存放时长，它们的数据精细程度递减，占用的存储空间也是递减，通常建议它们的存放时间递增配置 (一般只有比较新的数据才会放大看，久远的数据通常只会使用大时间范围查询来看个大致，所以建议将精细程度低的数据存放更长时间)</li>
 </ul>
 <h3 id="安装-receiver">安装 Receiver</h3>
+<p>准备 Receiver 部署配置 <code>thanos-receiver.yaml</code>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
 <span style="color:#66d9ef">kind</span>: ConfigMap
 <span style="color:#66d9ef">metadata</span>:
   <span style="color:#66d9ef">name</span>: thanos-receive-hashrings
   <span style="color:#66d9ef">namespace</span>: thanos
 <span style="color:#66d9ef">data</span>:
-  <span style="color:#66d9ef">thanos-receive-hashrings</span>: <span style="color:#e6db74">|
+  <span style="color:#66d9ef">thanos-receive-hashrings.json</span>: <span style="color:#e6db74">|
 </span><span style="color:#e6db74">    [</span>
       {
         <span style="color:#66d9ef">&#34;hashring&#34;: </span><span style="color:#e6db74">&#34;soft-tenants&#34;</span>,
@@ -4605,10 +4605,10 @@
         - --remote-write.address=<span style="color:#ae81ff">0.0.0.0</span>:<span style="color:#ae81ff">19291</span>
         - --objstore.config-file=/etc/thanos/objectstorage.yaml
         - --tsdb.path=/var/thanos/receive
-        - --tsdb.retention=2h
+        - --tsdb.retention=12h
         - --label=receive_replica=<span style="color:#e6db74">&#34;$(NAME)&#34;</span>
         - --label=receive=<span style="color:#e6db74">&#34;true&#34;</span>
-        - --receive.hashrings-file=/etc/thanos/thanos-receive-hashrings
+        - --receive.hashrings-file=/etc/thanos/thanos-receive-hashrings.json
         - --receive.local-endpoint=$(NAME).thanos-receive.kube-system.svc.cluster.local:<span style="color:#ae81ff">10901</span>
         <span style="color:#66d9ef">env</span>:
         - <span style="color:#66d9ef">name</span>: NAME
@@ -4640,26 +4640,23 @@
           <span style="color:#66d9ef">periodSeconds</span>: <span style="color:#ae81ff">30</span>
         <span style="color:#66d9ef">resources</span>:
           <span style="color:#66d9ef">limits</span>:
-            <span style="color:#66d9ef">cpu</span>: <span style="color:#e6db74">&#34;8&#34;</span>
-            <span style="color:#66d9ef">memory</span>: 16Gi
-          <span style="color:#66d9ef">requests</span>:
             <span style="color:#66d9ef">cpu</span>: <span style="color:#e6db74">&#34;4&#34;</span>
             <span style="color:#66d9ef">memory</span>: 8Gi
+          <span style="color:#66d9ef">requests</span>:
+            <span style="color:#66d9ef">cpu</span>: <span style="color:#e6db74">&#34;2&#34;</span>
+            <span style="color:#66d9ef">memory</span>: 4Gi
         <span style="color:#66d9ef">volumeMounts</span>:
         - <span style="color:#66d9ef">mountPath</span>: /var/thanos/receive
-          <span style="color:#66d9ef">name</span>: thanos-receive-data
+          <span style="color:#66d9ef">name</span>: data
           <span style="color:#66d9ef">readOnly</span>: <span style="color:#66d9ef">false</span>
-        - <span style="color:#66d9ef">mountPath</span>: /etc/thanos/
+        - <span style="color:#66d9ef">mountPath</span>: /etc/thanos/thanos-receive-hashrings.json
           <span style="color:#66d9ef">name</span>: thanos-receive-hashrings
-        - <span style="color:#66d9ef">name</span>: thanos-objectstorage
+          <span style="color:#66d9ef">subPath</span>: thanos-receive-hashrings.json
+        - <span style="color:#66d9ef">mountPath</span>: /etc/thanos/objectstorage.yaml
+          <span style="color:#66d9ef">name</span>: thanos-objectstorage
           <span style="color:#66d9ef">subPath</span>: objectstorage.yaml
-          <span style="color:#66d9ef">mountPath</span>: /etc/thanos/objectstorage.yaml
       <span style="color:#66d9ef">terminationGracePeriodSeconds</span>: <span style="color:#ae81ff">120</span>
       <span style="color:#66d9ef">volumes</span>:
-      - <span style="color:#66d9ef">name</span>: thanos-receive-data
-        <span style="color:#66d9ef">hostPath</span>:
-          <span style="color:#66d9ef">path</span>: /data/thanos-receive
-          <span style="color:#66d9ef">type</span>: DirectoryOrCreate
       - <span style="color:#66d9ef">configMap</span>:
           <span style="color:#66d9ef">defaultMode</span>: <span style="color:#ae81ff">420</span>
           <span style="color:#66d9ef">name</span>: thanos-receive-hashrings
@@ -4667,8 +4664,24 @@
       - <span style="color:#66d9ef">name</span>: thanos-objectstorage
         <span style="color:#66d9ef">secret</span>:
           <span style="color:#66d9ef">secretName</span>: thanos-objectstorage
+  <span style="color:#66d9ef">volumeClaimTemplates</span>:
+  - <span style="color:#66d9ef">metadata</span>:
+      <span style="color:#66d9ef">labels</span>:
+        <span style="color:#66d9ef">app.kubernetes.io/name</span>: thanos-receive
+      <span style="color:#66d9ef">name</span>: data
+    <span style="color:#66d9ef">spec</span>:
+      <span style="color:#66d9ef">accessModes</span>:
+      - ReadWriteOnce
+      <span style="color:#66d9ef">resources</span>:
+        <span style="color:#66d9ef">requests</span>:
+          <span style="color:#66d9ef">storage</span>: 200Gi
 
-</code></pre></div>
+</code></pre></div><ul>
+<li>部署 3 个副本， 配置 hashring， <code>--label=receive_replica</code> 为数据添加 <code>receive_replica</code> 这个 label (Query 的 <code>--query.replica-label</code> 也要加上这个) 来实现 Receiver 的高可用。</li>
+<li>request, limit 根据自身规模情况自行做适当调整。</li>
+<li><code>--tsdb.retention</code> 根据自身需求调整最新数据的保留时间。</li>
+</ul>
+
 
 <footer class="footline">
 	
