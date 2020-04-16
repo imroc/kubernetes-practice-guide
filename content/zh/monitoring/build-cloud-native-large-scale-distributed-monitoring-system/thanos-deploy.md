@@ -933,7 +933,7 @@ spec:
         - --grpc-address=0.0.0.0:10901
         - --http-address=0.0.0.0:10902
         - --remote-write.address=0.0.0.0:19291
-        - --objstore.config=$(OBJSTORE_CONFIG)
+        - --objstore.config-file=/etc/thanos/objectstorage.yaml
         - --tsdb.path=/var/thanos/receive
         - --tsdb.retention=2h
         - --label=receive_replica="$(NAME)"
@@ -981,6 +981,9 @@ spec:
           readOnly: false
         - mountPath: /etc/thanos/
           name: thanos-receive-hashrings
+        - name: thanos-objectstorage
+          subPath: objectstorage.yaml
+          mountPath: /etc/thanos/objectstorage.yaml
       terminationGracePeriodSeconds: 120
       volumes:
       - name: thanos-receive-data
@@ -991,4 +994,8 @@ spec:
           defaultMode: 420
           name: thanos-receive-hashrings
         name: thanos-receive-hashrings
+      - name: thanos-objectstorage
+        secret:
+          secretName: thanos-objectstorage
+
 ```
