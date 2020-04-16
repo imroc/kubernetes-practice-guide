@@ -867,7 +867,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: thanos-receive-hashrings
-  namespace: kube-system
+  namespace: thanos
 data:
   thanos-receive-hashrings: |
     [
@@ -887,7 +887,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: thanos-receive
-  namespace: kube-system
+  namespace: thanos
   labels:
     kubernetes.io/name: thanos-receive
 spec:
@@ -915,7 +915,7 @@ metadata:
   labels:
     kubernetes.io/name: thanos-receive
   name: thanos-receive
-  namespace: kube-system
+  namespace: thanos
 spec:
   replicas: 3
   selector:
