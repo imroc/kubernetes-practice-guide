@@ -3,6 +3,7 @@ title: "Thanos 部署与实践"
 weight: 30
 date: 2020-04-09
 draft: false
+state: Beta
 ---
 
 ## 概述
