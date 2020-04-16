@@ -4539,7 +4539,7 @@
 <span style="color:#66d9ef">kind</span>: ConfigMap
 <span style="color:#66d9ef">metadata</span>:
   <span style="color:#66d9ef">name</span>: thanos-receive-hashrings
-  <span style="color:#66d9ef">namespace</span>: kube-system
+  <span style="color:#66d9ef">namespace</span>: thanos
 <span style="color:#66d9ef">data</span>:
   <span style="color:#66d9ef">thanos-receive-hashrings</span>: <span style="color:#e6db74">|
 </span><span style="color:#e6db74">    [</span>
@@ -4559,7 +4559,7 @@
 <span style="color:#66d9ef">kind</span>: Service
 <span style="color:#66d9ef">metadata</span>:
   <span style="color:#66d9ef">name</span>: thanos-receive
-  <span style="color:#66d9ef">namespace</span>: kube-system
+  <span style="color:#66d9ef">namespace</span>: thanos
   <span style="color:#66d9ef">labels</span>:
     <span style="color:#66d9ef">kubernetes.io/name</span>: thanos-receive
 <span style="color:#66d9ef">spec</span>:
@@ -4587,7 +4587,7 @@
   <span style="color:#66d9ef">labels</span>:
     <span style="color:#66d9ef">kubernetes.io/name</span>: thanos-receive
   <span style="color:#66d9ef">name</span>: thanos-receive
-  <span style="color:#66d9ef">namespace</span>: kube-system
+  <span style="color:#66d9ef">namespace</span>: thanos
 <span style="color:#66d9ef">spec</span>:
   <span style="color:#66d9ef">replicas</span>: <span style="color:#ae81ff">3</span>
   <span style="color:#66d9ef">selector</span>:
