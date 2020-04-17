@@ -2,6 +2,7 @@
 title: "钉钉告警"
 weight: 40
 state: TODO
+draft: true
 ---
 
 ## 通过 webhook 告警

@@ -2,6 +2,7 @@
 title: "企业微信告警"
 weight: 30
 state: TODO
+draft: true
 ---
 
 ## 原生支持的企业微信告警
