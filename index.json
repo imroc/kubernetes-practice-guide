@@ -130,7 +130,7 @@
 	"title": "部署指南",
 	"tags": [],
 	"description": "",
-	"content": "  方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录     "
+	"content": "  方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    安装 kubectl      "
 },
 {
 	"uri": "https://k8s.imroc.io/ingress/",
@@ -312,7 +312,7 @@
 	"title": "安全指南",
 	"tags": [],
 	"description": "",
-	"content": "目录  用户管理    利用 CSR API 创建用户      集群权限控制    控制应用权限     控制用户权限      集群证书管理    安装 cert-manager     使用 cert-manager 自动生成证书      "
+	"content": "目录  用户管理    利用 CSR API 创建用户      集群权限控制    控制应用权限     控制用户权限      集群证书管理     "
 },
 {
 	"uri": "https://k8s.imroc.io/monitoring/dingtalk-alert/",
