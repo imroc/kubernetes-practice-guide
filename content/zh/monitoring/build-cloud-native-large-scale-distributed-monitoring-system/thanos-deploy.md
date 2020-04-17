@@ -857,7 +857,7 @@ spec:
 
 ### 安装 Receiver
 
-准备 Receiver 部署配置 `thanos-receiver.yaml`:
+该组件处于试验阶段，慎用。准备 Receiver 部署配置 `thanos-receiver.yaml`:
 
 ``` yaml
 apiVersion: v1
@@ -936,7 +936,7 @@ spec:
         - --label=receive_replica="$(NAME)"
         - --label=receive="true"
         - --receive.hashrings-file=/etc/thanos/thanos-receive-hashrings.json
-        - --receive.local-endpoint=$(NAME).thanos-receive.kube-system.svc.cluster.local:10901
+        - --receive.local-endpoint=$(NAME).thanos-receive.thanos.svc.cluster.local:10901
         env:
         - name: NAME
           valueFrom:
@@ -1002,9 +1002,25 @@ spec:
       resources:
         requests:
           storage: 200Gi
-
 ```
 
 * 部署 3 个副本， 配置 hashring， `--label=receive_replica` 为数据添加 `receive_replica` 这个 label (Query 的 `--query.replica-label` 也要加上这个) 来实现 Receiver 的高可用。
+* Query 要指定 Receiver 后端地址: `--store=dnssrv+_grpc._tcp.thanos-receive.thanos.svc.cluster.local`
 * request, limit 根据自身规模情况自行做适当调整。
 * `--tsdb.retention` 根据自身需求调整最新数据的保留时间。
+* 如果改命名空间，记得把 Receiver 的 `--receive.local-endpoint` 参数也改下，不然会疯狂报错直至 OOMKilled。
+
+因为使用了 Receiver 来统一接收 Prometheus 的数据，所以 Prometheus 也不需要 Sidecar 了，但需要给 Prometheus 配置文件里加下 `remote_write`，让 Prometheus 将数据 push 给 Receiver:
+
+``` yaml
+    remote_write:
+    - url: http://thanos-receive.thanos.svc.cluster.local:19291/api/v1/receive
+```
+
+### 指定 Query 为数据源
+
+查询监控数据时需要指定 Prometheus 数据源地址，由于我们使用了 Thanos 来做分布式，而 Thanos 关键查询入口就是 Query，所以我们需要将数据源地址指定为 Query 的地址，假如使用 Grafana 查询，进入 `Configuration`-`Data Sources`-`Add data source`，选择 Prometheus，指定 thanos query 的地址: `http://thanos-query.thanos.svc.cluster.local:9090`
+
+## 总结
+
+本文教了大家如何选型 Thanos 部署方案并详细讲解了各个组件的安装方法，如果仔细阅读完本系列文章，我相信你已经有能力搭建并运维一套大型监控系统了。
