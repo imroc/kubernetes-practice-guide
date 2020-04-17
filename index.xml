@@ -304,16 +304,6 @@ apiVersion: v1 kind: ConfigMap metadata: name: flink-config labels: app: flink d
     </item>
     
     <item>
-      <title>企业微信告警</title>
-      <link>https://k8s.imroc.io/monitoring/wechat-work-alert/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/monitoring/wechat-work-alert/</guid>
-      <description>原生支持的企业微信告警 配置参考：https://prometheus.io/docs/alerting/configuration/#wechat_config 操作参考: https://songjiayang.gitbooks.io/prometheus/content/alertmanager/wechat.html
-通过企业微信群机器人告警 计划开源一款适配 alertmanager 的 webhook 程序，调企业微信群机器人的 webhook 发送群消息告警，告警内容根据 alertmanager 传来的内容进行封装</description>
-    </item>
-    
-    <item>
       <title>使用 Traefik V2 让你的后台管理页面支持登录</title>
       <link>https://k8s.imroc.io/ingress/traefik-ingress/use-traefik-to-support-login/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -339,16 +329,6 @@ cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: traefik.</description>
 部署步骤 确定 flink 部署的 namespace，这里我选 &amp;ldquo;flink&amp;rdquo;，确保 namespace 已创建:
 kubectl create ns flink 创建 RBAC (创建 ServiceAccount 绑定 flink 需要的对 k8s 集群操作的权限):
 apiVersion: v1 kind: ServiceAccount metadata: name: flink namespace: flink --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: name: flink-role-binding roleRef: apiGroup: rbac.</description>
-    </item>
-    
-    <item>
-      <title>钉钉告警</title>
-      <link>https://k8s.imroc.io/monitoring/dingtalk-alert/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/monitoring/dingtalk-alert/</guid>
-      <description>通过 webhook 告警 参考： https://theo.im/blog/2017/10/16/release-prometheus-alertmanager-webhook-for-dingtalk/
-github: https://github.com/timonwong/prometheus-webhook-dingtalk</description>
     </item>
     
     <item>

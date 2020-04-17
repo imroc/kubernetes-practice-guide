@@ -163,10 +163,6 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/monitoring/wechat-work-alert/</loc>
-  </url>
-  
-  <url>
     <loc>https://k8s.imroc.io/ingress/traefik-ingress/use-traefik-to-support-login/</loc>
   </url>
   
@@ -196,10 +192,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/security/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/monitoring/dingtalk-alert/</loc>
   </url>
   
   <url>
