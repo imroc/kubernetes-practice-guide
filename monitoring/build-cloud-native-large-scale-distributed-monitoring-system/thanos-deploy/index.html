@@ -3706,8 +3706,10 @@
         <li><a href="#安装-ruler">安装 Ruler</a></li>
         <li><a href="#安装-compact">安装 Compact</a></li>
         <li><a href="#安装-receiver">安装 Receiver</a></li>
+        <li><a href="#指定-query-为数据源">指定 Query 为数据源</a></li>
       </ul>
     </li>
+    <li><a href="#总结">总结</a></li>
   </ul>
 </nav>
     </div>
@@ -4532,7 +4534,7 @@
 <li><code>--retention.resolution-raw</code> 指定原始数据存放时长，<code>--retention.resolution-5m</code> 指定降采样到数据点 5 分钟间隔的数据存放时长，<code>--retention.resolution-1h</code> 指定降采样到数据点 1 小时间隔的数据存放时长，它们的数据精细程度递减，占用的存储空间也是递减，通常建议它们的存放时间递增配置 (一般只有比较新的数据才会放大看，久远的数据通常只会使用大时间范围查询来看个大致，所以建议将精细程度低的数据存放更长时间)</li>
 </ul>
 <h3 id="安装-receiver">安装 Receiver</h3>
-<p>准备 Receiver 部署配置 <code>thanos-receiver.yaml</code>:</p>
+<p>该组件处于试验阶段，慎用。准备 Receiver 部署配置 <code>thanos-receiver.yaml</code>:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">apiVersion</span>: v1
 <span style="color:#66d9ef">kind</span>: ConfigMap
 <span style="color:#66d9ef">metadata</span>:
@@ -4609,7 +4611,7 @@
         - --label=receive_replica=<span style="color:#e6db74">&#34;$(NAME)&#34;</span>
         - --label=receive=<span style="color:#e6db74">&#34;true&#34;</span>
         - --receive.hashrings-file=/etc/thanos/thanos-receive-hashrings.json
-        - --receive.local-endpoint=$(NAME).thanos-receive.kube-system.svc.cluster.local:<span style="color:#ae81ff">10901</span>
+        - --receive.local-endpoint=$(NAME).thanos-receive.thanos.svc.cluster.local:<span style="color:#ae81ff">10901</span>
         <span style="color:#66d9ef">env</span>:
         - <span style="color:#66d9ef">name</span>: NAME
           <span style="color:#66d9ef">valueFrom</span>:
@@ -4675,12 +4677,20 @@
       <span style="color:#66d9ef">resources</span>:
         <span style="color:#66d9ef">requests</span>:
           <span style="color:#66d9ef">storage</span>: 200Gi
-
 </code></pre></div><ul>
 <li>部署 3 个副本， 配置 hashring， <code>--label=receive_replica</code> 为数据添加 <code>receive_replica</code> 这个 label (Query 的 <code>--query.replica-label</code> 也要加上这个) 来实现 Receiver 的高可用。</li>
+<li>Query 要指定 Receiver 后端地址: <code>--store=dnssrv+_grpc._tcp.thanos-receive.thanos.svc.cluster.local</code></li>
 <li>request, limit 根据自身规模情况自行做适当调整。</li>
 <li><code>--tsdb.retention</code> 根据自身需求调整最新数据的保留时间。</li>
+<li>如果改命名空间，记得把 Receiver 的 <code>--receive.local-endpoint</code> 参数也改下，不然会疯狂报错直至 OOMKilled。</li>
 </ul>
+<p>因为使用了 Receiver 来统一接收 Prometheus 的数据，所以 Prometheus 也不需要 Sidecar 了，但需要给 Prometheus 配置文件里加下 <code>remote_write</code>，让 Prometheus 将数据 push 给 Receiver:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml">    <span style="color:#66d9ef">remote_write</span>:
+    - <span style="color:#66d9ef">url</span>: http://thanos-receive.thanos.svc.cluster.local:<span style="color:#ae81ff">19291</span>/api/v1/receive
+</code></pre></div><h3 id="指定-query-为数据源">指定 Query 为数据源</h3>
+<p>查询监控数据时需要指定 Prometheus 数据源地址，由于我们使用了 Thanos 来做分布式，而 Thanos 关键查询入口就是 Query，所以我们需要将数据源地址指定为 Query 的地址，假如使用 Grafana 查询，进入 <code>Configuration</code>-<code>Data Sources</code>-<code>Add data source</code>，选择 Prometheus，指定 thanos query 的地址: <code>http://thanos-query.thanos.svc.cluster.local:9090</code></p>
+<h2 id="总结">总结</h2>
+<p>本文教了大家如何选型 Thanos 部署方案并详细讲解了各个组件的安装方法，如果仔细阅读完本系列文章，我相信你已经有能力搭建并运维一套大型监控系统了。</p>
 
 
 <footer class="footline">
