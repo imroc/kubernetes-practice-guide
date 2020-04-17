@@ -130,7 +130,7 @@
 	"title": "部署指南",
 	"tags": [],
 	"description": "",
-	"content": "  方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    Go 语言编译原理与优化     使用 client-go 开发 k8s 应用      "
+	"content": "  方案选型     使用 kubespray 部署     手工部署    部署前的准备工作     部署 ETCD     部署 Master     部署 Worker 节点     部署关键组件      附加组件    以 Daemonset 方式部署 kube-proxy     部署 CoreDNS      附录    kubectl 高效技巧     yaml 片段    Deployment    在容器内使用 perf     实用命令与脚本    Pod 相关脚本   网络调试相关脚本   节点相关脚本    泛域名动态转发 Service      "
 },
 {
 	"uri": "https://k8s.imroc.io/ingress/",
