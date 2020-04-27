@@ -3682,9 +3682,9 @@
 <h2 id="健康检查配置不合理">健康检查配置不合理</h2>
 <p><code>initialDelaySeconds</code> 太短，容器启动慢，导致容器还没完全启动就开始探测，如果 successThreshold 是默认值 1，检查失败一次就会被 kill，然后 pod 一直这样被 kill 重启。</p>
 <h2 id="节点负载过高">节点负载过高</h2>
-<p>cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常会 timeout，导致 kubelet 认为 pod 不健康。参考本书 <a href="../../../handle/high-load/">处理实践: 高负载</a> 一节。</p>
+<p>cpu 占用高（比如跑满）会导致进程无法正常发包收包，通常会 timeout，导致 kubelet 认为 pod 不健康。参考本书 <a href="../../handle/high-load/">处理实践: 高负载</a> 一节。</p>
 <h2 id="容器进程被木马进程杀死">容器进程被木马进程杀死</h2>
-<p>参考本书 <a href="../../../trick/use-systemtap-to-locate-problems/">处理实践: 使用 systemtap 定位疑难杂症</a> 进一步定位。</p>
+<p>参考本书 <a href="../../trick/use-systemtap-to-locate-problems/">处理实践: 使用 systemtap 定位疑难杂症</a> 进一步定位。</p>
 <h2 id="容器内进程端口监听挂掉">容器内进程端口监听挂掉</h2>
 <p>使用 <code>netstat -tunlp</code> 检查端口监听是否还在，如果不在了，抓包可以看到会直接 reset 掉健康检查探测的连接:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">20:15:17.890996 IP 172.16.2.1.38074 &gt; 172.16.2.23.8888: Flags <span style="color:#f92672">[</span>S<span style="color:#f92672">]</span>, seq 96880261, win 14600, options <span style="color:#f92672">[</span>mss 1424,nop,nop,sackOK,nop,wscale 7<span style="color:#f92672">]</span>, length <span style="color:#ae81ff">0</span>
