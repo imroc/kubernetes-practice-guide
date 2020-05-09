@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>高负载</title>
+    <title>.Net Core 配置文件在Kubernetes中无法热加载</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/troubleshooting/handle/high-load/">
+  <body class="" data-url="/avoid/dotnet-configuration-auto-reload/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -839,7 +839,7 @@
   
     
     <li data-nav-id="/troubleshooting/" title="排错指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -971,7 +971,7 @@
   
     
     <li data-nav-id="/troubleshooting/handle/" title="处理实践" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1104,7 +1104,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/handle/high-load/" title="高负载" class="dd-item active">
+      <li data-nav-id="/troubleshooting/handle/high-load/" title="高负载" class="dd-item ">
         <a href="/troubleshooting/handle/high-load/">
         高负载
         <i class="fas fa-check read-icon"></i>
@@ -1861,7 +1861,7 @@
   
     
     <li data-nav-id="/avoid/" title="避坑指南" class="dd-item 
-        
+        parent
         
         
         ">
@@ -1891,7 +1891,7 @@
  
   
     
-      <li data-nav-id="/avoid/dotnet-configuration-auto-reload/" title=".Net Core 配置文件在Kubernetes中无法热加载" class="dd-item ">
+      <li data-nav-id="/avoid/dotnet-configuration-auto-reload/" title=".Net Core 配置文件在Kubernetes中无法热加载" class="dd-item active">
         <a href="/avoid/dotnet-configuration-auto-reload/">
         .Net Core 配置文件在Kubernetes中无法热加载
         <i class="fas fa-check read-icon"></i>
@@ -3550,7 +3550,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/handle/high-load/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/avoid/dotnet-configuration-auto-reload/" selected>简体中文</option>
                     
                   
               
@@ -3612,7 +3612,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/handle/high-load.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/avoid/dotnet-configuration-auto-reload.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3643,13 +3643,7 @@
             
           
           
-            
-            
-          
-          
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/handle/'>处理实践</a> > 高负载
-          
-         
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/avoid/'>避坑指南</a> > .Net Core 配置文件在Kubernetes中无法热加载
           
          
           
@@ -3662,13 +3656,7 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents">
-  <ul>
-    <li><a href="#过多-io-等待">过多 IO 等待</a></li>
-    <li><a href="#节点上部署了其它非-k8s-管理的服务">节点上部署了其它非 K8S 管理的服务</a></li>
-    <li><a href="#参考资料">参考资料</a></li>
-  </ul>
-</nav>
+<nav id="TableOfContents"></nav>
     </div>
 </div>
 
@@ -3684,204 +3672,27 @@
           
             <h1>
               
-              高负载
+              .Net Core 配置文件在Kubernetes中无法热加载
             </h1>
           
 
         
 
 
+<div class="notices info">
+	<p>文档当前状态：TODO </p>
+</div>
 
-<p>TODO 优化</p>
-<p>节点高负载会导致进程无法获得足够的 cpu 时间片来运行，通常表现为网络 timeout，健康检查失败，服务不可用。</p>
-<h2 id="过多-io-等待">过多 IO 等待</h2>
-<p>有时候即便 cpu ‘us’ (user) 不高但 cpu ‘id’ (idle) 很高的情况节点负载也很高，这是为什么呢？通常是文件 IO 性能达到瓶颈导致 IO WAIT 过多，从而使得节点整体负载升高，影响其它进程的性能。</p>
-<p>使用 <code>top</code> 命令看下当前负载：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">top - 19:42:06 up 23:59,  2 users,  load average: 34.64, 35.80, 35.76
-Tasks: 679 total,   1 running, 678 sleeping,   0 stopped,   0 zombie
-Cpu(s): 15.6%us,  1.7%sy,  0.0%ni, 74.7%id,  7.9%wa,  0.0%hi,  0.1%si,  0.0%st
-Mem:  32865032k total, 30989168k used,  1875864k free,   370748k buffers
-Swap:  8388604k total,     5440k used,  8383164k free,  7982424k cached
 
-  PID USER      PR  NI  VIRT  RES  SHR S %CPU %MEM    TIME+  COMMAND
- 9783 mysql     20   0 17.3g  16g 8104 S 186.9 52.3   3752:33 mysqld
- 5700 nginx     20   0 1330m  66m 9496 S  8.9  0.2   0:20.82 php-fpm
- 6424 nginx     20   0 1330m  65m 8372 S  8.3  0.2   0:04.97 php-fpm
- 6573 nginx     20   0 1330m  64m 7368 S  8.3  0.2   0:01.49 php-fpm
- 5927 nginx     20   0 1320m  56m 9272 S  7.6  0.2   0:12.54 php-fpm
- 5956 nginx     20   0 1330m  65m 8500 S  7.6  0.2   0:12.70 php-fpm
- 6126 nginx     20   0 1321m  57m 8964 S  7.3  0.2   0:09.72 php-fpm
- 6127 nginx     20   0 1319m  54m 9520 S  6.6  0.2   0:08.73 php-fpm
- 6131 nginx     20   0 1320m  56m 9404 S  6.6  0.2   0:09.43 php-fpm
- 6174 nginx     20   0 1321m  56m 8444 S  6.3  0.2   0:08.92 php-fpm
- 5790 nginx     20   0 1319m  54m 9468 S  5.6  0.2   0:17.33 php-fpm
- 6575 nginx     20   0 1320m  55m 8212 S  5.6  0.2   0:02.11 php-fpm
- 6160 nginx     20   0 1310m  44m 8296 S  4.0  0.1   0:10.05 php-fpm
- 5597 nginx     20   0 1310m  46m 9556 S  3.6  0.1   0:21.03 php-fpm
- 5786 nginx     20   0 1310m  45m 8528 S  3.6  0.1   0:15.53 php-fpm
- 5797 nginx     20   0 1310m  46m 9444 S  3.6  0.1   0:14.02 php-fpm
- 6158 nginx     20   0 1310m  45m 8324 S  3.6  0.1   0:10.20 php-fpm
- 5698 nginx     20   0 1310m  46m 9184 S  3.3  0.1   0:20.62 php-fpm
- 5779 nginx     20   0 1309m  44m 8336 S  3.3  0.1   0:15.34 php-fpm
- 6540 nginx     20   0 1306m  40m 7884 S  3.3  0.1   0:02.46 php-fpm
- 5553 nginx     20   0 1300m  36m 9568 S  3.0  0.1   0:21.58 php-fpm
- 5722 nginx     20   0 1310m  45m 8552 S  3.0  0.1   0:17.25 php-fpm
- 5920 nginx     20   0 1302m  36m 8208 S  3.0  0.1   0:14.23 php-fpm
- 6432 nginx     20   0 1310m  45m 8420 S  3.0  0.1   0:05.86 php-fpm
- 5285 nginx     20   0 1302m  38m 9696 S  2.7  0.1   0:23.41 php-fpm
-</code></pre></div><p><code>wa</code> (wait) 表示 IO WAIT 的 cpu 占用，默认看到的是所有核的平均值，要看每个核的 <code>wa</code> 值需要按下 &ldquo;1&rdquo;:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">top - 19:42:08 up 23:59,  2 users,  load average: 34.64, 35.80, 35.76
-Tasks: 679 total,   1 running, 678 sleeping,   0 stopped,   0 zombie
-Cpu0  : 29.5%us,  3.7%sy,  0.0%ni, 48.7%id, 17.9%wa,  0.0%hi,  0.1%si,  0.0%st
-Cpu1  : 29.3%us,  3.7%sy,  0.0%ni, 48.9%id, 17.9%wa,  0.0%hi,  0.1%si,  0.0%st
-Cpu2  : 26.1%us,  3.1%sy,  0.0%ni, 64.4%id,  6.0%wa,  0.0%hi,  0.3%si,  0.0%st
-Cpu3  : 25.9%us,  3.1%sy,  0.0%ni, 65.5%id,  5.4%wa,  0.0%hi,  0.1%si,  0.0%st
-Cpu4  : 24.9%us,  3.0%sy,  0.0%ni, 66.8%id,  5.0%wa,  0.0%hi,  0.3%si,  0.0%st
-Cpu5  : 24.9%us,  2.9%sy,  0.0%ni, 67.0%id,  4.8%wa,  0.0%hi,  0.3%si,  0.0%st
-Cpu6  : 24.2%us,  2.7%sy,  0.0%ni, 68.3%id,  4.5%wa,  0.0%hi,  0.3%si,  0.0%st
-Cpu7  : 24.3%us,  2.6%sy,  0.0%ni, 68.5%id,  4.2%wa,  0.0%hi,  0.3%si,  0.0%st
-Cpu8  : 23.8%us,  2.6%sy,  0.0%ni, 69.2%id,  4.1%wa,  0.0%hi,  0.3%si,  0.0%st
-Cpu9  : 23.9%us,  2.5%sy,  0.0%ni, 69.3%id,  4.0%wa,  0.0%hi,  0.3%si,  0.0%st
-Cpu10 : 23.3%us,  2.4%sy,  0.0%ni, 68.7%id,  5.6%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu11 : 23.3%us,  2.4%sy,  0.0%ni, 69.2%id,  5.1%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu12 : 21.8%us,  2.4%sy,  0.0%ni, 60.2%id, 15.5%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu13 : 21.9%us,  2.4%sy,  0.0%ni, 60.6%id, 15.2%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu14 : 21.4%us,  2.3%sy,  0.0%ni, 72.6%id,  3.7%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu15 : 21.5%us,  2.2%sy,  0.0%ni, 73.2%id,  3.1%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu16 : 21.2%us,  2.2%sy,  0.0%ni, 73.6%id,  3.0%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu17 : 21.2%us,  2.1%sy,  0.0%ni, 73.8%id,  2.8%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu18 : 20.9%us,  2.1%sy,  0.0%ni, 74.1%id,  2.9%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu19 : 21.0%us,  2.1%sy,  0.0%ni, 74.4%id,  2.5%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu20 : 20.7%us,  2.0%sy,  0.0%ni, 73.8%id,  3.4%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu21 : 20.8%us,  2.0%sy,  0.0%ni, 73.9%id,  3.2%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu22 : 20.8%us,  2.0%sy,  0.0%ni, 74.4%id,  2.8%wa,  0.0%hi,  0.0%si,  0.0%st
-Cpu23 : 20.8%us,  1.9%sy,  0.0%ni, 74.4%id,  2.8%wa,  0.0%hi,  0.0%si,  0.0%st
-Mem:  32865032k total, 30209248k used,  2655784k free,   370748k buffers
-Swap:  8388604k total,     5440k used,  8383164k free,  7986552k cached
-</code></pre></div><p><code>wa</code> 通常是 0%，如果经常在 1 之上，说明存储设备的速度已经太慢，无法跟上 cpu 的处理速度。</p>
-<p>使用 <code>atop</code> 看下当前磁盘 IO 状态:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">ATOP - lemp              2017/01/23  19:42:32              ---------                10s elapsed
-PRC | sys    3.18s | user  33.24s | #proc    679 | #tslpu    28 | #zombie    0 | #exit      0 |
-CPU | sys      29% | user    330% | irq       1% | idle   1857% | wait    182% | curscal  69% |
-CPL | avg1   33.00 | avg5   35.29 | avg15  35.59 | csw    62610 | intr   76926 | numcpu    24 |
-MEM | tot    31.3G | free    2.1G | cache   7.6G | dirty  41.0M | buff  362.1M | slab    1.2G |
-SWP | tot     8.0G | free    8.0G |              |              | vmcom  23.9G | vmlim  23.7G |
-DSK |          sda | busy    100% | read       4 | write   1789 | MBw/s   2.84 | avio 5.58 ms |
-NET | transport    | tcpi   10357 | tcpo    9065 | udpi       0 | udpo       0 | tcpao    174 |
-NET | network      | ipi    10360 | ipo     9065 | ipfrw      0 | deliv  10359 | icmpo      0 |
-NET | eth0      4% | pcki    6649 | pcko    6136 | si 1478 Kbps | so 4115 Kbps | erro       0 |
-NET | lo      ---- | pcki    4082 | pcko    4082 | si 8967 Kbps | so 8967 Kbps | erro       0 |
-
-  PID   TID  THR  SYSCPU  USRCPU  VGROW  RGROW  RDDSK  WRDSK ST EXC S CPUNR  CPU CMD       1/12
- 9783     -  156   0.21s  19.44s     0K  -788K     4K  1344K --   - S     4 197% mysqld
- 5596     -    1   0.10s   0.62s 47204K 47004K     0K   220K --   - S    18   7% php-fpm
- 6429     -    1   0.06s   0.34s 19840K 19968K     0K     0K --   - S    21   4% php-fpm
- 6210     -    1   0.03s   0.30s -5216K -5204K     0K     0K --   - S    19   3% php-fpm
- 5757     -    1   0.05s   0.27s 26072K 26012K     0K     4K --   - S    13   3% php-fpm
- 6433     -    1   0.04s   0.28s -2816K -2816K     0K     0K --   - S    11   3% php-fpm
- 5846     -    1   0.06s   0.22s -2560K -2660K     0K     0K --   - S     7   3% php-fpm
- 5791     -    1   0.05s   0.21s  5764K  5692K     0K     0K --   - S    22   3% php-fpm
- 5860     -    1   0.04s   0.21s 48088K 47724K     0K     0K --   - S     1   3% php-fpm
- 6231     -    1   0.04s   0.20s  -256K    -4K     0K     0K --   - S     1   2% php-fpm
- 6154     -    1   0.03s   0.21s -3004K -3184K     0K     0K --   - S    21   2% php-fpm
- 6573     -    1   0.04s   0.20s  -512K  -168K     0K     0K --   - S     4   2% php-fpm
- 6435     -    1   0.04s   0.19s -3216K -2980K     0K     0K --   - S    15   2% php-fpm
- 5954     -    1   0.03s   0.20s     0K   164K     0K     4K --   - S     0   2% php-fpm
- 6133     -    1   0.03s   0.19s 41056K 40432K     0K     0K --   - S    18   2% php-fpm
- 6132     -    1   0.02s   0.20s 37836K 37440K     0K     0K --   - S    11   2% php-fpm
- 6242     -    1   0.03s   0.19s -12.2M -12.3M     0K     4K --   - S    12   2% php-fpm
- 6285     -    1   0.02s   0.19s 39516K 39420K     0K     0K --   - S     3   2% php-fpm
- 6455     -    1   0.05s   0.16s 29008K 28560K     0K     0K --   - S    14   2% php-fpm
-</code></pre></div><p>在本例中磁盘 <code>sda</code> 已经 100% busy，已经严重达到性能瓶颈。按 &lsquo;d&rsquo; 看下是哪些进程在使用磁盘IO:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">ATOP - lemp               2017/01/23  19:42:46               ---------               2s elapsed
-PRC | sys    0.24s | user   1.99s | #proc    679 | #tslpu    54 | #zombie    0 | #exit      0 |
-CPU | sys      11% | user    101% | irq       1% | idle   2089% | wait    208% | curscal  63% |
-CPL | avg1   38.49 | avg5   36.48 | avg15  35.98 | csw     4654 | intr    6876 | numcpu    24 |
-MEM | tot    31.3G | free    2.2G | cache   7.6G | dirty  48.7M | buff  362.1M | slab    1.2G |
-SWP | tot     8.0G | free    8.0G |              |              | vmcom  23.9G | vmlim  23.7G |
-DSK |          sda | busy    100% | read       2 | write    362 | MBw/s   2.28 | avio 5.49 ms |
-NET | transport    | tcpi    1031 | tcpo     968 | udpi       0 | udpo       0 | tcpao     45 |
-NET | network      | ipi     1031 | ipo      968 | ipfrw      0 | deliv   1031 | icmpo      0 |
-NET | eth0      1% | pcki     558 | pcko     508 | si  762 Kbps | so 1077 Kbps | erro       0 |
-NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps | erro       0 |
-
-  PID          TID         RDDSK         WRDSK        WCANCL         DSK        CMD         1/5
- 9783            -            0K          468K           16K         40%        mysqld
- 1930            -            0K          212K            0K         18%        flush-8:0
- 5896            -            0K          152K            0K         13%        nginx
-  880            -            0K          148K            0K         13%        jbd2/sda5-8
- 5909            -            0K           60K            0K          5%        nginx
- 5906            -            0K           36K            0K          3%        nginx
- 5907            -           16K            8K            0K          2%        nginx
- 5903            -           20K            0K            0K          2%        nginx
- 5901            -            0K           12K            0K          1%        nginx
- 5908            -            0K            8K            0K          1%        nginx
- 5894            -            0K            8K            0K          1%        nginx
- 5911            -            0K            8K            0K          1%        nginx
- 5900            -            0K            4K            4K          0%        nginx
- 5551            -            0K            4K            0K          0%        php-fpm
- 5913            -            0K            4K            0K          0%        nginx
- 5895            -            0K            4K            0K          0%        nginx
- 6133            -            0K            0K            0K          0%        php-fpm
- 5780            -            0K            0K            0K          0%        php-fpm
- 6675            -            0K            0K            0K          0%        atop
-</code></pre></div><p>也可以使用 <code>iotop -oPa</code> 查看哪些进程占用磁盘 IO:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Total DISK READ: 15.02 K/s | Total DISK WRITE: 3.82 M/s
-  PID  PRIO  USER     DISK READ  DISK WRITE  SWAPIN     IO&gt;    COMMAND
- 1930 be/4 root          0.00 B   1956.00 K  0.00 % 83.34 % [flush-8:0]
- 5914 be/4 nginx         0.00 B      0.00 B  0.00 % 36.56 % nginx: cache manager process
-  880 be/3 root          0.00 B     21.27 M  0.00 % 35.03 % [jbd2/sda5-8]
- 5913 be/2 nginx        36.00 K   1000.00 K  0.00 %  8.94 % nginx: worker process
- 5910 be/2 nginx         0.00 B   1048.00 K  0.00 %  8.43 % nginx: worker process
- 5896 be/2 nginx        56.00 K    452.00 K  0.00 %  6.91 % nginx: worker process
- 5909 be/2 nginx        20.00 K   1144.00 K  0.00 %  6.24 % nginx: worker process
- 5890 be/2 nginx        48.00 K    692.00 K  0.00 %  6.07 % nginx: worker process
- 5892 be/2 nginx        84.00 K    736.00 K  0.00 %  5.71 % nginx: worker process
- 5901 be/2 nginx        20.00 K    504.00 K  0.00 %  5.46 % nginx: worker process
- 5899 be/2 nginx         0.00 B    596.00 K  0.00 %  5.14 % nginx: worker process
- 5897 be/2 nginx        28.00 K   1388.00 K  0.00 %  4.90 % nginx: worker process
- 5908 be/2 nginx        48.00 K    700.00 K  0.00 %  4.43 % nginx: worker process
- 5905 be/2 nginx        32.00 K   1140.00 K  0.00 %  4.36 % nginx: worker process
- 5900 be/2 nginx         0.00 B   1208.00 K  0.00 %  4.31 % nginx: worker process
- 5904 be/2 nginx        36.00 K   1244.00 K  0.00 %  2.80 % nginx: worker process
- 5895 be/2 nginx        16.00 K    780.00 K  0.00 %  2.50 % nginx: worker process
- 5907 be/2 nginx         0.00 B   1548.00 K  0.00 %  2.43 % nginx: worker process
- 5903 be/2 nginx        36.00 K   1032.00 K  0.00 %  2.34 % nginx: worker process
- 6130 be/4 nginx         0.00 B     72.00 K  0.00 %  2.18 % php-fpm: pool www
- 5906 be/2 nginx        12.00 K    844.00 K  0.00 %  2.10 % nginx: worker process
- 5889 be/2 nginx        40.00 K   1164.00 K  0.00 %  2.00 % nginx: worker process
- 5894 be/2 nginx        44.00 K    760.00 K  0.00 %  1.61 % nginx: worker process
- 5902 be/2 nginx        52.00 K    992.00 K  0.00 %  1.55 % nginx: worker process
- 5893 be/2 nginx        64.00 K    972.00 K  0.00 %  1.22 % nginx: worker process
- 5814 be/4 nginx        36.00 K     44.00 K  0.00 %  1.06 % php-fpm: pool www
- 6159 be/4 nginx         4.00 K      4.00 K  0.00 %  1.00 % php-fpm: pool www
- 5693 be/4 nginx         0.00 B      4.00 K  0.00 %  0.86 % php-fpm: pool www
- 5912 be/2 nginx        68.00 K    300.00 K  0.00 %  0.72 % nginx: worker process
- 5911 be/2 nginx        20.00 K    788.00 K  0.00 %  0.72 % nginx: worker process
-</code></pre></div><p>通过 <code>man iotop</code> 可以看下这几个参数的含义：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">-o, --only
-       Only show processes or threads actually doing I/O, instead of showing all processes or threads. This can be dynamically toggled by pressing o.
--P, --processes
-       Only show processes. Normally iotop shows all threads.
-
--a, --accumulated
-       Show accumulated I/O instead of bandwidth. In this mode, iotop shows the amount of I/O processes have <span style="color:#66d9ef">done</span> since iotop started.
-</code></pre></div><h2 id="节点上部署了其它非-k8s-管理的服务">节点上部署了其它非 K8S 管理的服务</h2>
-<p>TODO 优化</p>
-<p>比如在节点上装了数据库，但不被 K8S 所管理，这是用法不正确，不建议在 K8S 节点上部署其它进程。</p>
-<h2 id="参考资料">参考资料</h2>
-<ul>
-<li>Linux server performance: Is disk I/O slowing your application: <a href="https://haydenjames.io/linux-server-performance-disk-io-slowing-application/">https://haydenjames.io/linux-server-performance-disk-io-slowing-application/</a></li>
-</ul>
 
 
 <footer class="footline">
 	
 	
 	
-	<i class='fas fa-user'></i> <a href="https://imroc.io">roc</a>
+	<i class='fas fa-user'></i> <a href="https://yulibaozi.com">yulibaozi</a>
     
-	
+	 <i class='fas fa-calendar'></i> 2020-05-09
 </footer>
 
         
@@ -3932,7 +3743,7 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:4fb4d5d29947bf804ba6ec3c5b3e66e4")
+  console.log("gitalk id:9883274c8c9a2157de743b9d92479dfb")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3940,9 +3751,9 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: '高负载',
+      title: '.Net Core 配置文件在Kubernetes中无法热加载',
       createIssueManually: false,
-      id: '4fb4d5d29947bf804ba6ec3c5b3e66e4',
+      id: '9883274c8c9a2157de743b9d92479dfb',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -4437,7 +4248,6 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
             
                 
                     
-                    
                 
                 
 
@@ -4452,9 +4262,6 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4520,7 +4327,6 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
             
                 
                     
-                    
                 
                 
 
@@ -4533,9 +4339,6 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4617,7 +4420,6 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
             
                 
                     
-                    
                 
                 
 
@@ -4636,9 +4438,6 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -5139,6 +4938,7 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
             
                 
                     
+                    
                 
                 
 
@@ -5153,6 +4953,7 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
             
             
                 
+                    
                     
                 
                 
@@ -5169,6 +4970,9 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -6216,10 +6020,10 @@ NET | lo      ---- | pcki     406 | pcko     406 | si 2273 Kbps | so 2273 Kbps |
 	 
 	 
 		
-			<a class="nav nav-prev" href="/troubleshooting/handle/disk-full/" title="磁盘爆满"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/avoid/" title="避坑指南"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/troubleshooting/node/" title="节点排错" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/avoid/cgroup-leaking/" title="cgroup 泄露" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>

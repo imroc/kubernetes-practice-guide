@@ -6,7 +6,7 @@
     <description>Recent content on Kubernetes 实践指南</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh</language>
-    <lastBuildDate>Thu, 09 Apr 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 09 May 2020 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="https://k8s.imroc.io/index.xml" rel="self" type="application/rss+xml" />
     
@@ -329,6 +329,15 @@ cat &amp;lt;&amp;lt;EOF | kubectl apply -f - apiVersion: traefik.</description>
 部署步骤 确定 flink 部署的 namespace，这里我选 &amp;ldquo;flink&amp;rdquo;，确保 namespace 已创建:
 kubectl create ns flink 创建 RBAC (创建 ServiceAccount 绑定 flink 需要的对 k8s 集群操作的权限):
 apiVersion: v1 kind: ServiceAccount metadata: name: flink namespace: flink --- apiVersion: rbac.authorization.k8s.io/v1 kind: ClusterRoleBinding metadata: name: flink-role-binding roleRef: apiGroup: rbac.</description>
+    </item>
+    
+    <item>
+      <title>.Net Core 配置文件在Kubernetes中无法热加载</title>
+      <link>https://k8s.imroc.io/avoid/dotnet-configuration-auto-reload/</link>
+      <pubDate>Sat, 09 May 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/avoid/dotnet-configuration-auto-reload/</guid>
+      <description></description>
     </item>
     
     <item>

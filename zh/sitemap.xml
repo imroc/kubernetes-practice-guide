@@ -150,6 +150,11 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/avoid/</loc>
+    <lastmod>2020-05-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-deploy/</loc>
     <lastmod>2020-04-09T00:00:00+00:00</lastmod>
   </url>
@@ -168,10 +173,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/troubleshooting/node/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/avoid/</loc>
   </url>
   
   <url>
@@ -234,8 +235,13 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/avoid/dotnet-configuration-auto-reload/</loc>
+    <lastmod>2020-05-09T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/</loc>
-    <lastmod>2020-04-09T00:00:00+00:00</lastmod>
+    <lastmod>2020-05-09T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
