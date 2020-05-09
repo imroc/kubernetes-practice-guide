@@ -3757,13 +3757,13 @@ config.AddJsonFile(Path.Combine(configPath, <span style="color:#e6db74">&#34;app
 <li>一种是你的热加载配置功能还存在 bug, 比如: 上一次请求, 配置仍然使用的老旧配置内容, 下一次请求却使用了最新的配置内容,这个时候, 我们需要继续向下排查: <code>.NET Core</code> 引入了<code>Options</code>模式，使用类来表示相关的设置组,用强类型的类来表达配置项(白话大概表述为: 代码里面有个对象对应配置里的某个字段, 配置里对应的字段更改会触发代码里对象的属性变化), 示例如下:</li>
 </ol>
 <p><strong>配置示例:</strong></p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">cat</span> <span style="color:#960050;background-color:#1e0010">appsettings.json</span>
- <span style="color:#e6db74">&#34;JwtIssuerOptions&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
-    <span style="color:#f92672">&#34;Issuer&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
-    <span style="color:#f92672">&#34;Audience&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
-    <span style="color:#f92672">&#34;SecretKey&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>
-    <span style="color:#960050;background-color:#1e0010">...</span>
-  }
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">cat appsettings.json
+ <span style="color:#e6db74">&#34;JwtIssuerOptions&#34;</span>: <span style="color:#f92672">{</span>
+    <span style="color:#e6db74">&#34;Issuer&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
+    <span style="color:#e6db74">&#34;Audience&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
+    <span style="color:#e6db74">&#34;SecretKey&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>
+    ...
+  <span style="color:#f92672">}</span>
 </code></pre></div><p><strong>代码示例:</strong></p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.Configure&lt;JwtIssuerOptions&gt;(Configuration.GetSection(<span style="color:#e6db74">&#34;JwtIssuerOptions&#34;</span>));
 </code></pre></div><p>而 Options 模式分为三种:</p>
