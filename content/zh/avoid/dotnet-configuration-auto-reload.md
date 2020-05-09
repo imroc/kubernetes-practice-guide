@@ -103,7 +103,7 @@ config.AddJsonFile(ConfigMapFileProvider.FromRelativePath("Config"),
 2. 一种是你的热加载配置功能还存在 bug, 比如: 上一次请求, 配置仍然使用的老旧配置内容, 下一次请求却使用了最新的配置内容,这个时候, 我们需要继续向下排查: `.NET Core` 引入了`Options`模式，使用类来表示相关的设置组,用强类型的类来表达配置项(白话大概表述为: 代码里面有个对象对应配置里的某个字段, 配置里对应的字段更改会触发代码里对象的属性变化), 示例如下:
 
 **配置示例:**
-``` json
+``` bash
 cat appsettings.json
  "JwtIssuerOptions": {
     "Issuer": "test",
