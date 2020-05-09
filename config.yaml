@@ -6,6 +6,8 @@ theme: "hugo-theme-learn"
 metaDataFormat: "yaml"
 defaultContentLanguageInSubdir: false
 
+markup.goldmark.renderer.unsafe: true
+
 params:
   description: "Kubernetes 实践指南"
   author: "roc"
