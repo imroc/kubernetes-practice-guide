@@ -99,3 +99,25 @@ Sep 18 10:19:49 VM-1-33-ubuntu dockerd[4822]: time="2019-09-18T10:19:49.90394365
 * 修复的PR: https://github.com/kubernetes/kubernetes/pull/66480
 
 升级集群版本可以彻底解决，临时规避可以给 rollingUpdate 类型 daemonset 不使用 nodeAffinity，改用 nodeSelector。
+
+## mount 的目录被其它进程占用
+
+dockerd 报错 `device or resource busy`:
+
+``` bash
+May 09 09:55:12 VM_0_21_centos dockerd[6540]: time="2020-05-09T09:55:12.774467604+08:00" level=error msg="Handler for DELETE /v1.38/containers/b62c3796ea2ed5a0bd0eeed0e8f041d12e430a99469dd2ced6f94df911e35905 returned error: container b62c3796ea2ed5a0bd0eeed0e8f041d12e430a99469dd2ced6f94df911e35905: driver \"overlay2\" failed to remove root filesystem: remove /data/docker/overlay2/8bde3ec18c5a6915f40dd8adc3b2f296c1e40cc1b2885db4aee0a627ff89ef59/merged: device or resource busy"
+```
+
+查找还有谁在"霸占"此目录:
+
+``` bash
+grep 8bde3ec18c5a6915f40dd8adc3b2f296c1e40cc1b2885db4aee0a627ff89ef59 /proc/*/mountinfo
+```
+
+> 自行替换容器 id
+
+找到进程号后查看此进程更多详细信息:
+
+``` bash
+ps -f <pid>
+```
