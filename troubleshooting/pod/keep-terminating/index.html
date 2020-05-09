@@ -3671,6 +3671,7 @@
     <li><a href="#低版本-kubelet-list-watch-的-bug">低版本 kubelet list-watch 的 bug</a></li>
     <li><a href="#dockerd-与-containerd-的状态不同步">dockerd 与 containerd 的状态不同步</a></li>
     <li><a href="#daemonset-controller-的-bug">Daemonset Controller 的 BUG</a></li>
+    <li><a href="#mount-的目录被其它进程占用">mount 的目录被其它进程占用</a></li>
   </ul>
 </nav>
     </div>
@@ -3751,7 +3752,17 @@ a9a1785b81343c3ad2093ad973f4f8e52dbf54823b8bb089886c8356d4036fe0    <span style=
 <li>修复的PR: <a href="https://github.com/kubernetes/kubernetes/pull/66480">https://github.com/kubernetes/kubernetes/pull/66480</a></li>
 </ul>
 <p>升级集群版本可以彻底解决，临时规避可以给 rollingUpdate 类型 daemonset 不使用 nodeAffinity，改用 nodeSelector。</p>
-
+<h2 id="mount-的目录被其它进程占用">mount 的目录被其它进程占用</h2>
+<p>dockerd 报错 <code>device or resource busy</code>:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">May <span style="color:#ae81ff">09</span> 09:55:12 VM_0_21_centos dockerd<span style="color:#f92672">[</span>6540<span style="color:#f92672">]</span>: time<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;2020-05-09T09:55:12.774467604+08:00&#34;</span> level<span style="color:#f92672">=</span>error msg<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Handler for DELETE /v1.38/containers/b62c3796ea2ed5a0bd0eeed0e8f041d12e430a99469dd2ced6f94df911e35905 returned error: container b62c3796ea2ed5a0bd0eeed0e8f041d12e430a99469dd2ced6f94df911e35905: driver \&#34;overlay2\&#34; failed to remove root filesystem: remove /data/docker/overlay2/8bde3ec18c5a6915f40dd8adc3b2f296c1e40cc1b2885db4aee0a627ff89ef59/merged: device or resource busy&#34;</span>
+</code></pre></div><p>查找还有谁在&quot;霸占&quot;此目录:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">grep 8bde3ec18c5a6915f40dd8adc3b2f296c1e40cc1b2885db4aee0a627ff89ef59 /proc/*/mountinfo
+</code></pre></div><blockquote>
+<p>自行替换容器 id</p>
+</blockquote>
+<p>找到进程号后查看此进程更多详细信息:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">ps -f &lt;pid&gt;
+</code></pre></div>
 
 <footer class="footline">
 	
