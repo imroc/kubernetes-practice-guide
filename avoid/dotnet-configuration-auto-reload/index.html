@@ -3656,7 +3656,15 @@
                 
                     <div class="progress">
     <div class="wrapper">
-<nav id="TableOfContents"></nav>
+<nav id="TableOfContents">
+  <ul>
+    <li><a href="#问题描述">问题描述</a></li>
+    <li><a href="#问题猜想">问题猜想</a></li>
+    <li><a href="#问题排查">问题排查</a></li>
+    <li><a href="#解决办法">解决办法</a></li>
+    <li><a href="#相关链接">相关链接</a></li>
+  </ul>
+</nav>
     </div>
 </div>
 
@@ -3679,11 +3687,99 @@
         
 
 
-<div class="notices info">
-	<p>文档当前状态：TODO </p>
-</div>
 
+<h2 id="问题描述">问题描述</h2>
+<p>在使用 kubernetes 部署应用时, 我使用 <code>kubernetes</code> 的 <code>configmap</code> 来管理配置文件: <code>appsettings.json</code>
+,  修改configmap 的配置文件后, 我来到了容器里, 通过 <code>cat /app/config/appsetting.json</code> 命令查看容器是否已经加载了最新的配置文件, 很幸运的是, 通过命令行查看容器配置发现已经处于最新状态(修改configmap后10-15s 生效),  我尝试请求应用的API, 发现API 在执行过程中使用的配置是老旧的内容, 而不是最新的内容。在本地执行应用时并未出现配置无法热更新的问题。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 相关版本</span>
+kubernetes 版本: 1.14.2
+<span style="color:#75715e"># 要求版本大于等于 3.1</span>
+.Net core: 3.1
 
+<span style="color:#75715e"># 容器 os-release (并非 windows)</span>
+
+NAME<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;Debian GNU/Linux&#34;</span>
+VERSION_ID<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;10&#34;</span>
+VERSION<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;10 (buster)&#34;</span> 
+VERSION_CODENAME<span style="color:#f92672">=</span>buster
+ID<span style="color:#f92672">=</span>debian
+HOME_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://www.debian.org/&#34;</span>
+SUPPORT_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://www.debian.org/support&#34;</span>
+BUG_REPORT_URL<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;https://bugs.debian.org/&#34;</span>
+
+<span style="color:#75715e"># 基础镜像:</span>
+mcr.microsoft.com/dotnet/core/sdk:3.1-buster
+mcr.microsoft.com/dotnet/core/aspnet:3.1-buster-slim
+
+</code></pre></div><h2 id="问题猜想">问题猜想</h2>
+<p>通过命令行排查发现最新的 <code>configmap</code> 配置内容已经在容器的指定目录上更新到最新，但是应用仍然使用老旧的配置内容, 这意味着问题发生在: configmap-&gt;<strong>容器-&gt;应用</strong>, 容器和应用之间, 容器指定目录下的配置更新并没有触发 <code>.Net</code> 热加载机制,  那究竟是为什么没有触发配置热加载,需要深挖根本原因, 直觉猜想是: 查看 <code>.Net Core</code> 标准库的配置热加载的实现检查触发条件, 很有可能是触发的条件不满足导致应用配置无法重新加载。</p>
+<h2 id="问题排查">问题排查</h2>
+<p>猜想方向是热更新的触发条件不满足, 我们熟知使用 <code>configmap</code> 挂载文件是使用<a href="https://en.wikipedia.org/wiki/Symbolic_link">symlink</a>来挂载, 而非常用的物理文件系统, 在修改完 <code>configmap</code> , 容器重新加载配置后,这一过程并不会改变文件的修改时间等信息(从容器的角度看)。对此，我们做了一个实验,通过对比configmap修改前和修改后来观察配置( <code>appsettings.json</code> )在容器的属性变化(注: 均在容器加载最新配置后对比), 使用 <code>stat</code>  命令来佐证了这个细节点。</p>
+<p><strong>Before:</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@app-785bc59df6-gdmnf:/app/Config# stat appsettings.json
+File: Config/appsettings.json -&gt; ..data/appsettings.json
+ Size: <span style="color:#ae81ff">35</span>           Blocks: <span style="color:#ae81ff">0</span>          IO Block: <span style="color:#ae81ff">4096</span>   symbolic link
+Device: ca01h/51713d    Inode: <span style="color:#ae81ff">27263079</span>    Links: <span style="color:#ae81ff">1</span>
+Access: <span style="color:#f92672">(</span>0777/lrwxrwxrwx<span style="color:#f92672">)</span>  Uid: <span style="color:#f92672">(</span>    0/    root<span style="color:#f92672">)</span>   Gid: <span style="color:#f92672">(</span>    0/    root<span style="color:#f92672">)</span>
+Access: 2020-04-25 08:21:18.490453316 +0000
+Modify: 2020-04-25 08:21:18.490453316 +0000
+Change: 2020-04-25 08:21:18.490453316 +0000
+Birth: -
+</code></pre></div><p><strong>After:</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">root@app-785bc59df6-gdmnf:/app/Config# stat appsettings.json
+ File: appsettings.json -&gt; ..data/appsettings.json
+ Size: <span style="color:#ae81ff">35</span>           Blocks: <span style="color:#ae81ff">0</span>          IO Block: <span style="color:#ae81ff">4096</span>   symbolic link
+Device: ca01h/51713d    Inode: <span style="color:#ae81ff">27263079</span>    Links: <span style="color:#ae81ff">1</span>
+Access: <span style="color:#f92672">(</span>0777/lrwxrwxrwx<span style="color:#f92672">)</span>  Uid: <span style="color:#f92672">(</span>    0/    root<span style="color:#f92672">)</span>   Gid: <span style="color:#f92672">(</span>    0/    root<span style="color:#f92672">)</span>
+Access: 2020-04-25 08:21:18.490453316 +0000
+Modify: 2020-04-25 08:21:18.490453316 +0000
+Change: 2020-04-25 08:21:18.490453316 +0000
+Birth: -
+</code></pre></div><p>通过标准库源码发现, <code>.Net core</code> 配置热更新机制似乎是基于文件的最后修改日期来触发的, 根据上面的前后对比显而易见,  <code>configmap</code> 的修改并没有让容器里的指定的文件的最后修改日期改变，也就未触发 <code>.Net</code> 应用配置的热加载。</p>
+<h2 id="解决办法">解决办法</h2>
+<p>既然猜想基本得到证实, 由于不太熟悉这门语言, 我们尝试在网络上寻找解决办法，很幸运的是我们找到了找到了相关的内容, <a href="https://github.com/fbeltrao">fbeltrao</a> 开源了一个第三方库(<a href="https://github.com/fbeltrao/ConfigMapFileProvider">ConfigMapFileProvider</a>) 来专门解决这个问题，<strong>通过监听文件内容hash值的变化实现配置热加载</strong>。
+于是, 我们在修改了项目的代码:</p>
+<p><strong>Before:</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 配置被放在了/app/Config/ 目录下
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> configPath = Path.Combine(env.ContentRootPath, <span style="color:#e6db74">&#34;Config&#34;</span>);
+config.AddJsonFile(Path.Combine(configPath, <span style="color:#e6db74">&#34;appsettings.json&#34;</span>), 
+                                optional: <span style="color:#66d9ef">false</span>, 
+                                reloadOnChange: <span style="color:#66d9ef">true</span>);
+</code></pre></div><p><strong>After:</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp"><span style="color:#75715e">// 配置被放在了/app/Config/ 目录下
+</span><span style="color:#75715e"></span>config.AddJsonFile(ConfigMapFileProvider.FromRelativePath(<span style="color:#e6db74">&#34;Config&#34;</span>),
+                        <span style="color:#e6db74">&#34;appsettings.json&#34;</span>,
+                        optional: <span style="color:#66d9ef">false</span>,
+                        reloadOnChange: <span style="color:#66d9ef">true</span>);
+</code></pre></div><p>修改完项目的代码后, 重新构建镜像, 更新部署在 <code>kubernetes</code> 上的应用, 然后再次测试, 到此为止, 会出现两种状态:</p>
+<ol>
+<li>一种是你热加载配置完全可用, 非常值得祝贺, 你已经成功修复了这个bug;</li>
+<li>一种是你的热加载配置功能还存在 bug, 比如: 上一次请求, 配置仍然使用的老旧配置内容, 下一次请求却使用了最新的配置内容,这个时候, 我们需要继续向下排查: <code>.NET Core</code> 引入了<code>Options</code>模式，使用类来表示相关的设置组,用强类型的类来表达配置项(白话大概表述为: 代码里面有个对象对应配置里的某个字段, 配置里对应的字段更改会触发代码里对象的属性变化), 示例如下:</li>
+</ol>
+<p><strong>配置示例:</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-json" data-lang="json"><span style="color:#960050;background-color:#1e0010">cat</span> <span style="color:#960050;background-color:#1e0010">appsettings.json</span>
+ <span style="color:#e6db74">&#34;JwtIssuerOptions&#34;</span><span style="color:#960050;background-color:#1e0010">:</span> {
+    <span style="color:#f92672">&#34;Issuer&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
+    <span style="color:#f92672">&#34;Audience&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>,
+    <span style="color:#f92672">&#34;SecretKey&#34;</span>: <span style="color:#e6db74">&#34;test&#34;</span>
+    <span style="color:#960050;background-color:#1e0010">...</span>
+  }
+</code></pre></div><p><strong>代码示例:</strong></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-csharp" data-lang="csharp">services.Configure&lt;JwtIssuerOptions&gt;(Configuration.GetSection(<span style="color:#e6db74">&#34;JwtIssuerOptions&#34;</span>));
+</code></pre></div><p>而 Options 模式分为三种:</p>
+<ol>
+<li><code>IOptions</code>: Singleton(单例)，值一旦生成, 除非通过代码的方式更改，否则它的值不会更新</li>
+<li><code>IOptionsMonitor</code>: Singleton(单例), 通过IOptionsChangeTokenSource&lt;&gt; 能够和配置文件一起更新，也能通过代码的方式更改值</li>
+<li><code>IOptionsSnapshot</code>: Scoped，配置文件更新的下一次访问，它的值会更新，但是它不能跨范围通过代码的方式更改值，只能在当前范围（请求）内有效。</li>
+</ol>
+<p>在知道这三种模式的意义后，我们已经完全找到了问题的根因, 把 <code>Options</code> 模式设置为:<code>IOptionsMonitor</code>就能解决完全解决配置热加载的问题。</p>
+<h2 id="相关链接">相关链接</h2>
+<ol>
+<li><a href="https://github.com/fbeltrao/ConfigMapFileProvider">配置监听ConfigMapFileProvider</a></li>
+<li><a href="https://github.com/dotnet/extensions/issues/1175">相似的Issue: 1175</a></li>
+<li><a href="https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1">官方Options 描述</a></li>
+<li><a href="https://www.cnblogs.com/wenhx/p/ioptions-ioptionsmonitor-and-ioptionssnapshot.html">IOptions、IOptionsMonitor以及IOptionsSnapshot 测试</a></li>
+</ol>
 
 
 <footer class="footline">

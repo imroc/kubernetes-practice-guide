@@ -104,6 +104,16 @@
         "state": "TODO"
     },
     {
+        "title": ".Net Core 配置文件在Kubernetes中无法热加载",
+        "uri": "avoid/dotnet-configuration-auto-reload",
+        "content": "",
+        "objectID": "avoid/dotnet-configuration-auto-reload",
+        "LastModifierDisplayName": "yulibaozi",
+        "LastModifierURL": "https://yulibaozi.com",
+        "date": "2020-05-09T00:00:00.000Z",
+        "state": "TODO"
+    },
+    {
         "title": "使用 oom-guard 在用户态处理 cgroup OOM",
         "uri": "avoid/handle-cgroup-oom-in-userspace-with-oom-guard",
         "content": "linux     cgroup OOM          bug         cgroup OOM                              TKE       oom guard        cgroup OOM       bug                cgroup OOM kill                         cgroup                            threshold notify       https   lwn net Articles 529927  oom guard    memory cgroup    threshold notify                                pod     memory limit   1000M  oom guard            margin  margin   1000M   marginratio   20M      marginratio 0 02 margin       mimmargin   1M         maxmargin    30M            mimmargin   maxmargin    threshold   limit   margin      1000M   20M   980M   980M               pod          980M    oom guard                   oom gurad      memory force_empty      cgroup                      cgroup   memory stat        cache                  cgroup      limit                                           cgroup OOM                 policy                          process  process       cgroup OOM killer        cgroup        oom_score               oom guard    SIGKILL       container    cgroup      docker           noop                         webhook reporter    k8s event          kubectl event       LAST SEEN FIRST SEEN COUNT NAME KIND SUBOBJECT TYPE REASON SOURCE MESSAGE 14s 14s 1 172 21 16 23 158b732d352bcc31 Node Warning OomGuardKillContainer oom guard  172 21 16 23   hostname   172 21 16 23   timestamp   2019 03 13T07 12 14 561650646Z   oomcgroup    sys fs cgroup memory kubepods burstable pod3d6329e5 455f 11e9 a7e5 06925242d7ea 223d4795cc3b33e28e702f72e0497e1153c4a809de6b4363f27acc12a6781cdb   proccgroup    sys fs cgroup memory kubepods burstable pod3d6329e5 455f 11e9 a7e5 06925242d7ea 223d4795cc3b33e28e702f72e0497e1153c4a809de6b4363f27acc12a6781cdb   threshold  205520896  usage  206483456  killed   16481 fakeOOM     stats   cache 20480 rss 205938688 rsshuge 199229440 mappedfile 0 dirty 0 writeback 0 pgpgin 1842 pgpgout 104 pgfault 2059 pgmajfault 0 inactiveanon 8192 activeanon 203816960 inactivefile 0 activefile 0 unevictable 0 hierarchicalmemorylimit 209715200 totalcache 20480 totalrss 205938688 totalrsshuge 199229440 totalmappedfile 0 totaldirty 0 totalwriteback 0 totalpgpgin 1842 totalpgpgout 104 totalpgfault 2059 totalpgmajfault 0 totalinactiveanon 8192 totalactiveanon 203816960 totalinactivefile 0 totalactivefile 0 total_unevictable 0    policy   Container                yaml  oom guard yaml  apiVersion  v1 kind  ServiceAccount metadata  name  oomguard namespace  kube system apiVersion  rbac authorization k8s io v1 kind  ClusterRoleBinding metadata  name  system oomguard roleRef  apiGroup  rbac authorization k8s io kind  ClusterRole name  cluster admin subjects  kind  ServiceAccount name  oomguard namespace  kube system apiVersion  apps v1 kind  DaemonSet metadata  name  oom guard namespace  kube system labels  app  oom guard spec  selector  matchLabels  app  oom guard template  metadata  annotations  scheduler alpha kubernetes io critical pod     labels  app  oom guard spec  serviceAccountName  oomguard hostPID  true hostNetwork  true dnsPolicy  ClusterFirst containers  name  k8s event writer image  ccr ccs tencentyun com paas k8s event writer v1 6 resources  limits  cpu  10m memory  60Mi requests  cpu  10m memory  30Mi args    logtostderr   unix socket true env  name  NODE_NAME valueFrom  fieldRef  fieldPath  status hostIP volumeMounts  name  unix mountPath   unix name  oomguard image  ccr ccs tencentyun com paas oomguard nosoft v2 imagePullPolicy  Always securityContext  privileged  true resources  limits  cpu  10m memory  60Mi requests  cpu  10m memory  30Mi volumeMounts  name  cgroupdir mountPath   sys fs cgroup memory name  unix mountPath   unix name  kmsg mountPath   dev kmsg readOnly  true command     oom guard   args    v 2   logtostderr   root  sys fs cgroup memory   walkIntervalSeconds 277   inotifyResetSeconds 701   port 0   margin ratio 0 02   min margin 1   max margin 30   guard ms 50   policy container   openSoftLimit false   webhook url http   localhost message env  name  NODE_NAME valueFrom  fieldRef  fieldPath  status hostIP volumes  name  cgroupdir hostPath  path   sys fs cgroup memory name  unix emptyDir     name  kmsg hostPath  path   dev kmsg       kubectl apply  f oom guard yaml             kubectl  n kube system ds oom guard NAME DESIRED CURRENT READY UP TO DATE AVAILABLE NODE SELECTOR AGE oom guard 2 2 2 2 2 6m    AVAILABLE                         oom guard     oom guard    kubectl  n kube system logs oom guard xxxxx oomguard    oom      kubectl events  grep CgroupOOM kubectl events  grep SystemOOM kubectl events  grep OomGuardKillContainer kubectl events  grep OomGuardKillProcess    kubectl delete  f oom guard yaml                        NotReady         ctrl C               pod kubectl pod  n kube system   grep oom guard   awk   print  1   kubectl delete pod  pod  n kube system   grace period 0   force done            kubectl  n kube system ds oom guard       not found                  oom gaurd",
@@ -569,28 +579,12 @@
         "state": "Beta"
     },
     {
-        "title": "钉钉告警",
-        "uri": "monitoring/dingtalk-alert",
-        "content": "webhook        https   theo im blog 2017 10 16 release prometheus alertmanager webhook for dingtalk  github  https   github com timonwong prometheus webhook dingtalk",
-        "objectID": "monitoring/dingtalk-alert",
-        "weight": 40,
-        "state": "TODO"
-    },
-    {
         "title": "使用 kube-promethues 快速上手集群监控",
         "uri": "monitoring/kube-prometheus-quickstart",
         "content": "kube prometheus    kube prometheus      k8s                                      prometheus operator    prometheus       k8s         k8s CRD       prometheus   alertmanager                         CRD             prometheus   alertmanager          prometheus adapter    prometheus            k8s   resource metrics API   custom metrics API kubectl top   HPA          node exporter    DaemonSet                         prometheus            prometheus     kube state metrics    k8s          prometheus   metrics       prometheus       Node Pod        grafana                      https   github com coreos kube prometheus                                     git clone https   github com coreos kube prometheus git cd kube prometheus Create namespace CRDs  wait availble creating remaining resources kubectl create  f manifests setup until kubectl servicemonitors   all namespaces   date  sleep 1  echo     done kubectl create  f manifests     grafana           grafana   service      NodePort   LoadBalancer      Ingress     grafana               kubectl              kubectl port forward            kubectl port forward service grafana 3000 3000  n monitoring      http   localhost 3000      grafana               admin                         kube prometheus                grafana   dashboard           grafana",
         "objectID": "monitoring/kube-prometheus-quickstart",
         "weight": 10,
         "state": "Alpha"
-    },
-    {
-        "title": "企业微信告警",
-        "uri": "monitoring/wechat-work-alert",
-        "content": "https   prometheus io docs alerting configuration  wechat_config       https   songjiayang gitbooks io prometheus content alertmanager wechat html                       alertmanager   webhook               webhook                alertmanager",
-        "objectID": "monitoring/wechat-work-alert",
-        "weight": 30,
-        "state": "TODO"
     },
     {
         "title": "优化指南",
