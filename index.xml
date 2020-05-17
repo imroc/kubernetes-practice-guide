@@ -171,6 +171,19 @@ $ kubectl get pods --namespace cert-manager NAME READY STATUS RESTARTS AGE cert-
     </item>
     
     <item>
+      <title>应用高可用部署</title>
+      <link>https://k8s.imroc.io/best-practice/deploy/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/best-practice/deploy/</guid>
+      <description>为了提高服务容错能力，我们通常会设置 replicas 给服务创建多个副本，但这并不意味着服务就实现高可用了，下面来介绍应用部署的最佳实践。
+使用反亲和性避免单点故障 k8s 的设计就是假设节点是不可靠的，节点越多，发生软硬件故障导致节点不可用的几率就越高，所以我们通常需要给服务部署多个副本，根据实际情况调整 replicas 的值，如果值为 1 就必然存在单点故障，如果大于 1 但所有副本都调度到同一个节点，那还是有单点故障，所以我们不仅要有合理的副本数量，还需要让这些不同副本调度到不同的节点，打散开来避免单点故障，这个可以利用反亲和性来实现，示例:
+affinity: podAntiAffinity: requiredDuringSchedulingIgnoredDuringExecution: - weight: 100 labelSelector: matchExpressions: - key: k8s-app operator: In values: - kube-dns topologyKey: kubernetes.io/hostname  requiredDuringSchedulingIgnoredDuringExecution 调度时必须满足该反亲和性条件，如果没有节点满足条件就不调度到任何节点 (Pending)。如果不用这种硬性条件可以使用 preferredDuringSchedulingIgnoredDuringExecution 来指示调度器尽量满足反亲和性条件，如果没有满足条件的也可以调度到某个节点。 labelSelector.matchExpressions 写该服务对应 pod 中 labels 的 key 与 value。 topologyKey 这里用 kubernetes.io/hostname 表示避免 pod 调度到同一节点，如果你有更高的要求，比如避免调度到同一个可用区，实现异地多活，可以用 failure-domain.beta.kubernetes.io/zone。通常不会去避免调度到同一个地域，因为一般同一个集群的节点都在一个地域，如果跨地域，即使用专线时延也会很大，所以 topologyKey 一般不至于用 failure-domain.beta.kubernetes.io/region。  使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断 如果服务不做配置优化，默认情况下更新服务期间可能会导致部分流量异常，下面我们来分析并给出最佳实践。
+服务更新场景 我们先看下服务更新有哪些场景:
+ 手动调整服务的副本数量 手动删除 Pod 触发重新调度 驱逐节点 (主动或被动驱逐，Pod会先删除再在其它节点重建) 触发滚动更新 (比如修改镜像 tag 升级程序版本) HPA (HorizontalPodAutoscaler) 自动对服务进行水平伸缩 VPA (VerticalPodAutoscaler) 自动对服务进行垂直伸缩  更新过程连接异常的原因 滚动更新时，Service 对应的 Pod 会被创建或销毁，Service 对应的 Endpoint 也会新增或移除相应的 Pod IP:Port，然后 kube-proxy 会根据 Service 的 Endpoint 里的 Pod IP:Port 列表更新节点上的转发规则，而这里 kube-proxy 更新节点转发规则的动作并不是那么及时，主要是由于 K8S 的设计理念，各个组件的逻辑是解耦的，各自使用 Controller 模式 listAndWatch 感兴趣的资源并做出相应的行为，所以从 Pod 创建或销毁到 Endpoint 更新再到节点上的转发规则更新，这个过程是异步的，所以会造成转发规则更新不及时，从而导致服务更新期间部分连接异常。</description>
+    </item>
+    
+    <item>
       <title>彻底理解 Ingress</title>
       <link>https://k8s.imroc.io/ingress/understand/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -485,10 +498,10 @@ timeout:n Sets the amount of time the resolver will wait for a response from a r
     
     <item>
       <title>ETCD 优化</title>
-      <link>https://k8s.imroc.io/optimization/etcd/</link>
+      <link>https://k8s.imroc.io/best-practice/etcd/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/optimization/etcd/</guid>
+      <guid>https://k8s.imroc.io/best-practice/etcd/</guid>
       <description>高可用部署 部署一个高可用ETCD集群可以参考官方文档: https://github.com/etcd-io/etcd/blob/master/Documentation/op-guide/clustering.md
  如果是 self-host 方式部署的集群，可以用 etcd-operator 部署 etcd 集群；也可以使用另一个小集群专门部署 etcd (使用 etcd-operator)
  提高磁盘 IO 性能 ETCD 对磁盘写入延迟非常敏感，对于负载较重的集群建议磁盘使用 SSD 固态硬盘。可以使用 diskbench 或 fio 测量磁盘实际顺序 IOPS。
@@ -587,10 +600,10 @@ conntrack -S 看到 insert_failed 数量在不断增加，也就是 conntrack �
     
     <item>
       <title>Master 优化</title>
-      <link>https://k8s.imroc.io/optimization/master/</link>
+      <link>https://k8s.imroc.io/best-practice/master/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/optimization/master/</guid>
+      <guid>https://k8s.imroc.io/best-practice/master/</guid>
       <description>Kubernetes 自 v1.6 以来，官方就宣称单集群最大支持 5000 个节点。不过这只是理论上，在具体实践中从 0 到 5000，还是有很长的路要走，需要见招拆招。
 官方标准如下：
  不超过 5000 个节点 不超过 150000 个 pod 不超过 300000 个容器 每个节点不超过 100 个 pod  Master 节点配置优化 GCE 推荐配置：
@@ -910,35 +923,6 @@ margin = 1000M * margin_ratio = 20M // 缺省margin_ratio是0.02 margin 最小�
     </item>
     
     <item>
-      <title>使用 PodDisruptionBudget 避免驱逐导致服务不可用</title>
-      <link>https://k8s.imroc.io/optimization/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/optimization/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/</guid>
-      <description>驱逐节点是一种有损操作，驱逐的原理:
- 封锁节点 (设为不可调度，避免新的 Pod 调度上来)。 将该节点上的 Pod 删除。 ReplicaSet 控制器检测到 Pod 减少，会重新创建一个 Pod，调度到新的节点上。  这个过程是先删除，再创建，并非是滚动更新，因此更新过程中，如果一个服务的所有副本都在被驱逐的节点上，则可能导致该服务不可用。
-我们再来下什么情况下驱逐会导致服务不可用:
- 服务存在单点故障，所有副本都在同一个节点，驱逐该节点时，就可能造成服务不可用。 服务在多个节点，但这些节点都被同时驱逐，所以这个服务的所有服务同时被删，也可能造成服务不可用。  针对第一点，我们可以 使用反亲和性避免单点故障。
-针对第二点，我们可以通过配置 PDB (PodDisruptionBudget) 来避免所有副本同时被删除，下面给出示例。
-示例一 (保证驱逐时 zookeeper 至少有两个副本可用):
-apiVersion: policy/v1beta1 kind: PodDisruptionBudget metadata: name: zk-pdb spec: minAvailable: 2 selector: matchLabels: app: zookeeper 示例二 (保证驱逐时 zookeeper 最多有一个副本不可用，相当于逐个删除并在其它节点重建):
-apiVersion: policy/v1beta1 kind: PodDisruptionBudget metadata: name: zk-pdb spec: maxUnavailable: 1 selector: matchLabels: app: zookeeper 更多请参考官方文档: https://kubernetes.io/docs/tasks/run-application/configure-pdb/</description>
-    </item>
-    
-    <item>
-      <title>使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断</title>
-      <link>https://k8s.imroc.io/optimization/deploy/smooth-update-using-prestophook-and-readinessprobe/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/optimization/deploy/smooth-update-using-prestophook-and-readinessprobe/</guid>
-      <description>如果服务不做配置优化，默认情况下更新服务期间可能会导致部分流量异常，下面我们来分析并给出最佳实践。
-服务更新场景 我们先看下服务更新有哪些场景:
- 手动调整服务的副本数量 手动删除 Pod 触发重新调度 驱逐节点 (主动或被动驱逐，Pod会先删除再在其它节点重建) 触发滚动更新 (比如修改镜像 tag 升级程序版本) HPA (HorizontalPodAutoscaler) 自动对服务进行水平伸缩 VPA (VerticalPodAutoscaler) 自动对服务进行垂直伸缩  更新过程连接异常的原因 滚动更新时，Service 对应的 Pod 会被创建或销毁，Service 对应的 Endpoint 也会新增或移除相应的 Pod IP:Port，然后 kube-proxy 会根据 Service 的 Endpoint 里的 Pod IP:Port 列表更新节点上的转发规则，而这里 kube-proxy 更新节点转发规则的动作并不是那么及时，主要是由于 K8S 的设计理念，各个组件的逻辑是解耦的，各自使用 Controller 模式 listAndWatch 感兴趣的资源并做出相应的行为，所以从 Pod 创建或销毁到 Endpoint 更新再到节点上的转发规则更新，这个过程是异步的，所以会造成转发规则更新不及时，从而导致服务更新期间部分连接异常。
-我们分别分析下 Pod 创建和销毁到规则更新期间的过程:
- Pod 被创建，但启动速度没那么快，还没等到 Pod 完全启动就被 Endpoint Controller 加入到 Service 对应 Endpoint 的 Pod IP:Port 列表，然后 kube-proxy watch 到更新也同步更新了节点上的 Service 转发规则 (iptables/ipvs)，如果这个时候有请求过来就可能被转发到还没完全启动完全的 Pod，这时 Pod 还不能正常处理请求，就会导致连接被拒绝。 Pod 被销毁，但是从 Endpoint Controller watch 到变化并更新 Service 对应 Endpoint 再到 kube-proxy 更新节点转发规则这期间是异步的，有个时间差，Pod 可能已经完全被销毁了，但是转发规则还没来得及更新，就会造成新来的请求依旧还能被转发到已经被销毁的 Pod，导致连接被拒绝。  平滑更新最佳实践   针对第一种情况，可以给 Pod 里的 container 加 readinessProbe (就绪检查)，通常是容器完全启动后监听一个 HTTP 端口，kubelet 发就绪检查探测包，正常响应说明容器已经就绪，然后修改容器状态为 Ready，当 Pod 中所有容器都 Ready 了这个 Pod 才会被 Endpoint Controller 加进 Service 对应 Endpoint IP:Port 列表，然后 kube-proxy 再更新节点转发规则，更新完了即便立即有请求被转发到的新的 Pod 也能保证能够正常处理连接，避免了连接异常。 针对第二种情况，可以给 Pod 里的 container 加 preStop hook，让 Pod 真正销毁前先 sleep 等待一段时间，留点时间给 Endpoint controller 和 kube-proxy 更新 Endpoint 和转发规则，这段时间 Pod 处于 Terminating 状态，即便在转发规则更新完全之前有请求被转发到这个 Terminating 的 Pod，依然可以被正常处理，因为它还在 sleep，没有被真正销毁。  最佳实践 yaml 示例:</description>
-    </item>
-    
-    <item>
       <title>使用 Systemtap 定位疑难杂症</title>
       <link>https://k8s.imroc.io/troubleshooting/trick/use-systemtap-to-locate-problems/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
@@ -948,16 +932,6 @@ apiVersion: policy/v1beta1 kind: PodDisruptionBudget metadata: name: zk-pdb spec
 apt install -y systemtap 运行 stap-prep 检查还有什么需要安装:
 $ stap-prep Please install linux-headers-4.4.0-104-generic You need package linux-image-4.4.0-104-generic-dbgsym but it does not seem to be available Ubuntu -dbgsym packages are typically in a separate repository Follow https://wiki.ubuntu.com/DebuggingProgramCrash to add this repository apt install -y linux-headers-4.4.0-104-generic 提示需要 dbgsym 包但当前已有软件源中并不包含，需要使用第三方软件源安装，下面是 dbgsym 安装方法(参考官方wiki: https://wiki.ubuntu.com/Kernel/Systemtap):
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C8CAB6595FDFF622 codename=$(lsb_release -c | awk &amp;#39;{print $2}&amp;#39;) sudo tee /etc/apt/sources.list.d/ddebs.list &amp;lt;&amp;lt; EOF deb http://ddebs.</description>
-    </item>
-    
-    <item>
-      <title>使用反亲和性避免单点故障</title>
-      <link>https://k8s.imroc.io/optimization/deploy/use-antiaffinity-to-avoid-single-points-of-failure/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/optimization/deploy/use-antiaffinity-to-avoid-single-points-of-failure/</guid>
-      <description>k8s 的设计就是假设节点是不可靠的，节点越多，发生软硬件故障导致节点不可用的几率就越高，所以我们通常需要给服务部署多个副本，根据实际情况调整 replicas 的值，如果值为 1 就必然存在单点故障，如果大于 1 但所有副本都调度到同一个节点，那还是有单点故障，所以我们不仅要有合理的副本数量，还需要让这些不同副本调度到不同的节点，打散开来避免单点故障，这个可以利用反亲和性来实现，示例:
-affinity: podAntiAffinity: requiredDuringSchedulingIgnoredDuringExecution: - weight: 100 labelSelector: matchExpressions: - key: k8s-app operator: In values: - kube-dns topologyKey: kubernetes.io/hostname  requiredDuringSchedulingIgnoredDuringExecution 调度时必须满足该反亲和性条件，如果没有节点满足条件就不调度到任何节点 (Pending)。如果不用这种硬性条件可以使用 preferredDuringSchedulingIgnoredDuringExecution 来指示调度器尽量满足反亲和性条件，如果没有满足条件的也可以调度到某个节点。 labelSelector.matchExpressions 写该服务对应 pod 中 labels 的 key 与 value。 topologyKey 这里用 kubernetes.io/hostname 表示避免 pod 调度到同一节点，如果你有更高的要求，比如避免调度到同一个可用区，实现异地多活，可以用 failure-domain.beta.kubernetes.io/zone。通常不会去避免调度到同一个地域，因为一般同一个集群的节点都在一个地域，如果跨地域，即使用专线时延也会很大，所以 topologyKey 一般不至于用 failure-domain.beta.kubernetes.io/region。  </description>
     </item>
     
     <item>
@@ -975,10 +949,10 @@ Jan 23 14:15:31 dc05 dockerd: time=&amp;#34;2019-01-23T14:15:31.</description>
     
     <item>
       <title>内核参数优化</title>
-      <link>https://k8s.imroc.io/optimization/kernel/</link>
+      <link>https://k8s.imroc.io/best-practice/kernel/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
-      <guid>https://k8s.imroc.io/optimization/kernel/</guid>
+      <guid>https://k8s.imroc.io/best-practice/kernel/</guid>
       <description># 允许的最大跟踪连接条目，是在内核内存中 netfilter 可以同时处理的“任务”（连接跟踪条目） net.netfilter.nf_conntrack_max=10485760 net.netfilter.nf_conntrack_tcp_timeout_established=300 # 哈希表大小（只读）（64位系统、8G内存默认 65536，16G翻倍，如此类推） net.netfilter.nf_conntrack_buckets=655360 # 每个网络接口接收数据包的速率比内核处理这些包的速率快时，允许送到队列的数据包的最大数目 net.core.netdev_max_backlog=10000 # 表示socket监听(listen)的backlog上限，也就是就是socket的监听队列(accept queue)，当一个tcp连接尚未被处理或建立时(半连接状态)，会保存在这个监听队列，默认为 128，在高并发场景下偏小，优化到 32768。参考 https://imroc.io/posts/kubernetes-overflow-and-drop/ net.core.somaxconn=32768 # 没有启用syncookies的情况下，syn queue(半连接队列)大小除了受somaxconn限制外，也受这个参数的限制，默认1024，优化到8096，避免在高并发场景下丢包 net.ipv4.tcp_max_syn_backlog=8096 # 表示同一用户同时最大可以创建的 inotify 实例 (每个实例可以有很多 watch) fs.inotify.max_user_instances=8192 # max-file 表示系统级别的能够打开的文件句柄的数量， 一般如果遇到文件句柄达到上限时，会碰到 # Too many open files 或者 Socket/File: Can’t open so many files 等错误 fs.file-max=2097152 # 表示同一用户同时可以添加的watch数目（watch一般是针对目录，决定了同时同一用户可以监控的目录数量) 默认值 8192 在容器场景下偏小，在某些情况下可能会导致 inotify watch 数量耗尽，使得创建 Pod 不成功或者 kubelet 无法启动成功，将其优化到 524288 fs.inotify.max_user_watches=524288 net.core.bpf_jit_enable=1 net.core.bpf_jit_harden=1 net.core.bpf_jit_kallsyms=1 net.core.dev_weight_tx_bias=1 net.core.rmem_max=16777216 net.core.wmem_max=16777216 net.ipv4.tcp_rmem=4096 12582912 16777216 net.</description>
     </item>
     

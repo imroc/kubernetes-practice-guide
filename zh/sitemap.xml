@@ -3,10 +3,6 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>https://k8s.imroc.io/optimization/deploy/</loc>
-  </url>
-  
-  <url>
     <loc>https://k8s.imroc.io/deploy/manual/prepare/</loc>
   </url>
   
@@ -66,6 +62,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/security/cert/install-cert-manger/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/deploy/</loc>
   </url>
   
   <url>
@@ -188,11 +188,11 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/optimization/</loc>
+    <loc>https://k8s.imroc.io/security/</loc>
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/security/</loc>
+    <loc>https://k8s.imroc.io/best-practice/</loc>
   </url>
   
   <url>
@@ -326,7 +326,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/optimization/etcd/</loc>
+    <loc>https://k8s.imroc.io/best-practice/etcd/</loc>
   </url>
   
   <url>
@@ -370,7 +370,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/optimization/master/</loc>
+    <loc>https://k8s.imroc.io/best-practice/master/</loc>
   </url>
   
   <url>
@@ -516,19 +516,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/optimization/deploy/use-pdb-to-avoid-service-unavailable-during-eviction/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/optimization/deploy/smooth-update-using-prestophook-and-readinessprobe/</loc>
-  </url>
-  
-  <url>
     <loc>https://k8s.imroc.io/troubleshooting/trick/use-systemtap-to-locate-problems/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/optimization/deploy/use-antiaffinity-to-avoid-single-points-of-failure/</loc>
   </url>
   
   <url>
@@ -536,7 +524,7 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/optimization/kernel/</loc>
+    <loc>https://k8s.imroc.io/best-practice/kernel/</loc>
   </url>
   
   <url>
