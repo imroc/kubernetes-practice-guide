@@ -855,6 +855,15 @@ An additional mechanism could be added to the TCP, a per-host cache of the last 
     </item>
     
     <item>
+      <title>亲和与反亲和</title>
+      <link>https://k8s.imroc.io/trick/yaml/affnity/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/trick/yaml/affnity/</guid>
+      <description>尽量调度到不同节点 affinity: podAntiAffinity: preferredDuringSchedulingIgnoredDuringExecution: - weight: 100 podAffinityTerm: labelSelector: matchExpressions: - key: k8s-app operator: In values: - kube-dns topologyKey: kubernetes.io/hostname 必须调度到不同节点 affinity: podAntiAffinity: requiredDuringSchedulingIgnoredDuringExecution: - weight: 100 labelSelector: matchExpressions: - key: k8s-app operator: In values: - kube-dns topologyKey: kubernetes.io/hostname 只调度到有指定 label 的节点 affinity: nodeAffinity: requiredDuringSchedulingIgnoredDuringExecution: nodeSelectorTerms: matchExpressions: - key: ingress operator: In values: - true </description>
+    </item>
+    
+    <item>
       <title>以 Daemonset 方式部署 kube-proxy</title>
       <link>https://k8s.imroc.io/deploy/addons/kube-proxy/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

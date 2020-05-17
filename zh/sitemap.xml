@@ -492,6 +492,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/trick/yaml/affnity/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/deploy/addons/kube-proxy/</loc>
   </url>
   

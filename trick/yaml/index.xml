@@ -19,5 +19,14 @@
       <description>最简单的 nginx 测试服务 apiVersion: apps/v1 kind: Deployment metadata: name: nginx spec: replicas: 1 selector: matchLabels: app: nginx template: metadata: labels: app: nginx spec: containers: - name: nginx image: nginx --- apiVersion: v1 kind: Service metadata: name: nginx labels: app: nginx spec: type: ClusterIP ports: - port: 80 protocol: TCP name: http selector: app: nginx </description>
     </item>
     
+    <item>
+      <title>亲和与反亲和</title>
+      <link>https://k8s.imroc.io/trick/yaml/affnity/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/trick/yaml/affnity/</guid>
+      <description>尽量调度到不同节点 affinity: podAntiAffinity: preferredDuringSchedulingIgnoredDuringExecution: - weight: 100 podAffinityTerm: labelSelector: matchExpressions: - key: k8s-app operator: In values: - kube-dns topologyKey: kubernetes.io/hostname 必须调度到不同节点 affinity: podAntiAffinity: requiredDuringSchedulingIgnoredDuringExecution: - weight: 100 labelSelector: matchExpressions: - key: k8s-app operator: In values: - kube-dns topologyKey: kubernetes.io/hostname 只调度到有指定 label 的节点 affinity: nodeAffinity: requiredDuringSchedulingIgnoredDuringExecution: nodeSelectorTerms: matchExpressions: - key: ingress operator: In values: - true </description>
+    </item>
+    
   </channel>
 </rss>

@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>DNS 解析异常</title>
+    <title>亲和与反亲和</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/troubleshooting/network/dns/">
+  <body class="" data-url="/trick/yaml/affnity/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -839,7 +839,7 @@
   
     
     <li data-nav-id="/troubleshooting/" title="排错指南" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1547,7 +1547,7 @@
   
     
     <li data-nav-id="/troubleshooting/network/" title="网络排错" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1575,7 +1575,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/network/dns/" title="DNS 解析异常" class="dd-item active">
+      <li data-nav-id="/troubleshooting/network/dns/" title="DNS 解析异常" class="dd-item ">
         <a href="/troubleshooting/network/dns/">
         DNS 解析异常
         <i class="fas fa-check read-icon"></i>
@@ -2795,7 +2795,7 @@
   
     
     <li data-nav-id="/trick/" title="奇技淫巧" class="dd-item 
-        
+        parent
         
         
         ">
@@ -2847,7 +2847,7 @@
   
     
     <li data-nav-id="/trick/yaml/" title="yaml 片段" class="dd-item 
-        
+        parent
         
         
         ">
@@ -2896,7 +2896,7 @@
  
   
     
-      <li data-nav-id="/trick/yaml/affnity/" title="亲和与反亲和" class="dd-item ">
+      <li data-nav-id="/trick/yaml/affnity/" title="亲和与反亲和" class="dd-item active">
         <a href="/trick/yaml/affnity/">
         亲和与反亲和
         <i class="fas fa-check read-icon"></i>
@@ -3571,7 +3571,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/network/dns/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/trick/yaml/affnity/" selected>简体中文</option>
                     
                   
               
@@ -3633,7 +3633,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/network/dns.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/trick/yaml/affnity.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3668,7 +3668,7 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/network/'>网络排错</a> > DNS 解析异常
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/trick/'>奇技淫巧</a> > <a href='/trick/yaml/'>yaml 片段</a> > 亲和与反亲和
           
          
           
@@ -3685,13 +3685,9 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#5-秒延时">5 秒延时</a></li>
-    <li><a href="#解析超时">解析超时</a>
-      <ul>
-        <li><a href="#解析外部域名超时">解析外部域名超时</a></li>
-        <li><a href="#所有解析都超时">所有解析都超时</a></li>
-      </ul>
-    </li>
+    <li><a href="#尽量调度到不同节点">尽量调度到不同节点</a></li>
+    <li><a href="#必须调度到不同节点">必须调度到不同节点</a></li>
+    <li><a href="#只调度到有指定-label-的节点">只调度到有指定 label 的节点</a></li>
   </ul>
 </nav>
     </div>
@@ -3709,7 +3705,7 @@
           
             <h1>
               
-              DNS 解析异常
+              亲和与反亲和
             </h1>
           
 
@@ -3717,23 +3713,42 @@
 
 
 
-<h2 id="5-秒延时">5 秒延时</h2>
-<p>如果DNS查询经常延时5秒才返回，通常是遇到内核 conntrack 冲突导致的丢包，详见 <a href="/troubleshooting/cases/dns-lookup-5s-delay.md">案例分享: DNS 5秒延时</a></p>
-<h2 id="解析超时">解析超时</h2>
-<p>如果容器内报 DNS 解析超时，先检查下集群 DNS 服务 (<code>kube-dns</code>/<code>coredns</code>) 的 Pod 是否 Ready，如果不是，请参考本章其它小节定位原因。如果运行正常，再具体看下超时现象。</p>
-<h3 id="解析外部域名超时">解析外部域名超时</h3>
-<p>可能原因:</p>
-<ul>
-<li>上游 DNS 故障</li>
-<li>上游 DNS 的 ACL 或防火墙拦截了报文</li>
-</ul>
-<h3 id="所有解析都超时">所有解析都超时</h3>
-<p>如果集群内某个 Pod 不管解析 Service 还是外部域名都失败，通常是 Pod 与集群 DNS 之间通信有问题。</p>
-<p>可能原因:</p>
-<ul>
-<li>节点防火墙没放开集群网段，导致如果 Pod 跟集群 DNS 的 Pod 不在同一个节点就无法通信，DNS 请求也就无法被收到</li>
-</ul>
-
+<h2 id="尽量调度到不同节点">尽量调度到不同节点</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">affinity</span>:
+  <span style="color:#66d9ef">podAntiAffinity</span>:
+    <span style="color:#66d9ef">preferredDuringSchedulingIgnoredDuringExecution</span>:
+    - <span style="color:#66d9ef">weight</span>: <span style="color:#ae81ff">100</span>
+      <span style="color:#66d9ef">podAffinityTerm</span>:
+        <span style="color:#66d9ef">labelSelector</span>:
+          <span style="color:#66d9ef">matchExpressions</span>:
+          - <span style="color:#66d9ef">key</span>: k8s-app
+            <span style="color:#66d9ef">operator</span>: In
+            <span style="color:#66d9ef">values</span>:
+            - kube-dns
+      <span style="color:#66d9ef">topologyKey</span>: kubernetes.io/hostname
+</code></pre></div><h2 id="必须调度到不同节点">必须调度到不同节点</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">affinity</span>:
+ <span style="color:#66d9ef">podAntiAffinity</span>:
+   <span style="color:#66d9ef">requiredDuringSchedulingIgnoredDuringExecution</span>:
+   - <span style="color:#66d9ef">weight</span>: <span style="color:#ae81ff">100</span>
+     <span style="color:#66d9ef">labelSelector</span>:
+       <span style="color:#66d9ef">matchExpressions</span>:
+       - <span style="color:#66d9ef">key</span>: k8s-app
+         <span style="color:#66d9ef">operator</span>: In
+         <span style="color:#66d9ef">values</span>:
+         - kube-dns
+     <span style="color:#66d9ef">topologyKey</span>: kubernetes.io/hostname
+</code></pre></div><h2 id="只调度到有指定-label-的节点">只调度到有指定 label 的节点</h2>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-yaml" data-lang="yaml"><span style="color:#66d9ef">affinity</span>:
+ <span style="color:#66d9ef">nodeAffinity</span>:
+   <span style="color:#66d9ef">requiredDuringSchedulingIgnoredDuringExecution</span>:
+     <span style="color:#66d9ef">nodeSelectorTerms</span>:
+       <span style="color:#66d9ef">matchExpressions</span>:
+       - <span style="color:#66d9ef">key</span>: ingress
+         <span style="color:#66d9ef">operator</span>: In
+         <span style="color:#66d9ef">values</span>:
+         - <span style="color:#66d9ef">true</span>
+</code></pre></div>
 
 <footer class="footline">
 	
@@ -3792,7 +3807,7 @@
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:87ead4ec88f819835cc710bf116e25a1")
+  console.log("gitalk id:e941b1d1daf5b76c27a34928611c6efe")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3800,9 +3815,9 @@
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: 'DNS 解析异常',
+      title: '亲和与反亲和',
       createIssueManually: false,
-      id: '87ead4ec88f819835cc710bf116e25a1',
+      id: 'e941b1d1daf5b76c27a34928611c6efe',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -4297,7 +4312,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -4312,9 +4326,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4779,7 +4790,6 @@
             
             
                 
-                    
                     
                 
                 
@@ -4794,7 +4804,6 @@
             
                 
                     
-                    
                 
                 
 
@@ -4810,9 +4819,6 @@
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -5609,6 +5615,7 @@
             
             
                 
+                    
                     
                 
                 
@@ -5625,6 +5632,9 @@
             
                 
                     
+                        
+                        
+                    
                 
                 
 
@@ -5641,6 +5651,7 @@
             
                 
                     
+                    
                 
                 
 
@@ -5653,6 +5664,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -5669,6 +5683,7 @@
             
             
                 
+                    
                     
                 
                 
@@ -5688,6 +5703,9 @@
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -6089,10 +6107,10 @@
 	 
 	 
 		
-			<a class="nav nav-prev" href="/troubleshooting/network/" title="网络排错"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/trick/yaml/deployment/" title="Deployment"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/troubleshooting/network/lb-healthcheck-failed/" title="LB 健康检查失败" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/trick/perf-in-container/" title="在容器内使用 perf" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
