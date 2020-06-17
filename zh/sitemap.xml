@@ -235,6 +235,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/monitoring/promql/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/avoid/dotnet-configuration-auto-reload/</loc>
     <lastmod>2020-05-09T00:00:00+00:00</lastmod>
   </url>
@@ -257,6 +261,10 @@
   <url>
     <loc>https://k8s.imroc.io/troubleshooting/trick/analysis-exitcode/</loc>
     <lastmod>2020-03-12T00:00:00+00:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/reference/net-shell/</loc>
   </url>
   
   <url>
@@ -451,6 +459,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/avoid/cases/high-legacy-from-pod-to-another-apiserver/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/reference/</loc>
   </url>
   
   <url>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>References on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/reference/</link>
+    <description>Recent content in References on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/reference/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title></title>
+      <link>https://k8s.imroc.io/reference/net-shell/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/reference/net-shell/</guid>
+      <description>网络排障脚本 观察是否有 conntrack 冲突 watch -n1 &amp;lsquo;conntrack -S | awk -F = &amp;ldquo;{print $7}&amp;rdquo; | awk &amp;ldquo;{sum += $1} END {print sum}&amp;quot;&amp;rsquo;</description>
+    </item>
+    
+  </channel>
+</rss>

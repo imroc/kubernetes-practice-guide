@@ -345,6 +345,17 @@ apiVersion: v1 kind: ServiceAccount metadata: name: flink namespace: flink --- a
     </item>
     
     <item>
+      <title>PromQL 技巧</title>
+      <link>https://k8s.imroc.io/monitoring/promql/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/monitoring/promql/</guid>
+      <description>复制标签名 pod_name &amp;ndash;&amp;gt; pod:
+label_replace( container_cpu_system_seconds_total, &amp;quot;pod&amp;quot;, &amp;quot;$1&amp;quot;, &amp;quot;pod_name&amp;quot;, &amp;quot;(.*)&amp;quot; ) 新标签名跟其它指标:
+sum by (pod)( irate( ( label_replace( container_cpu_system_seconds_total{container_name!=&amp;quot;&amp;quot;}, &amp;quot;pod&amp;quot;, &amp;quot;$1&amp;quot;, &amp;quot;pod_name&amp;quot;, &amp;quot;(.*)&amp;quot; ) * on (namespace,pod) group_left(workload,workload_type) mixin_pod_workload{namespace=&amp;quot;$namespace&amp;quot;, workload=~&amp;quot;$workload&amp;quot;, workload_type=~&amp;quot;$workload_type&amp;quot;} )[1m:15s] ) ) </description>
+    </item>
+    
+    <item>
       <title>.Net Core 配置文件在Kubernetes中无法热加载</title>
       <link>https://k8s.imroc.io/avoid/dotnet-configuration-auto-reload/</link>
       <pubDate>Sat, 09 May 2020 00:00:00 +0000</pubDate>
@@ -362,6 +373,15 @@ apiVersion: v1 kind: ServiceAccount metadata: name: flink namespace: flink --- a
       <guid>https://k8s.imroc.io/troubleshooting/trick/analysis-exitcode/</guid>
       <description>使用 kubectl describe pod &amp;lt;pod name&amp;gt; 查看异常 pod 的状态:
 Containers: kubedns: Container ID: docker://5fb8adf9ee62afc6d3f6f3d9590041818750b392dff015d7091eaaf99cf1c945 Image: ccr.ccs.tencentyun.com/library/kubedns-amd64:1.14.4 Image ID: docker-pullable://ccr.ccs.tencentyun.com/library/kubedns-amd64@sha256:40790881bbe9ef4ae4ff7fe8b892498eecb7fe6dcc22661402f271e03f7de344 Ports: 10053/UDP, 10053/TCP, 10055/TCP Host Ports: 0/UDP, 0/TCP, 0/TCP Args: --domain=cluster.local. --dns-port=10053 --config-dir=/kube-dns-config --v=2 State: Running Started: Tue, 27 Aug 2019 10:58:49 +0800 Last State: Terminated Reason: Error Exit Code: 255 Started: Tue, 27 Aug 2019 10:40:42 +0800 Finished: Tue, 27 Aug 2019 10:58:27 +0800 Ready: True Restart Count: 1 在容器列表里看 Last State 字段，其中 ExitCode 即程序上次退出时的状态码，如果不为 0，表示异常退出，我们可以分析下原因。</description>
+    </item>
+    
+    <item>
+      <title></title>
+      <link>https://k8s.imroc.io/reference/net-shell/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/reference/net-shell/</guid>
+      <description>网络排障脚本 观察是否有 conntrack 冲突 watch -n1 &amp;lsquo;conntrack -S | awk -F = &amp;ldquo;{print $7}&amp;rdquo; | awk &amp;ldquo;{sum += $1} END {print sum}&amp;quot;&amp;rsquo;</description>
     </item>
     
     <item>

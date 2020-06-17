@@ -23,6 +23,17 @@
     </item>
     
     <item>
+      <title>PromQL 技巧</title>
+      <link>https://k8s.imroc.io/monitoring/promql/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/monitoring/promql/</guid>
+      <description>复制标签名 pod_name &amp;ndash;&amp;gt; pod:
+label_replace( container_cpu_system_seconds_total, &amp;quot;pod&amp;quot;, &amp;quot;$1&amp;quot;, &amp;quot;pod_name&amp;quot;, &amp;quot;(.*)&amp;quot; ) 新标签名跟其它指标:
+sum by (pod)( irate( ( label_replace( container_cpu_system_seconds_total{container_name!=&amp;quot;&amp;quot;}, &amp;quot;pod&amp;quot;, &amp;quot;$1&amp;quot;, &amp;quot;pod_name&amp;quot;, &amp;quot;(.*)&amp;quot; ) * on (namespace,pod) group_left(workload,workload_type) mixin_pod_workload{namespace=&amp;quot;$namespace&amp;quot;, workload=~&amp;quot;$workload&amp;quot;, workload_type=~&amp;quot;$workload_type&amp;quot;} )[1m:15s] ) ) </description>
+    </item>
+    
+    <item>
       <title>告警</title>
       <link>https://k8s.imroc.io/monitoring/alerting/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

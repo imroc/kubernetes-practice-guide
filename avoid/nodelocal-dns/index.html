@@ -3138,6 +3138,27 @@
 
             
           
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/monitoring/promql/" title="PromQL 技巧" class="dd-item ">
+        <a href="/monitoring/promql/">
+        PromQL 技巧
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
              
             
           
@@ -3465,6 +3486,63 @@
  
 
           
+          
+
+
+
+
+ 
+  
+    
+    <li data-nav-id="/reference/" title="References" class="dd-item 
+        
+        
+        
+        ">
+      <a href="/reference/">
+          References
+          
+            <i class="fas fa-check read-icon"></i>
+          
+      </a>
+      
+      
+        <ul>
+          
+          
+          
+          
+        
+          
+            
+            
+
+
+
+
+ 
+  
+    
+      <li data-nav-id="/reference/net-shell/" title="" class="dd-item ">
+        <a href="/reference/net-shell/">
+        
+        <i class="fas fa-check read-icon"></i>
+        </a>
+    </li>
+     
+  
+ 
+
+            
+          
+        
+        </ul>
+              
+    </li>
+  
+ 
+
+          
          
     </ul>
 
@@ -3599,6 +3677,7 @@
   <ul>
     <li><a href="#为什么需要本地-dns-缓存">为什么需要本地 DNS 缓存</a></li>
     <li><a href="#原理">原理</a></li>
+    <li><a href="#iptables-模式下部署方法">IPtables 模式下部署方法</a></li>
     <li><a href="#ipvs-模式下需要修改-kubelet-参数">IPVS 模式下需要修改 kubelet 参数</a></li>
     <li><a href="#ipvs-模式下部署方法">IPVS 模式下部署方法</a></li>
     <li><a href="#参考资料">参考资料</a></li>
@@ -3644,7 +3723,8 @@
 </li>
 </ul>
 <h2 id="原理">原理</h2>
-<p>本地 DNS 缓存以 DaemonSet 方式在每个节点部署一个使用 hostNetwork 的 Pod，创建一个网卡绑上本地 DNS 的 IP，本机的 Pod 的 DNS 请求路由到本地 DNS，然后取缓存或者继续使用 TCP 请求上游集群 DNS 解析 (由于使用 TCP，同一个 socket 只会做一遍三次握手，不存在并发创建 conntrack 表项，也就不会有 conntrack 冲突)</p>
+<p>本地 DNS 缓存以 DaemonSet 方式在每个节点部署一个使用 hostNetwork 的 Pod，创建一个网卡绑上本地 DNS 的 IP，本机的 Pod 的 DNS 请求路由到本地 DNS，然后取缓存或者继续使用 TCP 请求上游集群 DNS 解析。</p>
+<h2 id="iptables-模式下部署方法">IPtables 模式下部署方法</h2>
 <h2 id="ipvs-模式下需要修改-kubelet-参数">IPVS 模式下需要修改 kubelet 参数</h2>
 <p>有两点需要注意下:</p>
 <ol>
@@ -5942,6 +6022,22 @@ systemctl restart kubelet
                         
             
             
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+                        
+            
+            
         
                     
             
@@ -6121,6 +6217,38 @@ systemctl restart kubelet
                     
             
         
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
+                    
+            
+        
+                    
+            
+        
+                    
+                        
+            
+            
+                
+                    
+                
+                
+
+                    
+                    
+                    
+
                     
                         
             
