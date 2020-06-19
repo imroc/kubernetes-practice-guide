@@ -11,19 +11,6 @@
     
     
     <item>
-      <title>应用高可用部署</title>
-      <link>https://k8s.imroc.io/best-practice/deploy/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>https://k8s.imroc.io/best-practice/deploy/</guid>
-      <description>为了提高服务容错能力，我们通常会设置 replicas 给服务创建多个副本，但这并不意味着服务就实现高可用了，下面来介绍应用部署的最佳实践。
-使用反亲和性避免单点故障 k8s 的设计就是假设节点是不可靠的，节点越多，发生软硬件故障导致节点不可用的几率就越高，所以我们通常需要给服务部署多个副本，根据实际情况调整 replicas 的值，如果值为 1 就必然存在单点故障，如果大于 1 但所有副本都调度到同一个节点，那还是有单点故障，所以我们不仅要有合理的副本数量，还需要让这些不同副本调度到不同的节点，打散开来避免单点故障，这个可以利用反亲和性来实现，示例:
-affinity: podAntiAffinity: requiredDuringSchedulingIgnoredDuringExecution: - weight: 100 labelSelector: matchExpressions: - key: k8s-app operator: In values: - kube-dns topologyKey: kubernetes.io/hostname  requiredDuringSchedulingIgnoredDuringExecution 调度时必须满足该反亲和性条件，如果没有节点满足条件就不调度到任何节点 (Pending)。如果不用这种硬性条件可以使用 preferredDuringSchedulingIgnoredDuringExecution 来指示调度器尽量满足反亲和性条件，如果没有满足条件的也可以调度到某个节点。 labelSelector.matchExpressions 写该服务对应 pod 中 labels 的 key 与 value。 topologyKey 这里用 kubernetes.io/hostname 表示避免 pod 调度到同一节点，如果你有更高的要求，比如避免调度到同一个可用区，实现异地多活，可以用 failure-domain.beta.kubernetes.io/zone。通常不会去避免调度到同一个地域，因为一般同一个集群的节点都在一个地域，如果跨地域，即使用专线时延也会很大，所以 topologyKey 一般不至于用 failure-domain.beta.kubernetes.io/region。  使用 preStopHook 和 readinessProbe 保证服务平滑更新不中断 如果服务不做配置优化，默认情况下更新服务期间可能会导致部分流量异常，下面我们来分析并给出最佳实践。
-服务更新场景 我们先看下服务更新有哪些场景:
- 手动调整服务的副本数量 手动删除 Pod 触发重新调度 驱逐节点 (主动或被动驱逐，Pod会先删除再在其它节点重建) 触发滚动更新 (比如修改镜像 tag 升级程序版本) HPA (HorizontalPodAutoscaler) 自动对服务进行水平伸缩 VPA (VerticalPodAutoscaler) 自动对服务进行垂直伸缩  更新过程连接异常的原因 滚动更新时，Service 对应的 Pod 会被创建或销毁，Service 对应的 Endpoint 也会新增或移除相应的 Pod IP:Port，然后 kube-proxy 会根据 Service 的 Endpoint 里的 Pod IP:Port 列表更新节点上的转发规则，而这里 kube-proxy 更新节点转发规则的动作并不是那么及时，主要是由于 K8S 的设计理念，各个组件的逻辑是解耦的，各自使用 Controller 模式 listAndWatch 感兴趣的资源并做出相应的行为，所以从 Pod 创建或销毁到 Endpoint 更新再到节点上的转发规则更新，这个过程是异步的，所以会造成转发规则更新不及时，从而导致服务更新期间部分连接异常。</description>
-    </item>
-    
-    <item>
       <title>ETCD 优化</title>
       <link>https://k8s.imroc.io/best-practice/etcd/</link>
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>

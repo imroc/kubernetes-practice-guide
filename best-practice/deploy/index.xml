@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>服务部署最佳实践 on Kubernetes 实践指南</title>
+    <link>https://k8s.imroc.io/best-practice/deploy/</link>
+    <description>Recent content in 服务部署最佳实践 on Kubernetes 实践指南</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>zh</language>
+    
+	<atom:link href="https://k8s.imroc.io/best-practice/deploy/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>如何合理利用资源</title>
+      <link>https://k8s.imroc.io/best-practice/deploy/resource-utilization/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/best-practice/deploy/resource-utilization/</guid>
+      <description>引言 业务容器化后，如何将其部署在 K8S 上？如果仅仅是将它跑起来，很简单，但如果是上生产，我们有许多地方是需要结合业务场景和部署环境进行方案选型和配置调优的。比如，如何设置容器的 Request 与 Limit、如何让部署的服务做到高可用、如何配置健康检查、如何进行弹性伸缩、如何更好的进行资源调度、如何选择持久化存储、如何对外暴露服务等。
+对于这一系列高频问题，这里将会出一个 Kubernetes 服务部署最佳实践的系列的文章来为大家一一作答，本文将先围绕如何合理利用资源的主题来进行探讨。
+Request 与 Limit 怎么设置才好 如何为容器配置 Request 与 Limit? 这是一个即常见又棘手的问题，这个根据服务类型，需求与场景的不同而不同，没有固定的答案，这里结合生产经验总结了一些最佳实践，可以作为参考。
+所有容器都应该设置 request request 的值并不是指给容器实际分配的资源大小，它仅仅是给调度器看的，调度器会 &amp;ldquo;观察&amp;rdquo; 每个节点可以用于分配的资源有多少，也知道每个节点已经被分配了多少资源。被分配资源的大小就是节点上所有 Pod 中定义的容器 request 之和，它可以计算出节点剩余多少资源可以被分配(可分配资源减去已分配的 request 之和)。如果发现节点剩余可分配资源大小比当前要被调度的 Pod 的 reuqest 还小，那么就不会考虑调度到这个节点，反之，才可能调度。所以，如果不配置 request，那么调度器就不能知道节点大概被分配了多少资源出去，调度器得不到准确信息，也就无法做出合理的调度决策，很容易造成调度不合理，有些节点可能很闲，而有些节点可能很忙，甚至 NotReady。
+所以，建议是给所有容器都设置 request，让调度器感知节点有多少资源被分配了，以便做出合理的调度决策，让集群节点的资源能够被合理的分配使用，避免陷入资源分配不均导致一些意外发生。
+老是忘记设置怎么办 有时候我们会忘记给部分容器设置 request 与 limit，其实我们可以使用 LimitRange 来设置 namespace 的默认 request 与 limit 值，同时它也可以用来限制最小和最大的 request 与 limit。 示例:
+apiVersion: v1 kind: LimitRange metadata: name: mem-limit-range namespace: test spec: limits: - default: memory: 512Mi cpu: 500m defaultRequest: memory: 256Mi cpu: 100m type: Container 重要的线上应用改如何设置 节点资源不足时，会触发自动驱逐，将一些低优先级的 Pod 删除掉以释放资源让节点自愈。没有设置 request，limit 的 Pod 优先级最低，容易被驱逐；request 不等于 limit 的其次； request 等于 limit 的 Pod 优先级较高，不容易被驱逐。所以如果是重要的线上应用，不希望在节点故障时被驱逐导致线上业务受影响，就建议将 request 和 limit 设成一致。</description>
+    </item>
+    
+    <item>
+      <title>如何提高服务可用性</title>
+      <link>https://k8s.imroc.io/best-practice/deploy/highly-available/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/best-practice/deploy/highly-available/</guid>
+      <description>引言 上一篇 文章我们围绕如何合理利用资源的主题做了一些最佳实践的分享，这一次我们就如何提高服务可用性的主题来展开探讨。
+怎样提高我们部署服务的可用性呢？K8S 设计本身就考虑到了各种故障的可能性，并提供了一些自愈机制以提高系统的容错性，但有些情况还是可能导致较长时间不可用，拉低服务可用性的指标。本文将结合生产实践经验，为大家提供一些最佳实践来最大化的提高服务可用性。
+如何避免单点故障？ K8S 的设计就是假设节点是不可靠的。节点越多，发生软硬件故障导致节点不可用的几率就越高，所以我们通常需要给服务部署多个副本，根据实际情况调整 replicas 的值，如果值为 1 就必然存在单点故障，如果大于 1 但所有副本都调度到同一个节点了，那还是有单点故障，有时候还要考虑到灾难，比如整个机房不可用。
+所以我们不仅要有合理的副本数量，还需要让这些不同副本调度到不同的拓扑域(节点、可用区)，打散调度以避免单点故障，这个可以利用 Pod 反亲和性来做到，反亲和主要分强反亲和与弱反亲和两种。
+先来看个强反亲和的示例，将 dns 服务强制打散调度到不同节点上:
+affinity: podAntiAffinity: requiredDuringSchedulingIgnoredDuringExecution: - labelSelector: matchExpressions: - key: k8s-app operator: In values: - kube-dns topologyKey: kubernetes.io/hostname  labelSelector.matchExpressions 写该服务对应 pod 中 labels 的 key 与 value，因为 Pod 反亲和性是通过判断 replicas 的 pod label 来实现的。 topologyKey 指定反亲和的拓扑域，即节点 label 的 key。这里用的 kubernetes.io/hostname 表示避免 pod 调度到同一节点，如果你有更高的要求，比如避免调度到同一个可用区，实现异地多活，可以用 failure-domain.beta.kubernetes.io/zone。通常不会去避免调度到同一个地域，因为一般同一个集群的节点都在一个地域，如果跨地域，即使用专线时延也会很大，所以 topologyKey 一般不至于用 failure-domain.beta.kubernetes.io/region。 requiredDuringSchedulingIgnoredDuringExecution 调度时必须满足该反亲和性条件，如果没有节点满足条件就不调度到任何节点 (Pending)。  如果不用这种硬性条件可以使用 preferredDuringSchedulingIgnoredDuringExecution 来指示调度器尽量满足反亲和性条件，即弱反亲和性，如果实在没有满足条件的，只要节点有足够资源，还是可以让其调度到某个节点，至少不会 Pending。</description>
+    </item>
+    
+  </channel>
+</rss>

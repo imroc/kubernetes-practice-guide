@@ -61,11 +61,11 @@
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/security/cert/install-cert-manger/</loc>
+    <loc>https://k8s.imroc.io/best-practice/deploy/resource-utilization/</loc>
   </url>
   
   <url>
-    <loc>https://k8s.imroc.io/best-practice/deploy/</loc>
+    <loc>https://k8s.imroc.io/security/cert/install-cert-manger/</loc>
   </url>
   
   <url>
@@ -135,6 +135,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/troubleshooting/handle/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/deploy/highly-available/</loc>
   </url>
   
   <url>
@@ -597,6 +601,10 @@
   
   <url>
     <loc>https://k8s.imroc.io/security/permission/user/</loc>
+  </url>
+  
+  <url>
+    <loc>https://k8s.imroc.io/best-practice/deploy/</loc>
   </url>
   
   <url>
