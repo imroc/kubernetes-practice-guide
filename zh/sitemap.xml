@@ -77,6 +77,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/best-practice/deploy/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/deploy/</loc>
   </url>
   
@@ -601,10 +605,6 @@
   
   <url>
     <loc>https://k8s.imroc.io/security/permission/user/</loc>
-  </url>
-  
-  <url>
-    <loc>https://k8s.imroc.io/best-practice/deploy/</loc>
   </url>
   
   <url>
