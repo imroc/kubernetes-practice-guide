@@ -10,7 +10,7 @@ kube-prometheus 包含了在 k8s 环境下各种主流的监控组件，将其�
 
 * prometheus-operator: 让 prometheus 更好的适配 k8s，可直接通过创建 k8s CRD 资源来创建 prometheus 与 alertmanager 实例及其监控告警规则 (默认安装时也会创建这些 CRD 资源，也就是会自动部署 prometheus 和 alertmanager，以及它们的配置)
 * prometheus-adapter: 让 prometheus 采集的监控数据来适配 k8s 的 [resource metrics API](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/instrumentation/resource-metrics-api.md) 和 [custom metrics API](https://github.com/kubernetes/community/blob/master/contributors/design-proposals/instrumentation/custom-metrics-api.md)，`kubectl top` 和 HPA 功能都依赖它们。
-* node-exporter: 已 DaemonSet 方式部署在每个节点，将节点的各项系统指标暴露成 prometheus 能识别的格式，以便让 prometheus 采集。
+* node-exporter: 以 DaemonSet 方式部署在每个节点，将节点的各项系统指标暴露成 prometheus 能识别的格式，以便让 prometheus 采集。
 * kube-state-metrics: 将 k8s 的资源对象转换成 prometheus 的 metrics 格式以便让 prometheus 采集，比如 Node/Pod 的各种状态。
 * grafana: 可视化展示监控数据的界面。
 
