@@ -204,6 +204,20 @@ $ kubectl get pods --namespace cert-manager NAME READY STATUS RESTARTS AGE cert-
     </item>
     
     <item>
+      <title>网络排错手册</title>
+      <link>https://k8s.imroc.io/troubleshooting/network/manual/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://k8s.imroc.io/troubleshooting/network/manual/</guid>
+      <description>连接队列溢出 查看是否全连接或半连接队列溢出导致丢包，造成部分连接异常 (timeout):
+$ netstat -s | grep -E &amp;#39;overflow|drop&amp;#39; 3327 times the listen queue of a socket overflowed 32631 SYNs to LISTEN sockets dropped 进入容器 netns 后，查看各状态的连接数统计:
+netstat -n | awk &amp;#39;/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}&amp;#39; 故障案例:
+ 健康检查失败 网络时同时不通  解决方案:
+ 调大 sommaxconn 调大 backlog 若是 nginx，还受 nginx 本身的 backlog 配置，也调大下  conntrack 表爆满 看内核日志:
+# demsg $ journalctl -k | grep &amp;#34;nf_conntrack: table full&amp;#34; nf_conntrack: nf_conntrack: table full, dropping packet 若有以上报错，证明 conntrack 表满了，需要调大 conntrack 表:</description>
+    </item>
+    
+    <item>
       <title>Thanos 架构详解</title>
       <link>https://k8s.imroc.io/monitoring/build-cloud-native-large-scale-distributed-monitoring-system/thanos-arch/</link>
       <pubDate>Mon, 30 Mar 2020 00:00:00 +0000</pubDate>

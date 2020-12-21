@@ -81,6 +81,10 @@
   </url>
   
   <url>
+    <loc>https://k8s.imroc.io/troubleshooting/network/manual/</loc>
+  </url>
+  
+  <url>
     <loc>https://k8s.imroc.io/deploy/</loc>
   </url>
   

@@ -9,7 +9,7 @@
 
     <link rel="icon" href="/images/favicon.png" type="image/png">
 
-    <title>内存碎片化</title>
+    <title>网络排错手册</title>
 
     <script>
       window.algoliaAppID='B6Q6PSGUV5';
@@ -32,7 +32,7 @@
     </style>
     
   </head>
-  <body class="" data-url="/troubleshooting/handle/memory-fragmentation/">
+  <body class="" data-url="/troubleshooting/network/manual/">
     <nav id="sidebar" class="showVisitedLinks">
 
 
@@ -971,7 +971,7 @@
   
     
     <li data-nav-id="/troubleshooting/handle/" title="处理实践" class="dd-item 
-        parent
+        
         
         
         ">
@@ -1062,7 +1062,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/handle/memory-fragmentation/" title="内存碎片化" class="dd-item active">
+      <li data-nav-id="/troubleshooting/handle/memory-fragmentation/" title="内存碎片化" class="dd-item ">
         <a href="/troubleshooting/handle/memory-fragmentation/">
         内存碎片化
         <i class="fas fa-check read-icon"></i>
@@ -1547,7 +1547,7 @@
   
     
     <li data-nav-id="/troubleshooting/network/" title="网络排错" class="dd-item 
-        
+        parent
         
         
         ">
@@ -1575,7 +1575,7 @@
  
   
     
-      <li data-nav-id="/troubleshooting/network/manual/" title="网络排错手册" class="dd-item ">
+      <li data-nav-id="/troubleshooting/network/manual/" title="网络排错手册" class="dd-item active">
         <a href="/troubleshooting/network/manual/">
         网络排错手册
         <i class="fas fa-check read-icon"></i>
@@ -3649,7 +3649,7 @@
                   
                     
                     
-                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/handle/memory-fragmentation/" selected>简体中文</option>
+                      <option id="zh" value="https://k8s.imroc.io/troubleshooting/network/manual/" selected>简体中文</option>
                     
                   
               
@@ -3711,7 +3711,7 @@
                   
                   
                   <div id="top-github-link">
-                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/handle/memory-fragmentation.md" target="blank">
+                    <a class="github-link" title='编辑当前页' href="https://github.com/imroc/kubernetes-practice-guide/edit/master/content/zh/troubleshooting/network/manual.md" target="blank">
                       <i class="fas fa-code-branch"></i>
                       <span id="top-github-link-text">编辑当前页</span>
                     </a>
@@ -3746,7 +3746,7 @@
             
           
           
-            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/handle/'>处理实践</a> > 内存碎片化
+            <a href='/'>Kubernetes 实践指南</a> > <a href='/troubleshooting/'>排错指南</a> > <a href='/troubleshooting/network/'>网络排错</a> > 网络排错手册
           
          
           
@@ -3763,16 +3763,11 @@
     <div class="wrapper">
 <nav id="TableOfContents">
   <ul>
-    <li><a href="#判断是否内存碎片化严重">判断是否内存碎片化严重</a></li>
-    <li><a href="#内存碎片化造成的问题">内存碎片化造成的问题</a>
-      <ul>
-        <li><a href="#容器启动失败">容器启动失败</a></li>
-        <li><a href="#系统-oom">系统 OOM</a></li>
-      </ul>
-    </li>
-    <li><a href="#解决方法">解决方法</a></li>
-    <li><a href="#如何防止内存碎片化">如何防止内存碎片化</a></li>
-    <li><a href="#附录">附录</a></li>
+    <li><a href="#连接队列溢出">连接队列溢出</a></li>
+    <li><a href="#conntrack-表爆满">conntrack 表爆满</a></li>
+    <li><a href="#arp-表爆满">arp 表爆满</a></li>
+    <li><a href="#端口监听挂掉">端口监听挂掉</a></li>
+    <li><a href="#tcp_tw_recycle-导致丢包">tcp_tw_recycle 导致丢包</a></li>
   </ul>
 </nav>
     </div>
@@ -3790,7 +3785,7 @@
           
             <h1>
               
-              内存碎片化
+              网络排错手册
             </h1>
           
 
@@ -3798,52 +3793,63 @@
 
 
 
-<h2 id="判断是否内存碎片化严重">判断是否内存碎片化严重</h2>
-<p>内存页分配失败，内核日志报类似下面的错：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">mysqld: page allocation failure. order:4, mode:0x10c0d0
-</code></pre></div><ul>
-<li><code>mysqld</code> 是被分配的内存的程序</li>
-<li><code>order</code> 表示需要分配连续页的数量(2^order)，这里 4 表示 2^4=16 个连续的页</li>
-<li><code>mode</code> 是内存分配模式的标识，定义在内核源码文件 <code>include/linux/gfp.h</code> 中，通常是多个标识相与运算的结果，不同版本内核可能不一样，比如在新版内核中 <code>GFP_KERNEL</code> 是 <code>__GFP_RECLAIM | __GFP_IO | __GFP_FS</code> 的运算结果，而 <code>__GFP_RECLAIM</code> 又是 <code>___GFP_DIRECT_RECLAIM|___GFP_KSWAPD_RECLAIM</code> 的运算结果</li>
-</ul>
-<p>当 order 为 0 时，说明系统以及完全没有可用内存了，order 值比较大时，才说明内存碎片化了，无法分配连续的大页内存。</p>
-<h2 id="内存碎片化造成的问题">内存碎片化造成的问题</h2>
-<h3 id="容器启动失败">容器启动失败</h3>
-<p>K8S 会为每个 pod 创建 netns 来隔离 network namespace，内核初始化 netns 时会为其创建 nf_conntrack 表的 cache，需要申请大页内存，如果此时系统内存已经碎片化，无法分配到足够的大页内存内核就会报错(<code>v2.6.33 - v4.6</code>):</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">runc:<span style="color:#f92672">[</span>1:CHILD<span style="color:#f92672">]</span>: page allocation failure: order:6, mode:0x10c0d0
-</code></pre></div><p>Pod 状态将会一直在 ContainerCreating，dockerd 启动容器失败，日志报错:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Jan 23 14:15:31 dc05 dockerd: time=&#34;2019-01-23T14:15:31.288446233+08:00&#34; level=error msg=&#34;containerd: start container&#34; error=&#34;oci runtime error: container_linux.go:247: starting container process caused \&#34;process_linux.go:245: running exec setns process for init caused \\\&#34;exit status 6\\\&#34;\&#34;\n&#34; id=5b9be8c5bb121264899fac8d9d36b02150269d41ce96ba6ad36d70b8640cb01c
-Jan 23 14:15:31 dc05 dockerd: time=&#34;2019-01-23T14:15:31.317965799+08:00&#34; level=error msg=&#34;Create container failed with error: invalid header field value \&#34;oci runtime error: container_linux.go:247: starting container process caused \\\&#34;process_linux.go:245: running exec setns process for init caused \\\\\\\&#34;exit status 6\\\\\\\&#34;\\\&#34;\\n\&#34;&#34;
-</code></pre></div><p>kubelet 日志报错:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-text" data-lang="text">Jan 23 14:15:31 dc05 kubelet: E0123 14:15:31.352386   26037 remote_runtime.go:91] RunPodSandbox from runtime service failed: rpc error: code = 2 desc = failed to start sandbox container for pod &#34;matchdataserver-1255064836-t4b2w&#34;: Error response from daemon: {&#34;message&#34;:&#34;invalid header field value \&#34;oci runtime error: container_linux.go:247: starting container process caused \\\&#34;process_linux.go:245: running exec setns process for init caused \\\\\\\&#34;exit status 6\\\\\\\&#34;\\\&#34;\\n\&#34;&#34;}
-Jan 23 14:15:31 dc05 kubelet: E0123 14:15:31.352496   26037 kuberuntime_sandbox.go:54] CreatePodSandbox for pod &#34;matchdataserver-1255064836-t4b2w_basic(485fd485-1ed6-11e9-8661-0a587f8021ea)&#34; failed: rpc error: code = 2 desc = failed to start sandbox container for pod &#34;matchdataserver-1255064836-t4b2w&#34;: Error response from daemon: {&#34;message&#34;:&#34;invalid header field value \&#34;oci runtime error: container_linux.go:247: starting container process caused \\\&#34;process_linux.go:245: running exec setns process for init caused \\\\\\\&#34;exit status 6\\\\\\\&#34;\\\&#34;\\n\&#34;&#34;}
-Jan 23 14:15:31 dc05 kubelet: E0123 14:15:31.352518   26037 kuberuntime_manager.go:618] createPodSandbox for pod &#34;matchdataserver-1255064836-t4b2w_basic(485fd485-1ed6-11e9-8661-0a587f8021ea)&#34; failed: rpc error: code = 2 desc = failed to start sandbox container for pod &#34;matchdataserver-1255064836-t4b2w&#34;: Error response from daemon: {&#34;message&#34;:&#34;invalid header field value \&#34;oci runtime error: container_linux.go:247: starting container process caused \\\&#34;process_linux.go:245: running exec setns process for init caused \\\\\\\&#34;exit status 6\\\\\\\&#34;\\\&#34;\\n\&#34;&#34;}
-Jan 23 14:15:31 dc05 kubelet: E0123 14:15:31.352580   26037 pod_workers.go:182] Error syncing pod 485fd485-1ed6-11e9-8661-0a587f8021ea (&#34;matchdataserver-1255064836-t4b2w_basic(485fd485-1ed6-11e9-8661-0a587f8021ea)&#34;), skipping: failed to &#34;CreatePodSandbox&#34; for &#34;matchdataserver-1255064836-t4b2w_basic(485fd485-1ed6-11e9-8661-0a587f8021ea)&#34; with CreatePodSandboxError: &#34;CreatePodSandbox for pod \&#34;matchdataserver-1255064836-t4b2w_basic(485fd485-1ed6-11e9-8661-0a587f8021ea)\&#34; failed: rpc error: code = 2 desc = failed to start sandbox container for pod \&#34;matchdataserver-1255064836-t4b2w\&#34;: Error response from daemon: {\&#34;message\&#34;:\&#34;invalid header field value \\\&#34;oci runtime error: container_linux.go:247: starting container process caused \\\\\\\&#34;process_linux.go:245: running exec setns process for init caused \\\\\\\\\\\\\\\&#34;exit status 6\\\\\\\\\\\\\\\&#34;\\\\\\\&#34;\\\\n\\\&#34;\&#34;}&#34;
-Jan 23 14:15:31 dc05 kubelet: I0123 14:15:31.372181   26037 kubelet.go:1916] SyncLoop (PLEG): &#34;matchdataserver-1255064836-t4b2w_basic(485fd485-1ed6-11e9-8661-0a587f8021ea)&#34;, event: &amp;pleg.PodLifecycleEvent{ID:&#34;485fd485-1ed6-11e9-8661-0a587f8021ea&#34;, Type:&#34;ContainerDied&#34;, Data:&#34;5b9be8c5bb121264899fac8d9d36b02150269d41ce96ba6ad36d70b8640cb01c&#34;}
-Jan 23 14:15:31 dc05 kubelet: W0123 14:15:31.372225   26037 pod_container_deletor.go:77] Container &#34;5b9be8c5bb121264899fac8d9d36b02150269d41ce96ba6ad36d70b8640cb01c&#34; not found in pod&#39;s containers
-Jan 23 14:15:31 dc05 kubelet: I0123 14:15:31.678211   26037 kuberuntime_manager.go:383] No ready sandbox for pod &#34;matchdataserver-1255064836-t4b2w_basic(485fd485-1ed6-11e9-8661-0a587f8021ea)&#34; can be found. Need to start a new one
-</code></pre></div><p>查看slab (后面的0多表示伙伴系统没有大块内存了)：</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ cat /proc/buddyinfo
-Node 0, zone      DMA      <span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">2</span>      <span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">1</span>      <span style="color:#ae81ff">3</span>
-Node 0, zone    DMA32   <span style="color:#ae81ff">2725</span>    <span style="color:#ae81ff">624</span>    <span style="color:#ae81ff">489</span>    <span style="color:#ae81ff">178</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>
-Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="color:#ae81ff">1101</span>    <span style="color:#ae81ff">932</span>    <span style="color:#ae81ff">222</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>      <span style="color:#ae81ff">0</span>
-</code></pre></div><h3 id="系统-oom">系统 OOM</h3>
-<p>内存碎片化会导致即使当前系统总内存比较多，但由于无法分配足够的大页内存导致给进程分配内存失败，就认为系统内存不够用，需要杀掉一些进程来释放内存，从而导致系统 OOM</p>
-<h2 id="解决方法">解决方法</h2>
+<h2 id="连接队列溢出">连接队列溢出</h2>
+<p>查看是否全连接或半连接队列溢出导致丢包，造成部分连接异常 (timeout):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ netstat -s | grep -E <span style="color:#e6db74">&#39;overflow|drop&#39;</span>
+<span style="color:#ae81ff">3327</span> times the listen queue of a socket overflowed
+<span style="color:#ae81ff">32631</span> SYNs to LISTEN sockets dropped
+</code></pre></div><p>进入容器 netns 后，查看各状态的连接数统计:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">netstat -n | awk <span style="color:#e6db74">&#39;/^tcp/ {++S[$NF]} END {for(a in S) print a, S[a]}&#39;</span>
+</code></pre></div><p>故障案例:</p>
 <ul>
-<li>周期性地或者在发现大块内存不足时，先进行drop_cache操作:</li>
+<li>健康检查失败</li>
+<li>网络时同时不通</li>
 </ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">echo <span style="color:#ae81ff">3</span> &gt; /proc/sys/vm/drop_caches
-</code></pre></div><ul>
-<li>必要时候进行内存整理，开销会比较大，会造成业务卡住一段时间(慎用):</li>
-</ul>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">echo <span style="color:#ae81ff">1</span> &gt; /proc/sys/vm/compact_memory
-</code></pre></div><h2 id="如何防止内存碎片化">如何防止内存碎片化</h2>
-<p>TODO</p>
-<h2 id="附录">附录</h2>
-<p>相关链接：</p>
+<p>解决方案:</p>
 <ul>
-<li><a href="https://huataihuang.gitbooks.io/cloud-atlas/content/os/linux/kernel/memory/drop_caches_and_compact_memory.html">https://huataihuang.gitbooks.io/cloud-atlas/content/os/linux/kernel/memory/drop_caches_and_compact_memory.html</a></li>
+<li>调大 sommaxconn</li>
+<li>调大 backlog</li>
+<li>若是 nginx，还受 nginx 本身的 backlog 配置，也调大下</li>
+</ul>
+<h2 id="conntrack-表爆满">conntrack 表爆满</h2>
+<p>看内核日志:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># demsg</span>
+$ journalctl -k | grep <span style="color:#e6db74">&#34;nf_conntrack: table full&#34;</span>
+nf_conntrack: nf_conntrack: table full, dropping packet
+</code></pre></div><p>若有以上报错，证明 conntrack 表满了，需要调大 conntrack 表:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sysctl -w net.netfilter.nf_conntrack_max<span style="color:#f92672">=</span><span style="color:#ae81ff">1000000</span>
+</code></pre></div><h2 id="arp-表爆满">arp 表爆满</h2>
+<p>看内核日志:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># demsg</span>
+$ journalctl -k | grep <span style="color:#e6db74">&#34;neighbor table overflow&#34;</span>
+arp_cache: neighbor table overflow!
+</code></pre></div><p>若有以上报错，证明 arp 表满了，查看当前 arp 记录数:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ arp -an | wc -l
+<span style="color:#ae81ff">1335</span>
+</code></pre></div><p>查看 arp gc 阀值:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ sysctl -a | grep gc_thresh
+net.ipv4.neigh.default.gc_thresh1 <span style="color:#f92672">=</span> <span style="color:#ae81ff">128</span>
+net.ipv4.neigh.default.gc_thresh2 <span style="color:#f92672">=</span> <span style="color:#ae81ff">512</span>
+net.ipv4.neigh.default.gc_thresh3 <span style="color:#f92672">=</span> <span style="color:#ae81ff">1024</span>
+</code></pre></div><p>调大 arp 表:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">sysctl -w net.ipv4.neigh.default.gc_thresh1<span style="color:#f92672">=</span><span style="color:#ae81ff">80000</span>
+sysctl -w net.ipv4.neigh.default.gc_thresh2<span style="color:#f92672">=</span><span style="color:#ae81ff">90000</span>
+sysctl -w net.ipv4.neigh.default.gc_thresh3<span style="color:#f92672">=</span><span style="color:#ae81ff">100000</span>
+</code></pre></div><h2 id="端口监听挂掉">端口监听挂掉</h2>
+<p>如果容器内的端口已经没有进程监听了，内核就会返回 Reset 包，客户端就会报错连接被拒绝，可以进容器 netns 检查下端口是否存活:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">netstat -tunlp
+</code></pre></div><h2 id="tcp_tw_recycle-导致丢包">tcp_tw_recycle 导致丢包</h2>
+<p>在低版本内核中(比如 3.10)，支持使用 tcp_tw_recycle 内核参数来开启 TIME_WAIT 的快速回收，但如果 client 也开启了 timestamp (一般默认开启)，同时也就会导致在 NAT 环境丢包，甚至没有 NAT 时，稍微高并发一点，也会导致 PAWS 校验失败，导致丢包:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># 看 SYN 丢包是否全都是 PAWS 校验失败</span>
+$ cat /proc/net/netstat | grep TcpE| awk <span style="color:#e6db74">&#39;{print $15, $22}&#39;</span>
+PAWSPassive ListenDrops
+<span style="color:#ae81ff">96305</span> <span style="color:#ae81ff">96305</span>
+</code></pre></div><p>参考资料:</p>
+<ul>
+<li><a href="https://github.com/torvalds/linux/blob/v3.10/net/ipv4/tcp_ipv4.c#L1465">https://github.com/torvalds/linux/blob/v3.10/net/ipv4/tcp_ipv4.c#L1465</a></li>
+<li><a href="https://www.freesoft.org/CIE/RFC/1323/13.htm">https://www.freesoft.org/CIE/RFC/1323/13.htm</a></li>
+<li><a href="https://zhuanlan.zhihu.com/p/35684094">https://zhuanlan.zhihu.com/p/35684094</a></li>
+<li><a href="https://my.oschina.net/u/4270811/blog/3473655/print">https://my.oschina.net/u/4270811/blog/3473655/print</a></li>
 </ul>
 
 
@@ -3904,7 +3910,7 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
 <script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
 <script>
   
-  console.log("gitalk id:618a3f1f985a1486b820f1000a2f21d8")
+  console.log("gitalk id:d14a907008afbf4013b0e81ee02f2949")
   var gitalk = new Gitalk({
       clientID: '6e0166abfd4b13fb3f6e',
       clientSecret: '9960a67408e0cc826566869e0e3247017004d007',
@@ -3912,9 +3918,9 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
       owner: 'imroc',
       admin: ["imroc"],
       labels: ['Gitalk'],
-      title: '内存碎片化',
+      title: '网络排错手册',
       createIssueManually: false,
-      id: '618a3f1f985a1486b820f1000a2f21d8',
+      id: 'd14a907008afbf4013b0e81ee02f2949',
       distractionFreeMode: true
   });
   gitalk.render('gitalk-container');
@@ -4492,7 +4498,6 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
             
                 
                     
-                    
                 
                 
 
@@ -4505,9 +4510,6 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4557,7 +4559,6 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
             
                 
                     
-                    
                 
                 
 
@@ -4573,9 +4574,6 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
             
             
                 
-                    
-                        
-                        
                     
                 
                 
@@ -4900,6 +4898,7 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
             
                 
                     
+                    
                 
                 
 
@@ -4912,6 +4911,7 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
             
             
                 
+                    
                     
                 
                 
@@ -4928,6 +4928,9 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
             
             
                 
+                    
+                        
+                        
                     
                 
                 
@@ -6252,10 +6255,10 @@ Node 0, zone   Normal   <span style="color:#ae81ff">1163</span>   <span style="c
 	 
 	 
 		
-			<a class="nav nav-prev" href="/troubleshooting/handle/pid-full/" title="PID 耗尽"> <i class="fa fa-chevron-left"></i></a>
+			<a class="nav nav-prev" href="/troubleshooting/network/" title="网络排错"> <i class="fa fa-chevron-left"></i></a>
 		
 		
-			<a class="nav nav-next" href="/troubleshooting/handle/disk-full/" title="磁盘爆满" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
+			<a class="nav nav-next" href="/troubleshooting/network/dns/" title="DNS 解析异常" style="margin-right: 0px;"><i class="fa fa-chevron-right"></i></a>
 		
 	
     </div>
